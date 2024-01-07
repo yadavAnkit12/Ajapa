@@ -1,0 +1,22 @@
+.grid-items {
+    margin-bottom: 24px;
+    word-wrap: inherit;
+}
+
+@media (max-width: 600px) {
+    .grid-items {
+        width: 100%;
+    }
+}
+
+@media (min-width: 601px) and (max-width: 1024px) {
+    .grid-items {
+        width: 50%;
+    }
+}
+
+@media (min-width: 1025px) {
+    .grid-items {
+        width: 33.33%;
+    }
+}
