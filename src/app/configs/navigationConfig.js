@@ -16,40 +16,68 @@ const navigationConfig = [
     type: 'item',
     icon: 'heroicons-outline:home',
     url: '/',
-    auth: ["Super", "employee", "clinic","doctor"]
+    auth: ["Super", "employee"]
   },
   {
-    id: 'app-users',
-    title: "Users",
-    translate: "Users",
-    type: 'collapse',
-    icon: 'heroicons-outline:users',
-    auth: ["admin", "employee"],
-    children: [
+    id: 'app-event',
+    title: "Event",
+    translate: "Event",
+    type: 'item',
+    icon: 'heroicons-outline:calendar',
+    auth: ["Super", "employee"],
+    url:'app/event/'
+    // children: [
 
-      {
-        id: 'app-employee-component',
-        title: "Employee",
-        type: 'item',
-        url: 'app/user/',
-        auth: ["admin", "employee"],
-        end: true,
-      },
-      {
-        id: 'app-doctor-component',
-        title: "Doctor",
-        type: 'item',
-        url: '/app/doctor/',
-        auth: ["admin", "employee"]
-      },
-      // {
-      //   id: 'app-patient-component',
-      //   title: "Patient",
-      //   type: 'item',
-      //   url: 'app/patient/',
-      //   auth: ["admin", "employee","clinic","doctor"]
-      // },
-    ],
+    //   {
+    //     id: 'app-employee-component',
+    //     title: "Employee",
+    //     type: 'item',
+    //     url: 'app/user/',
+    //     auth: ["admin", "employee"],
+    //     end: true,
+    //   },
+    //   {
+    //     id: 'app-doctor-component',
+    //     title: "Doctor",
+    //     type: 'item',
+    //     url: '/app/doctor/',
+    //     auth: ["admin", "employee"]
+    //   },
+    //   // {
+    //   //   id: 'app-patient-component',
+    //   //   title: "Patient",
+    //   //   type: 'item',
+    //   //   url: 'app/patient/',
+    //   //   auth: ["admin", "employee","clinic","doctor"]
+    //   // },
+    // ],
+  },
+  {
+    id: 'myRegisteration-component',
+    title: "My Registeration",
+    translate: "My Registeration",
+    type: 'item',
+    icon: 'heroicons-outline:clipboard-check',
+    url: 'app/myregisteration',
+    auth: ["Super", "employee"]
+  },
+  {
+    id: 'myprofile-component',
+    title: "My Profile",
+    translate: "My Profile",
+    type: 'item',
+    icon: 'heroicons-outline:user-circle',
+    url: 'app/myprofile',
+    auth: ["Super", "employee"]
+  },
+  {
+    id: 'logout-component',
+    title: "Logout",
+    translate: "Logout",
+    type: 'item',
+    icon: 'heroicons-outline:logout',
+    url: '/sign-out',
+    auth: ["Super", "employee"]
   },
   {
     id: 'app-partner-component',

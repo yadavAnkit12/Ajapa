@@ -37,7 +37,7 @@ function UserNavbarHeader(props) {
             color: 'text.secondary',
           }}
           className="avatar text-32 font-bold w-96 h-96"
-          src={user.data.photoURL || 'https://www.shutterstock.com/image-vector/default-avatar-profile-trendy-style-260nw-1759726295.jpg'}
+          src='assets/Images/logo/logo.png'
           alt={user.data.name}
         >
           {user.data.name}
