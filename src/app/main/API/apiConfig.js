@@ -2,7 +2,19 @@ const key = process.env.REACT_APP_URL;
 
 export const userAPIConfig = {
     getPermissions: key + '/api/role/list/permission',
-    profileUpdate: key +'/api/user/edit'
+    profileUpdate: key +'/api/user/edit',
+    list:key+'/user/list',
+    changeStatus:key+'/changeStatus'
+}
+export const eventAPIConfig = {
+    create: key + '/saveEvent',
+    createWithImage:key + "/saveEventWithImage",
+    list:key + '/event/list',
+    getById:key +'/event',
+    delete:key+ '/event/status',
+    view:key + '/event',
+    changeBookingStatus:key +'/event/booking',
+    changeEventStatus:key+'/event/status'
 }
 
 export const doctorAPIConfig = {

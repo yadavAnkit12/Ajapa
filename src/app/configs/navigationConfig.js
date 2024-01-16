@@ -16,7 +16,25 @@ const navigationConfig = [
     type: 'item',
     icon: 'heroicons-outline:home',
     url: '/',
-    auth: ["Super", "employee"]
+    auth: ["Super", "User"]
+  },
+  {
+    id: 'dashboard-component',
+    title: "Dashboard",
+    translate: "Dashboard",
+    type: 'item',
+    icon: 'heroicons-outline:home',
+    url: 'app/dashboard/',
+    auth: ["Super", "User"]
+  },
+  {
+    id: 'Users-component',
+    title: "Users",
+    translate: "Users",
+    type: 'item',
+    icon: 'heroicons-outline:users',
+    url: 'app/users/',
+    auth: ["Super"]
   },
   {
     id: 'app-event',
@@ -24,8 +42,9 @@ const navigationConfig = [
     translate: "Event",
     type: 'item',
     icon: 'heroicons-outline:calendar',
-    auth: ["Super", "employee"],
-    url:'app/event/'
+    url:'app/event/',
+    auth: ["Super", "User"]
+  },
     // children: [
 
     //   {
@@ -51,7 +70,7 @@ const navigationConfig = [
     //   //   auth: ["admin", "employee","clinic","doctor"]
     //   // },
     // ],
-  },
+
   {
     id: 'myRegisteration-component',
     title: "My Registeration",
@@ -59,7 +78,7 @@ const navigationConfig = [
     type: 'item',
     icon: 'heroicons-outline:clipboard-check',
     url: 'app/myregisteration',
-    auth: ["Super", "employee"]
+    auth: ["User"]
   },
   {
     id: 'myprofile-component',
@@ -68,7 +87,7 @@ const navigationConfig = [
     type: 'item',
     icon: 'heroicons-outline:user-circle',
     url: 'app/myprofile',
-    auth: ["Super", "employee"]
+    auth: ["Super", "User"]
   },
   {
     id: 'logout-component',
@@ -77,7 +96,7 @@ const navigationConfig = [
     type: 'item',
     icon: 'heroicons-outline:logout',
     url: '/sign-out',
-    auth: ["Super", "employee"]
+    auth: ["Super", "User"]
   },
   {
     id: 'app-partner-component',

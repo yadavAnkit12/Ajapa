@@ -14,7 +14,7 @@ import NotificationTemplate from 'app/theme-layouts/shared-components/notificati
 import NotificationModel from './model/NotificationModel';
 import NotificationCard from './NotificationCard';
 import axios from 'axios';
-import { NotificationAPIConfig } from 'src/app/main/API/apiConfig';
+import { NotificationAPIConfig, userAPIConfig } from 'src/app/main/API/apiConfig';
 import {
   addNotification,
   dismissAll,
@@ -41,27 +41,38 @@ function NotificationPanel(props) {
   const dispatch = useDispatch();
   const state = useSelector(selectNotificationPanelState);
   // const notifications = useSelector(selectNotifications);.
-  const [notifications,setNotifications]=useState([])
-  const [notifUpdate,setNotifUpdate]=useState('')
+  const [notifications, setNotifications] = useState([])
+  const [notifUpdate, setNotifUpdate] = useState('')
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-  // useEffect(() => {
-  //   axios.get(`${NotificationAPIConfig.fetchNotification}`, {
-  //     headers: {
-  //         'Content-type': 'multipart/form-data',
-  //         authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-  //     },
-  // }).then((response) => {
-  //     if (response.status === 200) {
-  //         setNotifications(response.data.data)
+  useEffect(() => {
+    const params = {
+      page: 1,
+      rowsPerPage: 200,
+      searchText: '',
+      status: 'Pending',
+      country: 'All',
+      state: 'All',
+      city: 'All'
+    }
 
-  //     } else {
-  //         // dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
-  //     }
-  // });
-  
-  // },[notifUpdate]);
+    axios.get(userAPIConfig.list, { params }, {
+      headers: {
+        'Content-type': 'multipart/form-data',
+        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+      },
+    }).then((response) => {
+      if (response.status === 200) {
+        setNotifications(response.data.data)
+        console.log(response)
+
+      } else {
+        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
+      }
+    });
+
+  }, [notifUpdate]);
 
   //closingNotificationPanel
   useEffect(() => {
@@ -69,7 +80,7 @@ function NotificationPanel(props) {
       dispatch(closeNotificationPanel());
     }
     // eslint-disable-next-line
-	}, [location, dispatch]);
+  }, [location, dispatch]);
 
   function handleClose() {
     dispatch(closeNotificationPanel());
@@ -79,17 +90,17 @@ function NotificationPanel(props) {
     // dispatch(dismissItem(id));
     axios.put(`${NotificationAPIConfig.dismiss}/${id}`, {
       headers: {
-          'Content-type': 'multipart/form-data',
-          authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+        'Content-type': 'multipart/form-data',
+        authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
       },
-  }).then((response) => {
+    }).then((response) => {
       if (response.status === 200) {
-       setNotifUpdate(response)
+        setNotifUpdate(response)
 
       } else {
-          dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
+        dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
       }
-  });
+    });
   }
 
   function handleDismissAll() {
@@ -118,11 +129,12 @@ function NotificationPanel(props) {
     dispatch(addNotification(item));
   }
 
+
   return (
     <StyledSwipeableDrawer
       open={state}
       anchor="right"
-      onOpen={(ev) => {}}
+      onOpen={(ev) => { }}
       onClose={(ev) => dispatch(toggleNotificationPanel())}
       disableSwipeToOpen
     >
@@ -134,17 +146,17 @@ function NotificationPanel(props) {
           <div className="flex flex-col">
             <div className="flex justify-between items-end pt-136 mb-36">
               <Typography className="text-28 font-semibold leading-none">Notifications</Typography>
-              <Typography
+              {/* <Typography
                 className="text-12 underline cursor-pointer"
                 color="secondary"
                 onClick={handleDismissAll}
               >
                 dismiss all
-              </Typography>
+              </Typography> */}
             </div>
             {notifications.map((item) => (
               <NotificationCard
-                key={item._id}
+                key={item.id}
                 className="mb-16"
                 item={item}
                 onClose={handleDismiss}

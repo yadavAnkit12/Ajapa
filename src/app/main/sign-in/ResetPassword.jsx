@@ -35,20 +35,27 @@ const ResetPassword = () => {
     });
 
     const handleSubmit = (values) => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get('token');
+        // const urlParams = new URLSearchParams(window.location.search);
+        const token = localStorage.getItem('token')
+        const userDetails = localStorage.getItem('userData')
         const formData = new FormData()
-        formData.append('newPassword', values.newPassword)
+        formData.append('password', values.newPassword)
         formData.append('token', token)
+        formData.append('userDatils',userDetails)
 
         axios.post(jwtServiceConfig.resetPassword, formData, {
             headers: {
                 'Content-type': 'multipart/form-data',
+                'Authorization': `Bearer ${token}`
             },
         }).then((response) => {
             if (response.status === 200) {
-                // dispatch(showMessage({ message: response.data.message, variant: 'success' }))
-                // dispatch(showMessage({ message: 'Go to the login Page' }))
+            console.log(response)
+                localStorage.removeItem('token')
+                localStorage.removeItem('userData')
+                localStorage.removeItem('_grecaptcha')
+                dispatch(showMessage({ message: response.data.message, variant: 'success' }))
+                dispatch(showMessage({ message: 'Go to the login Page' }))
                 setShow(true)
             }
             else {
@@ -57,6 +64,11 @@ const ResetPassword = () => {
             }
         });
     };
+
+    const handleLogin = () => {
+        navigate('/sign-in')
+    }
+
 
     const formik = useFormik({
         initialValues: initialValues,
@@ -126,7 +138,9 @@ const ResetPassword = () => {
                         <h4>Dear User,</h4>
                         <h2>Your password are updated successfully !</h2>
                         <h3>Now you can explore all our services by clicking on Log In button.</h3>
-                        <Button variant="contained" color="primary" fullWidth style={{ margin: '20px 0' }}>Log In</Button>
+                        <Button variant="contained" color="primary" fullWidth style={{ margin: '20px 0',width:'30%' }} 
+                        onClick={handleLogin}
+                        >Log In</Button>
                         <h2>Thank you for choosing our platform!</h2>
                     </div>
                 </div>}

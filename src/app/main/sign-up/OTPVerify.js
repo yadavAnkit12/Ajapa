@@ -6,6 +6,7 @@ import axios from "axios";
 import { MuiOtpInput } from 'mui-one-time-password-input';
 import CloseIcon from '@mui/icons-material/Close';
 import jwtServiceConfig from 'src/app/auth/services/jwtService/jwtServiceConfig';
+import { useNavigate } from 'react-router-dom';
 
 
 const INITIAL_COUNT = 120
@@ -14,7 +15,7 @@ const twoDigit = (num) => String(num).padStart(2, '0')
 
 
 const OTPVerify = ({ data, handleEditClose, countryID, stateID, cityID }) => {
-    console.log(data, countryID, stateID, cityID)
+    const navigate=useNavigate()
     const dispatch = useDispatch();
     const [secondsRemaining, setSecondsRemaining] = useState(INITIAL_COUNT);
     const [status, setStatus] = useState(null);
@@ -78,9 +79,9 @@ const OTPVerify = ({ data, handleEditClose, countryID, stateID, cityID }) => {
                 formattedData.append('gender', data.gender)
                 formattedData.append('countryCode', data.countryCode.split(' ')[0])
                 formattedData.append('mobileNumber', data.mobileNumber)
-                formattedData.append('country', countryID)
-                formattedData.append('state', stateID)
-                formattedData.append('city', cityID)
+                formattedData.append('country', `${countryID}:${data.country}`)
+                formattedData.append('state',  `${stateID}:${data.state}`)
+                formattedData.append('city',  `${cityID}:${data.city}`)
                 formattedData.append('dob', data.dob)
                 formattedData.append('file', data.profilePicture)
                 formattedData.append('isDisciple', data.isDisciple === 'Yes' ? 1 : 0)
@@ -91,8 +92,8 @@ const OTPVerify = ({ data, handleEditClose, countryID, stateID, cityID }) => {
                     },
                 }).then((response) => {
                     if (response.status === 200) {
-                        dispatch(showMessage({ message: 'Data recived successfully', variant: 'success' }));
                         handleEditClose()
+                        navigate('/confirmation')
                     }
                 })
 

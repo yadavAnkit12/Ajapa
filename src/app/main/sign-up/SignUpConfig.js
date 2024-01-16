@@ -1,5 +1,6 @@
 import SignUpPage from './SignUpPage';
 import authRoles from '../../auth/authRoles';
+import Confirmation from './Confirmation';
 
 const SignUpConfig = {
   settings: {
@@ -28,6 +29,10 @@ const SignUpConfig = {
     {
       path: 'sign-up',
       element: <SignUpPage />,
+    },
+    {
+      path: 'confirmation',
+      element: <Confirmation />,
     },
   ],
 };

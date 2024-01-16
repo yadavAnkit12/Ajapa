@@ -33,10 +33,13 @@ import CaseConfig from '../main/components/LabPartnerService/CaseConfig';
 import AllCaseConfig from '../main/components/CaseReportManagement/AllCaseConfig';
 import FinalCaseReportConfig from '../main/components/CaseReportManagement/FinalCaseReportConfig';
 import ClinicManagementConfig from '../main/components/PartnersManagement/ClinicManagementConfig';
+import DashboardConfig from '../main/components/Dashboard/DashboardConfig';
+import EventConfig from '../main/components/Event/EventConfig';
+import UserConfig from '../main/components/Users/UserConfig';
 
 
 
-const routeConfigs = [SignOutConfig, SignInConfig, SignUpConfig, Error404PageConfig, EmployeeManagementConfig, DoctorManagementConfig, PatientConfig, AppointmentsAppConfig, HomeConfig, MembershipPlanConfig, transactionConfig, SubscriptionPlanConfig, CouponPlanConfig, BannerPlanConfig, CaseConfig, SymptomConfig, ProductConfig, OrderConfig, LabOrderConfig,SettingConfig,NewCaseConfig,AllCaseConfig,FinalCaseReportConfig,ClinicManagementConfig];
+const routeConfigs = [SignOutConfig, SignInConfig, SignUpConfig, Error404PageConfig, DashboardConfig,UserConfig,EventConfig,EmployeeManagementConfig, DoctorManagementConfig, PatientConfig, AppointmentsAppConfig, HomeConfig, MembershipPlanConfig, transactionConfig, SubscriptionPlanConfig, CouponPlanConfig, BannerPlanConfig, CaseConfig, SymptomConfig, ProductConfig, OrderConfig, LabOrderConfig,SettingConfig,NewCaseConfig,AllCaseConfig,FinalCaseReportConfig,ClinicManagementConfig];
 
 const routes = [
   ...FuseUtils.generateRoutesFromConfigs(routeConfigs, settingsConfig.defaultAuth),
