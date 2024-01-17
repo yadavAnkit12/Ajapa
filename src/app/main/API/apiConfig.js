@@ -4,7 +4,8 @@ export const userAPIConfig = {
     getPermissions: key + '/api/role/list/permission',
     profileUpdate: key +'/api/user/edit',
     list:key+'/user/list',
-    changeStatus:key+'/changeStatus'
+    changeStatus:key+'/changeStatus',
+    getUserById:key+'/getUser'
 }
 export const eventAPIConfig = {
     create: key + '/saveEvent',

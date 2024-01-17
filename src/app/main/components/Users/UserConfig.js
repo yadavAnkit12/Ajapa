@@ -1,4 +1,5 @@
 
+import UserForm from "./UserForm/UserForm";
 import Users from "./Users";
 
 
@@ -16,11 +17,11 @@ const UserConfig = {
     },
 
 
-    // {
-    //   path: 'app/eventRegisteration/:eventId/*',
-    //   element: <EventForm />,
-    //   auth: ["Super", "User"]
-    // }
+    {
+      path: 'app/useredit/:id/*',
+      element: <UserForm />,
+      auth: ["Super"]
+    }
     // {
     //     path: 'app/vehicleView',
     //     element: <VehicleView/>,

@@ -40,7 +40,7 @@ function NotificationPanel(props) {
   const location = useLocation();
   const dispatch = useDispatch();
   const state = useSelector(selectNotificationPanelState);
-  // const notifications = useSelector(selectNotifications);.
+  // const notifications = useSelector(selectNotifications);
   const [notifications, setNotifications] = useState([])
   const [notifUpdate, setNotifUpdate] = useState('')
 
