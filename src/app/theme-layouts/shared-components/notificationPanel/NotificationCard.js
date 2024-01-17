@@ -9,7 +9,7 @@ import NavLinkAdapter from '@fuse/core/NavLinkAdapter';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import { Modal } from '@mui/material';
 import { useState } from 'react';
-import UserView from './store/UserView';
+import UserView from './UserView';
 import CloseIcon from '@mui/icons-material/Close';
 
 const style = {
@@ -28,15 +28,15 @@ const style = {
 };
 function NotificationCard(props) {
 
-  const { item, className } = props;
+  const { item, className,setNotifUpdate } = props;
   const variant = item?.variant || '';
   const [open, setOpen] = useState(false)
 
-  const handleClose = (id) => {
-    if (props.onClose) {
-      props.onClose(id);
-    }
-  };
+  // const handleClose = (id) => {
+  //   if (props.onClose) {
+  //     props.onClose(id);
+  //   }
+  // };
 
   const handleView = (item) => {
     setOpen(true)
@@ -119,7 +119,7 @@ function NotificationCard(props) {
       >
       
         <Box sx={style}>
-          <UserView data={item} handleEditClose={handleEditClose}/>
+          <UserView data={item} handleEditClose={handleEditClose} setNotifUpdate={setNotifUpdate}/>
         </Box>
       </Modal>
     </Card>

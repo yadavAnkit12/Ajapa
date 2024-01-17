@@ -83,6 +83,7 @@ function UserTable(props) {
   const [open, setOpen] = useState(false)
   const [deleteId, setDeleteId] = useState('')
 
+  console.log( _.get(props, 'filterValue.country'))
   useEffect(() => {
     fetchData();
   }, [props?.change, rowsPerPage, page, props?.filterValue]);
@@ -122,10 +123,11 @@ function UserTable(props) {
       rowsPerPage: rowsPerPage, // Example data to pass in req.query
       searchText: searchText,
       status: _.get(props, 'filterValue') === '' ? 'Approved' : _.get(props, 'filterValue.status'),
-      country: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.country'),
-      state: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.state'),
-      city: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.city'),
+      country: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.country')===''?'All':_.get(props, 'filterValue.country'),
+      state: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.state')===''?'All':_.get(props, 'filterValue.state'),
+      city: _.get(props, 'filterValue') === '' ? 'All' :_.get(props, 'filterValue.city')===''?'All':_.get(props, 'filterValue.city'),
     };
+    console.log('params',params)
     axios.get(userAPIConfig.list, { params }, {
       headers: {
         'Content-type': 'multipart/form-data',

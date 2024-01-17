@@ -29,10 +29,10 @@ function UsersHeader(props) {
     const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
     const [filterData, setFilterData] = useState({
-        status: '',
-        country: '',
-        state: '',
-        city: ''
+        status: 'Approved',
+        country: 'All',
+        state: 'All',
+        city: 'All'
     });
 
     const [countryList, setCountryList] = useState([])

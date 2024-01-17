@@ -52,6 +52,8 @@ export default function UserView(props) {
         }).then((response) => {
             if (response.status === 200) {
                 dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+                props.setNotifUpdate(response)
+                props.handleEditClose()
             }
             else {
                 dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
@@ -66,7 +68,7 @@ export default function UserView(props) {
 
     return (
         <div>
-            <IconButton onClick={props.handleEditClose} sx={{ position: 'absolute', top: '0', right: '0', justifyContent: 'flex-end', margin: '0 10px' }}>
+            <IconButton onClick={()=>props.handleEditClose} sx={{ position: 'absolute', top: '0', right: '0', justifyContent: 'flex-end', margin: '0 10px' }}>
                 <CloseIcon />
             </IconButton>
             <Card sx={{ maxWidth: 345 }}>

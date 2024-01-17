@@ -10,7 +10,7 @@ const HomeConfig = {
     {
       path: '/',
       element: <Home />,
-      auth: ["Super", "employee", "clinic","doctor"]
+      auth: ["Super", "User"]
     }
   ],
 };

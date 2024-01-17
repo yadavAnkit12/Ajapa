@@ -86,29 +86,29 @@ function NotificationPanel(props) {
     dispatch(closeNotificationPanel());
   }
 
-  function handleDismiss(id) {
-    // dispatch(dismissItem(id));
-    axios.put(`${NotificationAPIConfig.dismiss}/${id}`, {
-      headers: {
-        'Content-type': 'multipart/form-data',
-        authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-      },
-    }).then((response) => {
-      if (response.status === 200) {
-        setNotifUpdate(response)
+  // function handleDismiss(id) {
+  //    dispatch(dismissItem(id));
+  //   axios.put(`${NotificationAPIConfig.dismiss}/${id}`, {
+  //     headers: {
+  //       'Content-type': 'multipart/form-data',
+  //       authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+  //     },
+  //   }).then((response) => {
+  //     if (response.status === 200) {
+  //       setNotifUpdate(response)
 
-      } else {
-        dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
-      }
-    });
-  }
+  //     } else {
+  //       dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
+  //     }
+  //   });
+  // }
 
-  function handleDismissAll() {
-    // dispatch(dismissAll());
-    notifications.forEach(element => {
-      handleDismiss(element._id)
-    });
-  }
+  // function handleDismissAll() {
+  //   dispatch(dismissAll());
+  //   notifications.forEach(element => {
+  //     handleDismiss(element._id)
+  //   });
+  // }
 
   function demoNotification() {
     const item = NotificationModel({ title: 'Great Job! this is awesome.' });
@@ -159,7 +159,8 @@ function NotificationPanel(props) {
                 key={item.id}
                 className="mb-16"
                 item={item}
-                onClose={handleDismiss}
+                // onClose={handleDismiss}
+                setNotifUpdate={setNotifUpdate}
               />
             ))}
           </div>
@@ -171,11 +172,7 @@ function NotificationPanel(props) {
           </Typography>
         </div>
       )}
-      <div className="flex items-center justify-center py-16">
-        <Button size="small" variant="outlined" onClick={demoNotification}>
-          Create a notification example
-        </Button>
-      </div>
+     
     </StyledSwipeableDrawer>
   );
 }

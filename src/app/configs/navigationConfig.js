@@ -25,7 +25,7 @@ const navigationConfig = [
     type: 'item',
     icon: 'heroicons-outline:home',
     url: 'app/dashboard/',
-    auth: ["Super", "User"]
+    auth: ["Super"]
   },
   {
     id: 'Users-component',
