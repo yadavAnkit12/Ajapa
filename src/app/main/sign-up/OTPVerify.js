@@ -84,7 +84,7 @@ const OTPVerify = ({ data, handleEditClose, countryID, stateID, cityID }) => {
                 formattedData.append('city',  `${cityID}:${data.city}`)
                 formattedData.append('dob', data.dob)
                 formattedData.append('file', data.profilePicture)
-                formattedData.append('isDisciple', data.isDisciple === 'Yes' ? 1 : 0)
+                formattedData.append('isDisciple', data.isDisciple)
 
                 axios.post(`${jwtServiceConfig.signUp}`, formattedData, {
                     headers: {

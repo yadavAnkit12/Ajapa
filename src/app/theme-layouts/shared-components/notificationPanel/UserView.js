@@ -18,6 +18,7 @@ const Transition = forwardRef(function Transition(props, ref) {
 
 
 export default function UserView(props) {
+    console.log(props)
     const dispatch = useDispatch()
     const [userId, setUserId] = React.useState('')
     const [check, setCheck] = React.useState('')
@@ -129,12 +130,18 @@ export default function UserView(props) {
                         </div>
                         <hr />
 
+                        <div className="my-3 mx-4">
+                            <p className='font-bold inline'>Is Disciple: </p>
+                            <span className='font-semibold'>{props.data.isDisciple=== true ? 'Yes':'No'}</span>
+                        </div>
+                        <hr />
+
                         <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                             <Button variant='contained' style={{ backgroundColor: 'green', color: 'white' }} onClick={() => handleDialogOpen(props.data.id, 'Approve')}>
                                 Approve
                             </Button>
-                            <Button variant='contained' style={{ backgroundColor: 'red', color: 'white' }} onClick={() => handleDialogOpen(props.data.id, 'Rejected')}>
-                                Rejected
+                            <Button variant='contained' style={{ backgroundColor: 'red', color: 'white' }} onClick={() => handleDialogOpen(props.data.id, 'Reject')}>
+                                Reject
                             </Button>
 
                             {/* <button
