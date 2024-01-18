@@ -30,7 +30,7 @@ function NotificationCard(props) {
 
   const { item, className,setNotifUpdate } = props;
   const variant = item?.variant || '';
-  const [open, setOpen] = useState(false)
+  const [openModal, setOpenModal] = useState(false)
 
   // const handleClose = (id) => {
   //   if (props.onClose) {
@@ -39,14 +39,14 @@ function NotificationCard(props) {
   // };
 
   const handleView = (item) => {
-    setOpen(true)
+    setOpenModal(true)
   }
   const handleEditClose = () => {
-    console.log("jdfgdjfs")
-    setOpen(false)
+    setOpenModal(false)
   }
 
   return (
+    <>
     <Card
       className={clsx(
         'flex items-center relative w-full rounded-16 p-20 min-h-64 shadow space-x-8',
@@ -109,20 +109,18 @@ function NotificationCard(props) {
         </FuseSvgIcon>
       </IconButton> */}
       {/* {item.country.split(':')[1]} */}
+      </Card>
       <Modal
-       
-        open={open}
+        open={openModal}
         onClose={handleEditClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
-
       >
-      
         <Box sx={style}>
           <UserView data={item} handleEditClose={handleEditClose} setNotifUpdate={setNotifUpdate}/>
         </Box>
       </Modal>
-    </Card>
+      </>
   );
 }
 

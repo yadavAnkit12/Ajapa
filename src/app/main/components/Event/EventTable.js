@@ -30,10 +30,10 @@ const style = {
   boxShadow: 24,
   p: 4,
   borderRadius: '20px',
-  maxWidth: '1300px',
+  maxWidth: '1200px',
   maxHeight: '650px',
   overflow: 'auto',
-  padding: '0'
+  width: 'auto',
 };
 
 const menuItemArray = [
@@ -62,7 +62,7 @@ const menuItemArray = [
 
 
 function EventTable(props) {
-  console.log(props)
+  // console.log(props)
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [eventListData, setEventListData] = useState([]);
@@ -430,10 +430,6 @@ function EventTable(props) {
           <EventView handleViewClose={handleViewClose} viewid={viewid} />
         </Box>
       </Modal>
-
-
-
-
 
     </div>
   );

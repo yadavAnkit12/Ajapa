@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { eventAPIConfig, userAPIConfig } from '../../API/apiConfig';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import UserTableHead from './UserTableHead';
+import UserView from './UserView';
 // import EventView from './EventView';
 
 const Transition = forwardRef(function Transition(props, ref) {
@@ -164,10 +165,11 @@ function UserTable(props) {
   }
 
   function getStatus(id, selectedValue) {
-
+    // console.log("hdvfj",id)
     if (selectedValue === 'view') {
       setOpenView(true)
       setViewId(id)
+
     }
     else if (selectedValue === 'edit') {
       navigate(`/app/useredit/${id}`)
@@ -397,7 +399,7 @@ function UserTable(props) {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          {/* <EventView handleViewClose={handleViewClose} viewid={viewid}/> */}
+          <UserView data={viewid} handleViewClose={handleViewClose}/>
         </Box>
       </Modal>
 

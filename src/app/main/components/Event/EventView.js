@@ -11,9 +11,10 @@ import { showMessage } from 'app/store/fuse/messageSlice';
 import { useDispatch } from 'react-redux';
 import FuseLoading from '@fuse/core/FuseLoading';
 
+
 export default function EventView(props) {
     const dispatch = useDispatch()
-    console.log(props)
+    // console.log(props)
     const [data, setData] = React.useState('')
 
     React.useEffect(() => {
@@ -37,8 +38,6 @@ export default function EventView(props) {
     if(!data){
         return <FuseLoading/>
     }
-
-
 
     return (
         <Card sx={{ maxWidth: 345 }}>
@@ -123,5 +122,6 @@ export default function EventView(props) {
                 </CardContent>
             </CardActionArea>
         </Card>
+    
     );
 }

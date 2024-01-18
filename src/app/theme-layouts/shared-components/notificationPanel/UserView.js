@@ -18,7 +18,7 @@ const Transition = forwardRef(function Transition(props, ref) {
 
 
 export default function UserView(props) {
-    console.log(props)
+    console.log(props.handleEditClose)
     const dispatch = useDispatch()
     const [userId, setUserId] = React.useState('')
     const [check, setCheck] = React.useState('')
@@ -69,7 +69,7 @@ export default function UserView(props) {
 
     return (
         <div>
-            <IconButton onClick={()=>props.handleEditClose} sx={{ position: 'absolute', top: '0', right: '0', justifyContent: 'flex-end', margin: '0 10px' }}>
+            <IconButton onClick={props.handleEditClose} sx={{ position: 'absolute', top: '0', right: '0', justifyContent: 'flex-end', margin: '0 10px' }}>
                 <CloseIcon />
             </IconButton>
             <Card sx={{ maxWidth: 345 }}>
