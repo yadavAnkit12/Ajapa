@@ -9,7 +9,7 @@ import NavLinkAdapter from '@fuse/core/NavLinkAdapter';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import { Modal } from '@mui/material';
 import { useState } from 'react';
-import UserView from './store/UserView';
+import UserView from './UserView';
 import CloseIcon from '@mui/icons-material/Close';
 
 const style = {
@@ -42,8 +42,7 @@ function NotificationCard(props) {
     setOpen(true)
   }
   const handleEditClose = () => {
-    console.log("jdfgdjfs")
-    setOpen(false)
+    setOpen(false);
   }
 
   return (

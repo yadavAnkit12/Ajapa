@@ -10,10 +10,27 @@ import { eventAPIConfig } from '../../API/apiConfig';
 import { showMessage } from 'app/store/fuse/messageSlice';
 import { useDispatch } from 'react-redux';
 import FuseLoading from '@fuse/core/FuseLoading';
+import Box from '@mui/material/Box';
+
+
+const boxStyle  = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    p: 4,
+    borderRadius: '20px',
+    maxWidth: '1200px',
+    maxHeight: '650px',
+    overflow: 'auto',
+    width: 'auto',
+  };
 
 export default function EventView(props) {
     const dispatch = useDispatch()
-    console.log(props)
+    // console.log(props)
     const [data, setData] = React.useState('')
 
     React.useEffect(() => {
@@ -41,11 +58,12 @@ export default function EventView(props) {
 
 
     return (
+        
         <Card sx={{ maxWidth: 345 }}>
             <CardActionArea>
                 <CardMedia
                     component="img"
-                    height="140"
+                    sx={{ width: '100%', height: 'auto' }}
                     image={`${key}/events/${data.eventId}.jpg`}
                     alt="event"
                 />

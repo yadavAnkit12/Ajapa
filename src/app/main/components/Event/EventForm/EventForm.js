@@ -266,8 +266,8 @@ const EventForm = () => {
                         classes={{ root: 'w-full h-64 border-b-1' }}
                     >
 
-                        <Tab className="h-64" label="Phse I" />
-                        <Tab className="h-64" label="Pahse II" />
+                        <Tab className="h-64" label="Phase I" />
+                        <Tab className="h-64" label="Phase II" />
                         <Tab className="h-64" label="Phase III" />
 
                     </Tabs>

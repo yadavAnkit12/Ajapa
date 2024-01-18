@@ -80,7 +80,7 @@ function SignUpPage() {
     state: '',
     city: '',
     profilePicture: null,
-    isDisciple: 'No'
+    isDisciple: 'false'
   };
 
   const validationSchema = yup.object().shape({
@@ -149,10 +149,11 @@ function SignUpPage() {
 
 
   const handleSubmit = (values) => {
+    console.log('Form values:', values);
     if (recaptcha === null) {
       return dispatch(showMessage({ message: 'Please fill all the details', variant: 'error' }));
     }
-
+    
     const formData = new FormData()
     formData.append('email', values.email)
     formData.append('countryCode', values.countryCode)
@@ -528,15 +529,16 @@ function SignUpPage() {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={formik.values.isDisciple === 'Yes'}
-                    onChange={(event) => {
-                      formik.setFieldValue('isDisciple', event.target.checked ? 'Yes' : 'No');
-                    }}
+                  checked={formik.values.isDisciple === 'true'}
+                  onChange={(event) => {
+                    formik.setFieldValue('isDisciple', event.target.checked ? 'true' : 'false');
+                  }}
                     color="primary"
                   />
                 }
                 label="Are you an Ajapa Disciple ?"
               />
+              
               <div>
                 <input
                   type="file"
