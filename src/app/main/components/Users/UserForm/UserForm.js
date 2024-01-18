@@ -11,10 +11,16 @@ import { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import { useDispatch } from 'react-redux';
 import { showMessage } from 'app/store/fuse/messageSlice';
+import useThemeMediaQuery from '@fuse/hooks/useThemeMediaQuery';
 import axios from 'axios';
 import jwtServiceConfig from 'src/app/auth/services/jwtService/jwtServiceConfig';
 import UserFormHead from './UserFormHead';
-
+import { useParams } from 'react-router-dom';
+import { FormProvider } from 'react-hook-form';
+import FusePageCarded from '@fuse/core/FusePageCarded';
+import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
+import { userAPIConfig } from 'src/app/main/API/apiConfig';
 
 const fontStyles = {
     fontFamily:
@@ -33,6 +39,9 @@ const phoneNumberCountryCodes = [
 
 function UserForm() {
     const dispatch = useDispatch()
+    const routeParams = useParams()
+    const [tabValue, setTabValue] = useState(0)
+    const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down('lg'));
     const [showPassword, setShowPassword] = useState(false);
     const [openEdit, setOpenEdit] = useState(false)
     const [countryList, setCountryList] = useState([])
@@ -41,6 +50,7 @@ function UserForm() {
     const [stateID, setStateID] = useState('')
     const [cityList, setCityList] = useState([])
     const [cityID, setCityID] = useState('')
+    const [userId, setUserId] = useState('')
     const initialValues = {
         name: '',
         email: '',
@@ -81,6 +91,22 @@ function UserForm() {
         profilePicture: yup.mixed().required('Please upload your profile picture'),
         isDisciple: yup.string()
     });
+
+    useEffect(() => {
+        const { id } = routeParams;
+        setUserId(id)
+
+        axios.get(`${userAPIConfig.getUserById}/${id}`, {
+            headers: {
+                'Content-type': 'multipart/form-data',
+            },
+        }).then((response) => {
+            console.log(response)
+            if (response.status === 200) {
+            }
+        })
+
+    }, []);
 
     //fetching the country list
     useEffect(() => {
@@ -145,7 +171,9 @@ function UserForm() {
         validationSchema: validationSchema,
         onSubmit: handleSubmit,
     });
-
+    function handleTabChange(event, value) {
+        setTabValue(value);
+    }
 
     return <FormProvider>
         <FusePageCarded
@@ -173,7 +201,8 @@ function UserForm() {
                             <div className={tabValue !== 0 ? 'hidden' : ''}>
                                 <TextField
                                     label="Full Name"
-                                    className='w-full lg:w-5/6 mx-auto'
+                                    sx={{ mb: 2 }}
+                                    className="max-w-md"
                                     name='name'
                                     type="name"
                                     value={formik.values.name}
@@ -184,17 +213,12 @@ function UserForm() {
                                     variant="outlined"
                                     required
                                     fullWidth
-                                    sx={{
-                                        '& .MuiOutlinedInput-root': {
-                                            '& fieldset': {
-                                                borderColor: 'darkslategray',
-                                            },
-                                        },
-                                    }}
+                                
                                 />
 
                                 <TextField
-                                    className="mb-24 w-full lg:w-5/6 mx-auto"
+                                    sx={{ mb: 2 }}
+                                    className="max-w-md"
                                     name='email'
                                     label="Email"
                                     type="email"
@@ -206,16 +230,10 @@ function UserForm() {
                                     variant="outlined"
                                     required
                                     fullWidth
-                                    sx={{
-                                        '& .MuiOutlinedInput-root': {
-                                            '& fieldset': {
-                                                borderColor: 'darkslategray',
-                                            },
-                                        },
-                                    }}
+                                  
                                 />
 
-                                <div className='d-flex w-full lg:w-5/6 mx-auto'>
+                                <div className='d-flex max-w-md'>
                                     <Autocomplete
                                         options={phoneNumberCountryCodes}
                                         value={formik.values.countryCode}
@@ -228,13 +246,6 @@ function UserForm() {
                                                 label="Code"
                                                 variant="outlined"
                                                 required
-                                                sx={{
-                                                    '& .MuiOutlinedInput-root': {
-                                                        '& fieldset': {
-                                                            borderColor: 'darkslategray',
-                                                        },
-                                                    },
-                                                }}
                                                 error={formik.touched.countryCode && Boolean(formik.errors.countryCode)}
                                                 helperText={formik.touched.countryCode && formik.errors.countryCode}
                                             />
@@ -251,24 +262,17 @@ function UserForm() {
                                         variant="outlined"
                                         required
                                         fullWidth
-                                        sx={{
-                                            '& .MuiOutlinedInput-root': {
-                                                '& fieldset': {
-                                                    borderColor: 'darkslategray',
-                                                },
-                                            },
-
-                                        }}
                                     />
                                 </div>
                             </div>
-                            <div className={tabValue !== 0 ? 'hidden' : ''}>
+                            <div className={tabValue !== 1 ? 'hidden' : ''}>
                                 <TextField
                                     name="dob"
                                     label="Date of Birth"
                                     type="date"
                                     InputLabelProps={{ shrink: true }}
-                                    className="w-full lg:w-5/6 mx-auto"
+                                    sx={{ mb: 2 }}
+                                    className="max-w-md"
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     error={formik.touched.dob && Boolean(formik.errors.dob)}
@@ -276,13 +280,6 @@ function UserForm() {
                                     variant="outlined"
                                     required
                                     fullWidth
-                                    sx={{
-                                        '& .MuiOutlinedInput-root': {
-                                            '& fieldset': {
-                                                borderColor: 'darkslategray',
-                                            },
-                                        },
-                                    }}
                                     inputProps={{
                                         max: new Date().toISOString().split('T')[0], // Set max date to current date
                                     }}
@@ -291,20 +288,14 @@ function UserForm() {
                                 <TextField
                                     name='password'
                                     label="Password"
-                                    className="w-full lg:w-5/6 mx-auto"
+                                    sx={{ mb: 2 }}
+                                    className="max-w-md"
                                     type={showPassword ? 'text' : 'password'}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     error={formik.touched.password && Boolean(formik.errors.password)}
                                     helperText={formik.touched.password && formik.errors.password}
                                     variant="outlined"
-                                    sx={{
-                                        '& .MuiOutlinedInput-root': {
-                                            '& fieldset': {
-                                                borderColor: 'darkslategray',
-                                            },
-                                        },
-                                    }}
                                     required
                                     fullWidth
                                     InputProps={{
@@ -322,7 +313,8 @@ function UserForm() {
                                 />
 
                                 <TextField
-                                    className="w-full lg:w-5/6 mx-auto"
+                                   sx={{ mb: 2 }}
+                                   className="max-w-md"
                                     name='passwordConfirm'
                                     label="Confirm Password"
                                     type={showPassword ? 'text' : 'password'}
@@ -333,13 +325,6 @@ function UserForm() {
                                     variant="outlined"
                                     required
                                     fullWidth
-                                    sx={{
-                                        '& .MuiOutlinedInput-root': {
-                                            '& fieldset': {
-                                                borderColor: 'darkslategray',
-                                            },
-                                        },
-                                    }}
                                     InputProps={{
                                         endAdornment: (
                                             <InputAdornment position="end">
@@ -365,16 +350,10 @@ function UserForm() {
                                         <TextField
                                             {...params}
                                             label="Gender"
-                                            className="w-full lg:w-5/6 mx-auto"
+                                            sx={{ mb: 2 }}
+                                    className="max-w-md"
                                             variant="outlined"
                                             required
-                                            sx={{
-                                                '& .MuiOutlinedInput-root': {
-                                                    '& fieldset': {
-                                                        borderColor: 'darkslategray',
-                                                    },
-                                                },
-                                            }}
                                             error={formik.touched.gender && Boolean(formik.errors.gender)}
                                             helperText={formik.touched.gender && formik.errors.gender}
                                             disabled={formik.values.isActive}
@@ -382,7 +361,7 @@ function UserForm() {
                                     )}
                                 />
                             </div>
-                            <div className={tabValue !== 0 ? 'hidden' : ''}>
+                            <div className={tabValue !== 2 ? 'hidden' : ''}>
                                 <Autocomplete
                                     options={countryList.length > 0 ? countryList.map(country => country.name) : []}
                                     fullWidth
@@ -396,16 +375,11 @@ function UserForm() {
                                         <TextField
                                             {...params}
                                             label="Country"
-                                            className="w-full lg:w-5/6 mx-auto"
+                                            sx={{ mb: 2 }}
+                                    className="max-w-md"
                                             variant="outlined"
                                             required
-                                            sx={{
-                                                '& .MuiOutlinedInput-root': {
-                                                    '& fieldset': {
-                                                        borderColor: 'darkslategray',
-                                                    },
-                                                },
-                                            }}
+                                         
                                             error={formik.touched.country && Boolean(formik.errors.country)}
                                             helperText={formik.touched.country && formik.errors.country}
                                         />
@@ -425,15 +399,9 @@ function UserForm() {
                                             {...params}
                                             label="State"
                                             variant="outlined"
-                                            className="w-full lg:w-5/6 mx-auto"
+                                            sx={{ mb: 2 }}
+                                            className="max-w-md"
                                             required
-                                            sx={{
-                                                '& .MuiOutlinedInput-root': {
-                                                    '& fieldset': {
-                                                        borderColor: 'darkslategray',
-                                                    },
-                                                },
-                                            }}
                                             error={formik.touched.state && Boolean(formik.errors.state)}
                                             helperText={formik.touched.state && formik.errors.state}
                                         />
@@ -454,15 +422,9 @@ function UserForm() {
                                             {...params}
                                             label="City"
                                             variant="outlined"
-                                            className="w-full lg:w-5/6 mx-auto"
+                                            sx={{ mb: 2 }}
+                                            className="max-w-md"
                                             required
-                                            sx={{
-                                                '& .MuiOutlinedInput-root': {
-                                                    '& fieldset': {
-                                                        borderColor: 'darkslategray',
-                                                    },
-                                                },
-                                            }}
                                             error={formik.touched.city && Boolean(formik.errors.city)}
                                             helperText={formik.touched.city && formik.errors.city}
                                         />
@@ -488,7 +450,7 @@ function UserForm() {
                                         style={{
                                             fontSize: '1.8rem',
                                             color: '#1a202c',
-                                            padding: '0.75rem',  // Adjust the padding to increase the size
+                                            // padding: '0.75rem',  // Adjust the padding to increase the size
                                             borderRadius: '0.375rem',
                                             cursor: 'pointer',
                                             background: 'transparent',
@@ -496,7 +458,7 @@ function UserForm() {
                                             border: 'none',
                                         }}
                                     />
-                                    <p style={{ fontSize: '10px', padding: '0.75rem' }}>
+                                    <p style={{ fontSize: '10px', padding: '0.75rem 0' }}>
                                         PNG, JPG, or JPEG (Must be a clear image).
                                     </p>
                                 </div>

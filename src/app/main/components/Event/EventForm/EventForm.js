@@ -284,8 +284,8 @@ const EventForm = () => {
                                     onBlur={formik.handleBlur}
                                     error={formik.touched.eventName && Boolean(formik.errors.eventName)}
                                     helperText={formik.touched.eventName && formik.errors.eventName}
-                                    sx={{ mb: 2 }}
                                     required
+                                    sx={{ mb: 2 }}
                                     className="max-w-md"
                                 />
 

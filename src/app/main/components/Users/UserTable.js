@@ -170,7 +170,7 @@ function UserTable(props) {
       setViewId(id)
     }
     else if (selectedValue === 'edit') {
-      navigate(`/app/eventRegisteration/${id}`)
+      navigate(`/app/useredit/${id}`)
     }
     else if (selectedValue === 'delete') {
       setDeleteId(id)
@@ -335,7 +335,7 @@ function UserTable(props) {
                             {menuItemArray.map((value) => (
                               (value.loadIf) && <MenuItem
                                 onClick={() => {
-                                  // getStatus(n.eventId, value.status);
+                                  getStatus(n.id, value.status);
                                   
                                   popupState.close();
                                 }}

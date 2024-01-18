@@ -83,23 +83,24 @@ function UsersHeader(props) {
 
 
     const filterPartnerData = () => {
-        // props.setFilterValue(filterData);
         props.setFilterValue({
             status: filterData.status,
-            country: countryID,
-            state: stateID,
-            city: cityID
-        })
-    }
+            country: countryID !== '' ? `${countryID}:${filterData.country}` : '',
+            state: stateID !== '' ? `${stateID}:${filterData.state}` : '',
+            city: cityID !== '' ? `${cityID}:${filterData.city}` : ''
+        });
+    };
+    
 
     const clearFilters = () => {
-        setFilterData({
+        setFilterData({  
             status: '',
             country: '',
             state: '',
             city: ''
 
         });
+        setCountryID('');
         props.setFilterValue('');
     }
 
