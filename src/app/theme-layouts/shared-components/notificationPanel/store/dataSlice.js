@@ -1,26 +1,36 @@
 import { createAsyncThunk, createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { userAPIConfig } from 'src/app/main/API/apiConfig';
 
 export const getNotifications = createAsyncThunk('notificationPanel/getData', async () => {
-  const response = await axios.get('/api/notifications');
+  const params = {
+    page: 1,
+    rowsPerPage: 200,
+    searchText: '',
+    status: 'Pending',
+    country: 'All',
+    state: 'All',
+    city: 'All'
+  }
+  const response = await axios.get(userAPIConfig.list,{params});
   const data = await response.data;
-
+  console.log("Hhhh",data)
   return data;
 });
 
-export const dismissAll = createAsyncThunk('notificationPanel/dismissAll', async () => {
-  const response = await axios.delete('/api/notifications');
-  await response.data;
+// export const dismissAll = createAsyncThunk('notificationPanel/dismissAll', async () => {
+//   const response = await axios.delete('/api/notifications');
+//   await response.data;
 
-  return true;
-});
+//   return true;
+// });
 
-export const dismissItem = createAsyncThunk('notificationPanel/dismissItem', async (id) => {
-  const response = await axios.delete(`/api/notifications/${id}`);
-  await response.data;
+// export const dismissItem = createAsyncThunk('notificationPanel/dismissItem', async (id) => {
+//   const response = await axios.delete(`/api/notifications/${id}`);
+//   await response.data;
 
-  return id;
-});
+//   return id;
+// });
 
 export const addNotification = createAsyncThunk(
   'notificationPanel/addNotification',
@@ -44,13 +54,13 @@ const dataSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: {
-    [dismissItem.fulfilled]: (state, action) =>
-      notificationsAdapter.removeOne(state, action.payload),
-    [dismissAll.fulfilled]: (state, action) => notificationsAdapter.removeAll(state),
+    // [dismissItem.fulfilled]: (state, action) =>
+    //   notificationsAdapter.removeOne(state, action.payload),
+    // [dismissAll.fulfilled]: (state, action) => notificationsAdapter.removeAll(state),
     [getNotifications.fulfilled]: (state, action) =>
       notificationsAdapter.addMany(state, action.payload),
-    [addNotification.fulfilled]: (state, action) =>
-      notificationsAdapter.addOne(state, action.payload),
+    // [addNotification.fulfilled]: (state, action) =>
+    //   notificationsAdapter.addOne(state, action.payload),
   },
 });
 
