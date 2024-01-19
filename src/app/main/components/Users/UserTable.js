@@ -87,7 +87,7 @@ function UserTable(props) {
   console.log( _.get(props, 'filterValue.country'))
   useEffect(() => {
     fetchData();
-  }, [props?.change, rowsPerPage, page, props?.filterValue]);
+  }, [props?.change, rowsPerPage, page, props?.filterValue,searchText]);
 
   useEffect(() => {
     if (page !== 0) {

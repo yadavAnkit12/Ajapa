@@ -88,7 +88,7 @@ function EventTable(props) {
 
   useEffect(() => {
     fetchData();
-  }, [props?.change, rowsPerPage, page, props?.filterValue]);
+  }, [props?.change, rowsPerPage, page, props?.filterValue,searchText]);
 
   useEffect(() => {
     if (page !== 0) {
