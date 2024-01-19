@@ -116,7 +116,7 @@ const ResetPassword = () => {
                             color="secondary"
                             fullWidth
                             id="confirmPassword"
-                            label="Confirm Password ankit"
+                            label="Confirm Password"
                             value={formik.values.confirmPassword}
                             required
                             onChange={formik.handleChange}
