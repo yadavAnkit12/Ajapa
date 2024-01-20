@@ -361,7 +361,7 @@ function UserTable(props) {
 
       </Table>
 
-      {!searchText && <TablePagination
+      <TablePagination
         className="shrink-0 border-t-1"
         component="div"
         count={userListData.totalElement}
@@ -375,7 +375,7 @@ function UserTable(props) {
         }}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
-      />}
+      />
       <Dialog
         open={open}
         TransitionComponent={Transition}
