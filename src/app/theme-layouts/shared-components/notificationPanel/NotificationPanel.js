@@ -47,30 +47,36 @@ function NotificationPanel(props) {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   useEffect(() => {
-    const params = {
-      page: 1,
-      rowsPerPage: 200,
-      searchText: '',
-      status: 'Pending',
-      country: 'All',
-      state: 'All',
-      city: 'All'
-    }
+    // const params = {
+    //   page: 1,
+    //   rowsPerPage: 200,
+    //   searchText: '',
+    //   status: 'Pending',
+    //   country: 'All',
+    //   state: 'All',
+    //   city: 'All'
+    // }
 
-    axios.get(userAPIConfig.list, { params }, {
-      headers: {
-        'Content-type': 'multipart/form-data',
-        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-      },
-    }).then((response) => {
-      if (response.status === 200) {
-        setNotifications(response.data.data)
-        console.log(response)
+    const fetchNotifications = async () => {
+      const res = await dispatch(getNotifications())
+      console.log("kkk",res.payload.data.length)
+      setNotifications(res.payload.data)
+    };
+    fetchNotifications()
+    // axios.get(userAPIConfig.list, { params }, {
+    //   headers: {
+    //     'Content-type': 'multipart/form-data',
+    //     Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+    //   },
+    // }).then((response) => {
+    //   if (response.status === 200) {
+    //     setNotifications(response.data.data)
+    //     console.log(response)
 
-      } else {
-        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
-      }
-    });
+    //   } else {
+    //     dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
+    //   }
+    // });
 
   }, [notifUpdate]);
 
