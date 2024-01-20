@@ -100,7 +100,10 @@ function SignUpPage() {
       return value <= minAgeDate;
     }),
     countryCode: yup.string().required('select country code').required('required'),
-    mobileNumber: yup.string().matches(/^\d{10}$/, 'Mobile number must be exactly 10 digits').required('Please enter your mobile number'),
+    mobileNumber: yup
+    .string()
+    .matches(/^[1-9]\d{9}$/, 'Invalid mobile number')
+    .required('Please enter your mobile number'),
     country: yup.string().required('Please enter your country'),
     state: yup.string().required('Please enter your state'),
     city: yup.string().required('Please enter your city'),
@@ -296,7 +299,7 @@ function SignUpPage() {
                 <TextField
                   name="mobileNumber"
                   label="Mobile Number"
-                  type="number"
+                  type="text"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   error={formik.touched.mobileNumber && Boolean(formik.errors.mobileNumber)}
@@ -359,6 +362,9 @@ function SignUpPage() {
                 }}
                 required
                 fullWidth
+                inputProps={{
+                  maxLength: 15,
+                }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -391,6 +397,9 @@ function SignUpPage() {
                       borderColor: 'darkslategray', 
                     },
                   },
+                }}
+                inputProps={{
+                  maxLength: 15,
                 }}
                 InputProps={{
                   endAdornment: (
