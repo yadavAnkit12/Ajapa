@@ -4,10 +4,9 @@ import { useDispatch } from "react-redux";
 import * as Yup from 'yup';
 import { showMessage } from "app/store/fuse/messageSlice";
 import FusePageCarded from '@fuse/core/FusePageCarded';
-import { FormProvider } from 'react-hook-form';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
-import { useFormik } from 'formik';
+import { Formik, useFormik } from 'formik';
 import useThemeMediaQuery from '@fuse/hooks/useThemeMediaQuery';
 import { TextField, Autocomplete, Typography } from '@mui/material';
 import { caseAPIConfig, eventAPIConfig } from "src/app/main/API/apiConfig";
@@ -128,43 +127,38 @@ const EventForm = () => {
                 return !/\d/.test(value);
             })
             .required('Event Name is required'),
-
+    
         eventType: Yup.string().required('Event Type is required'),
         eventLocation: Yup.string().required('Event Location is required'),
         eventDate: Yup.date()
             .min(new Date(), 'Event Date must be today or in the future')
             .nullable()
             .required('Event Date is required'),
-
-
-        lockArrivalDate: Yup.date()
+    
+            lockArrivalDate: Yup.date()
             .nullable()
-            .when(['eventDate'], (eventDate, schema) => {
-                return eventDate && schema.nullable().max(eventDate, 'Lock Arrival Date should be on or before Event Date');
+            .test({
+              message: 'Lock Arrival Date should be on or before Event Date',
+              test: function (value) {
+                const { eventDate } = this.parent;
+                return !eventDate || value <= eventDate;
+              }
             }),
-
+    
         lockDepartureDate: Yup.date()
             .nullable()
-            .when(['eventDate'], (eventDate, schema) => {
-                return eventDate && schema.nullable().min(eventDate, 'Lock Departure Date should be on or after Event Date');
-            }),
-        shivirStartDate: Yup.date()
-            .nullable()
-            .when(['lockArrivalDate'], (lockArrivalDate, schema) => {
-                return lockArrivalDate && schema.nullable().max(lockArrivalDate, 'Shivir start date should be on or before lockArrivalDate Date');
-            }),
-
-        shivirEndDate: Yup.date()
-            .nullable()
-            .when(['lockDepartureDate'], (lockDepartureDate, schema) => {
-                return lockDepartureDate && schema.nullable().min(lockDepartureDate, 'Shivir end Date should be on or after lockDepartureDate Date');
-            })
+            .test({
+                message: 'Lock Departure Date should be on or After Event Date',
+                test: function (value) {
+                  const { eventDate } = this.parent;
+                  return !eventDate || value >= eventDate;
+                }
+              }),
     });
-
-
-
+    
 
     const handleSubmit = (values) => {
+        if(formik.isValid){
         const formData = new FormData()
         formData.append('eventName', values.eventName)
         formData.append('eventType', values.eventType)
@@ -187,8 +181,6 @@ const EventForm = () => {
             formData.append('eventId', eventId)
 
         }
-
-
 
         if (values.eventImage !== null) {
             axios.post(eventAPIConfig.createWithImage, formData, {
@@ -223,7 +215,11 @@ const EventForm = () => {
                 }
             }).catch((error) => console.log(error))
         }
+    }else {
+        dispatch(showMessage({ message: "Check Fields", variant: 'error' }));
+    }
     };
+
 
 
     const formik = useFormik({
@@ -250,7 +246,7 @@ const EventForm = () => {
     }
 
 
-    return <FormProvider>
+    return (
         <FusePageCarded
             header={<EventFormHead handleSubmit={handleSubmit} values={formik.values} />}
 
@@ -513,8 +509,8 @@ const EventForm = () => {
             }
             scroll={isMobile ? 'normal' : 'content'}
         />
-
-    </FormProvider>
+        )
+    
 }
 
 export default EventForm
