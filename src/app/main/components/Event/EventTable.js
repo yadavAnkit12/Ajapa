@@ -33,7 +33,6 @@ const style = {
   maxWidth: '1200px',
   maxHeight: '650px',
   overflow: 'auto',
-  width: 'auto',
 };
 
 const menuItemArray = [
