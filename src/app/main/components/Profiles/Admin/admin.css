@@ -56,7 +56,7 @@ body {
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   border-radius: 2px;
-  font-size: .825rem;
+  font-size: 20px;
   background: #ffffff;
   color: #2e323c;
 }
@@ -69,3 +69,11 @@ body {
   border: 0;
   margin-bottom: 1rem;
 }
+
+.labelFont {
+  font-style: normal;
+  font-size: 14px;
+  letter-spacing: 0;
+  font-weight: bold;
+}
+

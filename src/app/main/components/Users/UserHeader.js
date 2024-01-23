@@ -1,4 +1,6 @@
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
+const key = process.env.REACT_APP_URL;
+
 import Autocomplete from '@mui/material/Autocomplete';
 import { Input, Paper, Typography, Modal, Box, Button, TextField } from '@mui/material';
 import { motion } from 'framer-motion';
@@ -8,8 +10,11 @@ import { useState, useEffect } from 'react';
 import { showMessage } from 'app/store/fuse/messageSlice';
 import jwtServiceConfig from 'src/app/auth/services/jwtService/jwtServiceConfig';
 import axios from 'axios';
-
+import { userAPIConfig } from '../../API/apiConfig';
+import { useNavigate } from 'react-router-dom';
 // import VehicleRegisterForm from './VehicleRegisterForm';
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+
 
 const style = {
     position: 'absolute',
@@ -25,8 +30,8 @@ const style = {
     overflow: 'auto'
 };
 function UsersHeader(props) {
-    console.log(props)
     const dispatch = useDispatch();
+    const navigate = useNavigate()
     const [open, setOpen] = useState(false);
     const [filterData, setFilterData] = useState({
         status: 'Approved',
@@ -41,6 +46,7 @@ function UsersHeader(props) {
     const [stateID, setStateID] = useState('')
     const [cityList, setCityList] = useState([])
     const [cityID, setCityID] = useState('')
+
 
     //fetching the country list
     useEffect(() => {
@@ -90,10 +96,10 @@ function UsersHeader(props) {
             city: cityID !== '' ? `${cityID}:${filterData.city}` : ''
         });
     };
-    
+
 
     const clearFilters = () => {
-        setFilterData({  
+        setFilterData({
             status: '',
             country: '',
             state: '',
@@ -111,7 +117,90 @@ function UsersHeader(props) {
     const handleClose = () => {
         setOpen(false);
     };
-console.log(filterData)
+
+    const handleCreateReport = () => {
+        const params = {
+            searchText: props.searchText,
+            status: filterData.status,
+            country: countryID !== '' ? `${countryID}:${filterData.country}` : 'All',
+            state: stateID !== '' ? `${stateID}:${filterData.state}` : 'All',
+            city: cityID !== '' ? `${cityID}:${filterData.city}` : 'All'
+        };
+
+        axios.get(userAPIConfig.userReport, { params }, {
+            headers: {
+                'Content-type': 'multipart/form-data',
+                Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+            },
+        }).then((response) => {
+            console.log(response);
+            if (response.status === 200) {
+                // Extract filename from the URL
+                const urlParts = response.data.fileName.split('/');
+                const fileName = urlParts[urlParts.length - 1];
+
+                const baseUrl = 'http://18.212.201.202:8080/ajapa_yog-0.0.1-SNAPSHOT/reports/';
+                const fullUrl = baseUrl + fileName;
+                const link = document.createElement('a');
+                link.href = fullUrl;
+                link.setAttribute('download', fileName);
+                document.body.appendChild(link);
+
+                // Trigger the download
+                link.click();
+
+                // Remove the link from the DOM after the download
+                document.body.removeChild(link);
+
+            } else {
+                // Handling error
+                dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
+            }
+        });
+
+
+    }
+    const handleCreateReportPDF = () => {
+        const params = {
+            searchText: props.searchText,
+            status: filterData.status,
+            country: countryID !== '' ? `${countryID}:${filterData.country}` : 'All',
+            state: stateID !== '' ? `${stateID}:${filterData.state}` : 'All',
+            city: cityID !== '' ? `${cityID}:${filterData.city}` : 'All'
+        };
+
+        axios.get(userAPIConfig.userReportPDF, { params }, {
+            headers: {
+                'Content-type': 'multipart/form-data',
+                Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+            },
+        }).then((response) => {
+            console.log(response);
+            if (response.status === 200) {
+                // Extract filename from the URL
+                const urlParts = response.data.fileName.split('/');
+                const fileName = urlParts[urlParts.length - 1];
+                const baseUrl = 'http://18.212.201.202:8080/ajapa_yog-0.0.1-SNAPSHOT/reports/';
+                const fullUrl = baseUrl + fileName;
+                
+                // Create a download link
+                const link = document.createElement('a');
+                link.href = fullUrl;
+                link.setAttribute('download', fileName);
+                document.body.appendChild(link);
+                
+                // Trigger the download
+                link.click();
+                
+                // Remove the link from the DOM after the download
+                document.body.removeChild(link);
+                
+            } else {
+                dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
+            }
+        });
+    }
+
     return (
         <>
             <div className="w-full flex flex-col min-h-full">
@@ -210,6 +299,26 @@ console.log(filterData)
                             }}
                             renderInput={(params) => <TextField {...params} label="City" variant="standard" />}
                         />
+                        <Button
+                            // component={Link}
+                            onClick={() => handleCreateReport()}
+                            variant="outlined"
+                            color="secondary"
+                            startIcon={<FileDownloadOutlinedIcon />}
+                            sx={{ my: 2, mx: 1 }}
+                        >
+                            Export Excel
+                        </Button>
+                        <Button
+                            // component={Link}
+                            onClick={() => handleCreateReportPDF()}
+                            variant="outlined"
+                            color="secondary"
+                            startIcon={<FileDownloadOutlinedIcon />}
+                            sx={{ my: 2, mx: 1 }}
+                        >
+                            Export PDF
+                        </Button>
                     </div>
                     <div className="flex flex-row justify-end">
                         <Button

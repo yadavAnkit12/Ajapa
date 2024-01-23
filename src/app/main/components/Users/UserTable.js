@@ -35,29 +35,70 @@ const style = {
   overflow: 'auto'
 };
 
-const menuItemArray = [
-  {
-    key: 1,
-    label: 'View',
-    status: 'view',
-    // visibleIf: ['complete', 'active', 'inactive'],
-    loadIf: true
-  },
-  {
-    key: 1,
-    label: 'Edit',
-    status: 'edit',
-    // visibleIf: ['complete', 'active', 'inactive'],
-    loadIf: true
-  },
-  {
-    key: 1,
-    label: 'Delete',
-    status: 'delete',
-    // visibleIf: ['complete', 'active', 'inactive'],
-    loadIf: true
-  },
-]
+const menuItemArray = (status) => {
+  if (status === 'Approved') {
+    return [
+      {
+        key: 1,
+        label: 'View',
+        status: 'View',
+      },
+      {
+        key: 2,
+        label: 'Edit',
+        status: 'Edit',
+      },
+      {
+        key: 3,
+        label: 'Reject', // Show "Unblock" when isBlocked is true
+        status: 'Rejected', // You can define the status value here
+      },
+    ];
+  } else if (status === 'Rejected') {
+    return [
+      {
+        key: 4,
+        label: 'View',
+        status: 'View',
+      },
+      {
+        key: 5,
+        label: 'Edit',
+        status: 'Edit',
+      },
+      {
+        key: 6,
+        label: 'Approve',
+        status: 'Approved',
+      }
+    ];
+  }
+  else {
+    return [
+      {
+        key: 7,
+        label: 'View',
+        status: 'View',
+      },
+      {
+        key: 8,
+        label: 'Edit',
+        status: 'Edit',
+      },
+      {
+        key: 9,
+        label: 'Approve',
+        status: 'Approved',
+      },
+      {
+        key: 10,
+        label: 'Reject', // Show "Unblock" when isBlocked is true
+        status: 'Rejected', // You can define the status value here
+      },
+
+    ];
+  }
+};
 
 
 function UserTable(props) {
@@ -83,11 +124,11 @@ function UserTable(props) {
   const [change, setChange] = useState(false);
   const [open, setOpen] = useState(false)
   const [deleteId, setDeleteId] = useState('')
+  const [changeStatus, setChangeStatus] = useState('')
 
-  console.log( _.get(props, 'filterValue.country'))
   useEffect(() => {
     fetchData();
-  }, [props?.change, rowsPerPage, page, props?.filterValue,searchText]);
+  }, [props?.change, rowsPerPage, page, props?.filterValue, searchText]);
 
   useEffect(() => {
     if (page !== 0) {
@@ -124,11 +165,11 @@ function UserTable(props) {
       rowsPerPage: rowsPerPage, // Example data to pass in req.query
       searchText: searchText,
       status: _.get(props, 'filterValue') === '' ? 'Approved' : _.get(props, 'filterValue.status'),
-      country: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.country')===''?'All':_.get(props, 'filterValue.country'),
-      state: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.state')===''?'All':_.get(props, 'filterValue.state'),
-      city: _.get(props, 'filterValue') === '' ? 'All' :_.get(props, 'filterValue.city')===''?'All':_.get(props, 'filterValue.city'),
+      country: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.country') === '' ? 'All' : _.get(props, 'filterValue.country'),
+      state: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.state') === '' ? 'All' : _.get(props, 'filterValue.state'),
+      city: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.city') === '' ? 'All' : _.get(props, 'filterValue.city'),
     };
-    console.log('params',params)
+    console.log('params', params)
     axios.get(userAPIConfig.list, { params }, {
       headers: {
         'Content-type': 'multipart/form-data',
@@ -166,16 +207,30 @@ function UserTable(props) {
 
   function getStatus(id, selectedValue) {
     // console.log("hdvfj",id)
-    if (selectedValue === 'view') {
+    if (selectedValue === 'View') {
       setOpenView(true)
       setViewId(id)
 
     }
-    else if (selectedValue === 'edit') {
+    else if (selectedValue === 'Edit') {
       navigate(`/app/useredit/${id}`)
     }
-    else if (selectedValue === 'delete') {
-      setDeleteId(id)
+
+    else if (selectedValue === 'Approved') {
+      setChangeStatus('Approve')
+      setViewId(id)
+      setOpen(true)
+
+    }
+    else if (selectedValue === 'Pending') {
+      setChangeStatus('Pending')
+      setViewId(id)
+      setOpen(true)
+
+    }
+    else if (selectedValue === 'Rejected') {
+      setChangeStatus('Reject')
+      setViewId(id)
       setOpen(true)
 
     }
@@ -186,19 +241,36 @@ function UserTable(props) {
     setOpen(false)
   }
 
-  const deleteEvent = () => {
-    axios.post(`${eventAPIConfig.delete}/${deleteId}`, {
+  const handleChangeStatus = () => {
+      const formData=new FormData()
+      if(changeStatus==='Approve'){
+
+        formData.append('status','Approved')
+      }
+      else if(changeStatus==='Reject'){
+        formData.append('status','Rejected')
+      }
+      else {
+        formData.append('status','Pending')
+      }
+      formData.append('id',viewid)
+    axios.post(userAPIConfig.changeStatus, formData, {
       headers: {
         'Content-type': 'multipart/form-data',
-        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`
       },
     }).then((response) => {
       if (response.status === 200) {
         dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-      } else {
-        dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
+        handleClose()
+        fetchData()
+      
       }
-    }).catch((error) => console.log(error))
+      else {
+        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
+
+      }
+    })
   }
 
   function handleSelectAllClick(event) {
@@ -235,7 +307,7 @@ function UserTable(props) {
       case 'approved':
         return 'green';
       case 'pending':
-        return 'yellow';
+        return '#FFC72C';
       case 'rejected':
         return 'red';
       default:
@@ -266,7 +338,7 @@ function UserTable(props) {
   }
 
   return (
-    <div className="w-full flex flex-col min-h-full">
+    <div className="w-full flex flex-col min-h-full" style={{overflow:'auto'}}>
       <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle" ref={tableRef}>
         <UserTableHead
           selectedProductIds={selected}
@@ -334,11 +406,11 @@ function UserTable(props) {
                           </Button>
                           <Menu {...bindMenu(popupState)}>
 
-                            {menuItemArray.map((value) => (
-                              (value.loadIf) && <MenuItem
+                            {menuItemArray(n.status).map((value) => (
+                              <MenuItem
                                 onClick={() => {
                                   getStatus(n.id, value.status);
-                                  
+
                                   popupState.close();
                                 }}
                                 key={value.key}
@@ -383,11 +455,11 @@ function UserTable(props) {
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>{"Do you want to delete this Event?"}</DialogTitle>
+        <DialogTitle>{`Do you want to ${changeStatus} this User?`}</DialogTitle>
 
         <DialogActions>
           <Button onClick={handleClose}>No</Button>
-          <Button onClick={deleteEvent} autoFocus>
+          <Button onClick={handleChangeStatus} autoFocus>
             Yes
           </Button>
         </DialogActions>
@@ -399,7 +471,7 @@ function UserTable(props) {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <UserView data={viewid} handleViewClose={handleViewClose}/>
+          <UserView data={viewid} handleViewClose={handleViewClose} />
         </Box>
       </Modal>
 

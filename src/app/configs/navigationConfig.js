@@ -37,9 +37,18 @@ const navigationConfig = [
     auth: ["Super"]
   },
   {
+    id: 'app-userevent',
+    title: "User Events",
+    translate: "User Events",
+    type: 'item',
+    icon: 'heroicons-outline:calendar',
+    url:'app/UserEvents/',
+    auth: ["Super", "User"]
+  },
+  {
     id: 'app-event',
-    title: "Event",
-    translate: "Event",
+    title: "Events",
+    translate: "Events",
     type: 'item',
     icon: 'heroicons-outline:calendar',
     url:'app/event/',
@@ -86,7 +95,7 @@ const navigationConfig = [
     translate: "My Profile",
     type: 'item',
     icon: 'heroicons-outline:user-circle',
-    url: 'app/myprofile',
+    url: `apps/profile/${sessionStorage.getItem('id')}`,
     auth: ["Super", "User"]
   },
   {

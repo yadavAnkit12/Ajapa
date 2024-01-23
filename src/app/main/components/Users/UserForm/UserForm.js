@@ -3,7 +3,7 @@ import * as yup from 'yup';
 import _ from '@lodash';
 import 'react-phone-input-2/lib/style.css'
 import InputAdornment from '@mui/material/InputAdornment';
-import { Autocomplete, Checkbox, FormControlLabel} from '@mui/material';
+import { Autocomplete, Checkbox, FormControlLabel } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
@@ -20,7 +20,10 @@ import { FormProvider } from 'react-hook-form';
 import FusePageCarded from '@fuse/core/FusePageCarded';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
+import { useNavigate } from 'react-router-dom';
 import { userAPIConfig } from 'src/app/main/API/apiConfig';
+import FuseLoading from '@fuse/core/FuseLoading';
+import { style } from '@mui/system';
 
 const fontStyles = {
     fontFamily:
@@ -39,41 +42,26 @@ const phoneNumberCountryCodes = [
 
 function UserForm() {
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     const routeParams = useParams()
     const [tabValue, setTabValue] = useState(0)
     const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down('lg'));
     const [showPassword, setShowPassword] = useState(false);
-    const [openEdit, setOpenEdit] = useState(false)
     const [countryList, setCountryList] = useState([])
     const [countryID, setCountryID] = useState('')
     const [stateList, setStateList] = useState([])
     const [stateID, setStateID] = useState('')
     const [cityList, setCityList] = useState([])
     const [cityID, setCityID] = useState('')
-    const [userId, setUserId] = useState('')
-    const initialValues = {
-        name: '',
-        email: '',
-        password: '',
-        passwordConfirm: '',
-        gender: '',
-        dob: null,
-        countryCode: '+91 (IN)',
-        mobileNumber: '',
-        country: '',
-        state: '',
-        city: '',
-        profilePicture: null,
-        isDisciple: 'No'
-    };
+    const [loading, setLoading] = useState(true)
+
 
     const validationSchema = yup.object().shape({
-        name: yup.string().required('Please enter your full name').max(100, 'Full name should be less than 100 chars'),
+        name: yup.string().max(100, 'Full name should be less than 100 chars').required('Please enter your full name'),
         email: yup.string().email('Invalid email address').matches(/^([A-Za-z0-9_\-\.])+\@(?!(?:[A-Za-z0-9_\-\.]+\.)?([A-Za-z]{2,4})\.\2)([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/, 'Invalid email').required('Please enter your email'),
         password: yup
             .string()
-            .required('Please enter your password.')
-            .min(4, 'Password is too short - should be 4 chars minimum'),
+            .min(4, 'Password is too short - should be 4 chars minimum').required('Please enter your password.'),
         passwordConfirm: yup
             .string()
             .oneOf([yup.ref('password'), null], 'Passwords must match'),
@@ -84,29 +72,71 @@ function UserForm() {
             return value <= minAgeDate;
         }),
         countryCode: yup.string().required('select country code').required('required'),
-        mobileNumber: yup.string().matches(/^\d{10}$/, 'Mobile number must be exactly 10 digits').required('Please enter your mobile number'),
+        profilePicture: yup.mixed().nullable()
+        .test('fileType', 'Unsupported file type', (value) => {
+          if (!value) return true; // Allow null values
+          const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+          return allowedTypes.includes(value.type);
+        }),
+        mobileNumber: yup
+            .string()
+            .matches(/^[1-9]\d{9}$/, 'Invalid mobile number')
+            .required('Please enter your mobile number'),
         country: yup.string().required('Please enter your country'),
         state: yup.string().required('Please enter your state'),
         city: yup.string().required('Please enter your city'),
-        profilePicture: yup.mixed().required('Please upload your profile picture'),
-        isDisciple: yup.string()
+        isDisciple: yup.string(),
+        pinCode: yup
+            .string()
+            .matches(/^\d{6}$/, 'Must be a 6-digit PIN code')
     });
 
     useEffect(() => {
         const { id } = routeParams;
-        setUserId(id)
 
         axios.get(`${userAPIConfig.getUserById}/${id}`, {
             headers: {
                 'Content-type': 'multipart/form-data',
             },
         }).then((response) => {
-            console.log(response)
             if (response.status === 200) {
+                formik.setValues({
+                    id: response.data.user.id || '',
+                    familyId: response.data.user.familyId || '',
+                    name: response.data.user.name || '',
+                    email: response.data.user.email || '',
+                    password: response.data.user.password || '',
+                    passwordConfirm: response.data.user.password || '',
+                    gender: response.data.user.gender || '',
+                    dob: response.data.user.dob || '',
+                    role: response.data.user.role || '',
+                    status: response.data.user.status || '',
+                    countryCode: response.data.user.countryCode || '+91 (IN)',
+                    mobileNumber: response.data.user.mobileNumber || '',
+                    country: response.data.user.country.split(':')[1] || '',
+                    state: response.data.user.state.split(':')[1] || '',
+                    city: response.data.user.city.split(':')[1] || '',
+                    profilePicture: null,
+                    isDisciple: response.data.user.isDisciple === true ? 'Yes' : 'No' || 'No',
+                    addressLine: response.data.user.addressLine || '',
+                    bloodGroup: response.data.user.bloodGroup || "",
+                    dikshaDate: response.data.user.dikshaDate || '',
+                    occupation: response.data.user.occupation || '',
+                    pinCode: response.data.user.pinCode || '',
+                    qualification: response.data.user.qualification || '',
+                    whatsAppNumber: response.data.user.whatsAppNumber || ''
+                });
+                setCountryID(response.data.user.country.split(':')[0])
+                setStateID(response.data.user.state.split(':')[0])
+                setCityID(response.data.user.city.split(':')[0])
+                setLoading(false)
             }
         })
 
     }, []);
+
+
+
 
     //fetching the country list
     useEffect(() => {
@@ -149,35 +179,133 @@ function UserForm() {
 
 
     const handleSubmit = (values) => {
+        console.log(formik)
+        if (formik.isValid) {
 
-        axios.post(`${jwtServiceConfig.otpSent}`, formData, {
-            headers: {
-                'Content-type': 'multipart/form-data',
-            },
-        }).then((response) => {
-            if (response.status === 200) {
-                setOpenEdit(true)
+            const formattedData = new FormData()
+            formattedData.append('id', values.id)
+            formattedData.append('familyId', values.familyId)
+            formattedData.append('name', values.name)
+            formattedData.append('email', values.email)
+            formattedData.append('password', values.password)
+            formattedData.append('gender', values.gender)
+            formattedData.append('countryCode', values.countryCode.split(' ')[0])
+            formattedData.append('dob', values.dob)
+            formattedData.append('mobileNumber', values.mobileNumber)
+            formattedData.append('country', `${countryID}:${values.country}`)
+            formattedData.append('state', `${stateID}:${values.state}`)
+            formattedData.append('city', `${cityID}:${values.city}`)
+            formattedData.append('addressLine', values.addressLine)
+            formattedData.append('bloodGroup', values.bloodGroup)
+            formattedData.append('dikshaDate', values.dikshaDate)
+            formattedData.append('occupation', values.occupation)
+            formattedData.append('status', values.status)
+            formattedData.append('role', values.role)
+            formattedData.append('pinCode', values.pinCode)
+            formattedData.append('qualification', values.qualification)
+            formattedData.append('whatsAppNumber', values.whatsAppNumber)
+            formattedData.append('isDisciple', values.isDisciple === 'Yes' ? true : false)
+            if (values.profilePicture !== null) {
+
+                formattedData.append('file', values.profilePicture)
+                axios.post(`${userAPIConfig.updateUserWithImage}`, formattedData, {
+                    headers: {
+                        'Content-type': 'multipart/form-data',
+                        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+                    },
+                }).then((response) => {
+                    console.log(response)
+                    if (response.status === 200) {
+                        dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+                        // this is beacuse suppose if super admin update the profile of user 
+                        if (sessionStorage.getItem('id') === values.id) {
+                            navigate(`apps/profile/${sessionStorage.getItem('id')}`)
+                        }
+                        else {
+
+                            navigate('/app/users/')
+                        }
+                    }
+                    else {
+                        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
+                    }
+                }).catch((error) => console.log(error))
             }
             else {
-                dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
+                axios.post(`${userAPIConfig.updateUser}`, formattedData, {
+                    headers: {
+                        'Content-type': 'multipart/form-data',
+                        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+                    },
+                }).then((response) => {
+                    console.log(response)
+                    if (response.status === 200) {
+                        dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+                        // this is beacuse suppose if super admin update the profile of user 
+                        if (sessionStorage.getItem('id') === values.id) {
+                            navigate(`apps/profile/${sessionStorage.getItem('id')}`)
+                        }
+                        else {
+
+                            navigate('/app/users/')
+                        }
+                    }
+                    else {
+                        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
+                    }
+                }).catch((error) => console.log(error))
             }
-        }).catch((error) => console.log(error))
+
+        }
+        else {
+            dispatch(showMessage({ message: 'Please check the mandatory fields', variant: 'error' }));
+        }
+
 
     }
 
 
     const formik = useFormik({
-        initialValues: initialValues,
+        initialValues: {
+            id: '',
+            familyId: '',
+            name: '',
+            email: '',
+            password: '',
+            passwordConfirm: '',
+            gender: '',
+            dob: null,
+            role: '',
+            status: '',
+            countryCode: '+91 (IN)',
+            mobileNumber: '',
+            country: '',
+            state: '',
+            city: '',
+            profilePicture: null,
+            isDisciple: 'No',
+            addressLine: '',
+            bloodGroup: "",
+            dikshaDate: '',
+            occupation: '',
+            pinCode: '',
+            qualification: '',
+            whatsAppNumber: ''
+        },
         validationSchema: validationSchema,
         onSubmit: handleSubmit,
     });
+
+    if (!formik.values.id) {
+        return <FuseLoading />
+    }
     function handleTabChange(event, value) {
         setTabValue(value);
     }
 
     return <FormProvider>
         <FusePageCarded
-            header={<UserFormHead handleSubmit={handleSubmit} values={formik.values} />}
+            header={<UserFormHead handleSubmit={handleSubmit} values={formik.values} formik={formik} />}
 
             content={
                 <>
@@ -191,9 +319,10 @@ function UserForm() {
                         classes={{ root: 'w-full h-64 border-b-1' }}
                     >
 
-                        <Tab className="h-64" label="Phse I" />
-                        <Tab className="h-64" label="Pahse II" />
+                        <Tab className="h-64" label="Phase I" />
+                        <Tab className="h-64" label="Phase II" />
                         <Tab className="h-64" label="Phase III" />
+                        <Tab className="h-64" label="Phase IV" />
 
                     </Tabs>
                     <div className="p-16 sm:p-24 w-full">
@@ -213,7 +342,7 @@ function UserForm() {
                                     variant="outlined"
                                     required
                                     fullWidth
-                                
+
                                 />
 
                                 <TextField
@@ -230,7 +359,7 @@ function UserForm() {
                                     variant="outlined"
                                     required
                                     fullWidth
-                                  
+
                                 />
 
                                 <div className='d-flex max-w-md'>
@@ -245,6 +374,7 @@ function UserForm() {
                                                 {...params}
                                                 label="Code"
                                                 variant="outlined"
+                                                sx={{ mb: 2 }}
                                                 required
                                                 error={formik.touched.countryCode && Boolean(formik.errors.countryCode)}
                                                 helperText={formik.touched.countryCode && formik.errors.countryCode}
@@ -257,15 +387,16 @@ function UserForm() {
                                         type="number"
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
+                                        value={formik.values.mobileNumber}
                                         error={formik.touched.mobileNumber && Boolean(formik.errors.mobileNumber)}
                                         helperText={formik.touched.mobileNumber && formik.errors.mobileNumber}
                                         variant="outlined"
                                         required
                                         fullWidth
+                                        sx={{ mb: 2 }}
                                     />
+
                                 </div>
-                            </div>
-                            <div className={tabValue !== 1 ? 'hidden' : ''}>
                                 <TextField
                                     name="dob"
                                     label="Date of Birth"
@@ -275,67 +406,14 @@ function UserForm() {
                                     className="max-w-md"
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
+                                    value={formik.values.dob}
                                     error={formik.touched.dob && Boolean(formik.errors.dob)}
                                     helperText={formik.touched.dob && formik.errors.dob}
                                     variant="outlined"
                                     required
                                     fullWidth
                                     inputProps={{
-                                        max: new Date().toISOString().split('T')[0], // Set max date to current date
-                                    }}
-                                />
-
-                                <TextField
-                                    name='password'
-                                    label="Password"
-                                    sx={{ mb: 2 }}
-                                    className="max-w-md"
-                                    type={showPassword ? 'text' : 'password'}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    error={formik.touched.password && Boolean(formik.errors.password)}
-                                    helperText={formik.touched.password && formik.errors.password}
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position="end">
-                                                <IconButton
-                                                    onClick={() => setShowPassword(!showPassword)}
-                                                    edge="end"
-                                                >
-                                                    {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
-                                                </IconButton>
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                />
-
-                                <TextField
-                                   sx={{ mb: 2 }}
-                                   className="max-w-md"
-                                    name='passwordConfirm'
-                                    label="Confirm Password"
-                                    type={showPassword ? 'text' : 'password'}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    error={formik.touched.passwordConfirm && Boolean(formik.errors.passwordConfirm)}
-                                    helperText={formik.touched.passwordConfirm && formik.errors.passwordConfirm}
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position="end">
-                                                <IconButton
-                                                    onClick={() => setShowPassword(!showPassword)}
-                                                    edge="end"
-                                                >
-                                                    {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
-                                                </IconButton>
-                                            </InputAdornment>
-                                        ),
+                                        max: new Date().toISOString().split('T')[0], // Set max date to the current date
                                     }}
                                 />
 
@@ -351,7 +429,7 @@ function UserForm() {
                                             {...params}
                                             label="Gender"
                                             sx={{ mb: 2 }}
-                                    className="max-w-md"
+                                            className="max-w-md"
                                             variant="outlined"
                                             required
                                             error={formik.touched.gender && Boolean(formik.errors.gender)}
@@ -360,8 +438,26 @@ function UserForm() {
                                         />
                                     )}
                                 />
+
+
+
                             </div>
-                            <div className={tabValue !== 2 ? 'hidden' : ''}>
+                            <div className={tabValue !== 1 ? 'hidden' : ''}>
+                                <TextField
+                                    label="Pin Code"
+                                    sx={{ mb: 2 }}
+                                    className="max-w-md"
+                                    name="pinCode"
+                                    type="text"
+                                    value={formik.values.pinCode}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    error={formik.touched.pinCode && Boolean(formik.errors.pinCode)}
+                                    helperText={formik.touched.pinCode && formik.errors.pinCode}
+                                    variant="outlined"
+                                    fullWidth
+                                />
+
                                 <Autocomplete
                                     options={countryList.length > 0 ? countryList.map(country => country.name) : []}
                                     fullWidth
@@ -376,10 +472,10 @@ function UserForm() {
                                             {...params}
                                             label="Country"
                                             sx={{ mb: 2 }}
-                                    className="max-w-md"
+                                            className="max-w-md"
                                             variant="outlined"
                                             required
-                                         
+
                                             error={formik.touched.country && Boolean(formik.errors.country)}
                                             helperText={formik.touched.country && formik.errors.country}
                                         />
@@ -430,18 +526,80 @@ function UserForm() {
                                         />
                                     )}
                                 />
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={formik.values.isDisciple === 'Yes'}
-                                            onChange={(event) => {
-                                                formik.setFieldValue('isDisciple', event.target.checked ? 'Yes' : 'No');
-                                            }}
-                                            color="primary"
-                                        />
-                                    }
-                                    label="Are you an Ajapa Disciple ?"
+
+                            </div>
+                            <div className={tabValue !== 2 ? 'hidden' : ''}>
+                                <TextField
+                                    name='password'
+                                    label="Password"
+                                    sx={{ mb: 2 }}
+                                    className="max-w-md"
+                                    type={showPassword ? 'text' : 'password'}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    value={formik.values.password}
+                                    error={formik.touched.password && Boolean(formik.errors.password)}
+                                    helperText={formik.touched.password && formik.errors.password}
+                                    variant="outlined"
+                                    required
+                                    fullWidth
+                                    InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    onClick={() => setShowPassword(!showPassword)}
+                                                    edge="end"
+                                                >
+                                                    {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        ),
+                                    }}
                                 />
+
+                                <TextField
+                                    sx={{ mb: 2 }}
+                                    className="max-w-md"
+                                    name='passwordConfirm'
+                                    label="Confirm Password"
+                                    type={showPassword ? 'text' : 'password'}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    value={formik.values.passwordConfirm}
+                                    error={formik.touched.passwordConfirm && Boolean(formik.errors.passwordConfirm)}
+                                    helperText={formik.touched.passwordConfirm && formik.errors.passwordConfirm}
+                                    variant="outlined"
+                                    required
+                                    fullWidth
+                                    InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    onClick={() => setShowPassword(!showPassword)}
+                                                    edge="end"
+                                                >
+                                                    {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        ),
+                                    }}
+                                />
+
+
+                                <div style={{ marginBottom: '16px' }}>
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={formik.values.isDisciple === 'Yes'}
+                                                onChange={(event) => {
+                                                    formik.setFieldValue('isDisciple', event.target.checked ? 'Yes' : 'No');
+                                                }}
+                                                color="primary"
+                                            />
+                                        }
+                                        label="Are you an Ajapa Disciple ?"
+                                    />
+                                </div>
                                 <div>
                                     <input
                                         type="file"
@@ -458,10 +616,114 @@ function UserForm() {
                                             border: 'none',
                                         }}
                                     />
+                                    {formik.touched.profilePicture && formik.errors.profilePicture && (
+                                        <p style={{ fontSize: '12px', padding: '0.75rem', color: 'red' }}>
+                                            {formik.errors.profilePicture}
+                                        </p>
+                                    )}
                                     <p style={{ fontSize: '10px', padding: '0.75rem 0' }}>
                                         PNG, JPG, or JPEG (Must be a clear image).
                                     </p>
                                 </div>
+                            </div>
+                            <div className={tabValue !== 3 ? 'hidden' : ''}>
+                                <TextField
+                                    label="Address Line"
+                                    sx={{ mb: 2 }}
+                                    className="max-w-md"
+                                    name="addressLine"
+                                    type="text"
+                                    value={formik.values.addressLine}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    error={formik.touched.addressLine && Boolean(formik.errors.addressLine)}
+                                    helperText={formik.touched.addressLine && formik.errors.addressLine}
+                                    variant="outlined"
+                                    fullWidth
+                                    multiline
+                                    rows={3}  // Set the number of rows you want
+                                />
+                                <Autocomplete
+                                    options={['A+', 'B+', 'AB+', 'O+', 'A-', 'B-', 'AB-', 'O-']}
+                                    getOptionLabel={(option) => option}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Blood Group"
+                                            sx={{ mb: 2 }}
+                                            className="max-w-md"
+                                            name="bloodGroup"
+                                            value={formik.values.bloodGroup}
+                                            onChange={(event, value) => formik.setFieldValue('bloodGroup', value)}
+                                            onBlur={formik.handleBlur}
+                                            error={formik.touched.bloodGroup && Boolean(formik.errors.bloodGroup)}
+                                            helperText={formik.touched.bloodGroup && formik.errors.bloodGroup}
+                                            variant="outlined"
+                                            fullWidth
+                                        />
+                                    )}
+                                />
+
+                                <TextField
+                                    label="Diksha Date"
+                                    sx={{ mb: 2 }}
+                                    className="max-w-md"
+                                    name="dikshaDate"
+                                    type="date"
+                                    InputLabelProps={{ shrink: true }}
+                                    value={formik.values.dikshaDate}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    error={formik.touched.dikshaDate && Boolean(formik.errors.dikshaDate)}
+                                    helperText={formik.touched.dikshaDate && formik.errors.dikshaDate}
+                                    variant="outlined"
+                                    fullWidth
+                                />
+                                <TextField
+                                    label="Occupation"
+                                    sx={{ mb: 2 }}
+                                    className="max-w-md"
+                                    name="occupation"
+                                    type="text"
+                                    value={formik.values.occupation}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    error={formik.touched.occupation && Boolean(formik.errors.occupation)}
+                                    helperText={formik.touched.occupation && formik.errors.occupation}
+                                    variant="outlined"
+                                    fullWidth
+                                />
+
+                                <TextField
+                                    label="Qualification"
+                                    sx={{ mb: 2 }}
+                                    className="max-w-md"
+                                    name="qualification"
+                                    type="text"
+                                    value={formik.values.qualification}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    error={formik.touched.qualification && Boolean(formik.errors.qualification)}
+                                    helperText={formik.touched.qualification && formik.errors.qualification}
+                                    variant="outlined"
+                                    fullWidth
+                                />
+
+                                <TextField
+                                    label="WhatsApp Number"
+                                    sx={{ mb: 2 }}
+                                    className="max-w-md"
+                                    name="whatsAppNumber"
+                                    type="text"
+                                    value={formik.values.whatsAppNumber}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    error={formik.touched.whatsAppNumber && Boolean(formik.errors.whatsAppNumber)}
+                                    helperText={formik.touched.whatsAppNumber && formik.errors.whatsAppNumber}
+                                    variant="outlined"
+                                    fullWidth
+                                />
+
                             </div>
                         </form>
                     </div>

@@ -37,7 +37,7 @@ export default function UserView(props) {
 
     const handleApproveReject = () => {
         const formData = new FormData()
-        if (check === 'Approved') {
+        if (check === 'Approve') {
 
             formData.append('status', 'Approved')
         }
@@ -137,7 +137,7 @@ export default function UserView(props) {
                         <hr />
 
                         <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                            <Button variant='contained' style={{ backgroundColor: 'green', color: 'white' }} onClick={() => handleDialogOpen(props.data.id, 'Approved')}>
+                            <Button variant='contained' style={{ backgroundColor: 'green', color: 'white' }} onClick={() => handleDialogOpen(props.data.id, 'Approve')}>
                                 Approve
                             </Button>
                             <Button variant='contained' style={{ backgroundColor: 'red', color: 'white' }} onClick={() => handleDialogOpen(props.data.id, 'Reject')}>

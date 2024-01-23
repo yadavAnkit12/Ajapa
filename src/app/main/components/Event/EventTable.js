@@ -290,7 +290,7 @@ function EventTable(props) {
   }
 
   return (
-    <div className="w-full flex flex-col min-h-full">
+    <div className="w-full flex flex-col min-h-full" style={{overflow:'auto'}}>
       <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle" ref={tableRef}>
         <EventTableHead
           selectedProductIds={selected}
