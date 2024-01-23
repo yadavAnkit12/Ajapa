@@ -5,7 +5,11 @@ export const userAPIConfig = {
     profileUpdate: key +'/api/user/edit',
     list:key+'/user/list',
     changeStatus:key+'/changeStatus',
-    getUserById:key+'/getUser'
+    getUserById:key+'/getUser',
+    updateUser:key + '/updateUser',
+    updateUserWithImage: key + '/updateUserWithImage',
+    userReport:key + "/report/user/list",
+    userReportPDF: key + "/reportPdf/user/list"
 }
 export const eventAPIConfig = {
     create: key + '/saveEvent',

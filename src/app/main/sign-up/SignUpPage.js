@@ -80,7 +80,7 @@ function SignUpPage() {
     state: '',
     city: '',
     profilePicture: null,
-    isDisciple: 'false' 
+    isDisciple: 'false'
   };
 
   const validationSchema = yup.object().shape({
@@ -101,13 +101,18 @@ function SignUpPage() {
     }),
     countryCode: yup.string().required('select country code').required('required'),
     mobileNumber: yup
-    .string()
-    .matches(/^[1-9]\d{9}$/, 'Invalid mobile number')
-    .required('Please enter your mobile number'),
+      .string()
+      .matches(/^[1-9]\d{9}$/, 'Invalid mobile number')
+      .required('Please enter your mobile number'),
     country: yup.string().required('Please enter your country'),
     state: yup.string().required('Please enter your state'),
     city: yup.string().required('Please enter your city'),
-    profilePicture: yup.mixed().required('Please upload your profile picture'),
+    profilePicture: yup.mixed()
+      .test('fileType', 'Unsupported file type', (value) => {
+        if (!value) return true;
+        const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+        return allowedTypes.includes(value.type);
+      }).required('Image is required'),
     isDisciple: yup.string()
   });
 
@@ -152,7 +157,7 @@ function SignUpPage() {
 
 
   const handleSubmit = (values) => {
-    console.log("ghjk",values)
+    console.log("ghjk", values)
     if (recaptcha === null) {
       return dispatch(showMessage({ message: 'Please fill all the details', variant: 'error' }));
     }
@@ -168,10 +173,10 @@ function SignUpPage() {
       if (response.status === 200) {
         setOpenEdit(true)
       }
-      else{
+      else {
         dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
       }
-    }).catch((error)=>console.log(error))
+    }).catch((error) => console.log(error))
 
   }
 
@@ -194,24 +199,24 @@ function SignUpPage() {
           <img style={{ width: '150px' }} src="assets/images/logo/logo.png" alt="logo" />
         </div>
 
-        <h3 style={{fontStyle:'normal',fontSize:'24px',lineHeight:'28px',letterSpacing:'0px',textAlign:'center',fontWeight:'bold'}}>
+        <h3 style={{ fontStyle: 'normal', fontSize: '24px', lineHeight: '28px', letterSpacing: '0px', textAlign: 'center', fontWeight: 'bold' }}>
           Register: Head Of The Family
         </h3>
         <div className="flex items-baseline mt-2 font-medium justify-content-center">
-          <Typography className="text-lg"   style={{
-                // fontFamily: "BentonSans bold",
-                fontStyle: 'normal', fontSize: '16px',
-                lineHeight: '28px', letterSpacing: '0px',
-                textAlign: 'center', fontWeight: 600,
-                marginTop: '5px'
-              }}>Already have an account?</Typography>
+          <Typography className="text-lg" style={{
+            // fontFamily: "BentonSans bold",
+            fontStyle: 'normal', fontSize: '16px',
+            lineHeight: '28px', letterSpacing: '0px',
+            textAlign: 'center', fontWeight: 600,
+            marginTop: '5px'
+          }}>Already have an account?</Typography>
           <Link className="ml-4" to="/sign-in" style={{
-                // fontFamily: "BentonSans bold",
-                fontStyle: 'normal', fontSize: '16px',
-                lineHeight: '28px', letterSpacing: '0px',
-                textAlign: 'center', fontWeight: 400,
-                marginTop: '5px'
-              }}>
+            // fontFamily: "BentonSans bold",
+            fontStyle: 'normal', fontSize: '16px',
+            lineHeight: '28px', letterSpacing: '0px',
+            textAlign: 'center', fontWeight: 400,
+            marginTop: '5px'
+          }}>
             Sign in
           </Link>
 
@@ -240,10 +245,10 @@ function SignUpPage() {
                 variant="outlined"
                 required
                 fullWidth
-                sx={{                              
+                sx={{
                   '& .MuiOutlinedInput-root': {
                     '& fieldset': {
-                      borderColor: 'darkslategray', 
+                      borderColor: 'darkslategray',
                     },
                   },
                 }}
@@ -262,10 +267,10 @@ function SignUpPage() {
                 variant="outlined"
                 required
                 fullWidth
-                sx={{                              
+                sx={{
                   '& .MuiOutlinedInput-root': {
                     '& fieldset': {
-                      borderColor: 'darkslategray', 
+                      borderColor: 'darkslategray',
                     },
                   },
                 }}
@@ -284,10 +289,10 @@ function SignUpPage() {
                       label="Code"
                       variant="outlined"
                       required
-                      sx={{                              
+                      sx={{
                         '& .MuiOutlinedInput-root': {
                           '& fieldset': {
-                            borderColor: 'darkslategray', 
+                            borderColor: 'darkslategray',
                           },
                         },
                       }}
@@ -307,13 +312,13 @@ function SignUpPage() {
                   variant="outlined"
                   required
                   fullWidth
-                  sx={{                              
+                  sx={{
                     '& .MuiOutlinedInput-root': {
                       '& fieldset': {
-                        borderColor: 'darkslategray', 
+                        borderColor: 'darkslategray',
                       },
                     },
-                    
+
                   }}
                 />
               </div>
@@ -331,10 +336,10 @@ function SignUpPage() {
                 variant="outlined"
                 required
                 fullWidth
-                sx={{                              
+                sx={{
                   '& .MuiOutlinedInput-root': {
                     '& fieldset': {
-                      borderColor: 'darkslategray', 
+                      borderColor: 'darkslategray',
                     },
                   },
                 }}
@@ -353,10 +358,10 @@ function SignUpPage() {
                 error={formik.touched.password && Boolean(formik.errors.password)}
                 helperText={formik.touched.password && formik.errors.password}
                 variant="outlined"
-                sx={{                              
+                sx={{
                   '& .MuiOutlinedInput-root': {
                     '& fieldset': {
-                      borderColor: 'darkslategray', 
+                      borderColor: 'darkslategray',
                     },
                   },
                 }}
@@ -391,10 +396,10 @@ function SignUpPage() {
                 variant="outlined"
                 required
                 fullWidth
-                sx={{                              
+                sx={{
                   '& .MuiOutlinedInput-root': {
                     '& fieldset': {
-                      borderColor: 'darkslategray', 
+                      borderColor: 'darkslategray',
                     },
                   },
                 }}
@@ -435,10 +440,10 @@ function SignUpPage() {
                     className="w-full lg:w-5/6 mx-auto"
                     variant="outlined"
                     required
-                    sx={{                              
+                    sx={{
                       '& .MuiOutlinedInput-root': {
                         '& fieldset': {
-                          borderColor: 'darkslategray', 
+                          borderColor: 'darkslategray',
                         },
                       },
                     }}
@@ -465,10 +470,10 @@ function SignUpPage() {
                     className="w-full lg:w-5/6 mx-auto"
                     variant="outlined"
                     required
-                    sx={{                              
+                    sx={{
                       '& .MuiOutlinedInput-root': {
                         '& fieldset': {
-                          borderColor: 'darkslategray', 
+                          borderColor: 'darkslategray',
                         },
                       },
                     }}
@@ -493,10 +498,10 @@ function SignUpPage() {
                     variant="outlined"
                     className="w-full lg:w-5/6 mx-auto"
                     required
-                    sx={{                              
+                    sx={{
                       '& .MuiOutlinedInput-root': {
                         '& fieldset': {
-                          borderColor: 'darkslategray', 
+                          borderColor: 'darkslategray',
                         },
                       },
                     }}
@@ -522,10 +527,10 @@ function SignUpPage() {
                     variant="outlined"
                     className="w-full lg:w-5/6 mx-auto"
                     required
-                    sx={{                              
+                    sx={{
                       '& .MuiOutlinedInput-root': {
                         '& fieldset': {
-                          borderColor: 'darkslategray', 
+                          borderColor: 'darkslategray',
                         },
                       },
                     }}
@@ -537,16 +542,16 @@ function SignUpPage() {
               <FormControlLabel
                 control={
                   <Checkbox
-                  checked={formik.values.isDisciple === 'true'}
-                  onChange={(event) => {
-                    formik.setFieldValue('isDisciple', event.target.checked ? 'true' : 'false');
-                  }}
+                    checked={formik.values.isDisciple === 'true'}
+                    onChange={(event) => {
+                      formik.setFieldValue('isDisciple', event.target.checked ? 'true' : 'false');
+                    }}
                     color="primary"
                   />
                 }
                 label="Are you an Ajapa Disciple ?"
               />
-              
+
               <div>
                 <input
                   type="file"
@@ -563,6 +568,11 @@ function SignUpPage() {
                     border: 'none',
                   }}
                 />
+                {formik.touched.profilePicture && formik.errors.profilePicture && (
+                  <p style={{ fontSize: '12px', padding: '0.75rem', color: 'red' }}>
+                    {formik.errors.profilePicture}
+                  </p>
+                )}      
                 <p style={{ fontSize: '10px', padding: '0.75rem' }}>
                   PNG, JPG, or JPEG (Must be a clear image).
                 </p>
@@ -586,7 +596,7 @@ function SignUpPage() {
               aria-label="Register"
               onClick={formik.handleSubmit}
               size="large"
-              style={{ margin: '0 auto' ,backgroundColor: '#792b00' }}
+              style={{ margin: '0 auto', backgroundColor: '#792b00' }}
             >
               Create account
             </Button>

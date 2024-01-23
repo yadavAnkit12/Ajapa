@@ -19,6 +19,7 @@ class JwtService extends FuseUtils.EventEmitter {
         return response;
       },
       (err) => {
+        console.log(err)
         if (err.response.status === 401) {
           return new Promise((resolve, reject) => {
             this.emit('invalidValue', err.response.data.error_message);

@@ -6,6 +6,7 @@ import { useTheme } from '@mui/material/styles';
 
 
 function UserFormHead(props) {
+    console.log(props.formik)
     const theme = useTheme()
     return <>
         <div className="flex flex-col sm:flex-row flex-1 w-full items-center justify-between space-y-8 sm:space-y-0 py-32 px-24 md:px-32">
@@ -24,7 +25,7 @@ function UserFormHead(props) {
                         delay={300}
                         style={{fontStyle:'normal',fontSize:'24px',lineHeight:'28px',letterSpacing:'0px',textAlign:'center',fontWeight:'bold'}}
                     >
-                        User Updation
+                        Profile Updation
                     </Typography>
                 </div>
             </div>
@@ -39,7 +40,9 @@ function UserFormHead(props) {
                     variant="contained"
                     color="secondary"
                     // disabled={props?.disabled}
-                    onClick={() => props.handleSubmit(props.values)}
+                    onClick={() => {
+                        props.handleSubmit(props.values)
+                    }}
                 >
                     Save
                 </Button>
