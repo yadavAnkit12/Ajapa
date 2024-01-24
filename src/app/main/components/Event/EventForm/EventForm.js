@@ -141,7 +141,7 @@ const EventForm = () => {
               message: 'Lock Arrival Date should be on or before Event Date',
               test: function (value) {
                 const { eventDate } = this.parent;
-                return !eventDate || value <= eventDate;
+                return !eventDate || !value || value <= eventDate;
               }
             }),
     
@@ -151,13 +151,31 @@ const EventForm = () => {
                 message: 'Lock Departure Date should be on or After Event Date',
                 test: function (value) {
                   const { eventDate } = this.parent;
-                  return !eventDate || value >= eventDate;
+                  return !eventDate || !value || value >= eventDate;
                 }
               }),
+       
+        eventImage: Yup.mixed().nullable()
+        .test('fileType', 'Unsupported file type', (value) => {
+          if (!value) return true; // Allow null values
+          const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+          return allowedTypes.includes(value.type);
+        }),
     });
     
 
     const handleSubmit = (values) => {
+
+        //Check for lock dates 
+        if (values.eventType === 'Offline' && !values.lockArrivalDate) {
+            dispatch(showMessage({ message: "Lock Arrival Date is required for offline events", variant: 'error' }));
+            return;
+        }
+      
+        if (values.eventType === 'Offline' && !values.lockDepartureDate) {
+            dispatch(showMessage({ message: "Lock Departure Date is required for offline events", variant: 'error' }));
+            return;
+        }
         if(formik.isValid){
         const formData = new FormData()
         formData.append('eventName', values.eventName)
@@ -194,7 +212,7 @@ const EventForm = () => {
                     formik.resetForm();
                     navigate('/app/event')
                 } else {
-                    dispatch(showMessage({ message: response.data.errorMekssage, variant: 'error' }));
+                    dispatch(showMessage({ message: response.data.errormessage, variant: 'error' }));
                 }
             })
 
@@ -216,7 +234,7 @@ const EventForm = () => {
             }).catch((error) => console.log(error))
         }
     }else {
-        dispatch(showMessage({ message: "Check Fields", variant: 'error' }));
+        dispatch(showMessage({ message: "Please fill the required fields ", variant: 'error' }));
     }
     };
 
@@ -354,11 +372,11 @@ const EventForm = () => {
                                     )}
                                 />
                                 <TextField
+                                    value={formik.values.eventDate}
                                     fullWidth
                                     name="eventDate"
                                     label="Event Date"
                                     type="date" // Assuming eventDate is a date input, adjust type as needed
-                                    value={formik.values.eventDate}
                                     onChange={formik.handleChange}
                                     InputLabelProps={{ shrink: true }}
                                     onBlur={formik.handleBlur}

@@ -182,18 +182,21 @@ function UsersHeader(props) {
                 const fileName = urlParts[urlParts.length - 1];
                 const baseUrl = 'http://18.212.201.202:8080/ajapa_yog-0.0.1-SNAPSHOT/reports/';
                 const fullUrl = baseUrl + fileName;
+
+                 // Create a new tab and open the link in it
+                const newTab = window.open(fullUrl, '_blank');
                 
                 // Create a download link
-                const link = document.createElement('a');
-                link.href = fullUrl;
-                link.setAttribute('download', fileName);
-                document.body.appendChild(link);
+                // const link = document.createElement('a');
+                // link.href = fullUrl;
+                // link.setAttribute('download', fileName);
+                // document.body.appendChild(link);
                 
-                // Trigger the download
-                link.click();
+                // // Trigger the download
+                // link.click();
                 
-                // Remove the link from the DOM after the download
-                document.body.removeChild(link);
+                // // Remove the link from the DOM after the download
+                // document.body.removeChild(link);
                 
             } else {
                 dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
