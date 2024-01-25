@@ -569,7 +569,7 @@ function SignUpPage() {
                   }}
                 />
                 {formik.touched.profilePicture && formik.errors.profilePicture && (
-                  <p style={{ fontSize: '12px', padding: '0.75rem', color: 'red' }}>
+                  <p style={{ fontSize: '13px', padding: '0.75rem', color: 'red' }}>
                     {formik.errors.profilePicture}
                   </p>
                 )}      
