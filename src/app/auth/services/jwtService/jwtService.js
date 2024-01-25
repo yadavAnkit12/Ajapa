@@ -93,7 +93,7 @@ class JwtService extends FuseUtils.EventEmitter {
             }
             if (response.data.user) {
               sessionStorage.setItem('userRole', _.get(response, 'data.user.role'));
-              sessionStorage.setItem('id', _.get(response, 'data.user._id'));
+              sessionStorage.setItem('id', _.get(response, 'data.user.id'));
               this.setSession(userData.access_token);
               // this.getPermissions(_.get(response, 'data.user.roleID'));
               resolve(response.data.user);
@@ -138,7 +138,7 @@ class JwtService extends FuseUtils.EventEmitter {
             }
             if (response.data.user) {
               sessionStorage.setItem('userRole', _.get(response, 'data.user.role'));
-              sessionStorage.setItem('id', _.get(response, 'data.user._id'));
+              sessionStorage.setItem('id', _.get(response, 'data.user.id'));
               this.setSession(userData.access_token);
               // this.getPermissions(_.get(response, 'data.user.roleID'));
               resolve(response.data.user);
