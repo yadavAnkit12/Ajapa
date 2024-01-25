@@ -212,7 +212,7 @@ const EventForm = () => {
                     formik.resetForm();
                     navigate('/app/event')
                 } else {
-                    dispatch(showMessage({ message: response.data.errorMekssage, variant: 'error' }));
+                    dispatch(showMessage({ message: response.data.errormessage, variant: 'error' }));
                 }
             })
 
