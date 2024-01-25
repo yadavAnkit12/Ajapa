@@ -31,7 +31,6 @@ function AdminProfile() {
     }, [])
 
     useEffect(() => {
-        console.log('id', userID)
         if (userID) {
             axios.get(`${userAPIConfig.getUserById}/${userID}`, {
                 headers: {
@@ -45,16 +44,15 @@ function AdminProfile() {
                 } else {
                     dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
                 }
-            })
-            // }
-
+            }).catch((error)=>dispatch(showMessage({ message: 'Something went wrong', variant: 'error' })))
+            
         }
     }, [userID])
 
     const handleEditProfile = (id) => {
         navigate(`/app/useredit/${id}`)
     }
-    if (!data) {
+    if (data==='') {
         <FuseLoading />
     }
 
