@@ -17,6 +17,7 @@ import NavbarToggleButton from '../../shared-components/NavbarToggleButton';
 import UserMenu from '../../shared-components/UserMenu';
 import QuickPanelToggleButton from '../../shared-components/quickPanel/QuickPanelToggleButton';
 import ChatPanelToggleButton from '../../shared-components/chatPanel/ChatPanelToggleButton';
+import { getUserRoles } from 'src/app/auth/services/utils/common';
 
 function ToolbarLayout1(props) {
   const config = useSelector(selectFuseCurrentLayoutConfig);
@@ -62,7 +63,7 @@ function ToolbarLayout1(props) {
           </div>
 
           <div className="flex items-center px-8 h-full overflow-x-auto">
-            <NotificationPanelToggleButton />
+            {getUserRoles()==='Super' && <NotificationPanelToggleButton />}
 
             <UserMenu />
           </div>

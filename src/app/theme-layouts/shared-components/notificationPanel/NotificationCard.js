@@ -77,7 +77,7 @@ function NotificationCard(props) {
       {item && (
         <img
           className="shrink-0 w-32 h-32 mr-12 rounded-full overflow-hidden object-cover object-center"
-          src= {`${key}/images/${item.id}.jpg`}
+          src= {`${key}/images/${item.profileImage}`}
           alt="Notification"
         />
       )}

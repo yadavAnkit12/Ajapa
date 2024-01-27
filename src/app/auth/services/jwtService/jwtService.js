@@ -86,7 +86,7 @@ class JwtService extends FuseUtils.EventEmitter {
                 data: {
                   "name": response.data.user.name,
                   "email": response.data.user.email,
-                  "photoURL": response.data.user?.file?response.data.user.file:"",
+                  "photoURL": response.data.user?.profileImage,
                 }
               },
               access_token: response.data.token
@@ -131,7 +131,7 @@ class JwtService extends FuseUtils.EventEmitter {
                 data: {
                   "name": response.data.user.name,
                   "email": response.data.user.email,
-                  "photoURL": response.data.user?.file?response.data.user.file:"",
+                  "photoURL": response.data.user?.profileImage,
                 }
               },
               access_token: response.data.token
@@ -170,7 +170,7 @@ class JwtService extends FuseUtils.EventEmitter {
               data: {
                 "name": response.data.user.name,
                 "email": response.data.user.email,
-                "photoURL":response.data.user?.file?response.data.user.file:""
+                "photoURL": response.data.user?.profileImage
               }
             },
             access_token: response.data.token

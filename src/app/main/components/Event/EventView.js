@@ -45,7 +45,7 @@ export default function EventView(props) {
                 <CardMedia
                     component="img"
                     height="140"
-                    image={`${key}/events/${data.eventId}.jpg`}
+                    image={`${key}/events/${data.eventImage}`}
                     alt="event"
                 />
                 <CardContent style={{fontSize:'16px'}}>

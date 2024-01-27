@@ -20,7 +20,7 @@ const UserConfig = {
     {
       path: 'app/useredit/:id/*',
       element: <UserForm />,
-      auth: ["Super"]
+      auth: ["Super","User","Member"]
     }
     // {
     //     path: 'app/vehicleView',

@@ -10,7 +10,7 @@ const UserEventConfig = {
         {
             path: 'app/UserEvents',
             element: <UserEvent/>,
-            auth: ["Super","User"]
+            auth: ["User","Member"]
         }
     ],
 };

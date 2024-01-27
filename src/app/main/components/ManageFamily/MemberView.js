@@ -18,7 +18,7 @@ const Transition = forwardRef(function Transition(props, ref) {
 });
 
 
-export default function UserView(props) {
+export default function MemberView(props) {
     const dispatch = useDispatch()
     const [userId, setUserId] = React.useState(props.data)
     const [userData, setUserData] = React.useState({})
@@ -28,6 +28,7 @@ export default function UserView(props) {
     axios.get(`${userAPIConfig.getUserById}/${userId}`, {
         headers: {
             'Content-type': 'multipart/form-data',
+            Authorization:`Bearer ${window.localStorage.getItem('jwt_access_token')}`
         },
     }).then((response) => {
         if (response.status === 200) {
@@ -35,7 +36,10 @@ export default function UserView(props) {
             setUserData(response.data.user)
             dispatch(showMessage({ message: response.data.message, variant: 'success' }));
         }
-    })
+        else{
+            dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
+        }
+    }).catch((error)=> dispatch(showMessage({ message: 'Something went wrong', variant: 'error' })))
 },[])
     
 if (isLoading) {
