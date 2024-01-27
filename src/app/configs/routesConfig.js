@@ -37,10 +37,12 @@ import DashboardConfig from '../main/components/Dashboard/DashboardConfig';
 import EventConfig from '../main/components/Event/EventConfig';
 import UserConfig from '../main/components/Users/UserConfig';
 import UserEventConfig from '../main/components/UserEvents/UserEventConfig';
+import AddMembersConfig from '../main/components/AddMembers/AddMembersConfig';
+import ManageFamilyConfig from '../main/components/ManageFamily/ManageFamilyConfig';
 
 
 
-const routeConfigs = [SignOutConfig, SignInConfig, SignUpConfig, Error404PageConfig, DashboardConfig,UserConfig,EventConfig,EmployeeManagementConfig, UserEventConfig,DoctorManagementConfig, PatientConfig, AppointmentsAppConfig, HomeConfig, MembershipPlanConfig, transactionConfig, SubscriptionPlanConfig, CouponPlanConfig, BannerPlanConfig, CaseConfig, SymptomConfig, ProductConfig, OrderConfig, LabOrderConfig,SettingConfig,NewCaseConfig,AllCaseConfig,FinalCaseReportConfig,ClinicManagementConfig];
+const routeConfigs = [SignOutConfig, SignInConfig, SignUpConfig, Error404PageConfig, DashboardConfig,UserConfig,EventConfig,EmployeeManagementConfig, AddMembersConfig,UserEventConfig,ManageFamilyConfig,DoctorManagementConfig, PatientConfig, AppointmentsAppConfig, HomeConfig, MembershipPlanConfig, transactionConfig, SubscriptionPlanConfig, CouponPlanConfig, BannerPlanConfig, CaseConfig, SymptomConfig, ProductConfig, OrderConfig, LabOrderConfig,SettingConfig,NewCaseConfig,AllCaseConfig,FinalCaseReportConfig,ClinicManagementConfig];
 
 const routes = [
   ...FuseUtils.generateRoutesFromConfigs(routeConfigs, settingsConfig.defaultAuth),

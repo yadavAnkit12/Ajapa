@@ -78,8 +78,8 @@ export default function UserView(props) {
                     <CardMedia
                         component="img"
                         height="140"
-                        image={`${key}/images/${props.data.id}.jpg`}
-                        alt="event"
+                        image={`${key}/images/${props.data.profileImage}`}
+                        alt="user"
                     />
                     <CardContent style={{ fontSize: '16px' }}>
                         <div className="my-3 mx-4">

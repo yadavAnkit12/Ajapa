@@ -66,7 +66,7 @@ function AdminProfile() {
                                 <div className="account-settings">
                                     <div className="user-profile">
                                         <div className="user-avatar">
-                                            <img src={`${key}/images/${data.id}.jpg`} alt="Not Found" />
+                                            <img src={`${key}/images/${data.profileImage}`} alt="Not Found" />
                                         </div>
                                         <h4 className="user-name labelFont">{data.name}</h4>
                                         <h5 className="user-email labelFont">{data.email}</h5>

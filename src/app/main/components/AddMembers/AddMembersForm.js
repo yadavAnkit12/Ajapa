@@ -14,7 +14,6 @@ import { showMessage } from 'app/store/fuse/messageSlice';
 import useThemeMediaQuery from '@fuse/hooks/useThemeMediaQuery';
 import axios from 'axios';
 import jwtServiceConfig from 'src/app/auth/services/jwtService/jwtServiceConfig';
-import UserFormHead from './UserFormHead';
 import { useParams } from 'react-router-dom';
 import { FormProvider } from 'react-hook-form';
 import FusePageCarded from '@fuse/core/FusePageCarded';
@@ -23,11 +22,10 @@ import Tabs from '@mui/material/Tabs';
 import { useNavigate } from 'react-router-dom';
 import { userAPIConfig } from 'src/app/main/API/apiConfig';
 import FuseLoading from '@fuse/core/FuseLoading';
+import AddMembersFormHead from './AddMembersFormHead';
 import { getLoggedInPartnerId } from 'src/app/auth/services/utils/common';
-const fontStyles = {
-    fontFamily:
-        "'Hoefler Text', 'Baskerville Old Face','Garamond', 'Times new Roman' ,serif",
-}
+
+
 
 const phoneNumberCountryCodes = [
     '+91 (IN)',
@@ -39,7 +37,7 @@ const phoneNumberCountryCodes = [
     // Add more country codes as needed
 ];
 
-function UserForm() {
+function AddMembersForm() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const routeParams = useParams()
@@ -52,8 +50,7 @@ function UserForm() {
     const [stateID, setStateID] = useState('')
     const [cityList, setCityList] = useState([])
     const [cityID, setCityID] = useState('')
-    const [loading, setLoading] = useState(true)
-    const [userID,setUserID]=useState('')
+    const [userID, setUserID] = useState('')
 
 
     const validationSchema = yup.object().shape({
@@ -73,11 +70,11 @@ function UserForm() {
         }),
         countryCode: yup.string().required('select country code').required('required'),
         profilePicture: yup.mixed().nullable()
-        .test('fileType', 'Unsupported file type', (value) => {
-          if (!value) return true; // Allow null values
-          const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
-          return allowedTypes.includes(value.type);
-        }),
+            .test('fileType', 'Unsupported file type', (value) => {
+                if (!value) return true; // Allow null values
+                const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+                return allowedTypes.includes(value.type);
+            }),
         mobileNumber: yup
             .string()
             .matches(/^[1-9]\d{9}$/, 'Invalid mobile number')
@@ -93,47 +90,48 @@ function UserForm() {
 
     useEffect(() => {
         const { id } = routeParams;
+        if (id === 'new') {
 
-        axios.get(`${userAPIConfig.getUserById}/${id}`, {
-            headers: {
-                'Content-type': 'multipart/form-data',
-            },
-        }).then((response) => {
-            if (response.status === 200) {
-                setUserID(response.data.user.id)
-                formik.setValues({
-                    id: response.data.user.id || '',
-                    familyId: response.data.user.familyId || '',
-                    name: response.data.user.name || '',
-                    email: response.data.user.email || '',
-                    password: response.data.user.password || '',
-                    passwordConfirm: response.data.user.password || '',
-                    gender: response.data.user.gender || '',
-                    dob: response.data.user.dob || '',
-                    role: response.data.user.role || '',
-                    status: response.data.user.status || '',
-                    countryCode: response.data.user.countryCode || '+91 (IN)',
-                    mobileNumber: response.data.user.mobileNumber || '',
-                    country: response.data.user.country.split(':')[1] || '',
-                    state: response.data.user.state.split(':')[1] || '',
-                    city: response.data.user.city.split(':')[1] || '',
-                    profilePicture: response.data.user.profileImage || '',
-                    isDisciple: response.data.user.isDisciple === true ? 'Yes' : 'No' || 'No',
-                    addressLine: response.data.user.addressLine || '',
-                    bloodGroup: response.data.user.bloodGroup || "",
-                    dikshaDate: response.data.user.dikshaDate || '',
-                    occupation: response.data.user.occupation || '',
-                    pinCode: response.data.user.pinCode || '',
-                    qualification: response.data.user.qualification || '',
-                    whatsAppNumber: response.data.user.whatsAppNumber || ''
-                });
-                setCountryID(response.data.user.country.split(':')[0])
-                setStateID(response.data.user.state.split(':')[0])
-                setCityID(response.data.user.city.split(':')[0])
-                setLoading(false)
-            }
-        })
-
+        } else {
+            setUserID(id)
+            axios.get(`${userAPIConfig.getUserById}/${id}`, {
+                headers: {
+                    'Content-type': 'multipart/form-data',
+                },
+            }).then((response) => {
+                if (response.status === 200) {
+                    formik.setValues({
+                        id: response.data.user.id || '',
+                        familyId: response.data.user.familyId || '',
+                        name: response.data.user.name || '',
+                        email: response.data.user.email || '',
+                        password: response.data.user.password || '',
+                        passwordConfirm: response.data.user.password || '',
+                        gender: response.data.user.gender || '',
+                        dob: response.data.user.dob || '',
+                        role: response.data.user.role || '',
+                        status: response.data.user.status || '',
+                        countryCode: response.data.user.countryCode || '+91 (IN)',
+                        mobileNumber: response.data.user.mobileNumber || '',
+                        country: response.data.user.country.split(':')[1] || '',
+                        state: response.data.user.state.split(':')[1] || '',
+                        city: response.data.user.city.split(':')[1] || '',
+                        profilePicture: null,
+                        isDisciple: response.data.user.isDisciple === true ? 'Yes' : 'No' || 'No',
+                        addressLine: response.data.user.addressLine || '',
+                        bloodGroup: response.data.user.bloodGroup || "",
+                        dikshaDate: response.data.user.dikshaDate || '',
+                        occupation: response.data.user.occupation || '',
+                        pinCode: response.data.user.pinCode || '',
+                        qualification: response.data.user.qualification || '',
+                        whatsAppNumber: response.data.user.whatsAppNumber || ''
+                    });
+                    setCountryID(response.data.user.country.split(':')[0])
+                    setStateID(response.data.user.state.split(':')[0])
+                    setCityID(response.data.user.city.split(':')[0])
+                }
+            })
+        }
     }, []);
 
 
@@ -180,11 +178,16 @@ function UserForm() {
 
 
     const handleSubmit = (values) => {
-        if (formik.isValid) {
+        if (userID === '' && values.profilePicture === null) {
+            dispatch(showMessage({ message: 'Profile picture is required', variant: 'error' }));
+            return
 
+        }
+        if (formik.isValid) {
             const formattedData = new FormData()
-            formattedData.append('id', values.id)
-            formattedData.append('familyId', values.familyId)
+
+
+            formattedData.append('familyId', getLoggedInPartnerId())
             formattedData.append('name', values.name)
             formattedData.append('email', values.email)
             formattedData.append('password', values.password)
@@ -199,16 +202,19 @@ function UserForm() {
             formattedData.append('bloodGroup', values.bloodGroup)
             formattedData.append('dikshaDate', values.dikshaDate)
             formattedData.append('occupation', values.occupation)
-            formattedData.append('status', values.status)
-            formattedData.append('role', values.role)
+            // formattedData.append('status', values.status)
+            // formattedData.append('role', values.role)
             formattedData.append('pinCode', values.pinCode)
             formattedData.append('qualification', values.qualification)
             formattedData.append('whatsAppNumber', values.whatsAppNumber)
             formattedData.append('isDisciple', values.isDisciple === 'Yes' ? true : false)
-            if (values.profilePicture !== null) {
+            formattedData.append('status', 'Approved')
+            formattedData.append('role', 'Member')
+
+            if (userID === '') {  // for new member
 
                 formattedData.append('file', values.profilePicture)
-                axios.post(`${userAPIConfig.updateUserWithImage}`, formattedData, {
+                axios.post(`${jwtServiceConfig.signUp}`, formattedData, {
                     headers: {
                         'Content-type': 'multipart/form-data',
                         Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
@@ -216,51 +222,54 @@ function UserForm() {
                 }).then((response) => {
                     if (response.status === 200) {
                         dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-                        // this is beacuse suppose if super admin update the profile of user 
 
-                        if (getLoggedInPartnerId() == userID) {
-                            console.log('if me')
-                            navigate(`/apps/profile/${getLoggedInPartnerId()}`)
-                        }
-                        else {
-                            console.log('elsemm')
-                            navigate('/app/users/')
-                        }
                     }
                     else {
                         dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
                     }
                 }).catch((error) => console.log(error))
-            }
-            else {
-                axios.post(`${userAPIConfig.updateUser}`, formattedData, {
-                    headers: {
-                        'Content-type': 'multipart/form-data',
-                        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-                    },
-                }).then((response) => {
-                    if (response.status === 200) {
-                        dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-                        // this is beacuse suppose if super admin update the profile of user 
-                        if (getLoggedInPartnerId() == userID) {
-                            navigate(`/apps/profile/${getLoggedInPartnerId()}`)
+
+            } else {  // for update the existing member
+                formattedData.append('id', values.id)
+                if (values.profilePicture !== null) {
+
+                    formattedData.append('file', values.profilePicture)
+                    axios.post(`${userAPIConfig.updateUserWithImage}`, formattedData, {
+                        headers: {
+                            'Content-type': 'multipart/form-data',
+                            Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+                        },
+                    }).then((response) => {
+                        if (response.status === 200) {
+                            dispatch(showMessage({ message: response.data.message, variant: 'success' }));
                         }
                         else {
-
-                            navigate('/app/users/')
+                            dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
                         }
-                    }
-                    else {
-                        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
-                    }
-                }).catch((error) => console.log(error))
+                    }).catch((error) => console.log(error))
+                }
+                else {
+                    axios.post(`${userAPIConfig.updateUser}`, formattedData, {
+                        headers: {
+                            'Content-type': 'multipart/form-data',
+                            Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+                        },
+                    }).then((response) => {
+                        if (response.status === 200) {
+                            dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+                        }
+                        else {
+                            dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
+                        }
+                    }).catch((error) => console.log(error))
+                }
+
             }
 
         }
         else {
             dispatch(showMessage({ message: 'Please check the mandatory fields', variant: 'error' }));
         }
-
 
     }
 
@@ -296,16 +305,14 @@ function UserForm() {
         onSubmit: handleSubmit,
     });
 
-    if (!formik.values.id) {
-        return <FuseLoading />
-    }
+
     function handleTabChange(event, value) {
         setTabValue(value);
     }
 
     return <FormProvider>
         <FusePageCarded
-            header={<UserFormHead handleSubmit={handleSubmit} values={formik.values} formik={formik} />}
+            header={<AddMembersFormHead handleSubmit={handleSubmit} values={formik.values} formik={formik} />}
 
             content={
                 <>
@@ -736,4 +743,4 @@ function UserForm() {
 
 }
 
-export default UserForm;
+export default AddMembersForm;

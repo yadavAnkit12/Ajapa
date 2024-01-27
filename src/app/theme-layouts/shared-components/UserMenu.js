@@ -10,6 +10,10 @@ import { useSelector } from 'react-redux';
 import { Link, NavLink } from 'react-router-dom';
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import { selectUser } from 'app/store/userSlice';
+import { get } from 'lodash';
+import { getLoggedInPartnerId } from 'src/app/auth/services/utils/common';
+const key = process.env.REACT_APP_URL;
+
 
 function UserMenu(props) {
   const user = useSelector(selectUser);
@@ -40,11 +44,11 @@ function UserMenu(props) {
           </Typography>
         </div>
 
-        {user.data.photoURL ? (
-          <Avatar className="md:mx-4" alt="user photo" src={user.data.photoURL} />
-        ) : (
+        {/* {user.data.photoURL ? ( */}
+          <Avatar className="md:mx-4" alt="user photo" src={`${key}/images/${user.data.photoURL}`} />
+        {/* ) : (
           <Avatar className="md:mx-4">{user.data.name[0]}</Avatar>
-        )}
+        )} */}
       </Button>
 
       <Popover

@@ -3,6 +3,7 @@ import i18next from 'i18next';
 import ar from './navigation-i18n/ar';
 import en from './navigation-i18n/en';
 import tr from './navigation-i18n/tr';
+import { getLoggedInPartnerId } from '../auth/services/utils/common';
 
 i18next.addResourceBundle('en', 'navigation', en);
 i18next.addResourceBundle('tr', 'navigation', tr);
@@ -43,7 +44,7 @@ const navigationConfig = [
     type: 'item',
     icon: 'heroicons-outline:calendar',
     url:'app/UserEvents/',
-    auth: ["Super", "User"]
+    auth: ["User"]
   },
   {
     id: 'app-event',
@@ -52,7 +53,25 @@ const navigationConfig = [
     type: 'item',
     icon: 'heroicons-outline:calendar',
     url:'app/event/',
-    auth: ["Super", "User"]
+    auth: ["Super"]
+  },
+  {
+    id: 'app-addMember',
+    title: "Add Members",
+    translate: "Add Members",
+    type: 'item',
+    icon: 'heroicons-outline:plus',
+    url:'app/addMembers/new',
+    auth: ["User"]
+  },
+  {
+    id: 'app-manageFamily',
+    title: "Manage Family",
+    translate: "Manage Family",
+    type: 'item',
+    icon: 'heroicons-outline:user',
+    url:'app/manageFamily',
+    auth: ["User"]
   },
     // children: [
 
@@ -95,7 +114,7 @@ const navigationConfig = [
     translate: "My Profile",
     type: 'item',
     icon: 'heroicons-outline:user-circle',
-    url: `apps/profile/${sessionStorage.getItem('id')}`,
+    url: `apps/profile/${getLoggedInPartnerId()}`,
     auth: ["Super", "User"]
   },
   {

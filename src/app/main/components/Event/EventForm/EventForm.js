@@ -165,7 +165,7 @@ const EventForm = () => {
     
 
     const handleSubmit = (values) => {
-
+console.log(formik)
         //Check for lock dates 
         if (values.eventType === 'Offline' && !values.lockArrivalDate) {
             dispatch(showMessage({ message: "Lock Arrival Date is required for offline events", variant: 'error' }));
