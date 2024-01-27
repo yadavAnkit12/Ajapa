@@ -132,11 +132,11 @@ const EventForm = () => {
         eventType: Yup.string().required('Event Type is required'),
         eventLocation: Yup.string().required('Event Location is required'),
         eventDate: Yup.date()
-            .min(new Date(), 'Event Date must be today or in the future')
-            .nullable()
-            .required('Event Date is required'),
-
-        lockArrivalDate: Yup.date()
+        .min(new Date(new Date().setHours(0, 0, 0, 0)), 'Event Date must be today or in the future')
+        .nullable()
+        .required('Event Date is required'),
+    
+            lockArrivalDate: Yup.date()
             .nullable()
             .test({
                 message: 'Lock Arrival Date should be on or before Event Date',
@@ -154,22 +154,44 @@ const EventForm = () => {
                     const { eventDate } = this.parent;
                     return !eventDate || !value || value >= eventDate;
                 }
+              }),
+       
+        shivirStartDate: Yup.date()
+            .nullable()
+            .test({
+                message: 'Shivir Start Date should be in between Lock Arrival and Departure Date',
+                test: function (value) {
+                    const { lockArrivalDate, lockDepartureDate } = this.parent;
+                    return !lockArrivalDate || !lockDepartureDate || !value || 
+                    (value >= lockArrivalDate && value <= lockDepartureDate)
+                }
             }),
 
-        file: Yup.mixed().nullable()
-            .test('fileType', 'Unsupported file type', (value) => {
-                if (!value) return true; // Allow null values
-                const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
-                return allowedTypes.includes(value.type);
+        shivirEndDate: Yup.date()
+            .nullable()
+            .test({
+                message: 'Shivir End Date should be in between Lock Arrival and Departure Date',
+                test: function (value) {
+                    const { lockArrivalDate, lockDepartureDate } = this.parent;
+                    return !lockArrivalDate || !lockDepartureDate || !value || 
+                    (value >= lockArrivalDate && value <= lockDepartureDate)
+                }
             }),
+         
+        eventImage: Yup.mixed().nullable()
+        .test('fileType', 'Unsupported file type', (value) => {
+          if (!value) return true; // Allow null values
+          const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+          return allowedTypes.includes(value.type);
+        }),
     });
 
 
     const handleSubmit = (values) => {
         console.log(formik)
         //Check for lock dates 
-        if (values.eventType === 'Offline' && !values.lockArrivalDate) {
-            dispatch(showMessage({ message: "Lock Arrival Date is required for offline events", variant: 'error' }));
+        if (values.eventType === 'Offline' && !values.lockArrivalDate && !values.lockDepartureDate) {
+            dispatch(showMessage({ message: "Lock Dates are required for offline events", variant: 'error' }));
             return;
         }
 
