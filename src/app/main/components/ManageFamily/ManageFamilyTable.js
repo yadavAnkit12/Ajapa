@@ -13,10 +13,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 import { eventAPIConfig, userAPIConfig } from '../../API/apiConfig';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
-// import UserView from './UserView';
 import ManageFamilyTableHead from './ManageFamilyTableHead';
-import { getLoggedInPartnerId } from 'src/app/auth/services/utils/common';
-// import EventView from './EventView';
+import { getLoggedInPartnerId, getUserRoles } from 'src/app/auth/services/utils/common';
+import MemberView from './MemberView';
+
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -36,76 +36,34 @@ const style = {
   overflow: 'auto'
 };
 
-const menuItemArray = (status) => {
-  if (status === 'Approved') {
-    return [
-      {
-        key: 1,
-        label: 'View',
-        status: 'View',
-      },
-      {
-        key: 2,
-        label: 'Edit',
-        status: 'Edit',
-      },
-      {
-        key: 3,
-        label: 'Reject', // Show "Unblock" when isBlocked is true
-        status: 'Rejected', // You can define the status value here
-      },
-    ];
-  } else if (status === 'Rejected') {
-    return [
-      {
-        key: 4,
-        label: 'View',
-        status: 'View',
-      },
-      {
-        key: 5,
-        label: 'Edit',
-        status: 'Edit',
-      },
-      {
-        key: 6,
-        label: 'Approve',
-        status: 'Approved',
-      }
-    ];
-  }
-  else {
-    return [
-      {
-        key: 7,
-        label: 'View',
-        status: 'View',
-      },
-      {
-        key: 8,
-        label: 'Edit',
-        status: 'Edit',
-      },
-      {
-        key: 9,
-        label: 'Approve',
-        status: 'Approved',
-      },
-      {
-        key: 10,
-        label: 'Reject', // Show "Unblock" when isBlocked is true
-        status: 'Rejected', // You can define the status value here
-      },
+const menuItemArray = [
+  {
+    key: 1,
+    label: 'View',
+    status: 'View',
+    visibleIf:true
+  },
+  {
+    key: 2,
+    label: 'Edit',
+    status: 'Edit',
+    visibleIf:getUserRoles()==='User'
+  },
+  {
+    key: 3,
+    label: 'Delete',
+    status: 'Delete',
+    visibleIf:getUserRoles()==='User'
 
-    ];
-  }
-};
+  },
+];
+
 
 
 function ManageFamilyTable(props) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [userListData, setUserListData] = useState([]);
+  const [userListData, setUserListData] = useState('');
   const searchText = props.searchText;
 
   const [loading, setLoading] = useState(true);
@@ -207,32 +165,17 @@ function ManageFamilyTable(props) {
   }
 
   function getStatus(id, selectedValue) {
-    // console.log("hdvfj",id)
     if (selectedValue === 'View') {
       setOpenView(true)
       setViewId(id)
 
     }
     else if (selectedValue === 'Edit') {
-      navigate(`/app/useredit/${id}`)
+      navigate(`/app/addMembers/${id}`)
     }
-
-    else if (selectedValue === 'Approved') {
-      setChangeStatus('Approve')
-      setViewId(id)
+    else if (selectedValue === 'Delete') {
       setOpen(true)
-
-    }
-    else if (selectedValue === 'Pending') {
-      setChangeStatus('Pending')
       setViewId(id)
-      setOpen(true)
-
-    }
-    else if (selectedValue === 'Rejected') {
-      setChangeStatus('Reject')
-      setViewId(id)
-      setOpen(true)
 
     }
 
@@ -242,19 +185,11 @@ function ManageFamilyTable(props) {
     setOpen(false)
   }
 
-  const handleChangeStatus = () => {
-      const formData=new FormData()
-      if(changeStatus==='Approve'){
+  const handleDeleteUser = () => {
+    const formData = new FormData()
 
-        formData.append('status','Approved')
-      }
-      else if(changeStatus==='Reject'){
-        formData.append('status','Rejected')
-      }
-      else {
-        formData.append('status','Pending')
-      }
-      formData.append('id',viewid)
+    formData.append('status', 'Rejected')
+    formData.append('id', viewid)
     axios.post(userAPIConfig.changeStatus, formData, {
       headers: {
         'Content-type': 'multipart/form-data',
@@ -265,7 +200,7 @@ function ManageFamilyTable(props) {
         dispatch(showMessage({ message: response.data.message, variant: 'success' }));
         handleClose()
         fetchData()
-      
+
       }
       else {
         dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
@@ -276,8 +211,8 @@ function ManageFamilyTable(props) {
 
   function handleSelectAllClick(event) {
     if (event.target.checked) {
-      setSelected(_.size(_.get(userListData, 'data')) > 0 ?
-        _.get(userListData, 'data').map((n) => n.userId) :
+      setSelected(_.size(_.get(userListData, 'users')) > 0 ?
+        _.get(userListData, 'users').map((n) => n.userId) :
         {}
       );
       return;
@@ -312,7 +247,7 @@ function ManageFamilyTable(props) {
       case 'rejected':
         return 'red';
       default:
-        return 'inherit'; // or any other default color
+        return 'inherit';
     }
   };
 
@@ -324,7 +259,7 @@ function ManageFamilyTable(props) {
     );
   }
 
-  if (!_.size(_.get(userListData, 'data'))) {
+  if (!_.size(_.get(userListData, 'users'))) {
     return (
       <motion.div
         initial={{ opacity: 0 }}
@@ -337,21 +272,21 @@ function ManageFamilyTable(props) {
       </motion.div>
     );
   }
-
+  console.log(userListData)
   return (
-    <div className="w-full flex flex-col min-h-full" style={{overflow:'auto'}}>
+    <div className="w-full flex flex-col min-h-full" style={{ overflow: 'auto' }}>
       <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle" ref={tableRef}>
         <ManageFamilyTableHead
           selectedProductIds={selected}
           order={order}
           onSelectAllClick={handleSelectAllClick}
           onRequestSort={handleRequestSort}
-          rowCount={userListData?.length}
+          rowCount={userListData?.users.length}
           onMenuItemClick={handleDeselect}
         />
         <TableBody>
           {
-            userListData?.data?.map((n) => {
+            userListData?.users?.map((n) => {
               const isSelected = selected.indexOf(n.eventId) !== -1;
               return (
                 <TableRow
@@ -407,8 +342,8 @@ function ManageFamilyTable(props) {
                           </Button>
                           <Menu {...bindMenu(popupState)}>
 
-                            {menuItemArray(n.status).map((value) => (
-                              <MenuItem
+                            {menuItemArray.map((value) => (
+                             value.visibleIf && <MenuItem
                                 onClick={() => {
                                   getStatus(n.id, value.status);
 
@@ -456,11 +391,11 @@ function ManageFamilyTable(props) {
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>{`Do you want to ${changeStatus} this User?`}</DialogTitle>
+        <DialogTitle>{`Do you want to delete this User?`}</DialogTitle>
 
         <DialogActions>
           <Button onClick={handleClose}>No</Button>
-          <Button onClick={handleChangeStatus} autoFocus>
+          <Button onClick={handleDeleteUser} autoFocus>
             Yes
           </Button>
         </DialogActions>
@@ -472,7 +407,7 @@ function ManageFamilyTable(props) {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          {/* <UserView data={viewid} handleViewClose={handleViewClose} /> */}
+          <MemberView data={viewid} handleViewClose={handleViewClose} />
         </Box>
       </Modal>
     </div>

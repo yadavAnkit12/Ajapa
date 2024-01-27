@@ -13,7 +13,7 @@ const ManageFamilyConfig = {
     {
       path: '/app/manageFamily/',
       element: <ManageFamily/>,
-      auth: ["User"]
+      auth: ["User","Member"]
     },
 
 

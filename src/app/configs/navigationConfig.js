@@ -17,7 +17,7 @@ const navigationConfig = [
     type: 'item',
     icon: 'heroicons-outline:home',
     url: '/',
-    auth: ["Super", "User"]
+    auth: ["Super", "User","Member"]
   },
   {
     id: 'dashboard-component',
@@ -44,7 +44,7 @@ const navigationConfig = [
     type: 'item',
     icon: 'heroicons-outline:calendar',
     url:'app/UserEvents/',
-    auth: ["User"]
+    auth: ["User","Member"]
   },
   {
     id: 'app-event',
@@ -71,7 +71,7 @@ const navigationConfig = [
     type: 'item',
     icon: 'heroicons-outline:user',
     url:'app/manageFamily',
-    auth: ["User"]
+    auth: ["User","Member"]
   },
     // children: [
 
@@ -106,7 +106,7 @@ const navigationConfig = [
     type: 'item',
     icon: 'heroicons-outline:clipboard-check',
     url: 'app/myregisteration',
-    auth: ["User"]
+    auth: ["User","Member"]
   },
   {
     id: 'myprofile-component',
@@ -115,7 +115,7 @@ const navigationConfig = [
     type: 'item',
     icon: 'heroicons-outline:user-circle',
     url: `apps/profile/${getLoggedInPartnerId()}`,
-    auth: ["Super", "User"]
+    auth: ["Super", "User","Member"]
   },
   {
     id: 'logout-component',
@@ -124,7 +124,7 @@ const navigationConfig = [
     type: 'item',
     icon: 'heroicons-outline:logout',
     url: '/sign-out',
-    auth: ["Super", "User"]
+    auth: ["Super", "User","Member"]
   },
   {
     id: 'app-partner-component',

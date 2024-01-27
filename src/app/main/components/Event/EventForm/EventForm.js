@@ -113,7 +113,8 @@ const EventForm = () => {
                 shivirStartDate: eventData.shivirStartDate || '',
                 shivirEndDate: eventData.shivirEndDate || '',
                 shivirAvailable: eventData.shivirAvailable === true ? 'Yes' : 'No' || '',
-                eventImage: null,
+                eventImage: eventData.eventImage || '',
+                file:null,
                 eventStatus: eventData.eventStatus || true,
                 bookingStatus: eventData.bookingStatus || true
             });
@@ -127,115 +128,114 @@ const EventForm = () => {
                 return !/\d/.test(value);
             })
             .required('Event Name is required'),
-    
+
         eventType: Yup.string().required('Event Type is required'),
         eventLocation: Yup.string().required('Event Location is required'),
         eventDate: Yup.date()
             .min(new Date(), 'Event Date must be today or in the future')
             .nullable()
             .required('Event Date is required'),
-    
-            lockArrivalDate: Yup.date()
+
+        lockArrivalDate: Yup.date()
             .nullable()
             .test({
-              message: 'Lock Arrival Date should be on or before Event Date',
-              test: function (value) {
-                const { eventDate } = this.parent;
-                return !eventDate || !value || value <= eventDate;
-              }
+                message: 'Lock Arrival Date should be on or before Event Date',
+                test: function (value) {
+                    const { eventDate } = this.parent;
+                    return !eventDate || !value || value <= eventDate;
+                }
             }),
-    
+
         lockDepartureDate: Yup.date()
             .nullable()
             .test({
                 message: 'Lock Departure Date should be on or After Event Date',
                 test: function (value) {
-                  const { eventDate } = this.parent;
-                  return !eventDate || !value || value >= eventDate;
+                    const { eventDate } = this.parent;
+                    return !eventDate || !value || value >= eventDate;
                 }
-              }),
-       
-        eventImage: Yup.mixed().nullable()
-        .test('fileType', 'Unsupported file type', (value) => {
-          if (!value) return true; // Allow null values
-          const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
-          return allowedTypes.includes(value.type);
-        }),
+            }),
+
+        file: Yup.mixed().nullable()
+            .test('fileType', 'Unsupported file type', (value) => {
+                if (!value) return true; // Allow null values
+                const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+                return allowedTypes.includes(value.type);
+            }),
     });
-    
+
 
     const handleSubmit = (values) => {
-console.log(formik)
+        console.log(formik)
         //Check for lock dates 
         if (values.eventType === 'Offline' && !values.lockArrivalDate) {
             dispatch(showMessage({ message: "Lock Arrival Date is required for offline events", variant: 'error' }));
             return;
         }
-      
+
         if (values.eventType === 'Offline' && !values.lockDepartureDate) {
             dispatch(showMessage({ message: "Lock Departure Date is required for offline events", variant: 'error' }));
             return;
         }
-        if(formik.isValid){
-        const formData = new FormData()
-        formData.append('eventName', values.eventName)
-        formData.append('eventType', values.eventType)
-        formData.append('eventLocation', values.eventLocation)
-        formData.append('startTime', values.startTime)
-        formData.append('endTime', values.endTime)
-        formData.append('eventDate', values.eventDate)
-        formData.append('lockArrivalDate', values.lockArrivalDate)
-        formData.append('lockDepartureDate', values.lockDepartureDate)
-        formData.append('shivirAvailable', values.shivirAvailable === 'Yes' ? true : false)
+        if (formik.isValid) {
+            const formData = new FormData()
+            formData.append('eventName', values.eventName)
+            formData.append('eventType', values.eventType)
+            formData.append('eventLocation', values.eventLocation)
+            formData.append('startTime', values.startTime)
+            formData.append('endTime', values.endTime)
+            formData.append('eventDate', values.eventDate)
+            formData.append('lockArrivalDate', values.lockArrivalDate)
+            formData.append('lockDepartureDate', values.lockDepartureDate)
+            formData.append('shivirAvailable', values.shivirAvailable === 'Yes' ? true : false)
+            formData.append('shivirStartDate', values.shivirStartDate)
+            formData.append('shivirEndDate', values.shivirEndDate)
+            // formData.append('eventImage', values.eventImage)
+            formData.append('eventStatus', values.eventStatus)
+            formData.append('bookingStatus', values.bookingStatus)
+            if (eventId !== 0) {
+                formData.append('eventId', eventId)
 
-        formData.append('shivirStartDate', values.shivirStartDate)
-        formData.append('shivirEndDate', values.shivirEndDate)
+            }
 
+            if (values.file !== null) {
+                formData.append('file',values.file)
+                axios.post(eventAPIConfig.createWithImage, formData, {
+                    headers: {
+                        'Content-type': 'multipart/form-data',
+                        authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+                    },
+                }).then((response) => {
+                    if (response.status === 200) {
+                        dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+                        formik.resetForm();
+                        navigate('/app/event')
+                    } else {
+                        dispatch(showMessage({ message: response.data.errormessage, variant: 'error' }));
+                    }
+                })
 
-        formData.append('eventImage', values.eventImage)
-        formData.append('eventStatus', values.eventStatus)
-        formData.append('bookingStatus', values.bookingStatus)
-        if (eventId !== 0) {
-            formData.append('eventId', eventId)
+            } else {
+                formData.append('eventImage',values.eventImage)
 
-        }
-
-        if (values.eventImage !== null) {
-            axios.post(eventAPIConfig.createWithImage, formData, {
-                headers: {
-                    'Content-type': 'multipart/form-data',
-                    authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-                },
-            }).then((response) => {
-                if (response.status === 200) {
-                    dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-                    formik.resetForm();
-                    navigate('/app/event')
-                } else {
-                    dispatch(showMessage({ message: response.data.errormessage, variant: 'error' }));
-                }
-            })
-
+                axios.post(eventAPIConfig.create, formData, {
+                    headers: {
+                        'Content-type': 'multipart/form-data',
+                        authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+                    },
+                }).then((response) => {
+                    if (response.status === 200) {
+                        dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+                        formik.resetForm();
+                        navigate('/app/event')
+                    } else {
+                        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
+                    }
+                }).catch((error) => console.log(error))
+            }
         } else {
-
-            axios.post(eventAPIConfig.create, formData, {
-                headers: {
-                    'Content-type': 'multipart/form-data',
-                    authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-                },
-            }).then((response) => {
-                if (response.status === 200) {
-                    dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-                    formik.resetForm();
-                    navigate('/app/event')
-                } else {
-                    dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
-                }
-            }).catch((error) => console.log(error))
+            dispatch(showMessage({ message: "Please fill the required fields ", variant: 'error' }));
         }
-    }else {
-        dispatch(showMessage({ message: "Please fill the required fields ", variant: 'error' }));
-    }
     };
 
 
@@ -253,6 +253,7 @@ console.log(formik)
             shivirAvailable: '',
             shivirStartDate: '',
             shivirEndDate: '',
+            file:'',
             eventImage: ''
         },
         validationSchema: validationSchema,
@@ -504,7 +505,7 @@ console.log(formik)
                                             className="hidden"
                                             id="profile-file"
                                             onChange={(event) => {
-                                                formik.setFieldValue('eventImage', event.target.files[0]);
+                                                formik.setFieldValue('file', event.target.files[0]);
                                                 setSelectedFileName(event.target.files[0].name);
                                             }}
                                         />
@@ -527,8 +528,8 @@ console.log(formik)
             }
             scroll={isMobile ? 'normal' : 'content'}
         />
-        )
-    
+    )
+
 }
 
 export default EventForm

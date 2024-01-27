@@ -112,12 +112,13 @@ function UserForm() {
                     dob: response.data.user.dob || '',
                     role: response.data.user.role || '',
                     status: response.data.user.status || '',
+                    pic:response.data.user.profileImage,// pic
                     countryCode: response.data.user.countryCode || '+91 (IN)',
                     mobileNumber: response.data.user.mobileNumber || '',
                     country: response.data.user.country.split(':')[1] || '',
                     state: response.data.user.state.split(':')[1] || '',
                     city: response.data.user.city.split(':')[1] || '',
-                    profilePicture: response.data.user.profileImage || '',
+                    profilePicture: null,
                     isDisciple: response.data.user.isDisciple === true ? 'Yes' : 'No' || 'No',
                     addressLine: response.data.user.addressLine || '',
                     bloodGroup: response.data.user.bloodGroup || "",
@@ -233,6 +234,7 @@ function UserForm() {
                 }).catch((error) => console.log(error))
             }
             else {
+                formattedData.append('profileImage',values.pic)
                 axios.post(`${userAPIConfig.updateUser}`, formattedData, {
                     headers: {
                         'Content-type': 'multipart/form-data',
@@ -277,6 +279,7 @@ function UserForm() {
             dob: null,
             role: '',
             status: '',
+            pic:'',
             countryCode: '+91 (IN)',
             mobileNumber: '',
             country: '',

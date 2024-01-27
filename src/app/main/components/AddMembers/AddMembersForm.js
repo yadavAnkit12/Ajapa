@@ -111,6 +111,7 @@ function AddMembersForm() {
                         dob: response.data.user.dob || '',
                         role: response.data.user.role || '',
                         status: response.data.user.status || '',
+                        profileImage:response.data.user.profileImage || '',
                         countryCode: response.data.user.countryCode || '+91 (IN)',
                         mobileNumber: response.data.user.mobileNumber || '',
                         country: response.data.user.country.split(':')[1] || '',
@@ -178,6 +179,7 @@ function AddMembersForm() {
 
 
     const handleSubmit = (values) => {
+        console.log(formik)
         if (userID === '' && values.profilePicture === null) {
             dispatch(showMessage({ message: 'Profile picture is required', variant: 'error' }));
             return
@@ -202,8 +204,6 @@ function AddMembersForm() {
             formattedData.append('bloodGroup', values.bloodGroup)
             formattedData.append('dikshaDate', values.dikshaDate)
             formattedData.append('occupation', values.occupation)
-            // formattedData.append('status', values.status)
-            // formattedData.append('role', values.role)
             formattedData.append('pinCode', values.pinCode)
             formattedData.append('qualification', values.qualification)
             formattedData.append('whatsAppNumber', values.whatsAppNumber)
@@ -231,6 +231,7 @@ function AddMembersForm() {
 
             } else {  // for update the existing member
                 formattedData.append('id', values.id)
+
                 if (values.profilePicture !== null) {
 
                     formattedData.append('file', values.profilePicture)
@@ -249,6 +250,7 @@ function AddMembersForm() {
                     }).catch((error) => console.log(error))
                 }
                 else {
+                    formattedData.append('profileImage',values.profileImage)
                     axios.post(`${userAPIConfig.updateUser}`, formattedData, {
                         headers: {
                             'Content-type': 'multipart/form-data',
@@ -286,6 +288,7 @@ function AddMembersForm() {
             dob: null,
             role: '',
             status: '',
+            profileImage:'',
             countryCode: '+91 (IN)',
             mobileNumber: '',
             country: '',
