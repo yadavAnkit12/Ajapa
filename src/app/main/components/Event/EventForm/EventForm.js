@@ -178,7 +178,7 @@ const EventForm = () => {
                 }
             }),
          
-        eventImage: Yup.mixed().nullable()
+        file: Yup.mixed().nullable()
         .test('fileType', 'Unsupported file type', (value) => {
           if (!value) return true; // Allow null values
           const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
@@ -195,7 +195,7 @@ const EventForm = () => {
             return;
         }
 
-        if (values.eventType === 'Offline' && !values.lockDepartureDate) {
+        if (values.eventType === 'Offline' && values.shivirAvailable === 'Yes' && !values.shivirStartDate && !values.shivirEndDate) {
             dispatch(showMessage({ message: "Lock Departure Date is required for offline events", variant: 'error' }));
             return;
         }
