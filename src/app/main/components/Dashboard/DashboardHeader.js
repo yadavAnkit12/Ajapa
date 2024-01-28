@@ -1,13 +1,13 @@
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import Autocomplete from '@mui/material/Autocomplete';
-import { Input, Paper, Typography, Modal, Box, Button, TextField } from '@mui/material';
+import { Input, Paper, Typography, Modal, Box, Button, TextField, Card } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { showMessage } from 'app/store/fuse/messageSlice';
+import clsx from 'clsx';
 
-// import VehicleRegisterForm from './VehicleRegisterForm';
 
 const style = {
   position: 'absolute',
@@ -61,61 +61,193 @@ function DashboardHeader(props) {
     <>
       <div className="w-full flex flex-col min-h-full">
         <div className="flex flex-col sm:flex-row space-y-16 sm:space-y-0 flex-1 w-full items-center justify-between py-32 px-10">
-          {/* <Typography
-            component={motion.span}
-            initial={{ x: -20 }}
-            animate={{ x: 0, transition: { delay: 0.2 } }}
-            delay={300}
-            className="text-24 md:text-32 font-extrabold tracking-tight pl-10"
-          >
-            Event
-          </Typography> */}
-          <div className="flex flex-col w-full sm:w-auto sm:flex-row space-y-16 sm:space-y-0 flex-1 items-center justify-end space-x-8">
-            <Paper
-              component={motion.div}
-              initial={{ y: -20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1, transition: { delay: 0.2 } }}
-              className="flex items-center w-full sm:max-w-256 space-x-8 px-16 ml-5 mr-5 rounded-full border-1 shadow-0"
-            >
-              <FuseSvgIcon color="disabled">heroicons-solid:search</FuseSvgIcon>
-              <Input
-                placeholder="Search Event"
-                className="flex flex-1"
-                disableUnderline
-                fullWidth
-                value={props?.searchText}
-                inputProps={{
-                  'aria-label': 'Search',
-                }}
-                onChange={(ev) => props?.setSearchText(ev.target.value)}
-              />
-              {props?.searchText && <FuseSvgIcon
-                color="disabled"
-                size={16}
-                style={{ cursor: "pointer" }}
-                onClick={() => props?.setSearchText('')}>
-                heroicons-solid:x
-              </FuseSvgIcon>
-              }
-            </Paper>
+          <Card
+            className={clsx(
+              'flex items-center relative w-full rounded-16 p-20 min-h-64 shadow space-x-8 m-2',
+              // variant === 'success' && 'bg-green-600 text-white',
+              // variant === 'info' && 'bg-blue-700 text-white',
+              // variant === 'error' && 'bg-red-600 text-white',
+              // variant === 'warning' && 'bg-orange-600 text-white',
+              // className
+            )}
+            onClick={() => handleView(item)}
+            elevation={0}
+          // component={item.useRouter ? NavLinkAdapter : 'div'}
+          // to={item.link || ''}
+          // role={item.link && 'button'}
 
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0, transition: { delay: 0.2 } }}
-              className="ml-lg-5 mr-lg-5 ml-sm-2 mr-sm-2"
-            >
-              <Button
-                className=""
-                component={Link}
-                to="/app/eventRegisteration/"
-                variant="contained"
-                color="secondary"
-                startIcon={<FuseSvgIcon>heroicons-outline:plus</FuseSvgIcon>}
-              >
-                Add
-              </Button>
-            </motion.div>
-          </div>
+          >
+            {/* {item.image && !item.image && (
+        <Box
+          sx={{ backgroundColor: 'background.default' }}
+          className="flex shrink-0 items-center justify-center w-32 h-32 mr-12 rounded-full"
+        >
+          <FuseSvgIcon className="opacity-75" color="inherit">
+          {`${key}/images/${props.data.id}.jpg`}
+          </FuseSvgIcon>
+        </Box>
+      )} */}
+
+
+            <img
+              className="shrink-0 w-32 h-32 mr-12 rounded-full overflow-hidden object-cover object-center"
+              src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSIyr_FwMIcppToiOqzBPOSE4P5N_PuM67WaoJN31twHQ&s'
+              alt="Notification"
+            />
+
+            <div className="flex flex-col flex-auto">
+              <Typography className="font-semibold line-clamp-1">Ankit</Typography>
+
+
+              <div className=" font-semibold line-clamp-2" dangerouslySetInnerHTML={{ __html: 'item.mobileNumber' }} />
+
+
+              {/* {item.country && (
+          <Typography className="mt-8 text-sm leading-none " color="text.secondary">
+            {formatDistanceToNow(new Date(item.time), { addSuffix: true })}
+          </Typography>
+        )} */}
+            </div>
+            <Typography className="font-semibold line-clamp-1">hkdh</Typography>
+
+            {/* <IconButton
+        disableRipple
+        className="top-0 right-0 absolute p-8"
+        color="inherit"
+        size="small"
+        onClick={()=>handleClose(item.id)}
+      >
+        <FuseSvgIcon size={12} className="opacity-75" color="inherit">
+          heroicons-solid:x
+        </FuseSvgIcon>
+      </IconButton> */}
+            {/* {item.country.split(':')[1]} */}
+          </Card>
+          <Card
+            className={clsx(
+              'flex items-center relative w-full rounded-16 p-20 min-h-64 shadow space-x-8 m-2',
+              // variant === 'success' && 'bg-green-600 text-white',
+              // variant === 'info' && 'bg-blue-700 text-white',
+              // variant === 'error' && 'bg-red-600 text-white',
+              // variant === 'warning' && 'bg-orange-600 text-white',
+              // className
+            )}
+            onClick={() => handleView(item)}
+            elevation={0}
+          // component={item.useRouter ? NavLinkAdapter : 'div'}
+          // to={item.link || ''}
+          // role={item.link && 'button'}
+
+          >
+            {/* {item.image && !item.image && (
+        <Box
+          sx={{ backgroundColor: 'background.default' }}
+          className="flex shrink-0 items-center justify-center w-32 h-32 mr-12 rounded-full"
+        >
+          <FuseSvgIcon className="opacity-75" color="inherit">
+          {`${key}/images/${props.data.id}.jpg`}
+          </FuseSvgIcon>
+        </Box>
+      )} */}
+
+
+            <img
+              className="shrink-0 w-32 h-32 mr-12 rounded-full overflow-hidden object-cover object-center"
+              src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSIyr_FwMIcppToiOqzBPOSE4P5N_PuM67WaoJN31twHQ&s'
+              alt="Notification"
+            />
+
+            <div className="flex flex-col flex-auto">
+              <Typography className="font-semibold line-clamp-1">Ankit</Typography>
+
+
+              <div className=" font-semibold line-clamp-2" dangerouslySetInnerHTML={{ __html: 'item.mobileNumber' }} />
+
+
+              {/* {item.country && (
+          <Typography className="mt-8 text-sm leading-none " color="text.secondary">
+            {formatDistanceToNow(new Date(item.time), { addSuffix: true })}
+          </Typography>
+        )} */}
+            </div>
+            <Typography className="font-semibold line-clamp-1">hkdh</Typography>
+
+            {/* <IconButton
+        disableRipple
+        className="top-0 right-0 absolute p-8"
+        color="inherit"
+        size="small"
+        onClick={()=>handleClose(item.id)}
+      >
+        <FuseSvgIcon size={12} className="opacity-75" color="inherit">
+          heroicons-solid:x
+        </FuseSvgIcon>
+      </IconButton> */}
+            {/* {item.country.split(':')[1]} */}
+          </Card>
+          <Card
+            className={clsx(
+              'flex items-center relative w-full rounded-16 p-20 min-h-64 shadow space-x-8 m-2',
+              // variant === 'success' && 'bg-green-600 text-white',
+              // variant === 'info' && 'bg-blue-700 text-white',
+              // variant === 'error' && 'bg-red-600 text-white',
+              // variant === 'warning' && 'bg-orange-600 text-white',
+              // className
+            )}
+            onClick={() => handleView(item)}
+            elevation={0}
+          // component={item.useRouter ? NavLinkAdapter : 'div'}
+          // to={item.link || ''}
+          // role={item.link && 'button'}
+
+          >
+            {/* {item.image && !item.image && (
+        <Box
+          sx={{ backgroundColor: 'background.default' }}
+          className="flex shrink-0 items-center justify-center w-32 h-32 mr-12 rounded-full"
+        >
+          <FuseSvgIcon className="opacity-75" color="inherit">
+          {`${key}/images/${props.data.id}.jpg`}
+          </FuseSvgIcon>
+        </Box>
+      )} */}
+
+
+            <img
+              className="shrink-0 w-32 h-32 mr-12 rounded-full overflow-hidden object-cover object-center"
+              src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSIyr_FwMIcppToiOqzBPOSE4P5N_PuM67WaoJN31twHQ&s'
+              alt="Notification"
+            />
+
+            <div className="flex flex-col flex-auto">
+              <Typography className="font-semibold line-clamp-1">Ankit</Typography>
+
+
+              <div className=" font-semibold line-clamp-2" dangerouslySetInnerHTML={{ __html: 'item.mobileNumber' }} />
+
+
+              {/* {item.country && (
+          <Typography className="mt-8 text-sm leading-none " color="text.secondary">
+            {formatDistanceToNow(new Date(item.time), { addSuffix: true })}
+          </Typography>
+        )} */}
+            </div>
+            <Typography className="font-semibold line-clamp-1">hkdh</Typography>
+
+            {/* <IconButton
+        disableRipple
+        className="top-0 right-0 absolute p-8"
+        color="inherit"
+        size="small"
+        onClick={()=>handleClose(item.id)}
+      >
+        <FuseSvgIcon size={12} className="opacity-75" color="inherit">
+          heroicons-solid:x
+        </FuseSvgIcon>
+      </IconButton> */}
+            {/* {item.country.split(':')[1]} */}
+          </Card>
+
         </div>
         <div className='flex sm:flex-row flex-wrap flex-col justify-between mx-10  mb-10 shadow-1 rounded-16'>
           <div className="flex sm:flex-row flex-wrap flex-col justify-start">

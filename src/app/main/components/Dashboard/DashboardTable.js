@@ -4,16 +4,24 @@ import _ from '@lodash';
 import EditIcon from '@mui/icons-material/Edit';
 import PersonIcon from '@mui/icons-material/Person';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import { Modal, Table, TableBody, TableCell, TablePagination, TableRow, Typography, IconButton, Box, Button, MenuItem,Menu } from '@mui/material';
+import { Modal, Table, TableBody, TableCell, TablePagination, TableRow, Typography, IconButton, Box, Button, MenuItem, Menu, Dialog, DialogTitle, DialogActions, Slide, Switch } from '@mui/material';
 import axios from 'axios';
-import { motion } from 'framer-motion';
-import { useEffect, useState, useRef } from 'react';
+import { color, motion } from 'framer-motion';
+import { useEffect, useState, useRef, forwardRef } from 'react';
 import { showMessage } from 'app/store/fuse/messageSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from "react-router-dom";
-import { eventAPIConfig} from '../../API/apiConfig';
+import { eventAPIConfig } from '../../API/apiConfig';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
+// import EventTableHead from './EventTableHead';
+// import { tuple } from 'yup';
+// import EventView from './EventView';
 import DashboardTableHead from './DashboardTableHead';
+import EventView from '../Event/EventView';
+
+const Transition = forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const style = {
   position: 'absolute',
@@ -26,16 +34,16 @@ const style = {
   borderRadius: '20px',
   maxWidth: '1200px',
   maxHeight: '650px',
-  overflow: 'auto'
+  overflow: 'auto',
 };
 
 const menuItemArray = [
   {
-      key: 1,
-      label: 'View',
-      status: 'view',
-      // visibleIf: ['complete', 'active', 'inactive'],
-      loadIf: true
+    key: 1,
+    label: 'View',
+    status: 'view',
+    // visibleIf: ['complete', 'active', 'inactive'],
+    loadIf: true
   },
   {
     key: 1,
@@ -43,18 +51,19 @@ const menuItemArray = [
     status: 'edit',
     // visibleIf: ['complete', 'active', 'inactive'],
     loadIf: true
-},
-{
-  key: 1,
-  label: 'Delete',
-  status: 'delete',
-  // visibleIf: ['complete', 'active', 'inactive'],
-  loadIf: true
-},
+  },
+  // {
+  //   key: 1,
+  //   label: 'Delete',
+  //   status: 'delete',
+  //   // visibleIf: ['complete', 'active', 'inactive'],
+  //   loadIf: true
+  // },
 ]
 
 
 function DashboardTable(props) {
+  // console.log(props)
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [eventListData, setEventListData] = useState([]);
@@ -75,10 +84,12 @@ function DashboardTable(props) {
   const [openView, setOpenView] = useState(false);
   const [viewid, setViewId] = useState("");
   const [change, setChange] = useState(false);
+  const [open, setOpen] = useState(false)
+  const [deleteId, setDeleteId] = useState('')
 
   useEffect(() => {
     fetchData();
-  }, [props?.change, rowsPerPage, page, props?.filterValue]);
+  }, [props?.change, rowsPerPage, page, props?.filterValue,searchText]);
 
   useEffect(() => {
     if (page !== 0) {
@@ -114,12 +125,10 @@ function DashboardTable(props) {
       page: page + 1,
       rowsPerPage: rowsPerPage, // Example data to pass in req.query
       eventName: searchText,
-      // fromDate: _.get(props, 'filterValue.fromDate'),
-      // toDate: _.get(props, 'filterValue.toDate'),
-      eventStatus: (_.get(props,'filterValue.eventStatus')==='Active' || _.get(props,'filterValue')==='')?true:false,
-      bookingStatus: (_.get(props,'filterValue.bookingStatus')==='On' || _.get(props,'filterValue')==='')?true:false,
+      eventStatus: (_.get(props, 'filterValue.eventStatus') === 'Active' || _.get(props, 'filterValue') === '') ? true : false,
+      bookingStatus: (_.get(props, 'filterValue.bookingStatus') === 'On' || _.get(props, 'filterValue') === '') ? true : false,
     };
-    axios.get("http://192.168.29.217:8080/event/list",{params}, {
+    axios.get(eventAPIConfig.list, { params }, {
       headers: {
         'Content-type': 'multipart/form-data',
         authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
@@ -134,22 +143,6 @@ function DashboardTable(props) {
         dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
       }
     });
-  };
-
-  const handleEditOpen = (empId) => {
-    setEditId(empId)
-    setOpenEdit(true);
-  };
-
-  const handleEditClose = () => {
-    setOpenEdit(false);
-    setChange(!change)
-  };
-
-
-  const handleViewOpen = (empId) => {
-    setViewId(empId)
-    setOpenView(true);
   };
 
 
@@ -171,11 +164,76 @@ function DashboardTable(props) {
     });
   }
 
-  function getStatus(id,selectedValue){
+  function getStatus(id, selectedValue) {
 
-    if(selectedValue==='view'){
-      navigate('/app/vehicleView')
+    if (selectedValue === 'view') {
+      setOpenView(true)
+      setViewId(id)
     }
+    else if (selectedValue === 'edit') {
+      navigate(`/app/eventRegisteration/${id}`)
+    }
+    // else if (selectedValue === 'delete') {
+    //   setDeleteId(id)
+    //   setOpen(true)
+
+    // }
+
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+  }
+
+  //deleting the event
+  // const deleteEvent = () => {
+  //   axios.post(`${eventAPIConfig.delete}/${deleteId}`, {
+  //     headers: {
+  //       'Content-type': 'multipart/form-data',
+  //       Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+  //     },
+  //   }).then((response) => {
+  //     if (response.status === 200) {
+  //       dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+  //     } else {
+  //       dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
+  //     }
+  //   }).catch((error) => console.log(error))
+  // }
+
+  //chnaging the booking status
+  const handleChnangeBookingStatus=(id,status)=>{
+    axios.post(`${eventAPIConfig.changeBookingStatus}/${id}/${!status}`, {
+      headers: {
+        'Content-type': 'multipart/form-data',
+        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+      },
+    }).then((response) => {
+      if (response.status === 200) {
+         fetchData()
+        dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+
+      } else {
+        dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
+      }
+    }).catch((error) => console.log(error))
+
+  }
+  //chnaging the event status
+  const handleChangeEventStatus=(id,status)=>{
+    axios.post(`${eventAPIConfig.changeEventStatus}/${id}/${!status}`, {
+      headers: {
+        'Content-type': 'multipart/form-data',
+        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+      },
+    }).then((response) => {
+      if (response.status === 200) {
+        fetchData()
+        dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+      } else {
+        dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
+      }
+    }).catch((error) => console.log(error))
 
   }
 
@@ -194,9 +252,7 @@ function DashboardTable(props) {
     setSelected([]);
   }
 
-  function redirectToProfile(patientId) {
-    navigate(`/app/patient/profile/${patientId}`);
-  }
+
   function handleChangePage(event, value) {
     event.preventDefault();
     setPage(value);
@@ -210,6 +266,7 @@ function DashboardTable(props) {
     tableRef.current && tableRef.current.scrollIntoView();
 
   };
+
 
   if (loading) {
     return (
@@ -234,7 +291,7 @@ function DashboardTable(props) {
   }
 
   return (
-    <div className="w-full flex flex-col min-h-full">
+    <div className="w-full flex flex-col min-h-full" style={{overflow:'auto'}}>
       <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle" ref={tableRef}>
         <DashboardTableHead
           selectedProductIds={selected}
@@ -246,7 +303,7 @@ function DashboardTable(props) {
         />
         <TableBody>
           {
-           eventListData?.data?.map((n) => {
+            eventListData?.data?.map((n) => {
               const isSelected = selected.indexOf(n.eventId) !== -1;
               return (
                 <TableRow
@@ -274,6 +331,29 @@ function DashboardTable(props) {
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.eventDate}
                   </TableCell>
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                    {n.shivirAvailable ? 'Yes' : 'No'}
+                  </TableCell>
+
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align="center">
+                    <Switch
+                      checked={n.eventStatus}
+                      color="success"
+                      inputProps={{ 'aria-label': 'toggle event status' }}
+                      onChange={()=>handleChangeEventStatus(n.eventId,n.eventStatus)}
+                    />
+                    {n.eventStatus ? 'On' : 'Off'}
+                  </TableCell>
+
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align="center">
+                    <Switch
+                      checked={n.bookingStatus}
+                      color="success"
+                      inputProps={{ 'aria-label': 'toggle booking status' }}
+                      onChange={()=>handleChnangeBookingStatus(n.eventId,n.bookingStatus)}
+                    />
+                    {n.bookingStatus ? 'On' : 'Off'}
+                  </TableCell>
 
                   <TableCell className="p-4 md:p-16" component="th" scope="row" >
                     <PopupState variant="popover" popupId="demo-popup-menu">
@@ -287,7 +367,7 @@ function DashboardTable(props) {
                             {menuItemArray.map((value) => (
                               (value.loadIf) && <MenuItem
                                 onClick={() => {
-                                  getStatus(n.eventId, value.status);
+                                  getStatus(n.eventId, value.status,n.eventStatus);
                                   popupState.close();
                                 }}
                                 key={value.key}
@@ -302,9 +382,6 @@ function DashboardTable(props) {
                       )}
                     </PopupState>
                   </TableCell>
-
-
-
                 </TableRow>
               );
 
@@ -313,12 +390,12 @@ function DashboardTable(props) {
 
       </Table>
 
-      {!searchText && <TablePagination
+      <TablePagination
         className="shrink-0 border-t-1"
         component="div"
         count={eventListData.totalElement}
         rowsPerPage={eventListData.rowPerPage}
-        page={eventListData.pageNumber-1}
+        page={eventListData.pageNumber - 1}
         backIconButtonProps={{
           'aria-label': 'Previous Page',
         }}
@@ -327,22 +404,33 @@ function DashboardTable(props) {
         }}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
-      />}
+      />
+      {/* <Dialog
+        open={open}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleClose}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>{"Do you want to delete this Event?"}</DialogTitle>
 
+        <DialogActions>
+          <Button onClick={handleClose}>No</Button>
+          <Button onClick={deleteEvent} autoFocus>
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog> */}
       <Modal
-        open={openEdit}
-        onClose={handleEditClose}
+        open={openView}
+        onClose={handleViewClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          {/* <VehicleRegisterForm patientId={editId} setChange={props.setChange} change={props.change} setOpen={setOpenEdit} /> */}
+          <EventView handleViewClose={handleViewClose} viewid={viewid} />
         </Box>
       </Modal>
-
-
-   
-
 
     </div>
   );
