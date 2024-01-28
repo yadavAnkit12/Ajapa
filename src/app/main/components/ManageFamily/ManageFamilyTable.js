@@ -445,7 +445,7 @@ function ManageFamilyTable(props) {
         onClose={()=>setChangeHead(false)}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>{`Do you want to delete this User?`}</DialogTitle>
+        <DialogTitle>{`Do you want to make this user as Head ?`}</DialogTitle>
 
         <DialogActions>
           <Button onClick={()=>setChangeHead(false)}>No</Button>

@@ -57,7 +57,7 @@ const UserEventCard = () => {
                     <img
 
                         style={{ width: '100%', height: '200px' }}
-                        src={`${key}/events/${data.eventId}.jpg`} alt="Event Image" />
+                        src={`${key}/events/${data.eventImage}`} alt="Event Image" />
                     <div className="p-5">
                         <h5
                             className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white text-center">{data.eventName}</h5>
