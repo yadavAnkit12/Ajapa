@@ -198,7 +198,7 @@ function AddMembersForm() {
             const formattedData = new FormData()
 
 
-            formattedData.append('familyId', getLoggedInPartnerId())
+            formattedData.append('familyId', sessionStorage.getItem('familyId'))
             formattedData.append('name', values.name)
             formattedData.append('email', values.email)
             formattedData.append('password', values.password)
@@ -289,10 +289,12 @@ function AddMembersForm() {
             const dob = new Date(event.target.value);
             const today = new Date();
             const age = today.getFullYear() - dob.getFullYear();
-            // alert(showCredentials)
+            
             setShowCredentials(age > 15);
             
         };
+
+        console.log(showCredentials)
 
     const formik = useFormik({
         initialValues: {
