@@ -9,11 +9,14 @@ import { eventAPIConfig } from "../../API/apiConfig";
 import EventIcon from '@mui/icons-material/Event';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import FuseLoading from "@fuse/core/FuseLoading";
+import { useNavigate } from "react-router-dom";
+import { getLoggedInPartnerId } from "src/app/auth/services/utils/common";
 
 
 const UserEventCard = () => {
 
     const dispatch = useDispatch();
+    const navigate = useNavigate()
     const [allEventsData, setAllEventsData] = useState([]);;
 
     useEffect(() => {
@@ -45,8 +48,10 @@ const UserEventCard = () => {
 
     }
 
-    const handleEventRegister = () => {
-        dispatch(showMessage({ message: "We are working on it !" }));
+    const handleEventRegister = async(id) => {
+        const userId=await getLoggedInPartnerId()
+        console.log(userId)
+        navigate(`/app/UserEventsRegisteration/${id}/${userId}`)
     }
 
     return (
@@ -93,7 +98,7 @@ const UserEventCard = () => {
                 from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br 
                 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 
                 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium 
-                rounded-lg text-md px-5 py-2.5 text-center me-2 mb-2 " onClick={handleEventRegister}>
+                rounded-lg text-md px-5 py-2.5 text-center me-2 mb-2 " onClick={()=>handleEventRegister(data.eventId)}>
                             Register
                         </Button>
                     </div>

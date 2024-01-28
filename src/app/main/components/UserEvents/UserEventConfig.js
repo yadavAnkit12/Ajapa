@@ -1,3 +1,4 @@
+import EventRegisterForm from "./EventRegisterForm/EventRegisterForm";
 import UserEvent from "./UserEvent";
 
 const UserEventConfig = {
@@ -10,6 +11,11 @@ const UserEventConfig = {
         {
             path: 'app/UserEvents',
             element: <UserEvent/>,
+            auth: ["User","Member"]
+        },
+        {
+            path: 'app/UserEventsRegisteration/:eventId/:userId/*',
+            element: <EventRegisterForm/>,
             auth: ["User","Member"]
         }
     ],
