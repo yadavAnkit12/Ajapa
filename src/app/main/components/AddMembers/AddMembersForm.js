@@ -51,24 +51,25 @@ function AddMembersForm() {
     const [cityList, setCityList] = useState([])
     const [cityID, setCityID] = useState('')
     const [userID, setUserID] = useState('')
+    const [showCredentials, setShowCredentials] = useState(true);
 
 
     const validationSchema = yup.object().shape({
         name: yup.string().max(100, 'Full name should be less than 100 chars').required('Please enter your full name'),
-        email: yup.string().email('Invalid email address').matches(/^([A-Za-z0-9_\-\.])+\@(?!(?:[A-Za-z0-9_\-\.]+\.)?([A-Za-z]{2,4})\.\2)([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/, 'Invalid email').required('Please enter your email'),
+        email: yup.string().email('Invalid email address')
+        .matches(/^([A-Za-z0-9_\-\.])+\@(?!(?:[A-Za-z0-9_\-\.]+\.)?([A-Za-z]{2,4})\.\2)([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/, 'Invalid email'),
+        // .required('Please enter your email'),
         password: yup
             .string()
-            .min(4, 'Password is too short - should be 4 chars minimum').required('Please enter your password.'),
+            .min(4, 'Password is too short - should be 4 chars minimum'),
+            // .required('Please enter your password.'),
         passwordConfirm: yup
             .string()
             .oneOf([yup.ref('password'), null], 'Passwords must match'),
         gender: yup.string().required('Please select your gender'),
-        dob: yup.date().required('Please enter your date of birth').test('is-adult', 'You must be at least 18 years old', function (value) {
-            const currentDate = new Date();
-            const minAgeDate = new Date(currentDate.getFullYear() - 18, currentDate.getMonth(), currentDate.getDate());
-            return value <= minAgeDate;
-        }),
-        countryCode: yup.string().required('select country code').required('required'),
+        dob: yup.date().required('Please enter your date of birth'),
+        
+        countryCode: yup.string().required('select country code'),
         profilePicture: yup.mixed().nullable()
             .test('fileType', 'Unsupported file type', (value) => {
                 if (!value) return true; // Allow null values
@@ -77,8 +78,8 @@ function AddMembersForm() {
             }),
         mobileNumber: yup
             .string()
-            .matches(/^[1-9]\d{9}$/, 'Invalid mobile number')
-            .required('Please enter your mobile number'),
+            .matches(/^[1-9]\d{9}$/, 'Invalid mobile number'),
+            // .required('Please enter your mobile number'),
         country: yup.string().required('Please enter your country'),
         state: yup.string().required('Please enter your state'),
         city: yup.string().required('Please enter your city'),
@@ -178,6 +179,7 @@ function AddMembersForm() {
     }, [stateID])
 
 
+    
     const handleSubmit = (values) => {
         console.log(formik)
         if (userID === '' && values.profilePicture === null) {
@@ -185,6 +187,7 @@ function AddMembersForm() {
             return
 
         }
+        // if()
         if (formik.isValid) {
             const formattedData = new FormData()
 
@@ -275,6 +278,15 @@ function AddMembersForm() {
 
     }
 
+        // Function to handle DOB 
+        const handleDobChange = (event) => {
+            const dob = new Date(event.target.value);
+            const today = new Date();
+            const age = today.getFullYear() - dob.getFullYear();
+            alert(showCredentials)
+            setShowCredentials(age > 15);
+            
+        };
 
     const formik = useFormik({
         initialValues: {
@@ -355,6 +367,8 @@ function AddMembersForm() {
 
                                 />
 
+                                {showCredentials && (
+
                                 <TextField
                                     sx={{ mb: 2 }}
                                     className="max-w-md"
@@ -371,7 +385,8 @@ function AddMembersForm() {
                                     fullWidth
 
                                 />
-
+                                )}
+                                {showCredentials && (
                                 <div className='d-flex max-w-md'>
                                     <Autocomplete
                                         options={phoneNumberCountryCodes}
@@ -391,6 +406,7 @@ function AddMembersForm() {
                                             />
                                         )}
                                     />
+                               
                                     <TextField
                                         name="mobileNumber"
                                         label="Mobile Number"
@@ -407,6 +423,7 @@ function AddMembersForm() {
                                     />
 
                                 </div>
+                                )}
                                 <TextField
                                     name="dob"
                                     label="Date of Birth"
@@ -414,7 +431,10 @@ function AddMembersForm() {
                                     InputLabelProps={{ shrink: true }}
                                     sx={{ mb: 2 }}
                                     className="max-w-md"
-                                    onChange={formik.handleChange}
+                                    onChange={(e) => {
+                                        formik.handleChange(e);
+                                        handleDobChange(e); 
+                                    }}
                                     onBlur={formik.handleBlur}
                                     value={formik.values.dob}
                                     error={formik.touched.dob && Boolean(formik.errors.dob)}
@@ -538,7 +558,10 @@ function AddMembersForm() {
                                 />
 
                             </div>
+
                             <div className={tabValue !== 2 ? 'hidden' : ''}>
+                                {showCredentials && (
+                                    <>
                                 <TextField
                                     name='password'
                                     label="Password"
@@ -595,7 +618,8 @@ function AddMembersForm() {
                                     }}
                                 />
 
-
+                               </>
+                                )}
                                 <div style={{ marginBottom: '16px' }}>
                                     <FormControlLabel
                                         control={
@@ -718,7 +742,8 @@ function AddMembersForm() {
                                     variant="outlined"
                                     fullWidth
                                 />
-
+                                  
+                            {showCredentials && (
                                 <TextField
                                     label="WhatsApp Number"
                                     sx={{ mb: 2 }}
@@ -733,7 +758,7 @@ function AddMembersForm() {
                                     variant="outlined"
                                     fullWidth
                                 />
-
+                            )}
                             </div>
                         </form>
                     </div>

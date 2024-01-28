@@ -137,15 +137,15 @@ function ManageFamilyTable(props) {
       state: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.state') === '' ? 'All' : _.get(props, 'filterValue.state'),
       city: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.city') === '' ? 'All' : _.get(props, 'filterValue.city'),
     };
-    console.log('params', params)
-    axios.get(`${userAPIConfig.getUserByFamily}/${getLoggedInPartnerId()}`, {
+    // console.log('params', params)
+    axios.get(`${userAPIConfig.getUserByFamily}`, {
       headers: {
         'Content-type': 'multipart/form-data',
         Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
       },
     }).then((response) => {
       if (response.status === 200) {
-        console.log(response)
+        // console.log(response)
         setUserListData(response?.data);
         setLoading(false);
       } else {
@@ -342,11 +342,11 @@ function ManageFamilyTable(props) {
                   </TableCell>
 
                   <TableCell className="p-4 md:p-16" component="th" scope="row">
-                    {n.email}
+                    {n.email || 'N/A'}
                   </TableCell>
 
                   <TableCell className="p-4 md:p-16" component="th" scope="row" >
-                    {n.mobileNumber}
+                    {n.mobileNumber || 'N/A'}
 
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
@@ -407,7 +407,7 @@ function ManageFamilyTable(props) {
 
       </Table>
 
-      <TablePagination
+      {/* <TablePagination
         className="shrink-0 border-t-1"
         component="div"
         count={userListData.totalElement}
@@ -421,7 +421,7 @@ function ManageFamilyTable(props) {
         }}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+      /> */}
       <Dialog
         open={open}
         TransitionComponent={Transition}
