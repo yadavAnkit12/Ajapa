@@ -187,7 +187,14 @@ function AddMembersForm() {
             return
 
         }
-        // if()
+
+        if(showCredentials){
+            if(!values.email && !values.password && !values.passwordConfirm && !values.mobileNumber){
+                dispatch(showMessage({ message: 'Please enter all the mandatory fields', variant: 'error' }));
+                return;
+            }
+        }
+
         if (formik.isValid) {
             const formattedData = new FormData()
 
@@ -283,7 +290,7 @@ function AddMembersForm() {
             const dob = new Date(event.target.value);
             const today = new Date();
             const age = today.getFullYear() - dob.getFullYear();
-            alert(showCredentials)
+            // alert(showCredentials)
             setShowCredentials(age > 15);
             
         };
