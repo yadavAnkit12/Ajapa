@@ -187,7 +187,6 @@ function AddMembersForm() {
             return
 
         }
-
         if(showCredentials){
             if(!values.email && !values.password && !values.passwordConfirm && !values.mobileNumber){
                 dispatch(showMessage({ message: 'Please enter all the mandatory fields', variant: 'error' }));
