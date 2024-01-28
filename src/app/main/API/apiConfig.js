@@ -10,7 +10,8 @@ export const userAPIConfig = {
     updateUserWithImage: key + '/updateUserWithImage',
     userReport:key + "/report/user/list",
     userReportPDF: key + "/reportPdf/user/list",
-    getUserByFamily: key + '/getUsersByFamilyId'
+    getUserByFamily: key + '/getUsersByFamilyId',
+    changeHead:key + '/changeHead'
 }
 export const eventAPIConfig = {
     create: key + '/saveEvent',
