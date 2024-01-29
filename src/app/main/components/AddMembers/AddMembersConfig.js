@@ -14,12 +14,6 @@ const AddMembersConfig = {
       auth: ["Super", "User"]
     },
 
-    {
-      path: '/app/manageFamily',
-      element: <MemberView/>,
-      auth: ["Super", "User"]
-    }
-
   ],
 };
 
