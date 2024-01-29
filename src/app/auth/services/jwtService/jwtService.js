@@ -94,6 +94,7 @@ class JwtService extends FuseUtils.EventEmitter {
             if (response.data.user) {
               sessionStorage.setItem('userRole', _.get(response, 'data.user.role'));
               sessionStorage.setItem('id', _.get(response, 'data.user.id'));
+              sessionStorage.setItem('familyId', _.get(response, 'data.user.familyId'));
               this.setSession(userData.access_token);
               // this.getPermissions(_.get(response, 'data.user.roleID'));
               resolve(response.data.user);
@@ -139,6 +140,7 @@ class JwtService extends FuseUtils.EventEmitter {
             if (response.data.user) {
               sessionStorage.setItem('userRole', _.get(response, 'data.user.role'));
               sessionStorage.setItem('id', _.get(response, 'data.user.id'));
+              sessionStorage.setItem('familyId', _.get(response, 'data.user.familyId'));
               this.setSession(userData.access_token);
               // this.getPermissions(_.get(response, 'data.user.roleID'));
               resolve(response.data.user);
@@ -178,6 +180,7 @@ class JwtService extends FuseUtils.EventEmitter {
           if (response.data.user) {
             sessionStorage.setItem('userRole', _.get(response, 'data.user.role'));
             sessionStorage.setItem('id', _.get(response, 'data.user.id'));
+            sessionStorage.setItem('familyId', _.get(response, 'data.user.familyId'));
             this.setSession(userData.access_token);
             // this.getPermissions(_.get(response, 'data.data.userDetails.roleID'));
             resolve(userData.user);
@@ -227,6 +230,7 @@ class JwtService extends FuseUtils.EventEmitter {
   logout = () => {
     sessionStorage.removeItem('userRole');
     sessionStorage.removeItem('id');
+    sessionStorage.removeItem('familyId');
     this.setSession(null);
     this.emit('onLogout', 'Logged out');
   };
