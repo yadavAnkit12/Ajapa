@@ -36,14 +36,30 @@ function DashboardTableHead(props) {
       sort: true,
       visibleIf: true
     },
-    // {
-    //   id: 'status',
-    //   align: 'left',
-    //   disablePadding: false,
-    //   label: 'Status',
-    //   sort: true,
-    //   visibleIf: true
-    // },
+    {
+      id: 'shivirAvailable',
+      align: 'center',
+      disablePadding: false,
+      label: 'Shivir Available',
+      sort: true,
+      visibleIf: true
+    },
+    {
+      id: 'eventstatus',
+      align: 'center',
+      disablePadding: false,
+      label: 'Event Status',
+      sort: true,
+      visibleIf: true
+    },
+    {
+      id: 'bookingstatus',
+      align: 'center',
+      disablePadding: false,
+      label: 'Booking Status',
+      sort: true,
+      visibleIf: true
+    },
 
     {
       id: 'action',

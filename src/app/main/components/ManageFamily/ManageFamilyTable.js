@@ -56,6 +56,14 @@ const menuItemArray = [
     visibleIf:getUserRoles()==='User'
 
   },
+  {
+    key: 4,
+    label: 'Make Head',
+    status: 'Make Head',
+    visibleIf:getUserRoles()==='User'
+
+  },
+
 ];
 
 
@@ -84,6 +92,7 @@ function ManageFamilyTable(props) {
   const [open, setOpen] = useState(false)
   const [deleteId, setDeleteId] = useState('')
   const [changeStatus, setChangeStatus] = useState('')
+  const [changeHead,setChangeHead]=useState('')
 
   useEffect(() => {
     fetchData();
@@ -178,6 +187,10 @@ function ManageFamilyTable(props) {
       setViewId(id)
 
     }
+    else if(selectedValue==='Make Head'){
+      setViewId(id)
+      setChangeHead(true)
+    }
 
   }
 
@@ -208,6 +221,31 @@ function ManageFamilyTable(props) {
       }
     })
   }
+
+  const handleChangeHead = () => {
+    const formData = new FormData()
+    formData.append('id', viewid)
+
+    axios.post(userAPIConfig.changeHead, formData, {
+      headers: {
+        'Content-type': 'multipart/form-data',
+        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`
+      },
+    }).then((response) => {
+      if (response.status === 200) {
+        dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+        navigate('/sign-out')
+        // handleClose()
+        // fetchData()
+
+      }
+      else {
+        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
+
+      }
+    })
+  }
+
 
   function handleSelectAllClick(event) {
     if (event.target.checked) {
@@ -396,6 +434,22 @@ function ManageFamilyTable(props) {
         <DialogActions>
           <Button onClick={handleClose}>No</Button>
           <Button onClick={handleDeleteUser} autoFocus>
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={changeHead}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={()=>setChangeHead(false)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>{`Do you want to delete this User?`}</DialogTitle>
+
+        <DialogActions>
+          <Button onClick={()=>setChangeHead(false)}>No</Button>
+          <Button onClick={handleChangeHead} autoFocus>
             Yes
           </Button>
         </DialogActions>
