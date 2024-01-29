@@ -181,14 +181,17 @@ function AddMembersForm() {
 
     
     const handleSubmit = (values) => {
-        console.log(formik)
+        
         if (userID === '' && values.profilePicture === null) {
             dispatch(showMessage({ message: 'Profile picture is required', variant: 'error' }));
             return
 
         }
+
+        
         if(showCredentials){
-            if(!values.email && !values.password && !values.passwordConfirm && !values.mobileNumber){
+            
+            if(!values.email || !values.password || !values.passwordConfirm || !values.mobileNumber){
                 dispatch(showMessage({ message: 'Please enter all the mandatory fields', variant: 'error' }));
                 return;
             }
@@ -230,6 +233,7 @@ function AddMembersForm() {
                     },
                 }).then((response) => {
                     if (response.status === 200) {
+                        navigate('/app/manageFamily')
                         dispatch(showMessage({ message: response.data.message, variant: 'success' }));
 
                     }
@@ -251,6 +255,7 @@ function AddMembersForm() {
                         },
                     }).then((response) => {
                         if (response.status === 200) {
+                            navigate('/app/manageFamily')
                             dispatch(showMessage({ message: response.data.message, variant: 'success' }));
                         }
                         else {
@@ -267,6 +272,7 @@ function AddMembersForm() {
                         },
                     }).then((response) => {
                         if (response.status === 200) {
+                            
                             dispatch(showMessage({ message: response.data.message, variant: 'success' }));
                         }
                         else {
@@ -293,8 +299,6 @@ function AddMembersForm() {
             setShowCredentials(age > 15);
             
         };
-
-        console.log(showCredentials)
 
     const formik = useFormik({
         initialValues: {

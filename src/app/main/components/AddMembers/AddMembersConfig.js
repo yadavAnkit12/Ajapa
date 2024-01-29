@@ -1,3 +1,4 @@
+import MemberView from "../ManageFamily/MemberView";
 import AddMembersForm from "./AddMembersForm";
 
 const AddMembersConfig = {
@@ -11,7 +12,14 @@ const AddMembersConfig = {
       path: '/app/addMembers/:id/*',
       element: <AddMembersForm/>,
       auth: ["Super", "User"]
+    },
+
+    {
+      path: '/app/manageFamily',
+      element: <MemberView/>,
+      auth: ["Super", "User"]
     }
+
   ],
 };
 
