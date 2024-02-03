@@ -53,8 +53,7 @@ function UserForm() {
     const [cityList, setCityList] = useState([])
     const [cityID, setCityID] = useState('')
     const [loading, setLoading] = useState(true)
-    const [userID,setUserID]=useState('')
-
+    const [userID, setUserID] = useState('')
 
     const validationSchema = yup.object().shape({
         name: yup.string().max(100, 'Full name should be less than 100 chars').required('Please enter your full name'),
@@ -73,11 +72,11 @@ function UserForm() {
         }),
         countryCode: yup.string().required('select country code').required('required'),
         profilePicture: yup.mixed().nullable()
-        .test('fileType', 'Unsupported file type', (value) => {
-          if (!value) return true; // Allow null values
-          const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
-          return allowedTypes.includes(value.type);
-        }),
+            .test('fileType', 'Unsupported file type', (value) => {
+                if (!value) return true; // Allow null values
+                const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+                return allowedTypes.includes(value.type);
+            }),
         mobileNumber: yup
             .string()
             .matches(/^[1-9]\d{9}$/, 'Invalid mobile number')
@@ -91,9 +90,13 @@ function UserForm() {
             .matches(/^\d{6}$/, 'Must be a 6-digit PIN code')
     });
 
+
+    useEffect(() => {
+        formik.resetForm()
+    }, [routeParams])
     useEffect(() => {
         const { id } = routeParams;
-
+       
         axios.get(`${userAPIConfig.getUserById}/${id}`, {
             headers: {
                 'Content-type': 'multipart/form-data',
@@ -112,7 +115,7 @@ function UserForm() {
                     dob: response.data.user.dob || '',
                     role: response.data.user.role || '',
                     status: response.data.user.status || '',
-                    pic:response.data.user.profileImage,// pic
+                    pic: response.data.user.profileImage,// pic
                     countryCode: response.data.user.countryCode || '+91 (IN)',
                     mobileNumber: response.data.user.mobileNumber || '',
                     country: response.data.user.country.split(':')[1] || '',
@@ -234,7 +237,7 @@ function UserForm() {
                 }).catch((error) => console.log(error))
             }
             else {
-                formattedData.append('profileImage',values.pic)
+                formattedData.append('profileImage', values.pic)
                 axios.post(`${userAPIConfig.updateUser}`, formattedData, {
                     headers: {
                         'Content-type': 'multipart/form-data',
@@ -279,7 +282,7 @@ function UserForm() {
             dob: null,
             role: '',
             status: '',
-            pic:'',
+            pic: '',
             countryCode: '+91 (IN)',
             mobileNumber: '',
             country: '',

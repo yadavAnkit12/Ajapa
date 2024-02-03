@@ -24,7 +24,8 @@ function EventFormHead(props) {
                         delay={300}
                         style={{fontStyle:'normal',fontSize:'24px',lineHeight:'28px',letterSpacing:'0px',textAlign:'center',fontWeight:'bold'}}
                     >
-                        Event Creation
+                        {props?.eventId?'Event Updation':'Event Creation'}
+                        
                     </Typography>
                 </div>
             </div>

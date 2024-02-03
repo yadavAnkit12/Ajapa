@@ -57,18 +57,18 @@ function AddMembersForm() {
     const validationSchema = yup.object().shape({
         name: yup.string().max(100, 'Full name should be less than 100 chars').required('Please enter your full name'),
         email: yup.string().email('Invalid email address')
-        .matches(/^([A-Za-z0-9_\-\.])+\@(?!(?:[A-Za-z0-9_\-\.]+\.)?([A-Za-z]{2,4})\.\2)([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/, 'Invalid email'),
+            .matches(/^([A-Za-z0-9_\-\.])+\@(?!(?:[A-Za-z0-9_\-\.]+\.)?([A-Za-z]{2,4})\.\2)([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/, 'Invalid email'),
         // .required('Please enter your email'),
         password: yup
             .string()
             .min(4, 'Password is too short - should be 4 chars minimum'),
-            // .required('Please enter your password.'),
+        // .required('Please enter your password.'),
         passwordConfirm: yup
             .string()
             .oneOf([yup.ref('password'), null], 'Passwords must match'),
         gender: yup.string().required('Please select your gender'),
         dob: yup.date().required('Please enter your date of birth'),
-        
+
         countryCode: yup.string().required('select country code'),
         profilePicture: yup.mixed().nullable()
             .test('fileType', 'Unsupported file type', (value) => {
@@ -79,7 +79,7 @@ function AddMembersForm() {
         mobileNumber: yup
             .string()
             .matches(/^[1-9]\d{9}$/, 'Invalid mobile number'),
-            // .required('Please enter your mobile number'),
+        // .required('Please enter your mobile number'),
         country: yup.string().required('Please enter your country'),
         state: yup.string().required('Please enter your state'),
         city: yup.string().required('Please enter your city'),
@@ -88,6 +88,10 @@ function AddMembersForm() {
             .string()
             .matches(/^\d{6}$/, 'Must be a 6-digit PIN code')
     });
+
+    useEffect(() => {
+        formik.resetForm()
+    }, [routeParams])
 
     useEffect(() => {
         const { id } = routeParams;
@@ -112,7 +116,7 @@ function AddMembersForm() {
                         dob: response.data.user.dob || '',
                         role: response.data.user.role || '',
                         status: response.data.user.status || '',
-                        profileImage:response.data.user.profileImage || '',
+                        profileImage: response.data.user.profileImage || '',
                         countryCode: response.data.user.countryCode || '+91 (IN)',
                         mobileNumber: response.data.user.mobileNumber || '',
                         country: response.data.user.country.split(':')[1] || '',
@@ -179,19 +183,19 @@ function AddMembersForm() {
     }, [stateID])
 
 
-    
+
     const handleSubmit = (values) => {
-        
+
         if (userID === '' && values.profilePicture === null) {
             dispatch(showMessage({ message: 'Profile picture is required', variant: 'error' }));
             return
 
         }
 
-        
-        if(showCredentials){
-            
-            if(!values.email || !values.password || !values.passwordConfirm || !values.mobileNumber){
+
+        if (showCredentials) {
+
+            if (!values.email || !values.password || !values.passwordConfirm || !values.mobileNumber) {
                 dispatch(showMessage({ message: 'Please enter all the mandatory fields', variant: 'error' }));
                 return;
             }
@@ -264,7 +268,7 @@ function AddMembersForm() {
                     }).catch((error) => console.log(error))
                 }
                 else {
-                    formattedData.append('profileImage',values.profileImage)
+                    formattedData.append('profileImage', values.profileImage)
                     axios.post(`${userAPIConfig.updateUser}`, formattedData, {
                         headers: {
                             'Content-type': 'multipart/form-data',
@@ -272,7 +276,7 @@ function AddMembersForm() {
                         },
                     }).then((response) => {
                         if (response.status === 200) {
-                            
+
                             dispatch(showMessage({ message: response.data.message, variant: 'success' }));
                         }
                         else {
@@ -290,15 +294,15 @@ function AddMembersForm() {
 
     }
 
-        // Function to handle DOB 
-        const handleDobChange = (event) => {
-            const dob = new Date(event.target.value);
-            const today = new Date();
-            const age = today.getFullYear() - dob.getFullYear();
-            
-            setShowCredentials(age > 15);
-            
-        };
+    // Function to handle DOB 
+    const handleDobChange = (event) => {
+        const dob = new Date(event.target.value);
+        const today = new Date();
+        const age = today.getFullYear() - dob.getFullYear();
+
+        setShowCredentials(age > 15);
+
+    };
 
     const formik = useFormik({
         initialValues: {
@@ -312,7 +316,7 @@ function AddMembersForm() {
             dob: null,
             role: '',
             status: '',
-            profileImage:'',
+            profileImage: '',
             countryCode: '+91 (IN)',
             mobileNumber: '',
             country: '',
@@ -381,60 +385,60 @@ function AddMembersForm() {
 
                                 {showCredentials && (
 
-                                <TextField
-                                    sx={{ mb: 2 }}
-                                    className="max-w-md"
-                                    name='email'
-                                    label="Email"
-                                    type="email"
-                                    value={formik.values.email}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    error={formik.touched.email && Boolean(formik.errors.email)}
-                                    helperText={formik.touched.email && formik.errors.email}
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-
-                                />
-                                )}
-                                {showCredentials && (
-                                <div className='d-flex max-w-md'>
-                                    <Autocomplete
-                                        options={phoneNumberCountryCodes}
-                                        value={formik.values.countryCode}
-                                        onChange={(event, newValue) => {
-                                            formik.setFieldValue('countryCode', newValue);
-                                        }}
-                                        renderInput={(params) => (
-                                            <TextField
-                                                {...params}
-                                                label="Code"
-                                                variant="outlined"
-                                                sx={{ mb: 2 }}
-                                                required
-                                                error={formik.touched.countryCode && Boolean(formik.errors.countryCode)}
-                                                helperText={formik.touched.countryCode && formik.errors.countryCode}
-                                            />
-                                        )}
-                                    />
-                               
                                     <TextField
-                                        name="mobileNumber"
-                                        label="Mobile Number"
-                                        type="number"
+                                        sx={{ mb: 2 }}
+                                        className="max-w-md"
+                                        name='email'
+                                        label="Email"
+                                        type="email"
+                                        value={formik.values.email}
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
-                                        value={formik.values.mobileNumber}
-                                        error={formik.touched.mobileNumber && Boolean(formik.errors.mobileNumber)}
-                                        helperText={formik.touched.mobileNumber && formik.errors.mobileNumber}
+                                        error={formik.touched.email && Boolean(formik.errors.email)}
+                                        helperText={formik.touched.email && formik.errors.email}
                                         variant="outlined"
                                         required
                                         fullWidth
-                                        sx={{ mb: 2 }}
-                                    />
 
-                                </div>
+                                    />
+                                )}
+                                {showCredentials && (
+                                    <div className='d-flex max-w-md'>
+                                        <Autocomplete
+                                            options={phoneNumberCountryCodes}
+                                            value={formik.values.countryCode}
+                                            onChange={(event, newValue) => {
+                                                formik.setFieldValue('countryCode', newValue);
+                                            }}
+                                            renderInput={(params) => (
+                                                <TextField
+                                                    {...params}
+                                                    label="Code"
+                                                    variant="outlined"
+                                                    sx={{ mb: 2 }}
+                                                    required
+                                                    error={formik.touched.countryCode && Boolean(formik.errors.countryCode)}
+                                                    helperText={formik.touched.countryCode && formik.errors.countryCode}
+                                                />
+                                            )}
+                                        />
+
+                                        <TextField
+                                            name="mobileNumber"
+                                            label="Mobile Number"
+                                            type="number"
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
+                                            value={formik.values.mobileNumber}
+                                            error={formik.touched.mobileNumber && Boolean(formik.errors.mobileNumber)}
+                                            helperText={formik.touched.mobileNumber && formik.errors.mobileNumber}
+                                            variant="outlined"
+                                            required
+                                            fullWidth
+                                            sx={{ mb: 2 }}
+                                        />
+
+                                    </div>
                                 )}
                                 <TextField
                                     name="dob"
@@ -445,7 +449,7 @@ function AddMembersForm() {
                                     className="max-w-md"
                                     onChange={(e) => {
                                         formik.handleChange(e);
-                                        handleDobChange(e); 
+                                        handleDobChange(e);
                                     }}
                                     onBlur={formik.handleBlur}
                                     value={formik.values.dob}
@@ -574,63 +578,63 @@ function AddMembersForm() {
                             <div className={tabValue !== 2 ? 'hidden' : ''}>
                                 {showCredentials && (
                                     <>
-                                <TextField
-                                    name='password'
-                                    label="Password"
-                                    sx={{ mb: 2 }}
-                                    className="max-w-md"
-                                    type={showPassword ? 'text' : 'password'}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    value={formik.values.password}
-                                    error={formik.touched.password && Boolean(formik.errors.password)}
-                                    helperText={formik.touched.password && formik.errors.password}
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position="end">
-                                                <IconButton
-                                                    onClick={() => setShowPassword(!showPassword)}
-                                                    edge="end"
-                                                >
-                                                    {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
-                                                </IconButton>
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                />
+                                        <TextField
+                                            name='password'
+                                            label="Password"
+                                            sx={{ mb: 2 }}
+                                            className="max-w-md"
+                                            type={showPassword ? 'text' : 'password'}
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
+                                            value={formik.values.password}
+                                            error={formik.touched.password && Boolean(formik.errors.password)}
+                                            helperText={formik.touched.password && formik.errors.password}
+                                            variant="outlined"
+                                            required
+                                            fullWidth
+                                            InputProps={{
+                                                endAdornment: (
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            onClick={() => setShowPassword(!showPassword)}
+                                                            edge="end"
+                                                        >
+                                                            {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                ),
+                                            }}
+                                        />
 
-                                <TextField
-                                    sx={{ mb: 2 }}
-                                    className="max-w-md"
-                                    name='passwordConfirm'
-                                    label="Confirm Password"
-                                    type={showPassword ? 'text' : 'password'}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    value={formik.values.passwordConfirm}
-                                    error={formik.touched.passwordConfirm && Boolean(formik.errors.passwordConfirm)}
-                                    helperText={formik.touched.passwordConfirm && formik.errors.passwordConfirm}
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position="end">
-                                                <IconButton
-                                                    onClick={() => setShowPassword(!showPassword)}
-                                                    edge="end"
-                                                >
-                                                    {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
-                                                </IconButton>
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                />
+                                        <TextField
+                                            sx={{ mb: 2 }}
+                                            className="max-w-md"
+                                            name='passwordConfirm'
+                                            label="Confirm Password"
+                                            type={showPassword ? 'text' : 'password'}
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
+                                            value={formik.values.passwordConfirm}
+                                            error={formik.touched.passwordConfirm && Boolean(formik.errors.passwordConfirm)}
+                                            helperText={formik.touched.passwordConfirm && formik.errors.passwordConfirm}
+                                            variant="outlined"
+                                            required
+                                            fullWidth
+                                            InputProps={{
+                                                endAdornment: (
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            onClick={() => setShowPassword(!showPassword)}
+                                                            edge="end"
+                                                        >
+                                                            {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                ),
+                                            }}
+                                        />
 
-                               </>
+                                    </>
                                 )}
                                 <div style={{ marginBottom: '16px' }}>
                                     <FormControlLabel
@@ -754,23 +758,23 @@ function AddMembersForm() {
                                     variant="outlined"
                                     fullWidth
                                 />
-                                  
-                            {showCredentials && (
-                                <TextField
-                                    label="WhatsApp Number"
-                                    sx={{ mb: 2 }}
-                                    className="max-w-md"
-                                    name="whatsAppNumber"
-                                    type="text"
-                                    value={formik.values.whatsAppNumber}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    error={formik.touched.whatsAppNumber && Boolean(formik.errors.whatsAppNumber)}
-                                    helperText={formik.touched.whatsAppNumber && formik.errors.whatsAppNumber}
-                                    variant="outlined"
-                                    fullWidth
-                                />
-                            )}
+
+                                {showCredentials && (
+                                    <TextField
+                                        label="WhatsApp Number"
+                                        sx={{ mb: 2 }}
+                                        className="max-w-md"
+                                        name="whatsAppNumber"
+                                        type="text"
+                                        value={formik.values.whatsAppNumber}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        error={formik.touched.whatsAppNumber && Boolean(formik.errors.whatsAppNumber)}
+                                        helperText={formik.touched.whatsAppNumber && formik.errors.whatsAppNumber}
+                                        variant="outlined"
+                                        fullWidth
+                                    />
+                                )}
                             </div>
                         </form>
                     </div>

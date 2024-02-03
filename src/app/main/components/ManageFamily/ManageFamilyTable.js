@@ -201,7 +201,7 @@ function ManageFamilyTable(props) {
   const handleDeleteUser = () => {
     const formData = new FormData()
 
-    formData.append('status', 'Rejected')
+    formData.append('status', 'Deleted')
     formData.append('id', viewid)
     axios.post(userAPIConfig.changeStatus, formData, {
       headers: {
@@ -235,9 +235,6 @@ function ManageFamilyTable(props) {
       if (response.status === 200) {
         dispatch(showMessage({ message: response.data.message, variant: 'success' }));
         navigate('/sign-out')
-        // handleClose()
-        // fetchData()
-
       }
       else {
         dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
@@ -337,15 +334,15 @@ function ManageFamilyTable(props) {
                   selected={isSelected}
                   style={{ cursor: 'default' }}
                 >
-                  <TableCell className="p-4 md:p-16" component="th" scope="row">
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.name}
                   </TableCell>
 
-                  <TableCell className="p-4 md:p-16" component="th" scope="row">
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.email || 'N/A'}
                   </TableCell>
 
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" >
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center' >
                     {n.mobileNumber || 'N/A'}
 
                   </TableCell>
@@ -371,7 +368,7 @@ function ManageFamilyTable(props) {
                   >
                     {n.status}
                   </TableCell>
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" >
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     <PopupState variant="popover" popupId="demo-popup-menu">
                       {(popupState) => (
                         <>

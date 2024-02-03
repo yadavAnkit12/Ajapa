@@ -5,7 +5,7 @@ function ManageFamilyTableHead(props) {
     const rows = [
         {
           id: 'name',
-          align: 'left',
+          align: 'center',
           disablePadding: false,
           label: 'Name',
           sort: true,
@@ -13,7 +13,7 @@ function ManageFamilyTableHead(props) {
         },
         {
           id: 'email',
-          align: 'left',
+          align: 'center',
           disablePadding: false,
           label: 'Email',
           sort: true,
@@ -21,7 +21,7 @@ function ManageFamilyTableHead(props) {
         },
         {
           id: 'mobile',
-          align: 'left',
+          align: 'center',
           disablePadding: false,
           label: 'Mobile',
           sort: true,
@@ -29,7 +29,7 @@ function ManageFamilyTableHead(props) {
         },
         {
           id: 'country',
-          align: 'left',
+          align: 'center',
           disablePadding: false,
           label: 'Country',
           sort: true,
@@ -37,7 +37,7 @@ function ManageFamilyTableHead(props) {
         },
         {
           id: 'state',
-          align: 'left',
+          align: 'centert',
           disablePadding: false,
           label: 'State',
           sort: true,
@@ -45,7 +45,7 @@ function ManageFamilyTableHead(props) {
         },
         {
           id: 'city',
-          align: 'left',
+          align: 'center',
           disablePadding: false,
           label: 'City',
           sort: true,
@@ -61,7 +61,7 @@ function ManageFamilyTableHead(props) {
         },
         {
           id: 'status',
-          align: 'left',
+          align: 'center',
           disablePadding: false,
           label: 'Status',
           sort: true,
@@ -69,7 +69,7 @@ function ManageFamilyTableHead(props) {
         },
         {
           id: 'action',
-          align: 'left',
+          align: 'center',
           disablePadding: false,
           label: 'Action',
           sort: true,
