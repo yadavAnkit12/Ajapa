@@ -52,6 +52,8 @@ function AddMembersForm() {
     const [cityID, setCityID] = useState('')
     const [userID, setUserID] = useState('')
     const [showCredentials, setShowCredentials] = useState(true);
+    const [isChild, setIsChild] = useState(showCredentials)
+    console.log(isChild , showCredentials)
 
 
     const validationSchema = yup.object().shape({
@@ -105,6 +107,11 @@ function AddMembersForm() {
                 },
             }).then((response) => {
                 if (response.status === 200) {
+
+                    if (isChild) {
+                        setShowCredentials(false);
+                    }
+
                     formik.setValues({
                         id: response.data.user.id || '',
                         familyId: response.data.user.familyId || '',
@@ -139,6 +146,8 @@ function AddMembersForm() {
             })
         }
     }, []);
+
+  
 
 
 
@@ -276,7 +285,7 @@ function AddMembersForm() {
                         },
                     }).then((response) => {
                         if (response.status === 200) {
-
+                            navigate('/app/manageFamily')
                             dispatch(showMessage({ message: response.data.message, variant: 'success' }));
                         }
                         else {
@@ -316,8 +325,8 @@ function AddMembersForm() {
             dob: null,
             role: '',
             status: '',
-            profileImage: '',
-            countryCode: '+91 (IN)',
+            profileImage:'',
+            countryCode: '',
             mobileNumber: '',
             country: '',
             state: '',
@@ -383,22 +392,46 @@ function AddMembersForm() {
 
                                 />
 
-                                {showCredentials && (
+                                <TextField
+                                    name="dob"
+                                    label="Date of Birth"
+                                    type="date"
+                                    InputLabelProps={{ shrink: true }}
+                                    sx={{ mb: 2 }}
+                                    className="max-w-md"
+                                    onChange={(e) => {
+                                        formik.handleChange(e);
+                                        handleDobChange(e); 
+                                    }}
+                                    onBlur={formik.handleBlur}
+                                    value={formik.values.dob}
+                                    error={formik.touched.dob && Boolean(formik.errors.dob)}
+                                    helperText={formik.touched.dob && formik.errors.dob}
+                                    variant="outlined"
+                                    required
+                                    fullWidth
+                                    inputProps={{
+                                        max: new Date().toISOString().split('T')[0], // Set max date to the current date
+                                    }}
+                                />
 
-                                    <TextField
-                                        sx={{ mb: 2 }}
-                                        className="max-w-md"
-                                        name='email'
-                                        label="Email"
-                                        type="email"
-                                        value={formik.values.email}
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        error={formik.touched.email && Boolean(formik.errors.email)}
-                                        helperText={formik.touched.email && formik.errors.email}
-                                        variant="outlined"
-                                        required
-                                        fullWidth
+
+                                {showCredentials && (
+                                  
+                                <TextField
+                                    sx={{ mb: 2 }}
+                                    className="max-w-md"
+                                    name='email'
+                                    label="Email"
+                                    type="email"
+                                    value={formik.values.email}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    error={formik.touched.email && Boolean(formik.errors.email)}
+                                    helperText={formik.touched.email && formik.errors.email}
+                                    variant="outlined"
+                                    required
+                                    fullWidth
 
                                     />
                                 )}
@@ -440,28 +473,6 @@ function AddMembersForm() {
 
                                     </div>
                                 )}
-                                <TextField
-                                    name="dob"
-                                    label="Date of Birth"
-                                    type="date"
-                                    InputLabelProps={{ shrink: true }}
-                                    sx={{ mb: 2 }}
-                                    className="max-w-md"
-                                    onChange={(e) => {
-                                        formik.handleChange(e);
-                                        handleDobChange(e);
-                                    }}
-                                    onBlur={formik.handleBlur}
-                                    value={formik.values.dob}
-                                    error={formik.touched.dob && Boolean(formik.errors.dob)}
-                                    helperText={formik.touched.dob && formik.errors.dob}
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    inputProps={{
-                                        max: new Date().toISOString().split('T')[0], // Set max date to the current date
-                                    }}
-                                />
 
                                 <Autocomplete
                                     options={['Male', 'Female', 'Others']}

@@ -59,55 +59,55 @@ if (isLoading) {
                     <CardContent style={{ fontSize: '16px' }}>
                         <div className="my-3 mx-4">
                             <p className='font-bold inline'>Name: </p>
-                            <span className='font-semibold'>{userData.name}</span>
+                            <span>{userData.name}</span>
                         </div>
                         <hr />
 
                         <div className="my-3 mx-4">
                             <p className='font-bold inline'>City: </p>
-                            <span className='font-semibold'>{userData.city?.split(':')[1]}</span>
+                            <span>{userData.city?.split(':')[1]}</span>
                         </div>
                         <hr />
 
                         <div className="my-3 mx-4">
                             <p className='font-bold inline'>Country: </p>
-                            <span className='font-semibold'>{userData.country?.split(':')[1]}</span>
+                            <span>{userData.country?.split(':')[1]}</span>
                         </div>
                         <hr />
 
                         <div className="my-3 mx-4">
                             <p className='font-bold inline'>Gender: </p>
-                            <span className='font-semibold'>{userData.gender}</span>
+                            <span>{userData.gender}</span>
                         </div>
                         <hr />
 
                         <div className="my-3 mx-4">
                             <p className='font-bold inline'>DOB: </p>
-                            <span className='font-semibold'>{userData.dob}</span>
+                            <span>{userData.dob}</span>
                         </div>
                         <hr />
 
                         <div className="my-3 mx-4">
                             <p className='font-bold inline'>Email: </p>
-                            <span className='font-semibold'>{userData.email}</span>
+                            <span>{userData.email === '' ? 'N/A' : userData.email}</span>
                         </div>
                         <hr />
 
                         <div className="my-3 mx-4">
                             <p className='font-bold inline'>Mobile Number: </p>
-                            <span className='font-semibold'>{userData.mobileNumber}</span>
+                            <span>{userData.mobileNumber === '' ? 'N/A' : userData.mobileNumber}</span>
                         </div>
                         <hr />
 
                         <div className="my-3 mx-4">
                             <p className='font-bold inline'>Role: </p>
-                            <span className='font-semibold'>{userData.role}</span>
+                            <span>{userData.role}</span>
                         </div>
                         <hr />
 
                         <div className="my-3 mx-4">
                             <p className='font-bold inline'>Is Disciple: </p>
-                            <span className='font-semibold'>{userData.isDisciple=== true ? 'Yes':'No'}</span>
+                            <span>{userData.isDisciple=== true ? 'Yes':'No'}</span>
                         </div>
                         <hr />
 

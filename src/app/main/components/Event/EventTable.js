@@ -425,7 +425,15 @@ function EventTable(props) {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+      <Box  sx={{
+          ...style,
+          '@media (max-width: 600px)': { // Apply media query for mobile devices
+          width: '70%', // Set width to 100% for smaller screens
+      },
+        '@media (max-width: 280px)': { // Additional media query for smaller screens
+         width: '93%', // Set width to 82% for screens up to 280px
+      },
+    }}>
           <EventView handleViewClose={handleViewClose} viewid={viewid} />
         </Box>
       </Modal>

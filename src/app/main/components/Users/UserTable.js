@@ -4,7 +4,8 @@ import _ from '@lodash';
 import EditIcon from '@mui/icons-material/Edit';
 import PersonIcon from '@mui/icons-material/Person';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import { Modal, Table, TableBody, TableCell, TablePagination, TableRow, Typography, IconButton, Box, Button, MenuItem, Menu, Dialog, DialogTitle, DialogActions, Slide } from '@mui/material';
+import { Modal, Table, TableBody, TableCell, TablePagination, TableRow, Typography, IconButton, Box, 
+  Button, MenuItem, Menu, Dialog, DialogTitle, DialogActions, Slide } from '@mui/material';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { useEffect, useState, useRef, forwardRef } from 'react';
@@ -32,7 +33,7 @@ const style = {
   borderRadius: '20px',
   maxWidth: '1200px',
   maxHeight: '650px',
-  overflow: 'auto'
+  overflow: 'auto',
 };
 
 const menuItemArray = (status) => {
@@ -365,12 +366,12 @@ function UserTable(props) {
                     {n.name}
                   </TableCell>
 
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.email}
+                  <TableCell className="p-4 md:p-16" component="th" scope="row">
+                    {n.email === '' ? 'N/A' : n.email}
                   </TableCell>
 
-                  <TableCell className="p-4 md:p-16" component="th" scope="row"align='center' >
-                    {n.mobileNumber}
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" >
+                    {n.mobileNumber === '' ? 'N/A' : n.mobileNumber}
 
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
@@ -465,10 +466,18 @@ function UserTable(props) {
       <Modal
         open={openView}
         onClose={handleViewClose}
-        aria-labelledby="modal-modal-title"
+        aria-labelledby="modal-modaltitle-"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <Box  sx={{
+          ...style,
+          '@media (max-width: 600px)': { // Apply media query for mobile devices
+          width: '70%', // Set width to 100% for smaller screens
+      },
+        '@media (max-width: 280px)': { // Additional media query for smaller screens
+         width: '93%', // Set width to 82% for screens up to 280px
+      },
+    }}>
           <UserView data={viewid} handleViewClose={handleViewClose} />
         </Box>
       </Modal>

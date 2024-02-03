@@ -22,7 +22,8 @@ export const eventAPIConfig = {
     delete:key+ '/event/status',
     view:key + '/event',
     changeBookingStatus:key +'/event/booking',
-    changeEventStatus:key+'/event/status'
+    changeEventStatus:key+'/event/status',
+    userEventRegistration:key+'/event/registration/save'
 }
 
 export const doctorAPIConfig = {

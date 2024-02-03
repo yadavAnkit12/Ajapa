@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 
 
 import { showMessage } from "app/store/fuse/messageSlice";
+import { useNavigate } from 'react-router-dom';
 
 const style = {
     width: '50%',
@@ -19,6 +20,7 @@ const style = {
 };
 
 const ResetPassword = () => {
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const [showPassword, setShowPassword] = useState(false);
     const [show, setShow] = useState(false)
@@ -37,12 +39,10 @@ const ResetPassword = () => {
     const handleSubmit = (values) => {
         // const urlParams = new URLSearchParams(window.location.search);
         const token = localStorage.getItem('token')
-        const userDetails = localStorage.getItem('userData')
+        
         const formData = new FormData()
         formData.append('password', values.newPassword)
-        formData.append('token', token)
-        formData.append('userDatils',userDetails)
-
+        
         axios.post(jwtServiceConfig.resetPassword, formData, {
             headers: {
                 'Content-type': 'multipart/form-data',
@@ -59,10 +59,10 @@ const ResetPassword = () => {
                 setShow(true)
             }
             else {
-                dispatch(showMessage({ message: response.data.error_message, variant: 'error' }))
+                dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }))
 
             }
-        });
+        }).catch('Something went wrong')
     };
 
     const handleLogin = () => {

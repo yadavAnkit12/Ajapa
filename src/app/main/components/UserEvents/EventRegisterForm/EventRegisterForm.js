@@ -8,16 +8,17 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import { Formik, useFormik } from 'formik';
 import useThemeMediaQuery from '@fuse/hooks/useThemeMediaQuery';
-import { TextField, Autocomplete, Typography } from '@mui/material';
-import { caseAPIConfig, eventAPIConfig } from "src/app/main/API/apiConfig";
+import { TextField, Autocomplete, Typography} from '@mui/material';
+import { Checkbox, FormControlLabel } from '@mui/material';
+import { caseAPIConfig, eventAPIConfig, userAPIConfig } from "src/app/main/API/apiConfig";
 import { useParams } from "react-router-dom";
 import { getUserRoles } from "src/app/auth/services/utils/common";
 import { useNavigate } from "react-router-dom";
 import { Box, lighten } from "@mui/system";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import EventRegisterFormHead from './EventRegisterFormHead';
-
-
+import jwtServiceConfig from 'src/app/auth/services/jwtService/jwtServiceConfig';
+import EventForm from '../EventRegisterForm/EventForm';
 
 
 
@@ -31,24 +32,31 @@ const EventRegisterForm = () => {
     const [eventId, setEventId] = useState(0)
     const [selectedFileName, setSelectedFileName] = useState('');
 
+    const [userListData, setUserListData] = useState([]);
+    const [selectedUsers, setSelectedUsers] = useState([]);
+    
+    
+    
+    
+    
 
     const [eventData, setEventData] = useState({
-        eventName: '',
-        eventType: '',
-        eventLocation: '',
-        startTime: '',
-        endTime: '',
-        eventDate: '',
-        lockArrivalDate: '',
-        lockDepartureDate: '',
-        shivirStartDate: '',
-        shivirEndDate: '',
-        shivirAvailable: '',
-        eventImage: null,
-        eventStatus: true,
-        bookingStatus: true
-
+        addFamilyMember: '',
+        sameAsMember: '',
+        country: '',
+        state: '',
+        city: '',
+        arrivalDate: '',
+        arrivalTime: '',
+        arrModeOfTransport: '',
+        leavingDate: '',
+        leavingTime: '',
+        depModeOfTransport: '',
+        attendingShivir: 'false',
+        description: ''
+    
     });
+
 
     useEffect(() => {
         return () => {
@@ -57,12 +65,30 @@ const EventRegisterForm = () => {
         }
     }, [])
 
+      //getting All the family Member details
+      useEffect(() => {
+        axios.get(`${userAPIConfig.getUserByFamily}`, {
+            headers: {
+              'Content-type': 'multipart/form-data',
+              Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+            },
+          }).then((response) => {
+            if (response.status === 200) {
+            //   console.log(response.data)
+              setUserListData(response?.data);
+            //   setLoading(false);
+            } else {
+              dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
+            }
+          });
+    },[])
+
 
     useEffect(() => {
 
         const { eventId,userId } = routeParams;
         //here you recive the eventId and user Id
-        console.log(eventId,userId)
+        
         // if (eventId == "new") {
 
         // } else {
@@ -79,7 +105,7 @@ const EventRegisterForm = () => {
                 },
             }).then((response) => {
                 if (response.status === 200) {
-                    console.log(response)
+                    // console.log(response)
                     setEventData(response.data.data)
                 } else {
                     dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
@@ -110,166 +136,130 @@ const EventRegisterForm = () => {
         }
     }, [eventData]);
 
-    const validationSchema = Yup.object().shape({
-        eventName: Yup.string()
-            .matches(/^[A-Za-z\s]+$/, 'Only characters and spaces are allowed')
-            .test('no-numbers', 'Numbers are not allowed', value => {
-                return !/\d/.test(value);
-            })
-            .required('Event Name is required'),
-
-        eventType: Yup.string().required('Event Type is required'),
-        eventLocation: Yup.string().required('Event Location is required'),
-        eventDate: Yup.date()
-        .min(new Date(new Date().setHours(0, 0, 0, 0)), 'Event Date must be today or in the future')
-        .nullable()
-        .required('Event Date is required'),
+   
     
-            lockArrivalDate: Yup.date()
-            .nullable()
-            .test({
-                message: 'Lock Arrival Date should be on or before Event Date',
-                test: function (value) {
-                    const { eventDate } = this.parent;
-                    return !eventDate || !value || value <= eventDate;
-                }
-            }),
+    const validationSchema = Yup.object().shape({
+        addFamilyMember: Yup.string()
+            .required('Enter Family Member required'),
+      
+        arrivalDate: Yup.date()
+            .required('Arrival Date is required'),
 
-        lockDepartureDate: Yup.date()
-            .nullable()
-            .test({
-                message: 'Lock Departure Date should be on or After Event Date',
-                test: function (value) {
-                    const { eventDate } = this.parent;
-                    return !eventDate || !value || value >= eventDate;
-                }
-              }),
-       
-        shivirStartDate: Yup.date()
-            .nullable()
-            .test({
-                message: 'Shivir Start Date should be in between Lock Arrival and Departure Date',
-                test: function (value) {
-                    const { lockArrivalDate, lockDepartureDate } = this.parent;
-                    return !lockArrivalDate || !lockDepartureDate || !value || 
-                    (value >= lockArrivalDate && value <= lockDepartureDate)
-                }
-            }),
+        arrivalTime: Yup.string().required('Arrival Time is required'),
 
-        shivirEndDate: Yup.date()
-            .nullable()
-            .test({
-                message: 'Shivir End Date should be in between Lock Arrival and Departure Date',
-                test: function (value) {
-                    const { lockArrivalDate, lockDepartureDate } = this.parent;
-                    return !lockArrivalDate || !lockDepartureDate || !value || 
-                    (value >= lockArrivalDate && value <= lockDepartureDate)
-                }
-            }),
-         
-        file: Yup.mixed().nullable()
-        .test('fileType', 'Unsupported file type', (value) => {
-          if (!value) return true; // Allow null values
-          const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
-          return allowedTypes.includes(value.type);
-        }),
+        arrModeOfTransport: Yup.string()
+            .required('Please select mode of transport'),
+
+        leavingDate: Yup.date()
+            .required('Leaving Date is required'),
+
+        leavingTime: Yup.string().required('Arrival Time is required'),
+
+        depModeOfTransport: Yup.string()
+            .required('Please select mode of transport'),
+    
+        attendingShivir: Yup.string()
+     
     });
 
+    
 
     const handleSubmit = (values) => {
-        console.log(formik)
-        //Check for lock dates 
-        if (values.eventType === 'Offline' && !values.lockArrivalDate && !values.lockDepartureDate) {
-            dispatch(showMessage({ message: "Lock Dates are required for offline events", variant: 'error' }));
-            return;
-        }
+        
+        
+        // if (formik.isValid) {
+        //     const formData = new FormData()
+        //     formData.append('eventName', values.eventName)
+        //     formData.append('eventType', values.eventType)
+        //     formData.append('eventLocation', values.eventLocation)
+        //     formData.append('startTime', values.startTime)
+        //     formData.append('endTime', values.endTime)
+        //     formData.append('eventDate', values.eventDate)
+        //     formData.append('lockArrivalDate', values.lockArrivalDate)
+        //     formData.append('lockDepartureDate', values.lockDepartureDate)
+        //     formData.append('shivirAvailable', values.shivirAvailable === 'Yes' ? true : false)
+        //     formData.append('shivirStartDate', values.shivirStartDate)
+        //     formData.append('shivirEndDate', values.shivirEndDate)
+        //     // formData.append('eventImage', values.eventImage)
+        //     formData.append('eventStatus', values.eventStatus)
+        //     formData.append('bookingStatus', values.bookingStatus)
+        //     if (eventId !== 0) {
+        //         formData.append('eventId', eventId)
 
-        if (values.eventType === 'Offline' && values.shivirAvailable === 'Yes' && !values.shivirStartDate && !values.shivirEndDate) {
-            dispatch(showMessage({ message: "Lock Departure Date is required for offline events", variant: 'error' }));
-            return;
-        }
-        if (formik.isValid) {
-            const formData = new FormData()
-            formData.append('eventName', values.eventName)
-            formData.append('eventType', values.eventType)
-            formData.append('eventLocation', values.eventLocation)
-            formData.append('startTime', values.startTime)
-            formData.append('endTime', values.endTime)
-            formData.append('eventDate', values.eventDate)
-            formData.append('lockArrivalDate', values.lockArrivalDate)
-            formData.append('lockDepartureDate', values.lockDepartureDate)
-            formData.append('shivirAvailable', values.shivirAvailable === 'Yes' ? true : false)
-            formData.append('shivirStartDate', values.shivirStartDate)
-            formData.append('shivirEndDate', values.shivirEndDate)
-            // formData.append('eventImage', values.eventImage)
-            formData.append('eventStatus', values.eventStatus)
-            formData.append('bookingStatus', values.bookingStatus)
-            if (eventId !== 0) {
-                formData.append('eventId', eventId)
+        //     }
 
-            }
+        //     if (values.file !== null) {
+        //         formData.append('file',values.file)
+        //         axios.post(eventAPIConfig.createWithImage, formData, {
+        //             headers: {
+        //                 'Content-type': 'multipart/form-data',
+        //                 authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+        //             },
+        //         }).then((response) => {
+        //             if (response.status === 200) {
+        //                 dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+        //                 formik.resetForm();
+        //                 navigate('/app/event')
+        //             } else {
+        //                 dispatch(showMessage({ message: response.data.errormessage, variant: 'error' }));
+        //             }
+        //         })
 
-            if (values.file !== null) {
-                formData.append('file',values.file)
-                axios.post(eventAPIConfig.createWithImage, formData, {
-                    headers: {
-                        'Content-type': 'multipart/form-data',
-                        authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-                    },
-                }).then((response) => {
-                    if (response.status === 200) {
-                        dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-                        formik.resetForm();
-                        navigate('/app/event')
-                    } else {
-                        dispatch(showMessage({ message: response.data.errormessage, variant: 'error' }));
-                    }
-                })
+        //     } else {
+        //         formData.append('eventImage',values.eventImage)
 
-            } else {
-                formData.append('eventImage',values.eventImage)
-
-                axios.post(eventAPIConfig.create, formData, {
-                    headers: {
-                        'Content-type': 'multipart/form-data',
-                        authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-                    },
-                }).then((response) => {
-                    if (response.status === 200) {
-                        dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-                        formik.resetForm();
-                        navigate('/app/event')
-                    } else {
-                        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
-                    }
-                }).catch((error) => console.log(error))
-            }
-        } else {
-            dispatch(showMessage({ message: "Please fill the required fields ", variant: 'error' }));
-        }
+        //         axios.post(eventAPIConfig.create, formData, {
+        //             headers: {
+        //                 'Content-type': 'multipart/form-data',
+        //                 authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+        //             },
+        //         }).then((response) => {
+        //             if (response.status === 200) {
+        //                 dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+        //                 formik.resetForm();
+        //                 navigate('/app/event')
+        //             } else {
+        //                 dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
+        //             }
+        //         }).catch((error) => console.log(error))
+        //     }
+        // } else {
+        //     dispatch(showMessage({ message: "Please fill the required fields ", variant: 'error' }));
+        // }
     };
-
-
 
     const formik = useFormik({
         initialValues: {
-            eventName: '',
-            eventType: '',
-            eventLocation: '',
-            startTime: '',
-            endTime: '',
-            eventDate: '',
-            lockArrivalDate: '',
-            lockDepartureDate: '',
-            shivirAvailable: '',
-            shivirStartDate: '',
-            shivirEndDate: '',
-            file:'',
-            eventImage: ''
+            addFamilyMember: '',
+            sameAsMember: '',
+            country: '',
+            state: '',
+            city: '',
+            arrivalDate: '',
+            arrivalTime: '',
+            arrModeOfTransport: '',
+            leavingDate: '',
+            leavingTime: '',
+            depModeOfTransport: '',
+            attendingShivir: 'false',
+            description: ''
         },
         validationSchema: validationSchema,
         onSubmit: handleSubmit,
     });
+
+    const handleCheckboxChange = (userId) => {
+        setSelectedUsers((prevSelected) => {
+            if (prevSelected.includes(userId)) {
+                // If already selected remove from the list
+                return prevSelected.filter((id) => id !== userId);
+            } else {
+                // If not selected add to the list
+                return [...prevSelected, userId];
+            }
+        });
+    };
+    
 
     function handleTabChange(event, value) {
         setTabValue(value);
@@ -277,268 +267,53 @@ const EventRegisterForm = () => {
 
 
     return (
+        <>
         <FusePageCarded
             header={<EventRegisterFormHead handleSubmit={handleSubmit} values={formik.values} />}
 
             content={
-                <>
-                    <Tabs
-                        value={tabValue}
-                        onChange={handleTabChange}
-                        indicatorColor="secondary"
-                        textColor="secondary"
-                        variant="scrollable"
-                        scrollButtons="auto"
-                        classes={{ root: 'w-full h-64 border-b-1' }}
-                    >
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                        <tr>
+                            <th scope="col" className="px-6 py-3.5 text-15 font-bold text-gray-700">
+                                Disciple Name
+                            </th>
+                        
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200 bg-white">
+                        {userListData?.users?.map(person => (
+                    
+                            <tr key={person.id}>
+                                <td className="whitespace-nowrap px-4 py-4">
+                                <div style={{ display: 'flex' , gap:'5px' , justifyContent:'space-between'}}>
+                                    
+                                         <div className="text-sm font-medium text-gray-900">{person.name}</div>
 
-                        <Tab className="h-64" label="Phase I" />
-                        <Tab className="h-64" label="Phase II" />
-                        <Tab className="h-64" label="Phase III" />
-
-                    </Tabs>
-
-                    <div className="p-16 sm:p-24 w-full">
-                        <form onSubmit={formik.handleSubmit}>
-                            <div className={tabValue !== 0 ? 'hidden' : ''}>
-                                <TextField
-                                    fullWidth
-                                    name="eventName"
-                                    label="Event Name"
-                                    value={formik.values.eventName}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    error={formik.touched.eventName && Boolean(formik.errors.eventName)}
-                                    helperText={formik.touched.eventName && formik.errors.eventName}
-                                    required
-                                    sx={{ mb: 2 }}
-                                    className="max-w-md"
-                                />
-
-
-                                <TextField
-                                    fullWidth
-                                    name="eventLocation"
-                                    label="Event Location"
-                                    value={formik.values.eventLocation}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    error={formik.touched.eventLocation && Boolean(formik.errors.eventLocation)}
-                                    helperText={formik.touched.eventLocation && formik.errors.eventLocation}
-                                    sx={{ mb: 2 }}
-                                    className="max-w-md"
-                                    required
-                                />
-                                <TextField
-                                    fullWidth
-                                    name="startTime"
-                                    label="Start Time"
-                                    type="time" // Assuming startTime is a time input, adjust type as needed
-                                    value={formik.values.startTime}
-                                    InputLabelProps={{ shrink: true }}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    error={formik.touched.startTime && Boolean(formik.errors.startTime)}
-                                    helperText={formik.touched.startTime && formik.errors.startTime}
-                                    sx={{ mb: 2 }}
-                                    className="max-w-md"
-                                />
-                                <TextField
-                                    fullWidth
-                                    name="endTime"
-                                    label="End Time"
-                                    type="time" // Assuming endTime is a time input, adjust type as needed
-                                    value={formik.values.endTime}
-                                    InputLabelProps={{ shrink: true }}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    error={formik.touched.endTime && Boolean(formik.errors.endTime)}
-                                    helperText={formik.touched.endTime && formik.errors.endTime}
-                                    sx={{ mb: 2 }}
-                                    className="max-w-md"
-                                />
-
-                            </div>
-                            <div className={tabValue !== 1 ? 'hidden' : ''}>
-                                <Autocomplete
-                                    fullWidth
-                                    name="eventType"
-                                    label="Event Type"
-                                    value={formik.values.eventType}
-                                    onChange={(event, newValue) => {
-                                        formik.handleChange("eventType")(newValue);
-                                    }}
-                                    onBlur={formik.handleBlur}
-                                    options={['Offline', 'Online']}
-                                    getOptionLabel={(option) => option}
-                                    error={formik.touched.eventType && Boolean(formik.errors.eventType)}
-                                    helperText={formik.touched.eventType && formik.errors.eventType}
-                                    sx={{ mb: 2 }}
-                                    className="max-w-md"
-                                    required
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            label="Event Type"
+                                        <Checkbox
+                                          checked={selectedUsers.includes(person.id)}
+                                          onChange={() => handleCheckboxChange(person.id)}
                                         />
-                                    )}
-                                />
-                                <TextField
-                                    value={formik.values.eventDate}
-                                    fullWidth
-                                    name="eventDate"
-                                    label="Event Date"
-                                    type="date" // Assuming eventDate is a date input, adjust type as needed
-                                    onChange={formik.handleChange}
-                                    InputLabelProps={{ shrink: true }}
-                                    onBlur={formik.handleBlur}
-                                    error={formik.touched.eventDate && Boolean(formik.errors.eventDate)}
-                                    helperText={formik.touched.eventDate && formik.errors.eventDate}
-                                    sx={{ mb: 2 }}
-                                    className="max-w-md"
-                                    required
-                                />
-                                {formik.values.eventType === 'Offline' && <> <TextField
-                                    fullWidth
-                                    name="lockArrivalDate"
-                                    label="Lock Arrival Date"
-                                    type="date" // Assuming lockArrivalDate is a date input, adjust type as needed
-                                    value={formik.values.lockArrivalDate}
-                                    InputLabelProps={{ shrink: true }}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    error={formik.touched.lockArrivalDate && Boolean(formik.errors.lockArrivalDate)}
-                                    helperText={formik.touched.lockArrivalDate && formik.errors.lockArrivalDate}
-                                    sx={{ mb: 2 }}
-                                    className="max-w-md"
-                                    required
-                                />
-
-                                    <TextField
-                                        fullWidth
-                                        name="lockDepartureDate"
-                                        label="Lock Departure Date"
-                                        type="date" // Assuming lockDepartureDate is a date input, adjust type as needed
-                                        value={formik.values.lockDepartureDate}
-                                        InputLabelProps={{ shrink: true }}
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        error={formik.touched.lockDepartureDate && Boolean(formik.errors.lockDepartureDate)}
-                                        helperText={formik.touched.lockDepartureDate && formik.errors.lockDepartureDate}
-                                        sx={{ mb: 2 }}
-                                        className="max-w-md"
-                                        required
-                                    />
-                                </>}
-                            </div>
-                            <div className={tabValue !== 2 ? 'hidden' : ''}>
-
-                                <Autocomplete
-                                    fullWidth
-                                    name="shivirAvailable"
-                                    label="Shivir Available"
-                                    value={formik.values.shivirAvailable}
-                                    onChange={(event, newValue) => {
-                                        formik.handleChange("shivirAvailable")(newValue);
-                                    }}
-                                    onBlur={formik.handleBlur}
-                                    options={['Yes', 'No']}
-                                    getOptionLabel={(option) => option}
-                                    error={formik.touched.shivirAvailable && Boolean(formik.errors.shivirAvailable)}
-                                    helperText={formik.touched.shivirAvailable && formik.errors.shivirAvailable}
-                                    sx={{ mb: 2 }}
-                                    className="max-w-md"
-                                    required
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            label="Shivir Available"
-                                        />
-                                    )}
-                                />
-
-                                {formik.values.shivirAvailable === 'Yes' && (
-                                    <>
-                                        <TextField
-                                            fullWidth
-                                            name="shivirStartDate"
-                                            label="Shivir Start Date"
-                                            type="date" // Assuming shivirStartDate is a date input, adjust type as needed
-                                            value={formik.values.shivirStartDate}
-                                            InputLabelProps={{ shrink: true }}
-                                            onChange={formik.handleChange}
-                                            onBlur={formik.handleBlur}
-                                            error={formik.touched.shivirStartDate && Boolean(formik.errors.shivirStartDate)}
-                                            helperText={formik.touched.shivirStartDate && formik.errors.shivirStartDate}
-                                            sx={{ mb: 2 }}
-                                            className="max-w-md"
-                                            required
-                                        />
-
-                                        <TextField
-                                            fullWidth
-                                            name="shivirEndDate"
-                                            label="Shivir End Date"
-                                            type="date" // Assuming shivirEndDate is a date input, adjust type as needed
-                                            value={formik.values.shivirEndDate}
-                                            InputLabelProps={{ shrink: true }}
-                                            onChange={formik.handleChange}
-                                            onBlur={formik.handleBlur}
-                                            error={formik.touched.shivirEndDate && Boolean(formik.errors.shivirEndDate)}
-                                            helperText={formik.touched.shivirEndDate && formik.errors.shivirEndDate}
-                                            sx={{ mb: 2 }}
-                                            className="max-w-md"
-                                            required
-                                        />
-                                    </>
-                                )}
-
-                                <div className="d-flex gap-5">
-                                    <Box
-                                        sx={{
-                                            backgroundColor: (theme) =>
-                                                theme.palette.mode === 'dark'
-                                                    ? lighten(theme.palette.background.default, 0.4)
-                                                    : lighten(theme.palette.background.default, 0.02),
-                                        }}
-                                        component="label"
-                                        htmlFor="profile-file"
-                                        className="productImageUpload flex items-center justify-center relative w-128 h-40 rounded-16 mx-12 mb-24 overflow-hidden cursor-pointer shadow hover:shadow-lg"
-                                    >
-                                        <div className="flex flex-col justify-between text-center m-8">
-                                            <h4>Upload</h4>
-                                            <span style={{ fontSize: '1rem' }}>(jpg/jpeg/png)</span>
+                                   
+                               </div>   
+                    {selectedUsers.includes(person.id) && (
+                                        <div >
+                                            <EventForm person={person} />
                                         </div>
-
-                                        <input
-                                            type="file"
-                                            accept=".png, .jpg, .jpeg"
-                                            className="hidden"
-                                            id="profile-file"
-                                            onChange={(event) => {
-                                                formik.setFieldValue('file', event.target.files[0]);
-                                                setSelectedFileName(event.target.files[0].name);
-                                            }}
-                                        />
-                                        <FuseSvgIcon size={32} color="action">
-                                            heroicons-outline:upload
-                                        </FuseSvgIcon>
-                                    </Box>
-
-                                    {selectedFileName && (
-                                        <Typography variant="body2" color="blue" sx={{ mt: 1 }}>
-                                            Selected File: {selectedFileName}
-                                        </Typography>
                                     )}
-
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </>
+                                </td>
+                            </tr>
+                        ))}
+                    
+                    </tbody>
+                </table>
+            </div>
+            
             }
-            scroll={isMobile ? 'normal' : 'content'}
         />
+            scroll={isMobile ? 'normal' : 'content'}
+        </>
     )
 
 }
