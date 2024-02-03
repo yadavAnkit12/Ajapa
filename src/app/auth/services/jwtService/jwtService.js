@@ -92,7 +92,7 @@ class JwtService extends FuseUtils.EventEmitter {
               access_token: response.data.token
             }
             if (response.data.user) {
-              sessionStorage.setItem('userRole', _.get(response, 'data.user.role'));
+            sessionStorage.setItem('userRole', _.get(response, 'data.user.role'));
               sessionStorage.setItem('id', _.get(response, 'data.user.id'));
               sessionStorage.setItem('familyId', _.get(response, 'data.user.familyId'));
               this.setSession(userData.access_token);

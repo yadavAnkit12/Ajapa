@@ -27,12 +27,14 @@ function AdminProfile() {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
+        // alert("kkk",JSON.stringify(routeParams))  
         setUserID(routeParams.userId);
     }, [])
 
     useEffect(() => {
         if (userID) {
-            axios.get(`${userAPIConfig.getUserById}/${userID}`, {
+            // axios.get(`${userAPIConfig.getUserById}/${userID}`, {
+                axios.get(`${userAPIConfig.getUserById}/${sessionStorage.getItem('id')}`, {
                 headers: {
                     'Content-type': 'multipart/form-data',
                     Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
