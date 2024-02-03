@@ -53,44 +53,40 @@ const ForgotPassword = (props) => {
 
     const handleVerifyOtp = async () => {
         if (otp !== '' && otp.length === 4) {
-          const data = {
-            email: formik.values.email,
-            countryCode: formik.values.countryCode.split(' ')[0],
-            mobileNumber: formik.values.mobileNumber,
-            otp: otp,
-          };
-          try {
-            const response = await fetch(`http://54.198.229.134:8080/ajapa_yog-0.0.1-SNAPSHOT/verifyOTP?otp=${data.otp}&email=${data.email}&mobileNumber=${data.mobileNumber}&countryCode=${data.countryCode}`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(data),
-            });
-      
-            if (response.status === 200) {
-              const responseData = await response.json();
-              localStorage.setItem('token', responseData.token);
-              localStorage.setItem('userData', JSON.stringify(data));
-            //   console.log(responseData);
-              dispatch(showMessage({ message: 'OTP Verified Successfully', variant: 'success' }));
-              navigate('/resetPassword')
-            } else {
-              const errorData = await response.json();
-              dispatch(showMessage({ message: errorData.errorMessage, variant: 'error' }));
-            }
-          } catch (error) {
-            dispatch(showMessage({ message: error.message, variant: 'error' }));
-          }
-        } else {
-          dispatch(showMessage({ message: 'Fill all the OTP' }));
-        }
-      };
-      
 
+        const formData = new FormData();
+        formData.append('email',formik.values.email)
+        formData.append('countryCode',formik.values.countryCode.split(' ')[0])
+        formData.append('mobileNumber',formik.values.mobileNumber)
+        formData.append('otp', otp)
+
+            axios.post(`${jwtServiceConfig.otpVerifyForForgetPassword}`, formData, { 
+                headers: {
+                    'Content-type': 'multipart/form-data',
+                },
+            }).then((response) => {
+                console.log(response)
+                if (response.status === 200) {
+                    localStorage.setItem('token', response.data.token);
+
+                    dispatch(showMessage({ message: 'OTP Verified Successfully', variant: 'success' }));
+                    navigate('/resetPassword');
+                } else {
+                    dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
+                }
+            }).catch((error) => {
+                dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
+                console.log("ghnj",error)
+            })
+            
+            } else {
+                dispatch(showMessage({ message: 'Fill all the OTP' }));
+            }
+            };
+            
     const handleSubmit = (values) => {
 
-        const formData = new FormData()
+        const formData = new FormData();
         formData.append('email', formik.values.email)
         formData.append('countryCode', formik.values.countryCode.split(' ')[0])
         formData.append('mobileNumber', formik.values.mobileNumber)
@@ -190,8 +186,9 @@ const ForgotPassword = (props) => {
                 <h4>Reset Password</h4>
 
                 {showOtpInput ? (
-                        <Stack spacing={2} sx={{ mt: 2, marginBottom: 2 }}>
-                            <MuiOtpInput style={{ maxWidth: '400px' }} value={otp} onChange={(newValue) => setOtp(newValue)} />
+                        <Stack spacing={2} sx={{ mt: 2, marginBottom: 2 }} >
+                            <MuiOtpInput style={{ maxWidth: '400px' }}
+                            value={otp} onChange={(newValue) => setOtp(newValue)} />
                         </Stack>
                     ) : (
                         <React.Fragment>

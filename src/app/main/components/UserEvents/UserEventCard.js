@@ -4,8 +4,8 @@ import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { showMessage } from "app/store/fuse/messageSlice";
-import { Button, TablePagination, Typography } from "@mui/material";
-import { eventAPIConfig } from "../../API/apiConfig";
+import { Button, Modal,Box  } from "@mui/material";
+import { eventAPIConfig, userAPIConfig } from "../../API/apiConfig";
 import EventIcon from '@mui/icons-material/Event';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import FuseLoading from "@fuse/core/FuseLoading";
@@ -17,7 +17,8 @@ const UserEventCard = () => {
 
     const dispatch = useDispatch();
     const navigate = useNavigate()
-    const [allEventsData, setAllEventsData] = useState([]);;
+    const [allEventsData, setAllEventsData] = useState([]);
+    
 
     useEffect(() => {
         const params = {
@@ -42,19 +43,25 @@ const UserEventCard = () => {
         });
     }, [])
 
+  
+
 
     if (allEventsData.length === 0) {
         return <FuseLoading />
 
     }
 
+
+
     const handleEventRegister = async(id) => {
         const userId=await getLoggedInPartnerId()
-        console.log(userId)
+        // console.log(userId)
+        
         navigate(`/app/UserEventsRegisteration/${id}/${userId}`)
     }
 
     return (
+        <>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
             {allEventsData?.data?.map((data, idx) => (
                 <div key={idx} className="max-w-sm bg-white border border-gray-200 shadow dark:bg-gray-800 dark:border-gray-700 m-4">
@@ -98,14 +105,16 @@ const UserEventCard = () => {
                 from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br 
                 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 
                 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium 
-                rounded-lg text-md px-5 py-2.5 text-center me-2 mb-2 " onClick={()=>handleEventRegister(data.eventId)}>
-                            Register
+                rounded-lg text-md px-5 py-2.5 text-center me-2 mb-2 " 
+                onClick={()=>handleEventRegister(data.eventId)}>
+                            Manage Registration
                         </Button>
                     </div>
                 </div>
             ))}
-
         </div>
+       
+        </>
     );
 }
 

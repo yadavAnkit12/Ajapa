@@ -174,6 +174,7 @@ function ManageFamilyTable(props) {
   }
 
   function getStatus(id, selectedValue) {
+    
     if (selectedValue === 'View') {
       setOpenView(true)
       setViewId(id)
@@ -310,7 +311,7 @@ function ManageFamilyTable(props) {
       </motion.div>
     );
   }
-  console.log(userListData)
+  // console.log(userListData)
   return (
     <div className="w-full flex flex-col min-h-full" style={{ overflow: 'auto' }}>
       <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle" ref={tableRef}>
@@ -381,7 +382,10 @@ function ManageFamilyTable(props) {
                           <Menu {...bindMenu(popupState)}>
 
                             {menuItemArray.map((value) => (
-                             value.visibleIf && <MenuItem
+                             value.visibleIf && (
+                              (value.status !== 'Make Head' || (value.status === 'Make Head' && (n.email || n.mobileNumber)))) &&
+                              (
+                             <MenuItem
                                 onClick={() => {
                                   getStatus(n.id, value.status);
 
@@ -392,7 +396,7 @@ function ManageFamilyTable(props) {
                                 {value.label}
                               </MenuItem>
                             )
-                            )}
+            ))}
                           </Menu>
 
                         </>
