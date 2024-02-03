@@ -228,6 +228,7 @@ class JwtService extends FuseUtils.EventEmitter {
   }
 
   logout = () => {
+    localStorage.removeItem('jwt_access_token')
     sessionStorage.removeItem('userRole');
     sessionStorage.removeItem('id');
     sessionStorage.removeItem('familyId');

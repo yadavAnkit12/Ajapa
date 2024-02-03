@@ -314,15 +314,15 @@ function EventTable(props) {
                   selected={isSelected}
                   style={{ cursor: 'default' }}
                 >
-                  <TableCell className="p-4 md:p-16" component="th" scope="row">
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.eventName}
                   </TableCell>
 
-                  <TableCell className="p-4 md:p-16" component="th" scope="row">
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.eventType}
                   </TableCell>
 
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" >
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.eventLocation}
 
                   </TableCell>
@@ -353,7 +353,7 @@ function EventTable(props) {
                     {n.bookingStatus ? 'On' : 'Off'}
                   </TableCell>
 
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" >
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     <PopupState variant="popover" popupId="demo-popup-menu">
                       {(popupState) => (
                         <>

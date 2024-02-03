@@ -45,7 +45,7 @@ function UserMenu(props) {
         </div>
 
         {/* {user.data.photoURL ? ( */}
-          <Avatar className="md:mx-4" alt="user photo" src={`${key}/images/${user.data.photoURL}`} />
+        <Avatar className="md:mx-4" alt="user photo" src={`${key}/images/${user.data.photoURL}`} />
         {/* ) : (
           <Avatar className="md:mx-4">{user.data.name[0]}</Avatar>
         )} */}
@@ -69,27 +69,28 @@ function UserMenu(props) {
       >
 
         <>
-          <MenuItem component={Link} to={`/apps/profile/${sessionStorage.getItem('id')}`} onClick={userMenuClose} role="button">
-            <ListItemIcon className="min-w-40">
-              <FuseSvgIcon>heroicons-outline:user-circle</FuseSvgIcon>
-            </ListItemIcon>
-            <ListItemText primary="My Profile" />
-          </MenuItem>
-          <MenuItem
-            component={NavLink}
-            to="/sign-out"
-            onClick={() => {
-              userMenuClose();
-            }}
-          >
-            <ListItemIcon className="min-w-40">
-              <FuseSvgIcon>heroicons-outline:logout</FuseSvgIcon>
-            </ListItemIcon>
-            <ListItemText primary="Sign out" />
-          </MenuItem>
-        </>
+          <MenuItem component={Link} to= {`/apps/profile/${sessionStorage.getItem('id')}`}
+          onClick={userMenuClose} role="button">
+          <ListItemIcon className="min-w-40">
+            <FuseSvgIcon>heroicons-outline:user-circle</FuseSvgIcon>
+          </ListItemIcon>
+          <ListItemText primary="My Profile" />
+        </MenuItem>
+        <MenuItem
+          component={NavLink}
+          to="/sign-out"
+          onClick={() => {
+            userMenuClose();
+          }}
+        >
+          <ListItemIcon className="min-w-40">
+            <FuseSvgIcon>heroicons-outline:logout</FuseSvgIcon>
+          </ListItemIcon>
+          <ListItemText primary="Sign out" />
+        </MenuItem>
+      </>
 
-      </Popover>
+    </Popover >
     </>
   );
 }

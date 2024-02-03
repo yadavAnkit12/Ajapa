@@ -6,7 +6,7 @@ function EventTableHead(props) {
 
     {
       id: 'eventName',
-      align: 'left',
+      align: 'center',
       disablePadding: false,
       label: 'Event Name',
       sort: true,
@@ -14,7 +14,7 @@ function EventTableHead(props) {
     },
     {
       id: 'eventType',
-      align: 'left',
+      align: 'center',
       disablePadding: false,
       label: 'Event Type',
       sort: true,
@@ -22,7 +22,7 @@ function EventTableHead(props) {
     },
     {
       id: 'eventLocation',
-      align: 'left',
+      align: 'center',
       disablePadding: false,
       label: 'Event Location',
       sort: true,
@@ -63,7 +63,7 @@ function EventTableHead(props) {
 
     {
       id: 'action',
-      align: 'left',
+      align: 'center',
       disablePadding: false,
       label: 'Action',
       sort: true,

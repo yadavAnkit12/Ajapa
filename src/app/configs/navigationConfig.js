@@ -9,6 +9,11 @@ i18next.addResourceBundle('en', 'navigation', en);
 i18next.addResourceBundle('tr', 'navigation', tr);
 i18next.addResourceBundle('ar', 'navigation', ar);
 
+
+const profileId = sessionStorage.getItem('id');
+const url = profileId ? `apps/profile/${profileId}` : 'apps/profile';
+
+
 const navigationConfig = [
   {
     id: 'home-component',
@@ -114,7 +119,7 @@ const navigationConfig = [
     translate: "My Profile",
     type: 'item',
     icon: 'heroicons-outline:user-circle',
-    url: `apps/profile/${getLoggedInPartnerId()}`,
+    url: `apps/profile/${sessionStorage.getItem('id')}`,
     auth: ["Super", "User","Member"]
   },
   {

@@ -3,10 +3,24 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { motion } from 'framer-motion';
 import { useTheme } from '@mui/material/styles';
+import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 
 function UserFormHead(props) {
-    console.log(props.formik)
+    const routeParams=useParams()
+    const {id}=routeParams
+    const [text,setText]=useState('User Updation')
+
+useEffect(()=>{
+    if(id==sessionStorage.getItem('id')){
+        setText('Profile Updation')
+
+    }
+},[routeParams])
+
+   
+
     const theme = useTheme()
     return <>
         <div className="flex flex-col sm:flex-row flex-1 w-full items-center justify-between space-y-8 sm:space-y-0 py-32 px-24 md:px-32">
@@ -25,8 +39,9 @@ function UserFormHead(props) {
                         delay={300}
                         style={{fontStyle:'normal',fontSize:'24px',lineHeight:'28px',letterSpacing:'0px',textAlign:'center',fontWeight:'bold'}}
                     >
-                        Profile Updation
-                    </Typography>
+{text}
+                       
+                                           </Typography>
                 </div>
             </div>
             <motion.div

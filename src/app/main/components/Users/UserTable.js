@@ -159,7 +159,7 @@ function UserTable(props) {
     };
   }, [searchText]);
 
-
+  
   const fetchData = () => {
     const params = {
       page: page + 1,
@@ -178,13 +178,12 @@ function UserTable(props) {
       },
     }).then((response) => {
       if (response.status === 200) {
-        console.log(response)
         setUserListData(response?.data);
         setLoading(false);
       } else {
-        dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
+        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
       }
-    });
+    }).catch((error)=>dispatch(showMessage({ message: 'Something went wrong', variant: 'error' })))
   };
 
 
@@ -207,7 +206,6 @@ function UserTable(props) {
   }
 
   function getStatus(id, selectedValue) {
-    // console.log("hdvfj",id)
     if (selectedValue === 'View') {
       setOpenView(true)
       setViewId(id)
@@ -346,7 +344,7 @@ function UserTable(props) {
           order={order}
           onSelectAllClick={handleSelectAllClick}
           onRequestSort={handleRequestSort}
-          rowCount={userListData?.length}
+          rowCount={userListData?.data?.length}
           onMenuItemClick={handleDeselect}
         />
         <TableBody>
@@ -364,7 +362,7 @@ function UserTable(props) {
                   selected={isSelected}
                   style={{ cursor: 'default' }}
                 >
-                  <TableCell className="p-4 md:p-16" component="th" scope="row">
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.name}
                   </TableCell>
 
@@ -398,7 +396,7 @@ function UserTable(props) {
                   >
                     {n.status}
                   </TableCell>
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" >
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     <PopupState variant="popover" popupId="demo-popup-menu">
                       {(popupState) => (
                         <>
