@@ -12,7 +12,8 @@ export const userAPIConfig = {
     userReportPDF: key + "/reportPdf/user/list",
     // getUserByFamily: key + '/getUsersByFamilyId',
     changeHead:key + '/changeHead',
-    getUserByFamily: key + '/getApprovedUsersByFamilyId'
+    getUserByFamily: key + '/getApprovedUsersByFamilyId',
+    myRegistration: key + '/event/registration/family/list'
 }
 export const eventAPIConfig = {
     create: key + '/saveEvent',
@@ -23,7 +24,9 @@ export const eventAPIConfig = {
     view:key + '/event',
     changeBookingStatus:key +'/event/booking',
     changeEventStatus:key+'/event/status',
-    userEventRegistration:key+'/event/registration/save'
+    userEventRegistration:key+'/event/registration/save',
+    myRegistration:key+'/event/registration',
+    registrationDelete: key +'/event/registration/delete'
 }
 
 export const doctorAPIConfig = {

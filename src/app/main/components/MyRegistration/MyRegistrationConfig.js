@@ -1,8 +1,9 @@
+import MyRegistration from "./MyRegistration";
 
 
 
 
-const ManageFamilyConfig = {
+const MyRegisterationConfig = {
   settings: {
     layout: {
       config: {},
@@ -10,8 +11,8 @@ const ManageFamilyConfig = {
   },
   routes: [
     {
-      path: '/app/myregisteration/',
-      element: <></>,
+      path: 'app/myregistration/',
+      element: <MyRegistration />,
       auth: ["User","Member"]
     },
 
@@ -26,4 +27,4 @@ const ManageFamilyConfig = {
   ],
 };
 
-export default ManageFamilyConfig;
+export default MyRegisterationConfig;
