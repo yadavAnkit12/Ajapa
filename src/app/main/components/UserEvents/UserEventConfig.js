@@ -14,7 +14,7 @@ const UserEventConfig = {
             auth: ["User","Member"]
         },
         {
-            path: 'app/UserEventsRegisteration/:eventId/:userId/*',
+            path: 'app/UserEventsRegisteration/:eventId/:userId/:eventDate/:eventName/*',
             element: <EventRegisterForm/>,
             auth: ["User","Member"]
         }
