@@ -477,6 +477,7 @@ function SignUpPage() {
                         },
                       },
                     }}
+                    onBlur={formik.handleBlur}
                     error={formik.touched.country && Boolean(formik.errors.country)}
                     helperText={formik.touched.country && formik.errors.country}
                   />

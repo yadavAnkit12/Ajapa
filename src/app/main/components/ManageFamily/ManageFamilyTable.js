@@ -41,26 +41,26 @@ const menuItemArray = [
     key: 1,
     label: 'View',
     status: 'View',
-    visibleIf:true
+    visibleIf: true
   },
   {
     key: 2,
     label: 'Edit',
     status: 'Edit',
-    visibleIf:getUserRoles()==='User'
+    visibleIf: getUserRoles() === 'User'
   },
   {
     key: 3,
     label: 'Delete',
     status: 'Delete',
-    visibleIf:getUserRoles()==='User'
+    visibleIf: getUserRoles() === 'User'
 
   },
   {
     key: 4,
     label: 'Make Head',
     status: 'Make Head',
-    visibleIf:getUserRoles()==='User'
+    visibleIf: getUserRoles() === 'User'
 
   },
 
@@ -92,7 +92,7 @@ function ManageFamilyTable(props) {
   const [open, setOpen] = useState(false)
   const [deleteId, setDeleteId] = useState('')
   const [changeStatus, setChangeStatus] = useState('')
-  const [changeHead,setChangeHead]=useState('')
+  const [changeHead, setChangeHead] = useState('')
 
   useEffect(() => {
     fetchData();
@@ -149,7 +149,7 @@ function ManageFamilyTable(props) {
         setUserListData(response?.data);
         setLoading(false);
       } else {
-        dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
+        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
       }
     });
   };
@@ -174,7 +174,7 @@ function ManageFamilyTable(props) {
   }
 
   function getStatus(id, selectedValue) {
-    
+
     if (selectedValue === 'View') {
       setOpenView(true)
       setViewId(id)
@@ -188,7 +188,7 @@ function ManageFamilyTable(props) {
       setViewId(id)
 
     }
-    else if(selectedValue==='Make Head'){
+    else if (selectedValue === 'Make Head') {
       setViewId(id)
       setChangeHead(true)
     }
@@ -379,21 +379,21 @@ function ManageFamilyTable(props) {
                           <Menu {...bindMenu(popupState)}>
 
                             {menuItemArray.map((value) => (
-                             value.visibleIf && (
-                              (value.status !== 'Make Head' || (value.status === 'Make Head' && (n.email || n.mobileNumber)))) &&
+                              value.visibleIf && (
+                                (value.status !== 'Make Head' || (value.status === 'Make Head' && (n.email || n.mobileNumber)))) &&
                               (
-                             <MenuItem
-                                onClick={() => {
-                                  getStatus(n.id, value.status);
+                                <MenuItem
+                                  onClick={() => {
+                                    getStatus(n.id, value.status);
 
-                                  popupState.close();
-                                }}
-                                key={value.key}
-                              >
-                                {value.label}
-                              </MenuItem>
-                            )
-            ))}
+                                    popupState.close();
+                                  }}
+                                  key={value.key}
+                                >
+                                  {value.label}
+                                </MenuItem>
+                              )
+                            ))}
                           </Menu>
 
                         </>
@@ -443,13 +443,13 @@ function ManageFamilyTable(props) {
         open={changeHead}
         TransitionComponent={Transition}
         keepMounted
-        onClose={()=>setChangeHead(false)}
+        onClose={() => setChangeHead(false)}
         aria-describedby="alert-dialog-slide-description"
       >
         <DialogTitle>{`Do you want to make this user as Head ?`}</DialogTitle>
 
         <DialogActions>
-          <Button onClick={()=>setChangeHead(false)}>No</Button>
+          <Button onClick={() => setChangeHead(false)}>No</Button>
           <Button onClick={handleChangeHead} autoFocus>
             Yes
           </Button>
