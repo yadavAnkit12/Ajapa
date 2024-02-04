@@ -2,7 +2,7 @@ import TextField from '@mui/material/TextField';
 import * as yup from 'yup';
 import _ from '@lodash';
 import 'react-phone-input-2/lib/style.css'
-import { Autocomplete, Checkbox, FormControlLabel } from '@mui/material';
+import { Autocomplete, Checkbox, FormControlLabel,IconButton } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import { useDispatch } from 'react-redux';
@@ -10,17 +10,19 @@ import { showMessage } from 'app/store/fuse/messageSlice';
 import axios from 'axios';
 import jwtServiceConfig from 'src/app/auth/services/jwtService/jwtServiceConfig';
 import { useParams } from 'react-router-dom';
+import CloseIcon from '@mui/icons-material/Close';
 import { FormProvider } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { caseAPIConfig, eventAPIConfig, userAPIConfig } from "src/app/main/API/apiConfig";
 import { values } from 'lodash';
+import { Button } from 'bootstrap';
 
 
-const EventForm = ({ person }) => {
+const EventForm = (props) => {
     const dispatch = useDispatch()
-    // console.log(person.name)
-    const id = useParams()
-    // console.log(id.eventId)
+    // console.log(routeParams.eventId)
+    // const id = useParams()
+    
     const [countryList, setCountryList] = useState([])
     const [countryID, setCountryID] = useState('')
     const [stateList, setStateList] = useState([])
@@ -70,13 +72,14 @@ const EventForm = ({ person }) => {
     
     
     const handleSubmit = (values) => {
-        console.log("dfg",formik.values)
-        console.log("jooo",)
-   
+        // console.log(person.id)
+        // console.log(formik.values)
         const formData = new FormData()
-        formData.append('eventId',id.eventId)
-        formData.append('userId',id.userId)
+        formData.append('eventId',props.eventId)
+        formData.append('userId',props.selectedUserId)
         formData.append('userName',person.name)
+        formData.append('eventDate',props.eventDate)
+        formData.append('eventName',props.eventName)
         formData.append('familyId',sessionStorage.getItem('familyId'))
         formData.append('fromCountry', `${countryID}:${formik.values.country}`)
         formData.append('fromState', `${stateID}:${formik.values.state}`)
@@ -137,7 +140,8 @@ const EventForm = ({ person }) => {
   return (
     
      <form onSubmit={formik.handleSubmit}>
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+    
     {/* Left side: Arrival details */}
     <div className='shadow-8 rounded-md' style={{ padding: '10px'}}>
         <h2 className="text-lg font-semibold mb-4 mt-2 text-center">Arrival Details</h2>
@@ -292,11 +296,18 @@ const EventForm = ({ person }) => {
         </div>
     </div>
     {/* Right side: Departure details */}
-    <div className='shadow-8 rounded-md' style={{ padding: '10px'}}>
+   
+    <div className='shadow-8 rounded-md' style={{ position: 'relative', padding: '10px'}}>
+    {/* <IconButton onClick={handleClose} sx={{ position: 'absolute', top: '0', right: '0', justifyContent: 'flex-end', margin: '0 10px' }}> */}
+        <CloseIcon />
+         {/* </IconButton> */}
+    
         <h2 className="text-lg font-semibold mb-4 mt-2 text-center">Departure Details</h2>
         {/* Departure details fields */}
         <div className="space-y-2 " style={{marginTop: '21px'}}>
+        
             <div>
+                
                 <TextField 
                   name="departureDate" 
                   label="Departure Date" 
@@ -400,7 +411,23 @@ const EventForm = ({ person }) => {
         </div>
     </div>
 </div>
-<button type='submit'>Save</button>
+<button 
+    type='submit' 
+    style={{
+        backgroundColor: '#FF3333',
+        color: 'white',
+        padding: '10px 35px', 
+        borderRadius: '19px', 
+        border: 'none', 
+        cursor: 'pointer',
+        fontSize : '17px',
+        fontFamily: 'cursive',
+        marginTop: '12px',
+        marginLeft: '4px',
+    }}
+>
+    Save
+</button>
 </form>
   );
 };
