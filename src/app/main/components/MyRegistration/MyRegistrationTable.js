@@ -16,6 +16,7 @@ import { eventAPIConfig, userAPIConfig } from '../../API/apiConfig';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import UserTableHead from './UserTableHead';
 import UserView from './UserView';
+import MyRegistrationTableHead from './MyRegistrationTableHead';
 // import EventView from './EventView';
 
 const Transition = forwardRef(function Transition(props, ref) {
@@ -102,7 +103,7 @@ const menuItemArray = (status) => {
 };
 
 
-function UserTable(props) {
+function MyRegistrationTable(props) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [userListData, setUserListData] = useState([]);
@@ -339,7 +340,7 @@ function UserTable(props) {
   return (
     <div className="w-full flex flex-col min-h-full" style={{overflow:'auto'}}>
       <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle" ref={tableRef}>
-        <UserTableHead
+        <MyRegistrationTableHead
           selectedProductIds={selected}
           order={order}
           onSelectAllClick={handleSelectAllClick}
@@ -490,4 +491,4 @@ function UserTable(props) {
   );
 }
 
-export default withRouter(UserTable);
+export default withRouter(MyRegistrationTable);

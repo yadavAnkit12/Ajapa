@@ -27,12 +27,14 @@ function AdminProfile() {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
+        // alert("kkk",JSON.stringify(routeParams))  
         setUserID(routeParams.userId);
     }, [])
 
     useEffect(() => {
         if (userID) {
-            axios.get(`${userAPIConfig.getUserById}/${userID}`, {
+            // axios.get(`${userAPIConfig.getUserById}/${userID}`, {
+                axios.get(`${userAPIConfig.getUserById}/${sessionStorage.getItem('id')}`, {
                 headers: {
                     'Content-type': 'multipart/form-data',
                     Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
@@ -42,7 +44,7 @@ function AdminProfile() {
                     setData(response.data.user);
                     setLoading(false)
                 } else {
-                    dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
+                    dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
                 }
             }).catch((error)=>dispatch(showMessage({ message: 'Something went wrong', variant: 'error' })))
             
@@ -165,12 +167,6 @@ function AdminProfile() {
                                             <div className="form-group">
                                                 <label html-for="city" className='labelFont'>City</label>
                                                 <input type="city" className="form-control" style={{fontSize:'14px'}} defaultValue={data.city?.split(':')[1]} id="state" />
-                                            </div>
-                                        </div>
-                                        <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 mb-4">
-                                            <div className="form-group">
-                                                <label html-for="zIp" className='labelFont'>Role</label>
-                                                <input type="role" className="form-control" style={{fontSize:'14px'}} defaultValue={data.isDisciple?'Yes':'No'} id="role" />
                                             </div>
                                         </div>
                                         <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 mb-4">

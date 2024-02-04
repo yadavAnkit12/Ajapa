@@ -9,7 +9,7 @@ import Tabs from '@mui/material/Tabs';
 import { Formik, useFormik } from 'formik';
 import useThemeMediaQuery from '@fuse/hooks/useThemeMediaQuery';
 import { TextField, Autocomplete, Typography } from '@mui/material';
-import { caseAPIConfig, eventAPIConfig } from "src/app/main/API/apiConfig";
+import {  eventAPIConfig } from "src/app/main/API/apiConfig";
 import { useParams } from "react-router-dom";
 import { getUserRoles } from "src/app/auth/services/utils/common";
 import { useNavigate } from "react-router-dom";
@@ -40,9 +40,8 @@ const EventForm = () => {
     const [tabValue, setTabValue] = useState(0)
     const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down('lg'));
     const dispatch = useDispatch();
-    const [eventId, setEventId] = useState(0)
+    const [eventId, setEventId] = useState('')
     const [selectedFileName, setSelectedFileName] = useState('');
-
 
     const [eventData, setEventData] = useState({
         eventName: '',
@@ -71,9 +70,8 @@ const EventForm = () => {
 
 
     useEffect(() => {
-
+       
         const { eventId } = routeParams;
-        console.log(eventId)
         if (eventId == "new") {
 
         } else {
@@ -114,7 +112,7 @@ const EventForm = () => {
                 shivirEndDate: eventData.shivirEndDate || '',
                 shivirAvailable: eventData.shivirAvailable === true ? 'Yes' : 'No' || '',
                 eventImage: eventData.eventImage || '',
-                file:null,
+                file: null,
                 eventStatus: eventData.eventStatus || true,
                 bookingStatus: eventData.bookingStatus || true
             });
@@ -132,11 +130,11 @@ const EventForm = () => {
         eventType: Yup.string().required('Event Type is required'),
         eventLocation: Yup.string().required('Event Location is required'),
         eventDate: Yup.date()
-        .min(new Date(new Date().setHours(0, 0, 0, 0)), 'Event Date must be today or in the future')
-        .nullable()
-        .required('Event Date is required'),
-    
-            lockArrivalDate: Yup.date()
+            .min(new Date(new Date().setHours(0, 0, 0, 0)), 'Event Date must be today or in the future')
+            .nullable()
+            .required('Event Date is required'),
+
+        lockArrivalDate: Yup.date()
             .nullable()
             .test({
                 message: 'Lock Arrival Date should be on or before Event Date',
@@ -154,16 +152,16 @@ const EventForm = () => {
                     const { eventDate } = this.parent;
                     return !eventDate || !value || value >= eventDate;
                 }
-              }),
-       
+            }),
+
         shivirStartDate: Yup.date()
             .nullable()
             .test({
                 message: 'Shivir Start Date should be in between Lock Arrival and Departure Date',
                 test: function (value) {
                     const { lockArrivalDate, lockDepartureDate } = this.parent;
-                    return !lockArrivalDate || !lockDepartureDate || !value || 
-                    (value >= lockArrivalDate && value <= lockDepartureDate)
+                    return !lockArrivalDate || !lockDepartureDate || !value ||
+                        (value >= lockArrivalDate && value <= lockDepartureDate)
                 }
             }),
 
@@ -173,17 +171,17 @@ const EventForm = () => {
                 message: 'Shivir End Date should be in between Lock Arrival and Departure Date',
                 test: function (value) {
                     const { lockArrivalDate, lockDepartureDate } = this.parent;
-                    return !lockArrivalDate || !lockDepartureDate || !value || 
-                    (value >= lockArrivalDate && value <= lockDepartureDate)
+                    return !lockArrivalDate || !lockDepartureDate || !value ||
+                        (value >= lockArrivalDate && value <= lockDepartureDate)
                 }
             }),
-         
+
         file: Yup.mixed().nullable()
-        .test('fileType', 'Unsupported file type', (value) => {
-          if (!value) return true; // Allow null values
-          const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
-          return allowedTypes.includes(value.type);
-        }),
+            .test('fileType', 'Unsupported file type', (value) => {
+                if (!value) return true; // Allow null values
+                const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+                return allowedTypes.includes(value.type);
+            }),
     });
 
 
@@ -220,7 +218,7 @@ const EventForm = () => {
             }
 
             if (values.file !== null) {
-                formData.append('file',values.file)
+                formData.append('file', values.file)
                 axios.post(eventAPIConfig.createWithImage, formData, {
                     headers: {
                         'Content-type': 'multipart/form-data',
@@ -237,7 +235,7 @@ const EventForm = () => {
                 })
 
             } else {
-                formData.append('eventImage',values.eventImage)
+                formData.append('eventImage', values.eventImage)
 
                 axios.post(eventAPIConfig.create, formData, {
                     headers: {
@@ -274,7 +272,7 @@ const EventForm = () => {
             shivirAvailable: '',
             shivirStartDate: '',
             shivirEndDate: '',
-            file:'',
+            file: '',
             eventImage: ''
         },
         validationSchema: validationSchema,
@@ -288,7 +286,7 @@ const EventForm = () => {
 
     return (
         <FusePageCarded
-            header={<EventFormHead handleSubmit={handleSubmit} values={formik.values} />}
+            header={<EventFormHead handleSubmit={handleSubmit} values={formik.values} eventId={eventId}/>}
 
             content={
                 <>

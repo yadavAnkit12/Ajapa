@@ -33,6 +33,8 @@ function EventHeader(props) {
     eventStatus: 'Active'
   });
 
+  const id='new';
+
 
   const filterPartnerData = () => {
     props.setFilterValue(filterData);

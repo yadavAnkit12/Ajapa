@@ -1,7 +1,7 @@
 import { TableCell, TableRow, TableSortLabel, Tooltip, TableHead } from '@mui/material';
 import { lighten } from '@mui/material/styles';
 
-function UserTableHead(props) {
+function MyRegistrationTableHead(props) {
     const rows = [
         {
           id: 'name',
@@ -125,4 +125,4 @@ function UserTableHead(props) {
   );
 }
 
-export default UserTableHead;
+export default MyRegistrationTableHead;
