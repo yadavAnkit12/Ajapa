@@ -93,13 +93,13 @@ if (isLoading) {
 
                         <div className="my-3 mx-4">
                             <p className='font-bold inline'>Email: </p>
-                            <span className='font-semibold'>{userData.email}</span>
+                            <span className='font-semibold'>{userData.email === '' ? 'N/A' : userData.email }</span>
                         </div>
                         <hr />
 
                         <div className="my-3 mx-4">
                             <p className='font-bold inline'>Mobile Number: </p>
-                            <span className='font-semibold'>{userData.mobileNumber}</span>
+                            <span className='font-semibold'>{userData.mobileNumber === '' ? 'N/A' : userData.mobileNumber}</span>
                         </div>
                         <hr />
 

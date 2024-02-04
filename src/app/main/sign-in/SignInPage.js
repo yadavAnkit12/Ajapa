@@ -300,8 +300,8 @@ function SignInPage() {
                 type={showPassword ? 'text' : 'password'}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.mobileNumber && Boolean(formik.errors.mobileNumber)}
-                helperText={formik.touched.mobileNumber && formik.errors.mobileNumber}
+                error={formik.touched.password && Boolean(formik.errors.password)}
+                helperText={formik.touched.password && formik.errors.password}
                 variant="outlined"
                 sx={{
                   '& .MuiOutlinedInput-root': {
@@ -501,7 +501,15 @@ function SignInPage() {
         onClose={handleCloseModal}
         closeAfterTransition
       >
-        <Box sx={style}>
+         <Box  sx={{
+          ...style,
+          '@media (max-width: 700px) and (min-width: 500px)': { 
+            width: '65%', 
+          },
+          '@media (max-width: 500px)': { 
+          width: '100%', 
+      },
+    }}>
           <ForgotPassword setOpenModal={setOpenModal} />
         </Box>
       </Modal>

@@ -11,9 +11,10 @@ const jwtServiceConfig = {
   updateUser: key + 'api/auth/user/update',
   getPermissions: key + '/api/role/list/permission',
   forgotPassword:key+'/api/user/ForgetPassword',
-  resetPassword:key+'/api/user/ResetPassword',
+  resetPassword:key+'/changePassword',
   sentOTPForLogin:key +'/sendOTPForLogin',
-  verifyOTPlogin:key + '/loginUsingOTP'
+  verifyOTPlogin:key + '/loginUsingOTP',
+  otpVerifyForForgetPassword: key + '/verifyOTP'
 };
 
 export default jwtServiceConfig;

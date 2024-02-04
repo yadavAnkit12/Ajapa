@@ -74,7 +74,7 @@ function SignUpPage() {
     passwordConfirm: '',
     gender: '',
     dob: null,
-    countryCode: '+91 (IN)',
+    countryCode: '',
     mobileNumber: '',
     country: '',
     state: '',
@@ -99,7 +99,7 @@ function SignUpPage() {
       const minAgeDate = new Date(currentDate.getFullYear() - 18, currentDate.getMonth(), currentDate.getDate());
       return value <= minAgeDate;
     }),
-    countryCode: yup.string().required('select country code').required('required'),
+    countryCode: yup.string().required('select country code'),
     mobileNumber: yup
       .string()
       .matches(/^[1-9]\d{9}$/, 'Invalid mobile number')
@@ -610,7 +610,15 @@ function SignUpPage() {
         aria-describedby="modal-modal-description"
 
       >
-        <Box sx={style}>
+         <Box  sx={{
+          ...style,
+          '@media (max-width: 700px) and (min-width: 500px)': { 
+            width: '65%', 
+          },
+          '@media (max-width: 500px)': { 
+          width: '100%', 
+      },
+    }}>
           <OTPVerify data={formik?.values} handleEditClose={handleEditClose} countryID={countryID} stateID={stateID} cityID={cityID} />
         </Box>
       </Modal>

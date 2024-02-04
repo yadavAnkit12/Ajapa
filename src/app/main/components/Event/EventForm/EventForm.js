@@ -188,15 +188,14 @@ const EventForm = () => {
 
 
     const handleSubmit = (values) => {
-        console.log(formik)
-        //Check for lock dates 
-        if (values.eventType === 'Offline' && !values.lockArrivalDate && !values.lockDepartureDate) {
+        
+        if (values.eventType === 'Offline' && (!values.lockArrivalDate || !values.lockDepartureDate)) {
             dispatch(showMessage({ message: "Lock Dates are required for offline events", variant: 'error' }));
             return;
         }
 
-        if (values.eventType === 'Offline' && values.shivirAvailable === 'Yes' && !values.shivirStartDate && !values.shivirEndDate) {
-            dispatch(showMessage({ message: "Lock Departure Date is required for offline events", variant: 'error' }));
+        if (values.eventType === 'Offline' && values.shivirAvailable === 'Yes' && (!values.shivirStartDate || !values.shivirEndDate)) {
+            dispatch(showMessage({ message: "Shivir Dates are required", variant: 'error' }));
             return;
         }
         if (formik.isValid) {
