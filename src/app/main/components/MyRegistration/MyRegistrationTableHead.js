@@ -12,61 +12,61 @@ function MyRegistrationTableHead(props) {
           visibleIf: true
         },
         {
-          id: 'email',
+          id: 'event_date',
           align: 'center',
           disablePadding: false,
-          label: 'Email',
+          label: 'Event Date',
           sort: true,
           visibleIf: true
         },
         {
-          id: 'mobile',
+          id: 'arival_date',
           align: 'center',
           disablePadding: false,
-          label: 'Mobile',
+          label: 'Arival Date',
           sort: true,
           visibleIf: true
         },
         {
-          id: 'country',
+          id: 'departure_date',
           align: 'center',
           disablePadding: false,
-          label: 'Country',
+          label: 'Departure Date',
           sort: true,
           visibleIf: true
         },
         {
-          id: 'state',
+          id: 'attendding_shivir',
           align: 'center',
           disablePadding: false,
-          label: 'State',
+          label: 'Attending Shivir',
           sort: true,
           visibleIf: true
         },
-        {
-          id: 'city',
-          align: 'center',
-          disablePadding: false,
-          label: 'City',
-          sort: true,
-          visibleIf: true
-        },
-        {
-          id: 'dob',
-          align: 'center',
-          disablePadding: false,
-          label: 'DOB',
-          sort: true,
-          visibleIf: true
-        },
-        {
-          id: 'status',
-          align: 'center',
-          disablePadding: false,
-          label: 'Status',
-          sort: true,
-          visibleIf: true
-        },
+        // {
+        //   id: 'city',
+        //   align: 'center',
+        //   disablePadding: false,
+        //   label: 'City',
+        //   sort: true,
+        //   visibleIf: true
+        // },
+        // {
+        //   id: 'dob',
+        //   align: 'center',
+        //   disablePadding: false,
+        //   label: 'DOB',
+        //   sort: true,
+        //   visibleIf: true
+        // },
+        // {
+        //   id: 'status',
+        //   align: 'center',
+        //   disablePadding: false,
+        //   label: 'Status',
+        //   sort: true,
+        //   visibleIf: true
+        // },
         {
           id: 'action',
           align: 'center',

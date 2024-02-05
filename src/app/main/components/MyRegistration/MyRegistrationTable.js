@@ -14,10 +14,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 import { eventAPIConfig, userAPIConfig } from '../../API/apiConfig';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
-import UserTableHead from './UserTableHead';
-import UserView from './UserView';
+// import UserTableHead from './UserTableHead';
+// import UserView from './UserView';
 import MyRegistrationTableHead from './MyRegistrationTableHead';
-// import EventView from './EventView';
+import EventView from './EventView';
+import EventEdit from './EventEdit';
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -37,70 +38,88 @@ const style = {
   overflow: 'auto',
 };
 
-const menuItemArray = (status) => {
-  if (status === 'Approved') {
-    return [
-      {
-        key: 1,
-        label: 'View',
-        status: 'View',
-      },
-      {
-        key: 2,
-        label: 'Edit',
-        status: 'Edit',
-      },
-      {
-        key: 3,
-        label: 'Reject', // Show "Unblock" when isBlocked is true
-        status: 'Rejected', // You can define the status value here
-      },
-    ];
-  } else if (status === 'Rejected') {
-    return [
-      {
-        key: 4,
-        label: 'View',
-        status: 'View',
-      },
-      {
-        key: 5,
-        label: 'Edit',
-        status: 'Edit',
-      },
-      {
-        key: 6,
-        label: 'Approve',
-        status: 'Approved',
-      }
-    ];
-  }
-  else {
-    return [
-      {
-        key: 7,
-        label: 'View',
-        status: 'View',
-      },
-      {
-        key: 8,
-        label: 'Edit',
-        status: 'Edit',
-      },
-      {
-        key: 9,
-        label: 'Approve',
-        status: 'Approved',
-      },
-      {
-        key: 10,
-        label: 'Reject', // Show "Unblock" when isBlocked is true
-        status: 'Rejected', // You can define the status value here
-      },
+// const menuItemArray = (status) => {
+//   if (status === 'Approved') {
+//     return [
+//       {
+//         key: 1,
+//         label: 'View',
+//         status: 'View',
+//       },
+//       {
+//         key: 2,
+//         label: 'Edit',
+//         status: 'Edit',
+//       },
+//       {
+//         key: 3,
+//         label: 'Reject', // Show "Unblock" when isBlocked is true
+//         status: 'Rejected', // You can define the status value here
+//       },
+//     ];
+//   } else if (status === 'Rejected') {
+//     return [
+//       {
+//         key: 4,
+//         label: 'View',
+//         status: 'View',
+//       },
+//       {
+//         key: 5,
+//         label: 'Edit',
+//         status: 'Edit',
+//       },
+//       {
+//         key: 6,
+//         label: 'Approve',
+//         status: 'Approved',
+//       }
+//     ];
+//   }
+//   else {
+//     return [
+//       {
+//         key: 7,
+//         label: 'View',
+//         status: 'View',
+//       },
+//       {
+//         key: 8,
+//         label: 'Edit',
+//         status: 'Edit',
+//       },
+//       {
+//         key: 9,
+//         label: 'Approve',
+//         status: 'Approved',
+//       },
+//       {
+//         key: 10,
+//         label: 'Reject', // Show "Unblock" when isBlocked is true
+//         status: 'Rejected', // You can define the status value here
+//       },
 
-    ];
-  }
-};
+//     ];
+//   }
+// };
+
+const menuItemArray =[
+  {
+      key: 1,
+      label: 'View',
+     status: 'View',
+  },
+  {
+    key: 2,
+    label: 'Edit',
+   status: 'Edit',
+ },
+ {
+  key: 3,
+  label: 'Delete',
+ status: 'Delete',
+ }
+]
 
 
 function MyRegistrationTable(props) {
@@ -122,11 +141,14 @@ function MyRegistrationTable(props) {
   const [openEdit, setOpenEdit] = useState(false);
   const [editId, setEditId] = useState("");
   const [openView, setOpenView] = useState(false);
+  const [openViewEdit, setOpenViewEdit]= useState(false);
   const [viewid, setViewId] = useState("");
+  const [registrationId, setRegistrationId] = useState("")
   const [change, setChange] = useState(false);
   const [open, setOpen] = useState(false)
   const [deleteId, setDeleteId] = useState('')
   const [changeStatus, setChangeStatus] = useState('')
+  const [myRegistartion, setMyRegistartion]= useState([])
 
   useEffect(() => {
     fetchData();
@@ -165,22 +187,24 @@ function MyRegistrationTable(props) {
     const params = {
       page: page + 1,
       rowsPerPage: rowsPerPage, // Example data to pass in req.query
-      searchText: searchText,
-      status: _.get(props, 'filterValue') === '' ? 'Approved' : _.get(props, 'filterValue.status'),
-      country: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.country') === '' ? 'All' : _.get(props, 'filterValue.country'),
-      state: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.state') === '' ? 'All' : _.get(props, 'filterValue.state'),
-      city: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.city') === '' ? 'All' : _.get(props, 'filterValue.city'),
+      // searchText: searchText,
+      // status: _.get(props, 'filterValue') === '' ? 'Approved' : _.get(props, 'filterValue.status'),
+      // country: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.country') === '' ? 'All' : _.get(props, 'filterValue.country'),
+      // state: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.state') === '' ? 'All' : _.get(props, 'filterValue.state'),
+      // city: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.city') === '' ? 'All' : _.get(props, 'filterValue.city'),
     };
     console.log('params', params)
-    axios.get(userAPIConfig.list, { params }, {
+    axios.get(userAPIConfig.myRegistration, { params }, {
       headers: {
         'Content-type': 'multipart/form-data',
         Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
       },
     }).then((response) => {
       if (response.status === 200) {
-        setUserListData(response?.data);
-        setLoading(false);
+        console.log(response)
+        // setUserListData(response?.data);
+        setMyRegistartion(response?.data)
+         setLoading(false);
       } else {
         dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
       }
@@ -191,6 +215,10 @@ function MyRegistrationTable(props) {
   const handleViewClose = () => {
     setOpenView(false);
   };
+
+  const handleViewEditClose = ()=>{
+    setOpenViewEdit(false);
+  }
 
   function handleRequestSort(event, property) {
     const id = property;
@@ -208,70 +236,47 @@ function MyRegistrationTable(props) {
 
   function getStatus(id, selectedValue) {
     if (selectedValue === 'View') {
+      // console.log(id)
       setOpenView(true)
-      setViewId(id)
+      setRegistrationId(id)
 
     }
     else if (selectedValue === 'Edit') {
-      navigate(`/app/useredit/${id}`)
+      // navigate(`/app/useredit/${id}`)
+      setOpenViewEdit(true)
     }
-
-    else if (selectedValue === 'Approved') {
-      setChangeStatus('Approve')
-      setViewId(id)
+    else if (selectedValue === 'Delete') {
       setOpen(true)
-
-    }
-    else if (selectedValue === 'Pending') {
-      setChangeStatus('Pending')
-      setViewId(id)
-      setOpen(true)
-
-    }
-    else if (selectedValue === 'Rejected') {
-      setChangeStatus('Reject')
-      setViewId(id)
-      setOpen(true)
-
+     setRegistrationId(id)
     }
 
+
+
+  }
+
+  const handleDeleteRegistration=()=>{
+    const formData=new FormData()
+    formData.append('registrationId',registrationId)
+    axios.post(`${eventAPIConfig.registrationDelete}`, formData,{
+      headers: {
+          'Content-type': 'multipart/form-data',
+          Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+      },
+  }).then((response) => {
+      if (response.status === 200) {
+          dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+          setOpen(false)
+      } else {
+          dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
+      }
+  }).catch((error) => console.log(error))
   }
 
   const handleClose = () => {
     setOpen(false)
   }
 
-  const handleChangeStatus = () => {
-      const formData=new FormData()
-      if(changeStatus==='Approve'){
 
-        formData.append('status','Approved')
-      }
-      else if(changeStatus==='Reject'){
-        formData.append('status','Rejected')
-      }
-      else {
-        formData.append('status','Pending')
-      }
-      formData.append('id',viewid)
-    axios.post(userAPIConfig.changeStatus, formData, {
-      headers: {
-        'Content-type': 'multipart/form-data',
-        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`
-      },
-    }).then((response) => {
-      if (response.status === 200) {
-        dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-        handleClose()
-        fetchData()
-      
-      }
-      else {
-        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
-
-      }
-    })
-  }
 
   function handleSelectAllClick(event) {
     if (event.target.checked) {
@@ -323,7 +328,7 @@ function MyRegistrationTable(props) {
     );
   }
 
-  if (!_.size(_.get(userListData, 'data'))) {
+  if (!_.size(_.get(myRegistartion, 'data'))) {
     return (
       <motion.div
         initial={{ opacity: 0 }}
@@ -331,7 +336,7 @@ function MyRegistrationTable(props) {
         className="flex flex-1 items-center justify-center h-full"
       >
         <Typography color="text.secondary" variant="h5">
-          There are no User!
+          There are no Events !
         </Typography>
       </motion.div>
     );
@@ -345,12 +350,12 @@ function MyRegistrationTable(props) {
           order={order}
           onSelectAllClick={handleSelectAllClick}
           onRequestSort={handleRequestSort}
-          rowCount={userListData?.data?.length}
+          rowCount={myRegistartion?.data?.length}
           onMenuItemClick={handleDeselect}
         />
         <TableBody>
           {
-            userListData?.data?.map((n) => {
+            myRegistartion?.data?.map((n) => {
               const isSelected = selected.indexOf(n.eventId) !== -1;
               return (
                 <TableRow
@@ -364,24 +369,24 @@ function MyRegistrationTable(props) {
                   style={{ cursor: 'default' }}
                 >
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.name}
+                    {n.userName}
                   </TableCell>
 
-                  <TableCell className="p-4 md:p-16" component="th" scope="row">
-                    {n.email === '' ? 'N/A' : n.email}
+                  <TableCell className="p-4 md:p-16" component="th" scope="row"  align='center'>
+                    {n.eventDate}
                   </TableCell>
 
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" >
-                    {n.mobileNumber === '' ? 'N/A' : n.mobileNumber}
+                  <TableCell className="p-4 md:p-16" component="th" scope="row"  align='center'>
+                    {n.arrivalDate}
 
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.country.split(':')[1]}
+                    {n.departureDate}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.state.split(':')[1]}
+                    {n.attendingShivir? "Yes": "No"}
                   </TableCell>
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                  {/* <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.city.split(':')[1]}
                   </TableCell>
 
@@ -396,7 +401,7 @@ function MyRegistrationTable(props) {
                     style={{ fontWeight: 'bold', color: getStatusColor(n.status) }}
                   >
                     {n.status}
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     <PopupState variant="popover" popupId="demo-popup-menu">
                       {(popupState) => (
@@ -406,10 +411,11 @@ function MyRegistrationTable(props) {
                           </Button>
                           <Menu {...bindMenu(popupState)}>
 
-                            {menuItemArray(n.status).map((value) => (
+                            {menuItemArray.map((value) => (
                               <MenuItem
                                 onClick={() => {
-                                  getStatus(n.id, value.status);
+                                  getStatus(n.registrationId, value.status);
+                                
 
                                   popupState.close();
                                 }}
@@ -436,9 +442,9 @@ function MyRegistrationTable(props) {
       <TablePagination
         className="shrink-0 border-t-1"
         component="div"
-        count={userListData.totalElement}
-        rowsPerPage={userListData.rowPerPage}
-        page={userListData.pageNumber - 1}
+        count={myRegistartion.totalElement}
+        rowsPerPage={myRegistartion.rowPerPage}
+        page={myRegistartion.pageNumber - 1}
         backIconButtonProps={{
           'aria-label': 'Previous Page',
         }}
@@ -455,11 +461,11 @@ function MyRegistrationTable(props) {
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>{`Do you want to ${changeStatus} this User?`}</DialogTitle>
+        <DialogTitle>{`Do you want to delete registration?`}</DialogTitle>
 
         <DialogActions>
           <Button onClick={handleClose}>No</Button>
-          <Button onClick={handleChangeStatus} autoFocus>
+          <Button onClick={handleDeleteRegistration} autoFocus>
             Yes
           </Button>
         </DialogActions>
@@ -479,7 +485,26 @@ function MyRegistrationTable(props) {
          width: '93%', // Set width to 82% for screens up to 280px
       },
     }}>
-          <UserView data={viewid} handleViewClose={handleViewClose} />
+          <EventView viewid={viewid} handleViewClose={handleViewClose} registrationId={registrationId}/> 
+        </Box>
+      </Modal>
+
+      <Modal
+        open={openViewEdit}
+        onClose={handleViewEditClose}
+        aria-labelledby="modal-modaltitle-"
+        aria-describedby="modal-modal-description"
+      >
+        <Box  sx={{
+          ...style,
+          '@media (max-width: 600px)': { // Apply media query for mobile devices
+          width: '70%', // Set width to 100% for smaller screens
+      },
+        '@media (max-width: 280px)': { // Additional media query for smaller screens
+         width: '93%', // Set width to 82% for screens up to 280px
+      },
+    }}>
+          <EventEdit viewid={viewid} handleViewClose={handleViewClose} registrationId={registrationId}/> 
         </Box>
       </Modal>
 
