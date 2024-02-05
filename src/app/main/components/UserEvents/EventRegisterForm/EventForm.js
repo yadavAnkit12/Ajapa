@@ -77,7 +77,7 @@ const EventForm = (props) => {
         const formData = new FormData()
         formData.append('eventId',props.eventId)
         formData.append('userId',props.selectedUserId)
-        formData.append('userName',person.name)
+        formData.append('userName',props.person.name)
         formData.append('eventDate',props.eventDate)
         formData.append('eventName',props.eventName)
         formData.append('familyId',sessionStorage.getItem('familyId'))
