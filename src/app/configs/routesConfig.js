@@ -44,7 +44,7 @@ import AllEventRegistrationConfig from '../main/components/AllEventRegistration/
 
 
 
-const routeConfigs = [SignOutConfig, SignInConfig, SignUpConfig, Error404PageConfig, DashboardConfig,UserConfig,EventConfig,EmployeeManagementConfig, AddMembersConfig,UserEventConfig,ManageFamilyConfig,DoctorManagementConfig, PatientConfig, AppointmentsAppConfig, HomeConfig, MembershipPlanConfig, transactionConfig, SubscriptionPlanConfig, CouponPlanConfig, BannerPlanConfig, CaseConfig, SymptomConfig, ProductConfig, OrderConfig, LabOrderConfig,SettingConfig,NewCaseConfig,AllCaseConfig,FinalCaseReportConfig,ClinicManagementConfig];
+const routeConfigs = [SignOutConfig, SignInConfig,MyRegisterationConfig, AllEventRegistrationConfig, SignUpConfig, Error404PageConfig, DashboardConfig,UserConfig,EventConfig,EmployeeManagementConfig, AddMembersConfig,UserEventConfig,ManageFamilyConfig,DoctorManagementConfig, PatientConfig, AppointmentsAppConfig, HomeConfig, MembershipPlanConfig, transactionConfig, SubscriptionPlanConfig, CouponPlanConfig, BannerPlanConfig, CaseConfig, SymptomConfig, ProductConfig, OrderConfig, LabOrderConfig,SettingConfig,NewCaseConfig,AllCaseConfig,FinalCaseReportConfig,ClinicManagementConfig];
 
 const routes = [
   ...FuseUtils.generateRoutesFromConfigs(routeConfigs, settingsConfig.defaultAuth),
