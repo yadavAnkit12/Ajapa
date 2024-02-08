@@ -254,7 +254,10 @@ function UserForm() {
                 }).catch((error) => console.log(error))
             }
             else {
-                formattedData.append('profileImage', values.pic)
+                
+                    formattedData.append('profileImage', values.pic)
+                
+                
                 axios.post(`${userAPIConfig.updateUser}`, formattedData, {
                     headers: {
                         'Content-type': 'multipart/form-data',
@@ -280,7 +283,7 @@ function UserForm() {
 
         }
         else {
-            console.log(formik.errors);
+            
             dispatch(showMessage({ message: 'Please check the mandatory fields', variant: 'error' }));
         }
 
