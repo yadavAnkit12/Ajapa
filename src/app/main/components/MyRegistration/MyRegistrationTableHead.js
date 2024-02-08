@@ -12,6 +12,14 @@ function MyRegistrationTableHead(props) {
           visibleIf: true
         },
         {
+          id: 'eventname',
+          align: 'center',
+          disablePadding: false,
+          label: 'Event Name',
+          sort: true,
+          visibleIf: true
+        },
+        {
           id: 'event_date',
           align: 'center',
           disablePadding: false,

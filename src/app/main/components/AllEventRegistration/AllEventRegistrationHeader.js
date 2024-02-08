@@ -1,4 +1,4 @@
- import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
+import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import Autocomplete from '@mui/material/Autocomplete';
 import { Input, Paper, Typography, Modal, Box, Button, TextField } from '@mui/material';
 import { motion } from 'framer-motion';
@@ -8,6 +8,8 @@ import { useState, useEffect } from 'react';
 import { showMessage } from 'app/store/fuse/messageSlice';
 import { eventAPIConfig } from '../../API/apiConfig';
 import axios from 'axios';
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+
 
 // import VehicleRegisterForm from './VehicleRegisterForm';
 
@@ -29,10 +31,10 @@ function AllEventRegistrationHeader(props) {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [filterData, setFilterData] = useState({
-    eventName:''
+    eventName: ''
   });
 
-  const id='new';
+  const id = 'new';
 
   const filterPartnerData = () => {
     props.setFilterValue(filterData);
@@ -40,7 +42,7 @@ function AllEventRegistrationHeader(props) {
 
   const clearFilters = () => {
     setFilterData({
-        eventName:''
+      eventName: ''
     });
     props.setFilterValue('');
   }
@@ -144,12 +146,32 @@ function AllEventRegistrationHeader(props) {
               disablePortal
               value={filterData.eventName}
               id="eventName"
-              options={props.eventList.length>0 ?props.eventList.map((event)=>event.eventName):[]}
+              options={props.eventList.length > 0 ? props.eventList.map((event) => event.eventName) : []}
               sx={{ my: 1, minWidth: 140, mx: 1 }}
               onChange={(e, newValue) => setFilterData({ ...filterData, eventName: newValue })}
               renderInput={(params) => <TextField {...params} label="Select Event" variant="standard" />}
             />
-{/* 
+            <Button
+              // component={Link}
+              // onClick={() => handleCreateReport()}
+              variant="outlined"
+              color="secondary"
+              startIcon={<FileDownloadOutlinedIcon />}
+              sx={{ my: 2, mx: 1 }}
+            >
+              Export Excel
+            </Button>
+            <Button
+              // component={Link}
+              // onClick={() => handleCreateReportPDF()}
+              variant="outlined"
+              color="secondary"
+              startIcon={<FileDownloadOutlinedIcon />}
+              sx={{ my: 2, mx: 1 }}
+            >
+              Export PDF
+            </Button>
+            {/* 
             <Autocomplete
               disablePortal
               value={filterData.eventStatus}

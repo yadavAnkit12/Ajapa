@@ -13,9 +13,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 import { eventAPIConfig } from '../../API/apiConfig';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
-import { tuple } from 'yup';
-// import EventView from './EventView';
 import AllEventRegistrationTableHead from './AllEventRegistraionTableHead';
+import EventView from '../MyRegistration/EventView';
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -87,7 +86,7 @@ function AllEventRegistrationTable(props) {
 
   useEffect(() => {
     fetchData();
-  }, [props?.change, rowsPerPage, page, props?.filterValue,searchText]);
+  }, [props?.change, rowsPerPage, page, props?.filterValue, searchText]);
 
   useEffect(() => {
     if (page !== 0) {
@@ -123,9 +122,9 @@ function AllEventRegistrationTable(props) {
     const params = {
       page: page + 1,
       rowsPerPage: rowsPerPage, // Example data to pass in req.query
-      eventId: props.eventList?.find((event)=>event.eventName===props.filterValue.eventName)?.eventId  || '',
-    //   eventStatus: (_.get(props, 'filterValue.eventStatus') === 'Active' || _.get(props, 'filterValue') === '') ? true : false,
-    //   bookingStatus: (_.get(props, 'filterValue.bookingStatus') === 'On' || _.get(props, 'filterValue') === '') ? true : false,
+      eventId: props.eventList?.find((event) => event.eventName === props.filterValue.eventName)?.eventId || '',
+      //   eventStatus: (_.get(props, 'filterValue.eventStatus') === 'Active' || _.get(props, 'filterValue') === '') ? true : false,
+      //   bookingStatus: (_.get(props, 'filterValue.bookingStatus') === 'On' || _.get(props, 'filterValue') === '') ? true : false,
     };
     axios.get(eventAPIConfig.allEventRegistrationList, { params }, {
       headers: {
@@ -201,7 +200,7 @@ function AllEventRegistrationTable(props) {
   // }
 
   //chnaging the booking status
-  const handleChnangeBookingStatus=(id,status)=>{
+  const handleChnangeBookingStatus = (id, status) => {
     axios.post(`${eventAPIConfig.changeBookingStatus}/${id}/${!status}`, {
       headers: {
         'Content-type': 'multipart/form-data',
@@ -209,7 +208,7 @@ function AllEventRegistrationTable(props) {
       },
     }).then((response) => {
       if (response.status === 200) {
-         fetchData()
+        fetchData()
         dispatch(showMessage({ message: response.data.message, variant: 'success' }));
 
       } else {
@@ -219,7 +218,7 @@ function AllEventRegistrationTable(props) {
 
   }
   //chnaging the event status
-  const handleChangeEventStatus=(id,status)=>{
+  const handleChangeEventStatus = (id, status) => {
     axios.post(`${eventAPIConfig.changeEventStatus}/${id}/${!status}`, {
       headers: {
         'Content-type': 'multipart/form-data',
@@ -230,7 +229,7 @@ function AllEventRegistrationTable(props) {
         fetchData()
         dispatch(showMessage({ message: response.data.message, variant: 'success' }));
       } else {
-        dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
+        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
       }
     }).catch((error) => console.log(error))
 
@@ -290,7 +289,7 @@ function AllEventRegistrationTable(props) {
   }
 
   return (
-    <div className="w-full flex flex-col min-h-full" style={{overflow:'auto'}}>
+    <div className="w-full flex flex-col min-h-full" style={{ overflow: 'auto' }}>
       <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle" ref={tableRef}>
         <AllEventRegistrationTableHead
           selectedProductIds={selected}
@@ -316,44 +315,26 @@ function AllEventRegistrationTable(props) {
                   style={{ cursor: 'default' }}
                 >
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                    {n.userName}
+                  </TableCell>
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.eventName}
-                  </TableCell>
-
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.eventType}
-                  </TableCell>
-
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.eventLocation}
-
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.eventDate}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                    {n.fromCountry.split(':')[1]}
+                  </TableCell>
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                    {n.fromState.split(':')[1]}
+                  </TableCell>
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                    {n.fromCity.split(':')[1]}
+                  </TableCell>
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.shivirAvailable ? 'Yes' : 'No'}
                   </TableCell>
-
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align="center">
-                    <Switch
-                      checked={n.eventStatus}
-                      color="success"
-                      inputProps={{ 'aria-label': 'toggle event status' }}
-                      onChange={()=>handleChangeEventStatus(n.eventId,n.eventStatus)}
-                    />
-                    {n.eventStatus ? 'On' : 'Off'}
-                  </TableCell>
-
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align="center">
-                    <Switch
-                      checked={n.bookingStatus}
-                      color="success"
-                      inputProps={{ 'aria-label': 'toggle booking status' }}
-                      onChange={()=>handleChnangeBookingStatus(n.eventId,n.bookingStatus)}
-                    />
-                    {n.bookingStatus ? 'On' : 'Off'}
-                  </TableCell>
-
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     <PopupState variant="popover" popupId="demo-popup-menu">
                       {(popupState) => (
@@ -366,7 +347,7 @@ function AllEventRegistrationTable(props) {
                             {menuItemArray.map((value) => (
                               (value.loadIf) && <MenuItem
                                 onClick={() => {
-                                  getStatus(n.eventId, value.status,n.eventStatus);
+                                  getStatus(n.registrationId, value.status);
                                   popupState.close();
                                 }}
                                 key={value.key}
@@ -426,16 +407,16 @@ function AllEventRegistrationTable(props) {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-      <Box  sx={{
+        <Box sx={{
           ...style,
           '@media (max-width: 600px)': { // Apply media query for mobile devices
-          width: '70%', // Set width to 100% for smaller screens
-      },
-        '@media (max-width: 280px)': { // Additional media query for smaller screens
-         width: '93%', // Set width to 82% for screens up to 280px
-      },
-    }}>
-          {/* <EventView handleViewClose={handleViewClose} viewid={viewid} /> */}
+            width: '70%', // Set width to 100% for smaller screens
+          },
+          '@media (max-width: 280px)': { // Additional media query for smaller screens
+            width: '93%', // Set width to 82% for screens up to 280px
+          },
+        }}>
+          <EventView handleViewClose={handleViewClose} registrationId={viewid} />
         </Box>
       </Modal>
 
