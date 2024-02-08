@@ -2,29 +2,21 @@ import { TableCell, TableRow, TableSortLabel, Tooltip, TableHead } from '@mui/ma
 import { lighten } from '@mui/material/styles';
 
 function AllEventRegistrationTableHead(props) {
+  
   const rows = [
-
+    {
+      id: 'userName',
+      align: 'center',
+      disablePadding: false,
+      label: 'User Name',
+      sort: true,
+      visibleIf: true
+    },
     {
       id: 'eventName',
       align: 'center',
       disablePadding: false,
       label: 'Event Name',
-      sort: true,
-      visibleIf: true
-    },
-    {
-      id: 'eventType',
-      align: 'center',
-      disablePadding: false,
-      label: 'Event Type',
-      sort: true,
-      visibleIf: true
-    },
-    {
-      id: 'eventLocation',
-      align: 'center',
-      disablePadding: false,
-      label: 'Event Location',
       sort: true,
       visibleIf: true
     },
@@ -37,41 +29,48 @@ function AllEventRegistrationTableHead(props) {
       visibleIf: true
     },
     {
-      id: 'shivirAvailable',
+      id: 'fromCountry',
       align: 'center',
       disablePadding: false,
-      label: 'Shivir Available',
+      label: 'From Country',
       sort: true,
       visibleIf: true
     },
     {
-      id: 'eventstatus',
+      id: 'fromState',
       align: 'center',
       disablePadding: false,
-      label: 'Event Status',
+      label: 'From State',
+      sort: true,
+      visibleIf: true
+    },
+  
+    {
+      id: 'fromCity',
+      align: 'center',
+      disablePadding: false,
+      label: 'From City',
       sort: true,
       visibleIf: true
     },
     {
-      id: 'bookingstatus',
+      id: 'attendingShivir',
       align: 'center',
       disablePadding: false,
-      label: 'Booking Status',
+      label: 'Attending Shivir',
       sort: true,
       visibleIf: true
     },
-
     {
       id: 'action',
       align: 'center',
       disablePadding: false,
       label: 'Action',
       sort: true,
-      // visibleIf: _.get(props, 'permission.read_data')
-      visibleIf:true
-    },
- 
+      visibleIf: true
+    }
   ];
+  
 
   const createSortHandler = (property) => (event) => {
     props.onRequestSort(event, property);

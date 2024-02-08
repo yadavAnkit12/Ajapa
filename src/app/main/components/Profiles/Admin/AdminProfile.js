@@ -47,7 +47,7 @@ function AdminProfile() {
     const handleEditProfile = (id) => {
         navigate(`/app/useredit/${id}`)
     }
-    if (data==='') {
+    if (data=='') {
         <FuseLoading />
     }
 
