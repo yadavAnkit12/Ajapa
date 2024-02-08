@@ -54,23 +54,21 @@ function UserForm() {
     const [cityID, setCityID] = useState('')
     const [loading, setLoading] = useState(true)
     const [userID, setUserID] = useState('')
+    const [showCredentials, setShowCredentials] = useState(true);
+
 
     const validationSchema = yup.object().shape({
         name: yup.string().max(100, 'Full name should be less than 100 chars').required('Please enter your full name'),
-        email: yup.string().email('Invalid email address').matches(/^([A-Za-z0-9_\-\.])+\@(?!(?:[A-Za-z0-9_\-\.]+\.)?([A-Za-z]{2,4})\.\2)([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/, 'Invalid email').required('Please enter your email'),
+        email: yup.string().email('Invalid email address').matches(/^([A-Za-z0-9_\-\.])+\@(?!(?:[A-Za-z0-9_\-\.]+\.)?([A-Za-z]{2,4})\.\2)([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/, 'Invalid email'),
         password: yup
             .string()
-            .min(4, 'Password is too short - should be 4 chars minimum').required('Please enter your password.'),
+            .min(4, 'Password is too short - should be 4 chars minimum'),
         passwordConfirm: yup
             .string()
             .oneOf([yup.ref('password'), null], 'Passwords must match'),
         gender: yup.string().required('Please select your gender'),
-        dob: yup.date().required('Please enter your date of birth').test('is-adult', 'You must be at least 18 years old', function (value) {
-            const currentDate = new Date();
-            const minAgeDate = new Date(currentDate.getFullYear() - 18, currentDate.getMonth(), currentDate.getDate());
-            return value <= minAgeDate;
-        }),
-        countryCode: yup.string().required('select country code').required('required'),
+        dob: yup.date().required('Please enter your date of birth'),
+        // countryCode: yup.string().required('select country code').required('required'),
         profilePicture: yup.mixed().nullable()
             .test('fileType', 'Unsupported file type', (value) => {
                 if (!value) return true; // Allow null values
@@ -79,8 +77,8 @@ function UserForm() {
             }),
         mobileNumber: yup
             .string()
-            .matches(/^[1-9]\d{9}$/, 'Invalid mobile number')
-            .required('Please enter your mobile number'),
+            .matches(/^[1-9]\d{9}$/, 'Invalid mobile number'),
+            // .required('Please enter your mobile number'),
         country: yup.string().required('Please enter your country'),
         state: yup.string().required('Please enter your state'),
         city: yup.string().required('Please enter your city'),
@@ -104,6 +102,15 @@ function UserForm() {
         }).then((response) => {
             if (response.status === 200) {
                 setUserID(response.data.user.id)
+
+                const today = new Date();
+                const userAge = today.getFullYear() - parseInt(response.data.user.dob.split("-")[0])  ;
+                // console.log(userAge)
+
+                if (userAge < 15) {
+                    setShowCredentials(false);
+                }
+
                 formik.setValues({
                     id: response.data.user.id || '',
                     familyId: response.data.user.familyId || '',
@@ -184,6 +191,16 @@ function UserForm() {
 
 
     const handleSubmit = (values) => {
+
+        
+        if (showCredentials) {
+
+            if (!values.email || !values.password || !values.passwordConfirm || (!values.mobileNumber || !values.countryCode)) {
+                dispatch(showMessage({ message: 'Please enter all the mandatory fields', variant: 'error' }));
+                return;
+            }
+        }
+
         if (formik.isValid) {
 
             const formattedData = new FormData()
@@ -263,6 +280,7 @@ function UserForm() {
 
         }
         else {
+            console.log(formik.errors);
             dispatch(showMessage({ message: 'Please check the mandatory fields', variant: 'error' }));
         }
 
@@ -283,7 +301,7 @@ function UserForm() {
             role: '',
             status: '',
             pic: '',
-            countryCode: '+91 (IN)',
+            countryCode: '',
             mobileNumber: '',
             country: '',
             state: '',
@@ -352,6 +370,29 @@ function UserForm() {
                                 />
 
                                 <TextField
+                                    name="dob"
+                                    label="Date of Birth"
+                                    type="date"
+                                    InputLabelProps={{ shrink: true }}
+                                    sx={{ mb: 2 }}
+                                    className="max-w-md"
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    value={formik.values.dob}
+                                    error={formik.touched.dob && Boolean(formik.errors.dob)}
+                                    helperText={formik.touched.dob && formik.errors.dob}
+                                    variant="outlined"
+                                    required
+                                    fullWidth
+                                    inputProps={{
+                                        max: new Date().toISOString().split('T')[0], // Set max date to the current date
+                                    }}
+                                />
+
+                                {
+                                    showCredentials && (
+
+                                <TextField
                                     sx={{ mb: 2 }}
                                     className="max-w-md"
                                     name='email'
@@ -367,7 +408,13 @@ function UserForm() {
                                     fullWidth
 
                                 />
+                                    )
+                                }
 
+                                {
+                                    showCredentials && (
+
+                               
                                 <div className='d-flex max-w-md'>
                                     <Autocomplete
                                         options={phoneNumberCountryCodes}
@@ -403,25 +450,9 @@ function UserForm() {
                                     />
 
                                 </div>
-                                <TextField
-                                    name="dob"
-                                    label="Date of Birth"
-                                    type="date"
-                                    InputLabelProps={{ shrink: true }}
-                                    sx={{ mb: 2 }}
-                                    className="max-w-md"
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    value={formik.values.dob}
-                                    error={formik.touched.dob && Boolean(formik.errors.dob)}
-                                    helperText={formik.touched.dob && formik.errors.dob}
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    inputProps={{
-                                        max: new Date().toISOString().split('T')[0], // Set max date to the current date
-                                    }}
-                                />
+                                  )
+                                }
+                                
 
                                 <Autocomplete
                                     options={['Male', 'Female', 'Others']}
@@ -534,7 +565,10 @@ function UserForm() {
                                 />
 
                             </div>
+
+                            
                             <div className={tabValue !== 2 ? 'hidden' : ''}>
+                            {showCredentials && (
                                 <TextField
                                     name='password'
                                     label="Password"
@@ -562,7 +596,11 @@ function UserForm() {
                                         ),
                                     }}
                                 />
+                                )}
 
+                                {showCredentials && (
+
+                                
                                 <TextField
                                     sx={{ mb: 2 }}
                                     className="max-w-md"
@@ -590,6 +628,7 @@ function UserForm() {
                                         ),
                                     }}
                                 />
+                                )}
 
 
                                 <div style={{ marginBottom: '16px' }}>
@@ -715,6 +754,8 @@ function UserForm() {
                                     fullWidth
                                 />
 
+                                {
+                                    showCredentials && (
                                 <TextField
                                     label="WhatsApp Number"
                                     sx={{ mb: 2 }}
@@ -729,8 +770,10 @@ function UserForm() {
                                     variant="outlined"
                                     fullWidth
                                 />
-
+                                )
+                            }
                             </div>
+                       
                         </form>
                     </div>
                 </>

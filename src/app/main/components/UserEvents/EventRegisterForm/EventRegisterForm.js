@@ -11,13 +11,14 @@ import EventRegisterFormHead from './EventRegisterFormHead';
 import EventForm from '../EventRegisterForm/EventForm';
 import { Button, Dialog, DialogActions, DialogTitle, Slide, Typography } from '@mui/material';
 import { Formik } from 'formik';
+import FuseLoading from '@fuse/core/FuseLoading';
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const EventRegisterForm = () => {
-    // console.log(allEventsData)
+    
     const routeParams = useParams();
     const { eventId, userId, eventDate, eventName } = routeParams
 
@@ -33,7 +34,12 @@ const EventRegisterForm = () => {
     const [open, setOpen] = useState(false)
     const [deleteId, setDeleteId] = useState('')
     const [isShivirAvailable, setIsShivirAvailable] = useState(false)
+    const [loading, setLoading] = useState(true)
 
+
+    const sameAsDD = registerList.filter((registeredUser) => registerList.userId === registeredUser.id )
+    
+    
 
     //get Event By Id
     useEffect(() => {
@@ -44,7 +50,7 @@ const EventRegisterForm = () => {
             },
         }).then((response) => {
             if (response.status === 200) {
-                console.log("jii",response?.data)
+                // console.log("jii",response?.data)
                 setIsShivirAvailable(response?.data)
             } else {
                 dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
@@ -63,16 +69,18 @@ const EventRegisterForm = () => {
             },
         }).then((response) => {
             if (response.status === 200) {
-                console.log(response)
+        
                 if (response.data.data.length > 0) {
                     setRegisterList(response.data.data)
+        
                     if (userListData.users.length > 0) {
+                   
                         const arr = userListData.users.map((user) => {
                             const matchingEventRegister = response.data.data.find((eventRegister) => eventRegister.userId === user.id);
                             return matchingEventRegister ? user.id : null;
                         });
 
-                        console.log(arr);
+                        
                         setRegister(arr)
 
                     }
@@ -85,6 +93,8 @@ const EventRegisterForm = () => {
 
     }, [userListData, change])
 
+    
+
     useEffect(() => {
         axios.get(`${userAPIConfig.getUserByFamily}`, {
             headers: {
@@ -93,19 +103,27 @@ const EventRegisterForm = () => {
             },
         }).then((response) => {
             if (response.status === 200) {
-                console.log(response)
+                // console.log(response)
                 setUserListData(response?.data);
+                setLoading(false)
             } else {
                 dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
             }
         });
     }, [change]);
 
+    if(loading){
+        return <FuseLoading />
+    }
+    
+    
+
+    //Edit button functionality
+
     const handleEdit = (userId) => {
         setRegisterUser(registerList.find((register) => register.userId === userId))
         setSelectedUserId(userId);
         setEventFormOpen(true);
-
     }
 
     const handleDelete = () => {
@@ -120,6 +138,7 @@ const EventRegisterForm = () => {
         }).then((response) => {
             if (response.status === 200) {
                 dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+                <FuseLoading />
                 setOpen(false)
                 setChange(!change)
             } else {
@@ -145,6 +164,7 @@ const EventRegisterForm = () => {
     const handleCloseEventForm = () => {
         setEventFormOpen(false);
         setSelectedUserId(null);
+        setRegisterUser(null);
     };
 
 
@@ -201,7 +221,7 @@ const EventRegisterForm = () => {
                                                         onClick={() => handleEdit(person.id)}
                                                     >
                                                         Edit
-                                                    </Button>
+                                                    </Button> 
 
                                                     <Button
                                                         // variant='contained'
@@ -232,6 +252,8 @@ const EventRegisterForm = () => {
                                                     change={change}
                                                     setChange={setChange}
                                                     isShivirAvailable={isShivirAvailable}
+                                                    // registerList={registerList}
+                                                    sameAsDD={sameAsDD}
                                                 />
                                             )}
                                         </td>
