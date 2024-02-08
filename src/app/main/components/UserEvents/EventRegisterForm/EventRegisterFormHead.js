@@ -42,7 +42,7 @@ function EventRegisterFormHead(props) {
                     // disabled={props?.disabled}
                     onClick={() => props.handleSubmit(props.values)}
                 >
-                    Save
+                    Cancel All Registrations
                 </Button>
             </motion.div>
         </div>

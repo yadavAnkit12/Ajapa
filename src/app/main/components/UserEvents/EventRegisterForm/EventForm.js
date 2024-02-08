@@ -2,7 +2,7 @@ import TextField from '@mui/material/TextField';
 import * as yup from 'yup';
 import _ from '@lodash';
 import 'react-phone-input-2/lib/style.css'
-import { Autocomplete, Card, Checkbox, FormControlLabel, Button } from '@mui/material';
+import { Autocomplete, Card, Checkbox, FormControlLabel, Button, FormControl, FormLabel, FormGroup } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import { useDispatch } from 'react-redux';
@@ -16,10 +16,12 @@ import { values } from 'lodash';
 
 
 const EventForm = (props) => {
-    console.log(props.isShivirAvailable.data)
+    
     const dispatch = useDispatch()
     const shivirHai = props.isShivirAvailable.data.shivirAvailable
-
+    const lockarrivaldate = props.isShivirAvailable.data.lockArrivalDate
+    const lockdeparturedetail = props.isShivirAvailable.data.lockDepartureDate
+    const eventDate = props.eventDate
     const [countryList, setCountryList] = useState([])
     const [countryID, setCountryID] = useState('')
     const [stateList, setStateList] = useState([])
@@ -28,7 +30,9 @@ const EventForm = (props) => {
     const [cityID, setCityID] = useState('')
     const [shivirCheckBox, setshivirCheckBox] = useState(false)
     const [arrModeOfTransport, setArrModeOfTransport] = useState(false)
-    console.log(arrModeOfTransport)
+    const [depModeOfTransport, setDepModeOfTransport] = useState(false)
+    
+    
 
     useEffect(() => {
         if (shivirHai === true) {
@@ -42,43 +46,28 @@ const EventForm = (props) => {
     }, [])
 
     
-  const validationSchema = yup.object().shape({
-    // name: yup.string().required('Please enter your full name').max(100, 'Full name should be less than 100 chars'),
-    // email: yup.string().email('Invalid email address').matches(/^([A-Za-z0-9_\-\.])+\@(?!(?:[A-Za-z0-9_\-\.]+\.)?([A-Za-z]{2,4})\.\2)([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/, 'Invalid email').required('Please enter your email'),
-    // password: yup
-    //   .string()
-    //   .required('Please enter your password.')
-    //   .min(4, 'Password is too short - should be 4 chars minimum'),
-    // passwordConfirm: yup
-    //   .string()
-    //   .oneOf([yup.ref('password'), null], 'Passwords must match'),
-    // gender: yup.string().required('Please select your gender'),
-    // dob: yup.date().required('Please enter your date of birth').test('is-adult', 'You must be at least 18 years old', function (value) {
-    //   const currentDate = new Date();
-    //   const minAgeDate = new Date(currentDate.getFullYear() - 18, currentDate.getMonth(), currentDate.getDate());
-    //   return value <= minAgeDate;
-    // }),
-    // countryCode: yup.string().required('select country code'),
-    // mobileNumber: yup
-    //   .string()
-    //   .matches(/^[1-9]\d{9}$/, 'Invalid mobile number')
-    //   .required('Please enter your mobile number'),
-    fromCountry: yup.string().required('Please enter your country'),
-    fromState: yup.string().required('Please enter your state'),
-    fromCity: yup.string().required('Please enter your city'),
-    // profilePicture: yup.mixed()
-    //   .test('fileType', 'Unsupported file type', (value) => {
-    //     if (!value) return true;
-    //     const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
-    //     return allowedTypes.includes(value.type);
-    //   }).required('Image is required'),
-    // isDisciple: yup.string()
-  });
+    const validationSchema = yup.object().shape({
+        fromCountry: yup.string().required('Please enter your country'),
+        fromState: yup.string().required('Please enter your state'),
+        fromCity: yup.string().required('Please enter your city'),
+        arrivalDate: yup.string().required('Please select arrival date'),
+        arrivalTime: yup.string().required('Please select arrival time'),
+        arrivalModeOfTransport: yup.string().required('Please select arrival mode of transport'),
+        arrivalTrainNumber: yup.string()
+          .matches(/^[0-9]{6}$/, 'Train number must be exactly 6 digits'),
+        departureDate: yup.string().required('Please select departure date'),
+        departureTime: yup.string().required('Please select departure time'),
+        departureModeOfTransport: yup.string().required('Please select departure mode of transport'),
+        departureTrainNumber: yup.string()
+          .matches(/^[0-9]{6}$/, 'Train number must be exactly 6 digits'),
+        specificRequirements: yup.string(),
+        attendingShivir: yup.boolean(),
+    });
 
 
     useEffect(() => {
         if (props.registerUser) {
-            console.log(props.registerUser)
+            
             formik.setValues({
                 registrationId: props.registerUser.registrationId || '',
                 eventId: props.registerUser.eventId || '',
@@ -165,11 +154,19 @@ const EventForm = (props) => {
         formData.append('arrivalDate', formik.values.arrivalDate)
         formData.append('arrivalTime', formik.values.arrivalTime)
         formData.append('arrivalModeOfTransport', formik.values.arrivalModeOfTransport)
-        formData.append('arrivalTrainNumber', formik.values.arrivalTrainNumber)
+        if (formik.values.arrivalModeOfTransport !== 'Train') {
+            formData.append('arrivalTrainNumber', ''); 
+        } else {
+            formData.append('arrivalTrainNumber', formik.values.arrivalTrainNumber); 
+        }
         formData.append('departureDate', formik.values.departureDate)
         formData.append('departureTime', formik.values.departureTime)
         formData.append('departureModeOfTransport', formik.values.departureModeOfTransport)
-        formData.append('departureTrainNumber', formik.values.departureTrainNumber)
+        if (formik.values.departureModeOfTransport !== 'Train') {
+            formData.append('departureTrainNumber', ''); 
+        } else {
+            formData.append('departureTrainNumber', formik.values.departureTrainNumber); 
+        }
         formData.append('specificRequirements', formik.values.specificRequirements)
         formData.append('attendingShivir', formik.values.attendingShivir)
         formik.resetForm()
@@ -234,34 +231,95 @@ const EventForm = (props) => {
             departureModeOfTransport: '',
             departureTrainNumber: '',
             specificRequirements: '',
-            attendingShivir: false,
+            attendingShivir: '',
 
         },
         validationSchema: validationSchema,
         onSubmit: handleSubmit,
     });
-
     const closeForm = () => {
         formik.resetForm()
         props.handleClose()
     }
 
+
     useEffect(()=>{
-        if(values.arrivalModeOfTransport === 'Train'){
-           setArrModeOfTransport(true)
-        }else{
-           setArrModeOfTransport(false)
+        if(formik.values.arrivalModeOfTransport === 'Train'){
+            setArrModeOfTransport(true)
         }
-     },[])
+        else{
+            setArrModeOfTransport(false)
+        }
+     },[formik.values.arrivalModeOfTransport])
+
+     
+    useEffect(()=>{
+        if(formik.values.departureModeOfTransport === 'Train'){
+            setDepModeOfTransport(true)
+        }else{
+            setDepModeOfTransport(false)
+        }
+     },[formik.values.departureModeOfTransport])
+
+     const handleUserNameChange = (newValue) => {
+    if (newValue) {
+        
+        formik.setValues({
+            ...formik.values,
+            // registrationId: newValue.registrationId || '',
+            // eventId: newValue.eventId || '',
+            // userId: newValue.userId || '',
+            // userName: newValue.userName || '',
+            // familyId: newValue.familyId || '',
+            fromCity: newValue.fromCity.split(":")[1] || '',
+            fromState: newValue.fromState.split(":")[1] || '',
+            fromCountry: newValue.fromCountry.split(":")[1] || '',
+            arrivalDate: newValue.arrivalDate || '',
+            arrivalTime: newValue.arrivalTime || '',
+            arrivalModeOfTransport: newValue.arrivalModeOfTransport || '',
+            arrivalTrainNumber: newValue.arrivalTrainNumber || '',
+            departureDate: newValue.departureDate || '',
+            departureTime: newValue.departureTime || '',
+            departureModeOfTransport: newValue.departureModeOfTransport || '',
+            departureTrainNumber: newValue.departureTrainNumber || '',
+            specificRequirements: newValue.specificRequirements || '',
+            attendingShivir: newValue.attendingShivir || false,
+        });
+        
+        setCountryID(newValue.fromCountry.split(':')[0]);
+        setStateID(newValue.fromState.split(':')[0]);
+        setCityID(newValue.fromCity.split(':')[0]);
+        
+        setArrModeOfTransport(newValue.arrivalModeOfTransport === 'Train');
+        setDepModeOfTransport(newValue.departureModeOfTransport === 'Train');
+    }else {
+        formik.resetForm();
+    }
+};
+
 
     return (
         <Card style={{ marginTop: '10px' }} className='shadow-5'>
+                   <div style={{width:'20%', marginLeft:'3%'}}>
+                        <Autocomplete
+                           disablePortal
+                           value={props.sameAsDD.userName}
+                           id="userName"
+                           options={props.sameAsDD.length > 0 ? props.sameAsDD : []} 
+                           getOptionLabel={(option) => option.userName} 
+                           sx={{ my: 1 , mx: 1 }} 
+                           onChange={(e, newValue) => handleUserNameChange(newValue)}
+                           renderInput={(params) => <TextField {...params} label="Same as" variant="standard" />}
+                        />
+                   </div>
             <form onSubmit={formik.handleSubmit}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-9 mx-3">
 
                     {/* Left side: Arrival details */}
                     <div className='shadow-3 rounded-md' style={{ padding: '10px' }}>
                         <h2 className="text-lg font-semibold mb-4 mt-2 text-center">Arrival Details</h2>
+            
+                        
                         {/* Arrival details fields */}
                         <div className="space-y-2 " style={{ marginTop: '21px' }}>
                             <div>
@@ -280,10 +338,12 @@ const EventForm = (props) => {
                                         <TextField
                                             {...params}
                                             label="Country"
+                                            name='fromCountry'
                                             sx={{ mb: 2, mt: 2, width: '100%' }}
                                             className="max-w-md"
                                             variant="outlined"
                                             required
+                                            onBlur={formik.handleBlur}
                                             error={formik.touched.fromCountry && Boolean(formik.errors.fromCountry)}
                                             helperText={formik.touched.fromCountry && formik.errors.fromCountry}
                                             
@@ -306,10 +366,12 @@ const EventForm = (props) => {
                                         <TextField
                                             {...params}
                                             label="State"
+                                            name='fromState'
                                             variant="outlined"
                                             sx={{ mb: 2, mt: 2, width: '100%' }}
                                             className="max-w-md"
                                             required
+                                            onBlur={formik.handleBlur}
                                             error={formik.touched.fromState && Boolean(formik.errors.fromState)}
                                             helperText={formik.touched.fromState && formik.errors.fromState}
                                         />
@@ -330,10 +392,12 @@ const EventForm = (props) => {
                                         <TextField
                                             {...params}
                                             label="City"
+                                            name='fromCity'
                                             variant="outlined"
                                             sx={{ mb: 2, mt: 2, width: '100%' }}
                                             className="max-w-md"
                                             required
+                                            onBlur={formik.handleBlur}
                                             error={formik.touched.fromCity && Boolean(formik.errors.fromCity)}
                                             helperText={formik.touched.fromCity && formik.errors.fromCity}
                                         />
@@ -355,6 +419,7 @@ const EventForm = (props) => {
                                     onBlur={formik.handleBlur}
                                     error={formik.touched.arrivalDate && Boolean(formik.errors.arrivalDate)}
                                     helperText={formik.touched.arrivalDate && formik.errors.arrivalDate}
+                                    inputProps={{ min: lockarrivaldate , max: eventDate }}
                                 />
                             </div>
                             <div>
@@ -391,6 +456,7 @@ const EventForm = (props) => {
                                             className="max-w-md"
                                             variant="outlined"
                                             required
+                                            onBlur={formik.handleBlur}
                                             error={formik.touched.arrivalModeOfTransport && Boolean(formik.errors.arrivalModeOfTransport)}
                                             helperText={formik.touched.arrivalModeOfTransport && formik.errors.arrivalModeOfTransport}
 
@@ -409,6 +475,7 @@ const EventForm = (props) => {
                                     sx={{ mb: 2, mt: 2, width: '100%' }}
                                     className="max-w-md"
                                     type="text"
+                                    required
                                     value={formik.values.arrivalTrainNumber}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
@@ -445,7 +512,8 @@ const EventForm = (props) => {
                                     onBlur={formik.handleBlur}
                                     error={formik.touched.departureDate && Boolean(formik.errors.departureDate)}
                                     helperText={formik.touched.departureDate && formik.errors.departureDate}
-                                />
+                                    inputProps={{ min: eventDate , max: lockdeparturedetail }}
+                               />
                             </div>
                             <div>
                                 <TextField
@@ -475,11 +543,13 @@ const EventForm = (props) => {
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
+                                            name='departureModeOfTransport'
                                             label="Mode of Transport"
                                             sx={{ mb: 2, mt: 2, width: '100%' }}
                                             className="max-w-md"
                                             variant="outlined"
                                             required
+                                            onBlur={formik.handleBlur}
                                             error={formik.touched.departureModeOfTransport && Boolean(formik.errors.departureModeOfTransport)}
                                             helperText={formik.touched.departureModeOfTransport && formik.errors.departureModeOfTransport}
 
@@ -487,6 +557,9 @@ const EventForm = (props) => {
                                     )}
                                 />
                             </div>
+                            {
+                                depModeOfTransport && (
+
                             <div>
                                 <TextField
                                     name="departureTrainNumber"
@@ -495,6 +568,7 @@ const EventForm = (props) => {
                                     sx={{ mb: 2, mt: 2, width: '100%' }}
                                     className="max-w-md"
                                     type="text"
+                                    required
                                     value={formik.values.departureTrainNumber}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
@@ -502,6 +576,8 @@ const EventForm = (props) => {
                                     helperText={formik.touched.departureTrainNumber && formik.errors.departureTrainNumber}
                                 />
                             </div>
+                                  )
+                           }
                             <div>
                                 <TextField
                                     label="Specific Requirements"
@@ -521,16 +597,23 @@ const EventForm = (props) => {
                             </div>
                             {shivirCheckBox && (
                                 <div>
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                checked={formik.values.attendingShivir}
-                                                onChange={(event) => {
-                                                    formik.setFieldValue('attendingShivir', event.target.checked ? true : false);
-                                                }}
-                                                name="attendingShivir" />}
-                                        label="You want to attend the Shivir ?"
-                                    />
+                                 <FormControl component="fieldset">
+                                    <FormLabel component="legend">You want to attend the Shivir ?</FormLabel>
+                                       <FormGroup>
+                                           <FormControlLabel
+                                               control={
+                                               <Checkbox checked={formik.values.attendingShivir === true}
+                                                onChange={() => formik.setFieldValue('attendingShivir', true)} />}
+                                                label="Yes"
+                                           />
+                                           <FormControlLabel
+                                           control={
+                                           <Checkbox checked={formik.values.attendingShivir === false} 
+                                           onChange={() => formik.setFieldValue('attendingShivir', false)} />}
+                                            label="No"
+                                           />
+                                       </FormGroup>
+                                </FormControl>
                                 </div>
                             )}
                         </div>

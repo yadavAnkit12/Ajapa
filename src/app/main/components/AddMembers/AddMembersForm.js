@@ -52,8 +52,8 @@ function AddMembersForm() {
     const [cityID, setCityID] = useState('')
     const [userID, setUserID] = useState('')
     const [showCredentials, setShowCredentials] = useState(true);
-    const [isChild, setIsChild] = useState(showCredentials)
-    console.log(isChild , showCredentials)
+    
+    
 
 
     const validationSchema = yup.object().shape({
@@ -71,7 +71,7 @@ function AddMembersForm() {
         gender: yup.string().required('Please select your gender'),
         dob: yup.date().required('Please enter your date of birth'),
 
-        countryCode: yup.string().required('select country code'),
+        // countryCode: yup.string().required('select country code'),
         profilePicture: yup.mixed().nullable()
             .test('fileType', 'Unsupported file type', (value) => {
                 if (!value) return true; // Allow null values
@@ -107,8 +107,11 @@ function AddMembersForm() {
                 },
             }).then((response) => {
                 if (response.status === 200) {
+                    const today = new Date();
+                    const userAge = today.getFullYear() - parseInt(response.data.user.dob.split("-")[0])  ;
+                    // console.log(userAge)
 
-                    if (isChild) {
+                    if (userAge < 15) {
                         setShowCredentials(false);
                     }
 
@@ -197,20 +200,21 @@ function AddMembersForm() {
 
         if (userID === '' && values.profilePicture === null) {
             dispatch(showMessage({ message: 'Profile picture is required', variant: 'error' }));
+
             return
 
         }
 
-
         if (showCredentials) {
 
-            if (!values.email || !values.password || !values.passwordConfirm || !values.mobileNumber) {
+            if (!values.email || !values.password || !values.passwordConfirm || (!values.mobileNumber || !values.countryCode)) {
                 dispatch(showMessage({ message: 'Please enter all the mandatory fields', variant: 'error' }));
                 return;
             }
         }
 
         if (formik.isValid) {
+            
             const formattedData = new FormData()
 
 
@@ -298,6 +302,7 @@ function AddMembersForm() {
 
         }
         else {
+            console.log(formik.errors);
             dispatch(showMessage({ message: 'Please check the mandatory fields', variant: 'error' }));
         }
 
@@ -308,7 +313,7 @@ function AddMembersForm() {
         const dob = new Date(event.target.value);
         const today = new Date();
         const age = today.getFullYear() - dob.getFullYear();
-
+        // console.log(age)
         setShowCredentials(age > 15);
 
     };
