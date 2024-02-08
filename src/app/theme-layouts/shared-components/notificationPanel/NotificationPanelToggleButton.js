@@ -4,23 +4,30 @@ import { useDispatch, useSelector } from 'react-redux';
 import withReducer from 'app/store/withReducer';
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import reducer from './store';
-import { selectNotifications,getNotifications } from './store/dataSlice';
-import { toggleNotificationPanel } from './store/stateSlice';
+import { selectNotifications, getNotifications } from './store/dataSlice';
+import { toggleNotificationPanel, selectNotificationPanelState } from './store/stateSlice';
 import { useEffect, useState } from 'react';
 
 function NotificationPanelToggleButton(props) {
   const notifications = useSelector(selectNotifications);
-  const [notificationLength,setNotificationLength] = useState(0)
+  const [notificationLength, setNotificationLength] = useState(0)
   const dispatch = useDispatch();
 
+
+
+  // Using useSelector to get the notificationPanel state
+  const notificationPanelState = useSelector(getNotifications);
+
+  console.log("kyu", notificationPanelState)
+  selectNotificationPanelState
   const fetchNotifications = async () => {
     const res = await dispatch(getNotifications());
     setNotificationLength(res.payload.data)
   };
-  useEffect(()=>{
+  useEffect(() => {
     fetchNotifications()
-  },[])
-  return (
+  }, [])
+  return (     
     <IconButton
       className="w-40 h-40"
       onClick={(ev) => dispatch(toggleNotificationPanel())}
