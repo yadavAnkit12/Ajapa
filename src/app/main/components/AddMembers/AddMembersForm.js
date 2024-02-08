@@ -238,9 +238,9 @@ function AddMembersForm() {
             formattedData.append('whatsAppNumber', values.whatsAppNumber)
             formattedData.append('isDisciple', values.isDisciple === 'Yes' ? true : false)
             formattedData.append('status', 'Approved')
-            formattedData.append('role', 'Member')
 
             if (userID === '') {  // for new member
+                formattedData.append('role', 'Member')
 
                 formattedData.append('file', values.profilePicture)
                 axios.post(`${jwtServiceConfig.signUp}`, formattedData, {
@@ -261,6 +261,7 @@ function AddMembersForm() {
 
             } else {  // for update the existing member
                 formattedData.append('id', values.id)
+                formattedData.append('role',values.role)
 
                 if (values.profilePicture !== null) {
 
