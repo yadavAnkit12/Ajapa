@@ -159,6 +159,7 @@ const EventRegisterForm = () => {
     const handleSave = (userId) => {
         setSelectedUserId(userId);
         setEventFormOpen(true);
+        setRegisterUser(null);
     };
 
     const handleCloseEventForm = () => {

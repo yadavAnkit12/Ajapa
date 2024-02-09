@@ -236,7 +236,10 @@ const EventForm = () => {
                 })
 
             } else {
-                formData.append('eventImage', values.eventImage)
+                if(eventId!==''){
+
+                    formData.append('eventImage', values.eventImage)
+                }
 
                 axios.post(eventAPIConfig.create, formData, {
                     headers: {
