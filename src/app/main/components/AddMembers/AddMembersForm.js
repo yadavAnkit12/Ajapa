@@ -327,7 +327,7 @@ function AddMembersForm() {
             password: '',
             passwordConfirm: '',
             gender: '',
-            dob: null,
+            dob: '',
             role: '',
             status: '',
             profileImage:'',

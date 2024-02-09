@@ -216,7 +216,7 @@ const EventRegisterForm = () => {
                                                         // variant='contained'
                                                         disabled={!register.includes(person.id)}
                                                         style={{
-                                                            backgroundColor: register.includes(person.id) ? '#007FFF' : '#d3d3d3', // Use light gray for disabled
+                                                            backgroundColor: register.includes(person.id) ? '#4f46e5' : '#d3d3d3', // Use light gray for disabled
                                                             color: 'white',
                                                         }}
                                                         onClick={() => handleEdit(person.id)}
