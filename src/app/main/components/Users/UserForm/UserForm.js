@@ -191,6 +191,7 @@ function UserForm() {
 
 
     const handleSubmit = (values) => {
+        console.log(values)
 
         
         if (showCredentials) {
@@ -694,18 +695,18 @@ function UserForm() {
                                 <Autocomplete
                                     options={['A+', 'B+', 'AB+', 'O+', 'A-', 'B-', 'AB-', 'O-']}
                                     getOptionLabel={(option) => option}
+                                    value={formik.values.bloodGroup}
+                                    onChange={(event, value) => formik.setFieldValue('bloodGroup', value)}
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
                                             label="Blood Group"
                                             sx={{ mb: 2 }}
                                             className="max-w-md"
-                                            name="bloodGroup"
-                                            value={formik.values.bloodGroup}
-                                            onChange={(event, value) => formik.setFieldValue('bloodGroup', value)}
+                                            // name="bloodGroup"
                                             onBlur={formik.handleBlur}
-                                            error={formik.touched.bloodGroup && Boolean(formik.errors.bloodGroup)}
-                                            helperText={formik.touched.bloodGroup && formik.errors.bloodGroup}
+                                            // error={formik.touched.bloodGroup && Boolean(formik.errors.bloodGroup)}
+                                            // helperText={formik.touched.bloodGroup && formik.errors.bloodGroup}
                                             variant="outlined"
                                             fullWidth
                                         />

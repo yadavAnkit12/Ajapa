@@ -171,27 +171,7 @@ function AllEventRegistrationHeader(props) {
             >
               Export PDF
             </Button>
-            {/* 
-            <Autocomplete
-              disablePortal
-              value={filterData.eventStatus}
-              id="eventStatus"
-              options={['Active', 'Inactive']}
-              sx={{ my: 1, minWidth: 140, mx: 1 }}
-              onChange={(e, newValue) => setFilterData({ ...filterData, eventStatus: newValue })}
-              renderInput={(params) => <TextField {...params} label="Event Status" variant="standard" />}
-            /> */}
 
-            {/* {_.size(PATIENTSTATUS) > 0 && <Autocomplete
-              disablePortal
-              value={filterData.status}
-              id="status"
-              options={PATIENTSTATUS}
-              getOptionLabel={option => option.name}
-              sx={{ my: 1, minWidth: 140, mx: 1 }}
-              onChange={(e, newValue) => setFilterData({ ...filterData, status: newValue })}
-              renderInput={(params) => <TextField {...params} label="Status" variant="standard" />}
-            />}  */}
           </div>
           <div className="flex flex-row justify-end">
             <Button
