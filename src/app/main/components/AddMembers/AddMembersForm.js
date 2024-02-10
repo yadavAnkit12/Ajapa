@@ -51,7 +51,9 @@ function AddMembersForm() {
     const [cityList, setCityList] = useState([])
     const [cityID, setCityID] = useState('')
     const [userID, setUserID] = useState('')
+    // const [isChecked, setIsChecked] = useState(false);
     const [showCredentials, setShowCredentials] = useState(true);
+    // const [isChild, setIsChild] = useState(false)
     
     
 
@@ -109,7 +111,7 @@ function AddMembersForm() {
                 if (response.status === 200) {
                     const today = new Date();
                     const userAge = today.getFullYear() - parseInt(response.data.user.dob.split("-")[0])  ;
-                    // console.log(userAge)
+                    console.log(userAge)
 
                     if (userAge < 15) {
                         setShowCredentials(false);
@@ -127,7 +129,7 @@ function AddMembersForm() {
                         role: response.data.user.role || '',
                         status: response.data.user.status || '',
                         profileImage: response.data.user.profileImage || '',
-                        countryCode: response.data.user.countryCode || '+91 (IN)',
+                        countryCode: response.data.user.countryCode || '',
                         mobileNumber: response.data.user.mobileNumber || '',
                         country: response.data.user.country.split(':')[1] || '',
                         state: response.data.user.state.split(':')[1] || '',
@@ -214,7 +216,7 @@ function AddMembersForm() {
         }
 
         if (formik.isValid) {
-            
+            console.log(formik)
             const formattedData = new FormData()
 
 
@@ -303,7 +305,6 @@ function AddMembersForm() {
 
         }
         else {
-            console.log(formik.errors);
             dispatch(showMessage({ message: 'Please check the mandatory fields', variant: 'error' }));
         }
 
@@ -314,10 +315,18 @@ function AddMembersForm() {
         const dob = new Date(event.target.value);
         const today = new Date();
         const age = today.getFullYear() - dob.getFullYear();
-        // console.log(age)
         setShowCredentials(age > 15);
-
     };
+
+    // const handleCheckboxChange = (event) => {
+    //     const isChecked = event.target.checked;
+    //     setIsChecked(isChecked);
+    //     if (isChecked) {
+    //         setShowCredentials(true); 
+    //     } else {
+    //         setShowCredentials(false); 
+    //     }
+    // }
 
     const formik = useFormik({
         initialValues: {
@@ -417,10 +426,27 @@ function AddMembersForm() {
                                     required
                                     fullWidth
                                     inputProps={{
-                                        max: new Date().toISOString().split('T')[0], // Set max date to the current date
+                                        max: new Date().toISOString().split('T')[0], 
                                     }}
                                 />
                                 
+                                {/* {
+                                    isChild && (
+
+                                    <FormControlLabel 
+                                        control={
+                                            <Checkbox
+                                                style={{position:'relative'}}
+                                                checked={isChecked}
+                                                onChange={handleCheckboxChange}
+                                                color="primary"
+                                            />
+                                        }
+                                        label= "Want to add fields ?"
+                                    />
+                                    )
+                                } */}
+                           
 
 
                                 {showCredentials && (
