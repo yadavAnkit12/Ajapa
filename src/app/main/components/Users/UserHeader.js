@@ -89,11 +89,12 @@ function UsersHeader(props) {
 
 
     const filterPartnerData = () => {
+        console.log(countryID)
         props.setFilterValue({
             status: filterData.status,
-            country: countryID !== '' ? `${countryID}:${filterData.country}` : '',
-            state: stateID !== '' ? `${stateID}:${filterData.state}` : '',
-            city: cityID !== '' ? `${cityID}:${filterData.city}` : ''
+            country:(countryID !== '' && countryID !==undefined) ? `${countryID}:${filterData.country}` : '',
+            state: (stateID !== '' && stateID !==undefined) ? `${stateID}:${filterData.state}` : '',
+            city: (cityID !== '' && cityID !==undefined) ? `${cityID}:${filterData.city}` : '',
         });
     };
 
