@@ -16,11 +16,12 @@ import { values } from 'lodash';
 
 
 const EventForm = (props) => {
-
+    console.log(props.person.id)
     const dispatch = useDispatch()
     const shivirHai = props.isShivirAvailable.data.shivirAvailable
     const lockarrivaldate = props.isShivirAvailable.data.lockArrivalDate
     const lockdeparturedetail = props.isShivirAvailable.data.lockDepartureDate
+    // console.log(lockdeparturedetail,"hnn",lockarrivaldate)
     const eventDate = props.eventDate
     const [countryList, setCountryList] = useState([])
     const [countryID, setCountryID] = useState('')
@@ -33,7 +34,10 @@ const EventForm = (props) => {
     const [depModeOfTransport, setDepModeOfTransport] = useState(false)
 
 
-
+    useEffect(() => {
+        console.log('unde',props)
+        formik.resetForm()
+    }, [props.person.id])
     useEffect(() => {
         if (shivirHai === true) {
             setshivirCheckBox(true)
@@ -41,9 +45,9 @@ const EventForm = (props) => {
     }, [])
 
 
-    useEffect(() => {
-        formik.resetForm()
-    }, [])
+
+
+    
 
 
     const validationSchema = yup.object().shape({
@@ -87,6 +91,7 @@ const EventForm = (props) => {
                 departureTrainNumber: props.registerUser.departureTrainNumber || '',
                 specificRequirements: props.registerUser.specificRequirements || '',
                 attendingShivir: props.registerUser.attendingShivir,
+                
             })
             setCountryID(props.registerUser.fromCountry.split(':')[0])
             setStateID(props.registerUser.fromState.split(':')[0])
@@ -141,8 +146,12 @@ const EventForm = (props) => {
 
     const handleSubmit = (values) => {
 
+        if(shivirCheckBox && formik.values.attendingShivir === ''){
+            return dispatch(showMessage({ message: 'Please Check', variant: 'error' }));
+        }
+
         const formData = new FormData()
-        formData.append('eventId', props.eventId)
+        formData.append('eventId', props.eventId)   
         formData.append('userId', props.selectedUserId)
         formData.append('userName', props.person.name)
         formData.append('eventDate', props.eventDate)
@@ -168,8 +177,13 @@ const EventForm = (props) => {
             formData.append('departureTrainNumber', formik.values.departureTrainNumber);
         }
         formData.append('specificRequirements', formik.values.specificRequirements)
-        formData.append('attendingShivir', formik.values.attendingShivir)
-        formik.resetForm()
+        // formData.append('attendingShivir', formik.values.attendingShivir )
+        if(shivirCheckBox){
+            formData.append('attendingShivir', formik.values.attendingShivir )
+        }else{
+            formData.append('attendingShivir', false )
+        }
+        
 
         if (props.registerUser) {
             formData.append('registrationId', values.registrationId)
@@ -266,11 +280,11 @@ const EventForm = (props) => {
 
             formik.setValues({
                 ...formik.values,
-                // registrationId: newValue.registrationId || '',
-                // eventId: newValue.eventId || '',
-                // userId: newValue.userId || '',
-                // userName: newValue.userName || '',
-                // familyId: newValue.familyId || '',
+                registrationId: newValue.registrationId || '',
+                eventId: newValue.eventId || '',
+                userId: newValue.userId || '',
+                userName: newValue.userName || '',
+                familyId: newValue.familyId || '',
                 fromCity: newValue.fromCity.split(":")[1] || '',
                 fromState: newValue.fromState.split(":")[1] || '',
                 fromCountry: newValue.fromCountry.split(":")[1] || '',
@@ -605,6 +619,7 @@ const EventForm = (props) => {
                                                     <Checkbox checked={formik.values.attendingShivir === true}
                                                         onChange={() => formik.setFieldValue('attendingShivir', true)} />}
                                                 label="Yes"
+                                                
                                             />
                                             <FormControlLabel
                                                 control={

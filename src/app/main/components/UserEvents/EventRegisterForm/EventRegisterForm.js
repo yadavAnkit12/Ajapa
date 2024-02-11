@@ -124,6 +124,7 @@ const EventRegisterForm = () => {
         setRegisterUser(registerList.find((register) => register.userId === userId))
         setSelectedUserId(userId);
         setEventFormOpen(true);
+        
     }
 
     const handleDelete = () => {
@@ -159,13 +160,13 @@ const EventRegisterForm = () => {
     const handleSave = (userId) => {
         setSelectedUserId(userId);
         setEventFormOpen(true);
-        setRegisterUser(null);
+        setRegisterUser('');
     };
 
     const handleCloseEventForm = () => {
         setEventFormOpen(false);
         setSelectedUserId(null);
-        setRegisterUser(null);
+        setRegisterUser('');
     };
 
 
