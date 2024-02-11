@@ -18,6 +18,7 @@ import { getLoggedInPartnerId, getUserRoles } from 'src/app/auth/services/utils/
 import MemberView from './MemberView';
 
 
+
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -36,35 +37,7 @@ const style = {
   overflow: 'auto'
 };
 
-const menuItemArray = [
-  {
-    key: 1,
-    label: 'View',
-    status: 'View',
-    visibleIf: true
-  },
-  {
-    key: 2,
-    label: 'Edit',
-    status: 'Edit',
-    visibleIf: getUserRoles() === 'User'
-  },
-  {
-    key: 3,
-    label: 'Delete',
-    status: 'Delete',
-    visibleIf: getUserRoles() === 'User'
 
-  },
-  {
-    key: 4,
-    label: 'Make Head',
-    status: 'Make Head',
-    visibleIf: getUserRoles() === 'User'
-
-  },
-
-];
 
 
 
@@ -93,6 +66,36 @@ function ManageFamilyTable(props) {
   const [deleteId, setDeleteId] = useState('')
   const [changeStatus, setChangeStatus] = useState('')
   const [changeHead, setChangeHead] = useState('')
+
+  const menuItemArray = [
+    {
+      key: 1,
+      label: 'View',
+      status: 'View',
+      visibleIf: true
+    },
+    {
+      key: 2,
+      label: 'Edit',
+      status: 'Edit',
+      visibleIf: localStorage.getItem('role') === 'User'
+    },
+    {
+      key: 3,
+      label: 'Delete',
+      status: 'Delete',
+      visibleIf: localStorage.getItem('role') === 'User'
+  
+    },
+    {
+      key: 4,
+      label: 'Make Head',
+      status: 'Make Head',
+      visibleIf: localStorage.getItem('role') === 'User'
+  
+    },
+  
+  ];
 
   useEffect(() => {
     fetchData();
@@ -378,22 +381,23 @@ function ManageFamilyTable(props) {
                           </Button>
                           <Menu {...bindMenu(popupState)}>
 
-                            {menuItemArray.map((value) => (
-                              value.visibleIf && (
-                                (value.status !== 'Make Head' || (value.status === 'Make Head' && (n.email || n.mobileNumber)))) &&
-                              (
-                                <MenuItem
-                                  onClick={() => {
-                                    getStatus(n.id, value.status);
-
-                                    popupState.close();
-                                  }}
-                                  key={value.key}
-                                >
-                                  {value.label}
-                                </MenuItem>
+                            {menuItemArray.map(({ visibleIf, status, key, label }) => (
+                              visibleIf && (
+                                (status !== 'Make Head' || (status === 'Make Head' && (n.email || n.mobileNumber))) &&
+                                (
+                                  <MenuItem
+                                    onClick={() => {
+                                      getStatus(n.id, status);
+                                      popupState.close();
+                                    }}
+                                    key={key}
+                                  >
+                                    {label}
+                                  </MenuItem>
+                                )
                               )
                             ))}
+
                           </Menu>
 
                         </>
