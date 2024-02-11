@@ -3,9 +3,12 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { motion } from 'framer-motion';
 import { useTheme } from '@mui/material/styles';
+import { useDispatch } from 'react-redux';
+import { showMessage } from 'app/store/fuse/messageSlice';
 
 
 function EventRegisterFormHead(props) {
+    const dispatch=useDispatch()
     
     const theme = useTheme()
     return <>
@@ -40,7 +43,7 @@ function EventRegisterFormHead(props) {
                     variant="contained"
                     color="secondary"
                     // disabled={props?.disabled}
-                    onClick={() => props.handleSubmit(props.values)}
+                    onClick={() =>dispatch(showMessage({ message: 'We are working on it...' }))}
                 >
                     Cancel All Registrations
                 </Button>

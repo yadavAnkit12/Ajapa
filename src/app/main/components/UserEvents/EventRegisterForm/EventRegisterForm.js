@@ -18,7 +18,7 @@ const Transition = forwardRef(function Transition(props, ref) {
 });
 
 const EventRegisterForm = () => {
-    
+
     const routeParams = useParams();
     const { eventId, userId, eventDate, eventName } = routeParams
 
@@ -37,9 +37,9 @@ const EventRegisterForm = () => {
     const [loading, setLoading] = useState(true)
 
 
-    const sameAsDD = registerList.filter((registeredUser) => registerList.userId === registeredUser.id )
-    
-    
+    const sameAsDD = registerList.filter((registeredUser) => registerList.userId === registeredUser.id)
+
+
 
     //get Event By Id
     useEffect(() => {
@@ -56,7 +56,7 @@ const EventRegisterForm = () => {
                 dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
             }
         }).catch((error) => console.log(error))
-    
+
     }, [])
 
 
@@ -69,18 +69,18 @@ const EventRegisterForm = () => {
             },
         }).then((response) => {
             if (response.status === 200) {
-        
+
                 if (response.data.data.length > 0) {
                     setRegisterList(response.data.data)
-        
+
                     if (userListData.users.length > 0) {
-                   
+
                         const arr = userListData.users.map((user) => {
                             const matchingEventRegister = response.data.data.find((eventRegister) => eventRegister.userId === user.id);
                             return matchingEventRegister ? user.id : null;
                         });
 
-                        
+
                         setRegister(arr)
 
                     }
@@ -93,7 +93,7 @@ const EventRegisterForm = () => {
 
     }, [userListData, change])
 
-    
+
 
     useEffect(() => {
         axios.get(`${userAPIConfig.getUserByFamily}`, {
@@ -112,11 +112,11 @@ const EventRegisterForm = () => {
         });
     }, [change]);
 
-    if(loading){
+    if (loading) {
         return <FuseLoading />
     }
-    
-    
+
+
 
     //Edit button functionality
 
@@ -124,7 +124,7 @@ const EventRegisterForm = () => {
         setRegisterUser(registerList.find((register) => register.userId === userId))
         setSelectedUserId(userId);
         setEventFormOpen(true);
-        
+
     }
 
     const handleDelete = () => {
@@ -139,7 +139,6 @@ const EventRegisterForm = () => {
         }).then((response) => {
             if (response.status === 200) {
                 dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-                <FuseLoading />
                 setOpen(false)
                 setChange(!change)
             } else {
@@ -169,7 +168,6 @@ const EventRegisterForm = () => {
         setRegisterUser('');
     };
 
-
     return (
         <>
             <FusePageCarded
@@ -189,24 +187,24 @@ const EventRegisterForm = () => {
                                 {userListData?.users?.map(person => (
                                     <tr key={person.id}>
                                         <td className="whitespace-nowrap px-4 py-4">
-                                            <div style={{ display: 'flex',flexWrap:'wrap', justifyContent: 'space-between' }}>
-                                                <Typography variant="h5" 
-                                                style={{
-                                                    // fontFamily: "BentonSans bold",
-                                                    fontStyle: 'normal', fontSize: '16px',
-                                                    lineHeight: '28px', letterSpacing: '0px',
-                                                    textAlign: 'center', fontWeight: 600,
-                                                    marginTop: '5px'
-                                                  }}
-                                                gutterBottom>
-                                                   {person.name}
+                                            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+                                                <Typography variant="h5"
+                                                    style={{
+                                                        // fontFamily: "BentonSans bold",
+                                                        fontStyle: 'normal', fontSize: '16px',
+                                                        lineHeight: '28px', letterSpacing: '0px',
+                                                        textAlign: 'center', fontWeight: 600,
+                                                        marginTop: '5px'
+                                                    }}
+                                                    gutterBottom>
+                                                    {person.name}
                                                 </Typography>
                                                 <div style={{ display: 'flex', justifyContent: 'space-evenly', gap: '10px' }}>
                                                     <Button
                                                         // variant='contained'
-                                                        disabled={register.includes(person.id)}
+                                                        disabled={register.includes(person.id) || !isShivirAvailable.data.bookingStatus}
                                                         style={{
-                                                            backgroundColor: register.includes(person.id) ? '#d3d3d3' : 'green', color: 'white',
+                                                            backgroundColor: (register.includes(person.id) || !isShivirAvailable.data.bookingStatus) ? '#d3d3d3' : 'green', color: 'white',
                                                         }}
                                                         onClick={() => handleSave(person.id)}
                                                     >
@@ -223,7 +221,7 @@ const EventRegisterForm = () => {
                                                         onClick={() => handleEdit(person.id)}
                                                     >
                                                         Edit
-                                                    </Button> 
+                                                    </Button>
 
                                                     <Button
                                                         // variant='contained'
