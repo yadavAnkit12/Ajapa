@@ -70,6 +70,15 @@ const navigationConfig = [
     auth: ["User"]
   },
   {
+    id: 'app-allEventRegistraion',
+    title: "Event Registrations",
+    translate: "Event Registrations",
+    type: 'item',
+    icon: 'heroicons-outline:calendar',
+    url:'app/allRegistrationDetails',
+    auth: ["Super"]
+  },
+  {
     id: 'app-manageFamily',
     title: "Manage Family",
     translate: "Manage Family",

@@ -63,22 +63,23 @@ class JwtService extends FuseUtils.EventEmitter {
     });
   };
 
-  signInWithEmailAndPassword = async (email,countryCode,mobileNumber,password) => {
+  signInWithEmailAndPassword = async (email, countryCode, mobileNumber, password) => {
 
-    const formData=new FormData()
-    formData.append('email',email)
-    formData.append('countryCode',countryCode)
-    formData.append('mobileNumber',mobileNumber)
-    formData.append('password',password)
+    const formData = new FormData()
+    formData.append('email', email)
+    formData.append('countryCode', countryCode)
+    formData.append('mobileNumber', mobileNumber)
+    formData.append('password', password)
     return new Promise((resolve, reject) => {
       axios
         .post(jwtServiceConfig.signIn, formData)
         .then((response) => {
           console.log(response)
-          if(response.status!==200){
+          if (response.status !== 200) {
             reject(response?.data?.errorMessage)
           }
-          else{
+          else {
+            localStorage.setItem('role',response.data.user.role)
             const userData = {
               user: {
                 uuid: response.data.user.id,
@@ -92,7 +93,8 @@ class JwtService extends FuseUtils.EventEmitter {
               access_token: response.data.token
             }
             if (response.data.user) {
-            sessionStorage.setItem('userRole', _.get(response, 'data.user.role'));
+
+              sessionStorage.setItem('userRole', _.get(response, 'data.user.role'));
               sessionStorage.setItem('id', _.get(response, 'data.user.id'));
               sessionStorage.setItem('familyId', _.get(response, 'data.user.familyId'));
               this.setSession(userData.access_token);
@@ -103,28 +105,29 @@ class JwtService extends FuseUtils.EventEmitter {
               reject(response.data.error_message);
             }
           }
-      
+
         }).catch((error) => {
           reject(error);
         })
     });
   };
 
-  signInWithOTP = async (email,countryCode,mobileNumber,otp) => {
-    
-    const formData=new FormData()
-    formData.append('email',email)
-    formData.append('countryCode',countryCode)
-    formData.append('mobileNumber',mobileNumber)
-    formData.append('otp',otp)
+  signInWithOTP = async (email, countryCode, mobileNumber, otp) => {
+
+    const formData = new FormData()
+    formData.append('email', email)
+    formData.append('countryCode', countryCode)
+    formData.append('mobileNumber', mobileNumber)
+    formData.append('otp', otp)
     return new Promise((resolve, reject) => {
       axios
         .post(jwtServiceConfig.verifyOTPlogin, formData)
         .then((response) => {
-          if(response.status!==200){
+          if (response.status !== 200) {
             reject(response?.data?.errorMessage)
           }
-          else{
+          else {
+            localStorage.setItem('role',response.data.user.role)
             const userData = {
               user: {
                 uuid: response.data.user.id,
@@ -149,7 +152,7 @@ class JwtService extends FuseUtils.EventEmitter {
               reject(response.data.error_message);
             }
           }
-      
+
         }).catch((error) => {
           reject(error);
         })
@@ -165,6 +168,7 @@ class JwtService extends FuseUtils.EventEmitter {
           }
         })
         .then((response) => {
+          localStorage.setItem('role',response.data.user.role)
           const userData = {
             user: {
               uuid: response.data.user.id,
@@ -228,6 +232,7 @@ class JwtService extends FuseUtils.EventEmitter {
   }
 
   logout = () => {
+    localStorage.removeItem('role')
     localStorage.removeItem('jwt_access_token')
     sessionStorage.removeItem('userRole');
     sessionStorage.removeItem('id');

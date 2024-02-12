@@ -4,20 +4,17 @@ import _ from '@lodash';
 import EditIcon from '@mui/icons-material/Edit';
 import PersonIcon from '@mui/icons-material/Person';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import { Modal, Table, TableBody, TableCell, TablePagination, TableRow, Typography, IconButton, Box, Button, MenuItem, Menu, Dialog, DialogTitle, DialogActions, Slide } from '@mui/material';
+import { Modal, Table, TableBody, TableCell, TablePagination, TableRow, Typography, IconButton, Box, Button, MenuItem, Menu, Dialog, DialogTitle, DialogActions, Slide, Switch } from '@mui/material';
 import axios from 'axios';
-import { motion } from 'framer-motion';
+import { color, motion } from 'framer-motion';
 import { useEffect, useState, useRef, forwardRef } from 'react';
 import { showMessage } from 'app/store/fuse/messageSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from "react-router-dom";
-import { eventAPIConfig, userAPIConfig } from '../../API/apiConfig';
+import { eventAPIConfig } from '../../API/apiConfig';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
-import ManageFamilyTableHead from './ManageFamilyTableHead';
-import { getLoggedInPartnerId, getUserRoles } from 'src/app/auth/services/utils/common';
-import MemberView from './MemberView';
-
-
+import AllEventRegistrationTableHead from './AllEventRegistraionTableHead';
+import EventView from '../MyRegistration/EventView';
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -34,17 +31,39 @@ const style = {
   borderRadius: '20px',
   maxWidth: '1200px',
   maxHeight: '650px',
-  overflow: 'auto'
+  overflow: 'auto',
 };
 
+const menuItemArray = [
+  {
+    key: 1,
+    label: 'View',
+    status: 'view',
+    // visibleIf: ['complete', 'active', 'inactive'],
+    loadIf: true
+  },
+  {
+    key: 1,
+    label: 'Edit',
+    status: 'edit',
+    // visibleIf: ['complete', 'active', 'inactive'],
+    loadIf: true
+  },
+  // {
+  //   key: 1,
+  //   label: 'Delete',
+  //   status: 'delete',
+  //   // visibleIf: ['complete', 'active', 'inactive'],
+  //   loadIf: true
+  // },
+]
 
 
-
-
-function ManageFamilyTable(props) {
+function AllEventRegistrationTable(props) {
+  // console.log(props)
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [userListData, setUserListData] = useState('');
+  const [eventListData, setEventListData] = useState([]);
   const searchText = props.searchText;
 
   const [loading, setLoading] = useState(true);
@@ -64,38 +83,6 @@ function ManageFamilyTable(props) {
   const [change, setChange] = useState(false);
   const [open, setOpen] = useState(false)
   const [deleteId, setDeleteId] = useState('')
-  const [changeStatus, setChangeStatus] = useState('')
-  const [changeHead, setChangeHead] = useState('')
-
-  const menuItemArray = [
-    {
-      key: 1,
-      label: 'View',
-      status: 'View',
-      visibleIf: true
-    },
-    {
-      key: 2,
-      label: 'Edit',
-      status: 'Edit',
-      visibleIf: localStorage.getItem('role') === 'User'
-    },
-    {
-      key: 3,
-      label: 'Delete',
-      status: 'Delete',
-      visibleIf: localStorage.getItem('role') === 'User'
-  
-    },
-    {
-      key: 4,
-      label: 'Make Head',
-      status: 'Make Head',
-      visibleIf: localStorage.getItem('role') === 'User'
-  
-    },
-  
-  ];
 
   useEffect(() => {
     fetchData();
@@ -131,28 +118,27 @@ function ManageFamilyTable(props) {
 
 
   const fetchData = () => {
+    console.log()
     const params = {
       page: page + 1,
       rowsPerPage: rowsPerPage, // Example data to pass in req.query
-      searchText: searchText,
-      status: _.get(props, 'filterValue') === '' ? 'Approved' : _.get(props, 'filterValue.status'),
-      country: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.country') === '' ? 'All' : _.get(props, 'filterValue.country'),
-      state: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.state') === '' ? 'All' : _.get(props, 'filterValue.state'),
-      city: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.city') === '' ? 'All' : _.get(props, 'filterValue.city'),
+      eventId: props.eventList?.find((event) => event.eventName === props.filterValue.eventName)?.eventId || '',
+      //   eventStatus: (_.get(props, 'filterValue.eventStatus') === 'Active' || _.get(props, 'filterValue') === '') ? true : false,
+      //   bookingStatus: (_.get(props, 'filterValue.bookingStatus') === 'On' || _.get(props, 'filterValue') === '') ? true : false,
     };
-    // console.log('params', params)
-    axios.get(`${userAPIConfig.getUserByFamily}`, {
+    axios.get(eventAPIConfig.allEventRegistrationList, { params }, {
       headers: {
         'Content-type': 'multipart/form-data',
         Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
       },
     }).then((response) => {
       if (response.status === 200) {
-        // console.log(response)
-        setUserListData(response?.data);
+        console.log(response)
+        //
+        setEventListData(response?.data);
         setLoading(false);
       } else {
-        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
+        dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
       }
     });
   };
@@ -178,23 +164,18 @@ function ManageFamilyTable(props) {
 
   function getStatus(id, selectedValue) {
 
-    if (selectedValue === 'View') {
+    if (selectedValue === 'view') {
       setOpenView(true)
       setViewId(id)
+    }
+    else if (selectedValue === 'edit') {
+      navigate(`/app/eventRegisteration/${id}`)
+    }
+    // else if (selectedValue === 'delete') {
+    //   setDeleteId(id)
+    //   setOpen(true)
 
-    }
-    else if (selectedValue === 'Edit') {
-      navigate(`/app/addMembers/${id}`)
-    }
-    else if (selectedValue === 'Delete') {
-      setOpen(true)
-      setViewId(id)
-
-    }
-    else if (selectedValue === 'Make Head') {
-      setViewId(id)
-      setChangeHead(true)
-    }
+    // }
 
   }
 
@@ -202,56 +183,62 @@ function ManageFamilyTable(props) {
     setOpen(false)
   }
 
-  const handleDeleteUser = () => {
-    const formData = new FormData()
+  //deleting the event
+  // const deleteEvent = () => {
+  //   axios.post(`${eventAPIConfig.delete}/${deleteId}`, {
+  //     headers: {
+  //       'Content-type': 'multipart/form-data',
+  //       Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+  //     },
+  //   }).then((response) => {
+  //     if (response.status === 200) {
+  //       dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+  //     } else {
+  //       dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
+  //     }
+  //   }).catch((error) => console.log(error))
+  // }
 
-    formData.append('status', 'Deleted')
-    formData.append('id', viewid)
-    axios.post(userAPIConfig.changeStatus, formData, {
+  //chnaging the booking status
+  const handleChnangeBookingStatus = (id, status) => {
+    axios.post(`${eventAPIConfig.changeBookingStatus}/${id}/${!status}`, {
       headers: {
         'Content-type': 'multipart/form-data',
-        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`
+        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
       },
     }).then((response) => {
       if (response.status === 200) {
-        dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-        handleClose()
         fetchData()
+        dispatch(showMessage({ message: response.data.message, variant: 'success' }));
 
+      } else {
+        dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
       }
-      else {
-        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
+    }).catch((error) => console.log(error))
 
-      }
-    })
   }
-
-  const handleChangeHead = () => {
-    const formData = new FormData()
-    formData.append('id', viewid)
-
-    axios.post(userAPIConfig.changeHead, formData, {
+  //chnaging the event status
+  const handleChangeEventStatus = (id, status) => {
+    axios.post(`${eventAPIConfig.changeEventStatus}/${id}/${!status}`, {
       headers: {
         'Content-type': 'multipart/form-data',
-        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`
+        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
       },
     }).then((response) => {
       if (response.status === 200) {
+        fetchData()
         dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-        navigate('/sign-out')
-      }
-      else {
+      } else {
         dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
-
       }
-    })
-  }
+    }).catch((error) => console.log(error))
 
+  }
 
   function handleSelectAllClick(event) {
     if (event.target.checked) {
-      setSelected(_.size(_.get(userListData, 'users')) > 0 ?
-        _.get(userListData, 'users').map((n) => n.userId) :
+      setSelected(_.size(_.get(eventListData, 'data')) > 0 ?
+        _.get(eventListData, 'data').map((n) => n.eventId) :
         {}
       );
       return;
@@ -277,18 +264,7 @@ function ManageFamilyTable(props) {
     tableRef.current && tableRef.current.scrollIntoView();
 
   };
-  const getStatusColor = (status) => {
-    switch (status.toLowerCase()) {
-      case 'approved':
-        return 'green';
-      case 'pending':
-        return '#FFC72C';
-      case 'rejected':
-        return 'red';
-      default:
-        return 'inherit';
-    }
-  };
+
 
   if (loading) {
     return (
@@ -298,7 +274,7 @@ function ManageFamilyTable(props) {
     );
   }
 
-  if (!_.size(_.get(userListData, 'users'))) {
+  if (!_.size(_.get(eventListData, 'data'))) {
     return (
       <motion.div
         initial={{ opacity: 0 }}
@@ -306,26 +282,26 @@ function ManageFamilyTable(props) {
         className="flex flex-1 items-center justify-center h-full"
       >
         <Typography color="text.secondary" variant="h5">
-          There are no User!
+          There are no Events!
         </Typography>
       </motion.div>
     );
   }
-  // console.log(userListData)
+
   return (
     <div className="w-full flex flex-col min-h-full" style={{ overflow: 'auto' }}>
       <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle" ref={tableRef}>
-        <ManageFamilyTableHead
+        <AllEventRegistrationTableHead
           selectedProductIds={selected}
           order={order}
           onSelectAllClick={handleSelectAllClick}
           onRequestSort={handleRequestSort}
-          rowCount={userListData?.users.length}
+          rowCount={eventListData?.length}
           onMenuItemClick={handleDeselect}
         />
         <TableBody>
           {
-            userListData?.users?.map((n) => {
+            eventListData?.data?.map((n) => {
               const isSelected = selected.indexOf(n.eventId) !== -1;
               return (
                 <TableRow
@@ -339,38 +315,25 @@ function ManageFamilyTable(props) {
                   style={{ cursor: 'default' }}
                 >
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.name}
-                  </TableCell>
-
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.email || 'N/A'}
-                  </TableCell>
-
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center' >
-                    {n.mobileNumber || 'N/A'}
-
+                    {n.userName}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.country.split(':')[1]}
+                    {n.eventName}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.state.split(':')[1]}
+                    {n.eventDate}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.city.split(':')[1]}
+                    {n.fromCountry.split(':')[1]}
                   </TableCell>
-
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.dob}
+                    {n.fromState.split(':')[1]}
                   </TableCell>
-                  <TableCell
-                    className="p-4 md:p-16"
-                    component="th"
-                    scope="row"
-                    align="center"
-                    style={{ fontWeight: 'bold', color: getStatusColor(n.status) }}
-                  >
-                    {n.status}
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                    {n.fromCity.split(':')[1]}
+                  </TableCell>
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                    {n.shivirAvailable ? 'Yes' : 'No'}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     <PopupState variant="popover" popupId="demo-popup-menu">
@@ -381,23 +344,18 @@ function ManageFamilyTable(props) {
                           </Button>
                           <Menu {...bindMenu(popupState)}>
 
-                            {menuItemArray.map(({ visibleIf, status, key, label }) => (
-                              visibleIf && (
-                                (status !== 'Make Head' || (status === 'Make Head' && (n.email || n.mobileNumber))) &&
-                                (
-                                  <MenuItem
-                                    onClick={() => {
-                                      getStatus(n.id, status);
-                                      popupState.close();
-                                    }}
-                                    key={key}
-                                  >
-                                    {label}
-                                  </MenuItem>
-                                )
-                              )
-                            ))}
-
+                            {menuItemArray.map((value) => (
+                              (value.loadIf) && <MenuItem
+                                onClick={() => {
+                                  getStatus(n.registrationId, value.status);
+                                  popupState.close();
+                                }}
+                                key={value.key}
+                              >
+                                {value.label}
+                              </MenuItem>
+                            )
+                            )}
                           </Menu>
 
                         </>
@@ -412,12 +370,12 @@ function ManageFamilyTable(props) {
 
       </Table>
 
-      {/* <TablePagination
+      <TablePagination
         className="shrink-0 border-t-1"
         component="div"
-        count={userListData.totalElement}
-        rowsPerPage={userListData.rowPerPage}
-        page={userListData.pageNumber - 1}
+        count={eventListData.totalElement}
+        rowsPerPage={eventListData.rowPerPage}
+        page={eventListData.pageNumber - 1}
         backIconButtonProps={{
           'aria-label': 'Previous Page',
         }}
@@ -426,51 +384,44 @@ function ManageFamilyTable(props) {
         }}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
-      /> */}
-      <Dialog
+      />
+      {/* <Dialog
         open={open}
         TransitionComponent={Transition}
         keepMounted
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>{`Do you want to delete this User?`}</DialogTitle>
+        <DialogTitle>{"Do you want to delete this Event?"}</DialogTitle>
 
         <DialogActions>
           <Button onClick={handleClose}>No</Button>
-          <Button onClick={handleDeleteUser} autoFocus>
+          <Button onClick={deleteEvent} autoFocus>
             Yes
           </Button>
         </DialogActions>
-      </Dialog>
-      <Dialog
-        open={changeHead}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={() => setChangeHead(false)}
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <DialogTitle>{`Do you want to make this user as Head ?`}</DialogTitle>
-
-        <DialogActions>
-          <Button onClick={() => setChangeHead(false)}>No</Button>
-          <Button onClick={handleChangeHead} autoFocus>
-            Yes
-          </Button>
-        </DialogActions>
-      </Dialog>
+      </Dialog> */}
       <Modal
         open={openView}
         onClose={handleViewClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
-          <MemberView data={viewid} handleViewClose={handleViewClose} />
+        <Box sx={{
+          ...style,
+          '@media (max-width: 600px)': { // Apply media query for mobile devices
+            width: '70%', // Set width to 100% for smaller screens
+          },
+          '@media (max-width: 280px)': { // Additional media query for smaller screens
+            width: '93%', // Set width to 82% for screens up to 280px
+          },
+        }}>
+          <EventView handleViewClose={handleViewClose} registrationId={viewid} />
         </Box>
       </Modal>
+
     </div>
   );
 }
 
-export default withRouter(ManageFamilyTable);
+export default withRouter(AllEventRegistrationTable);

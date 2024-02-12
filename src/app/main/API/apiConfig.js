@@ -25,6 +25,9 @@ export const eventAPIConfig = {
     changeBookingStatus:key +'/event/booking',
     changeEventStatus:key+'/event/status',
     userEventRegistration:key+'/event/registration/save',
+    allEventRegistrationList: key + '/event/registration/list',
+    allEventList:key + '/event/all/list',
+    checkEventRegistration: key + '/event/registration/family/event/list',
     myRegistration:key+'/event/registration',
     registrationDelete: key +'/event/registration/delete'
 }

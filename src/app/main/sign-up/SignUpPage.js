@@ -467,6 +467,7 @@ function SignUpPage() {
                   <TextField
                     {...params}
                     label="Country"
+                    name='country'
                     className="w-full lg:w-5/6 mx-auto"
                     variant="outlined"
                     required
@@ -477,6 +478,7 @@ function SignUpPage() {
                         },
                       },
                     }}
+                    onBlur={formik.handleBlur}
                     error={formik.touched.country && Boolean(formik.errors.country)}
                     helperText={formik.touched.country && formik.errors.country}
                   />
@@ -495,6 +497,7 @@ function SignUpPage() {
                   <TextField
                     {...params}
                     label="State"
+                    name='state'
                     variant="outlined"
                     className="w-full lg:w-5/6 mx-auto"
                     required
@@ -524,6 +527,7 @@ function SignUpPage() {
                   <TextField
                     {...params}
                     label="City"
+                    name='city'
                     variant="outlined"
                     className="w-full lg:w-5/6 mx-auto"
                     required

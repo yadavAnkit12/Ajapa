@@ -1,6 +1,5 @@
 const key = process.env.REACT_APP_URL;
 import React from 'react'
-import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react'
 import './admin.css';
 import { userAPIConfig } from 'src/app/main/API/apiConfig';
@@ -20,19 +19,13 @@ import { useNavigate } from 'react-router-dom';
 function AdminProfile() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const routeParams = useParams();
     const [userID, setUserID] = useState(null);
     const [data, setData] = useState('')
     const [change, setChange] = useState(false);
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        // alert("kkk",JSON.stringify(routeParams))  
-        setUserID(routeParams.userId);
-    }, [])
-
-    useEffect(() => {
-        if (userID) {
+       
             // axios.get(`${userAPIConfig.getUserById}/${userID}`, {
                 axios.get(`${userAPIConfig.getUserById}/${sessionStorage.getItem('id')}`, {
                 headers: {
@@ -48,13 +41,13 @@ function AdminProfile() {
                 }
             }).catch((error)=>dispatch(showMessage({ message: 'Something went wrong', variant: 'error' })))
             
-        }
-    }, [userID])
+        
+    }, [])
 
     const handleEditProfile = (id) => {
         navigate(`/app/useredit/${id}`)
     }
-    if (data==='') {
+    if (data=='') {
         <FuseLoading />
     }
 

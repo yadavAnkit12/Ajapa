@@ -51,9 +51,11 @@ function AddMembersForm() {
     const [cityList, setCityList] = useState([])
     const [cityID, setCityID] = useState('')
     const [userID, setUserID] = useState('')
+    // const [isChecked, setIsChecked] = useState(false);
     const [showCredentials, setShowCredentials] = useState(true);
-    const [isChild, setIsChild] = useState(showCredentials)
-    console.log(isChild , showCredentials)
+    // const [isChild, setIsChild] = useState(false)
+    
+    
 
 
     const validationSchema = yup.object().shape({
@@ -71,7 +73,7 @@ function AddMembersForm() {
         gender: yup.string().required('Please select your gender'),
         dob: yup.date().required('Please enter your date of birth'),
 
-        countryCode: yup.string().required('select country code'),
+        // countryCode: yup.string().required('select country code'),
         profilePicture: yup.mixed().nullable()
             .test('fileType', 'Unsupported file type', (value) => {
                 if (!value) return true; // Allow null values
@@ -107,8 +109,11 @@ function AddMembersForm() {
                 },
             }).then((response) => {
                 if (response.status === 200) {
+                    const today = new Date();
+                    const userAge = today.getFullYear() - parseInt(response.data.user.dob.split("-")[0])  ;
+                    console.log(userAge)
 
-                    if (isChild) {
+                    if (userAge < 15) {
                         setShowCredentials(false);
                     }
 
@@ -124,7 +129,7 @@ function AddMembersForm() {
                         role: response.data.user.role || '',
                         status: response.data.user.status || '',
                         profileImage: response.data.user.profileImage || '',
-                        countryCode: response.data.user.countryCode || '+91 (IN)',
+                        countryCode: response.data.user.countryCode || '',
                         mobileNumber: response.data.user.mobileNumber || '',
                         country: response.data.user.country.split(':')[1] || '',
                         state: response.data.user.state.split(':')[1] || '',
@@ -197,20 +202,21 @@ function AddMembersForm() {
 
         if (userID === '' && values.profilePicture === null) {
             dispatch(showMessage({ message: 'Profile picture is required', variant: 'error' }));
+
             return
 
         }
 
-
         if (showCredentials) {
 
-            if (!values.email || !values.password || !values.passwordConfirm || !values.mobileNumber) {
+            if (!values.email || !values.password || !values.passwordConfirm || (!values.mobileNumber || !values.countryCode)) {
                 dispatch(showMessage({ message: 'Please enter all the mandatory fields', variant: 'error' }));
                 return;
             }
         }
 
         if (formik.isValid) {
+            console.log(formik)
             const formattedData = new FormData()
 
 
@@ -234,9 +240,9 @@ function AddMembersForm() {
             formattedData.append('whatsAppNumber', values.whatsAppNumber)
             formattedData.append('isDisciple', values.isDisciple === 'Yes' ? true : false)
             formattedData.append('status', 'Approved')
-            formattedData.append('role', 'Member')
 
             if (userID === '') {  // for new member
+                formattedData.append('role', 'Member')
 
                 formattedData.append('file', values.profilePicture)
                 axios.post(`${jwtServiceConfig.signUp}`, formattedData, {
@@ -257,6 +263,7 @@ function AddMembersForm() {
 
             } else {  // for update the existing member
                 formattedData.append('id', values.id)
+                formattedData.append('role',values.role)
 
                 if (values.profilePicture !== null) {
 
@@ -308,10 +315,18 @@ function AddMembersForm() {
         const dob = new Date(event.target.value);
         const today = new Date();
         const age = today.getFullYear() - dob.getFullYear();
-
         setShowCredentials(age > 15);
-
     };
+
+    // const handleCheckboxChange = (event) => {
+    //     const isChecked = event.target.checked;
+    //     setIsChecked(isChecked);
+    //     if (isChecked) {
+    //         setShowCredentials(true); 
+    //     } else {
+    //         setShowCredentials(false); 
+    //     }
+    // }
 
     const formik = useFormik({
         initialValues: {
@@ -322,7 +337,7 @@ function AddMembersForm() {
             password: '',
             passwordConfirm: '',
             gender: '',
-            dob: null,
+            dob: '',
             role: '',
             status: '',
             profileImage:'',
@@ -411,9 +426,27 @@ function AddMembersForm() {
                                     required
                                     fullWidth
                                     inputProps={{
-                                        max: new Date().toISOString().split('T')[0], // Set max date to the current date
+                                        max: new Date().toISOString().split('T')[0], 
                                     }}
                                 />
+                                
+                                {/* {
+                                    isChild && (
+
+                                    <FormControlLabel 
+                                        control={
+                                            <Checkbox
+                                                style={{position:'relative'}}
+                                                checked={isChecked}
+                                                onChange={handleCheckboxChange}
+                                                color="primary"
+                                            />
+                                        }
+                                        label= "Want to add fields ?"
+                                    />
+                                    )
+                                } */}
+                           
 
 
                                 {showCredentials && (
@@ -707,18 +740,19 @@ function AddMembersForm() {
                                 <Autocomplete
                                     options={['A+', 'B+', 'AB+', 'O+', 'A-', 'B-', 'AB-', 'O-']}
                                     getOptionLabel={(option) => option}
+                                    value={formik.values.bloodGroup}
+                                    onChange={(event, value) => formik.setFieldValue('bloodGroup', value)}
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
                                             label="Blood Group"
                                             sx={{ mb: 2 }}
                                             className="max-w-md"
-                                            name="bloodGroup"
-                                            value={formik.values.bloodGroup}
-                                            onChange={(event, value) => formik.setFieldValue('bloodGroup', value)}
+                                            // name="bloodGroup"
+                                          
                                             onBlur={formik.handleBlur}
-                                            error={formik.touched.bloodGroup && Boolean(formik.errors.bloodGroup)}
-                                            helperText={formik.touched.bloodGroup && formik.errors.bloodGroup}
+                                            // error={formik.touched.bloodGroup && Boolean(formik.errors.bloodGroup)}
+                                            // helperText={formik.touched.bloodGroup && formik.errors.bloodGroup}
                                             variant="outlined"
                                             fullWidth
                                         />
