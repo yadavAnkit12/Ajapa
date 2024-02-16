@@ -35,7 +35,7 @@ const UserEventCard = () => {
             },
         }).then((response) => {
             if (response.status === 200) {
-                console.log(response)
+                // console.log("hi-bye",response)
                 setAllEventsData(response.data)
             } else {
                 dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
@@ -89,8 +89,9 @@ const UserEventCard = () => {
                                 lineHeight: '28px', letterSpacing: '0px',
                                 textAlign: 'center', fontWeight: 600,
                                 marginTop: '3px'
-                            }}>Shivir Date: {data.shivirStartDate === "" ? "N/A" : data.shivirStartDate}</span>
+                            }}>Shivir Dates: {data.shivirStartDate === "" ? "N/A" : `${data.shivirStartDate} - ${data.shivirEndDate}`}</span>
                         </div>
+
                         <div className="flex items-center gap-2 mb-2" >
                             <LocationOnIcon />
                             <span className="text-lg 

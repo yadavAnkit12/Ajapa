@@ -132,6 +132,15 @@ const navigationConfig = [
     auth: ["Super", "User","Member"]
   },
   {
+    id: 'sms-component',
+    title: "SMS",
+    translate: "SMS",
+    type: 'item',
+    icon: 'heroicons-outline:logout',
+    url: '/sms',
+    auth: ["Super"]
+  },
+  {
     id: 'logout-component',
     title: "Logout",
     translate: "Logout",

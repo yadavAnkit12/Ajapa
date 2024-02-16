@@ -13,7 +13,8 @@ export const userAPIConfig = {
     // getUserByFamily: key + '/getUsersByFamilyId',
     changeHead:key + '/changeHead',
     getUserByFamily: key + '/getApprovedUsersByFamilyId',
-    myRegistration: key + '/event/registration/family/list'
+    myRegistration: key + '/event/registration/family/list',
+    sendSMS: key +'/sendCusmtomSMS'
 }
 export const eventAPIConfig = {
     create: key + '/saveEvent',
