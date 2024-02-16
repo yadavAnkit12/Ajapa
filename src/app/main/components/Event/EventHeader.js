@@ -30,7 +30,7 @@ function EventHeader(props) {
     // fromDate: '',
     // toDate: '',
     bookingStatus: 'On',
-    eventStatus: 'Active'
+    eventStatus: 'On'
   });
 
   const id='new';
@@ -46,7 +46,7 @@ function EventHeader(props) {
       // toDate: '',
       // status: null,
       bookingStatus: 'On',
-      eventStatus: 'Active'
+      eventStatus: 'On'
     });
     props.setFilterValue('');
   }
@@ -146,6 +146,18 @@ function EventHeader(props) {
               onChange={e => setFilterData({ ...filterData, toDate: e.target.value })}
             /> */}
 
+
+
+            <Autocomplete
+              disablePortal
+              value={filterData.eventStatus}
+              id="eventStatus"
+              options={['On', 'Off']}
+              sx={{ my: 1, minWidth: 140, mx: 1 }}
+              onChange={(e, newValue) => setFilterData({ ...filterData, eventStatus: newValue })}
+              renderInput={(params) => <TextField {...params} label="Event Status" variant="standard" />}
+            />
+
             <Autocomplete
               disablePortal
               value={filterData.bookingStatus}
@@ -154,16 +166,6 @@ function EventHeader(props) {
               sx={{ my: 1, minWidth: 140, mx: 1 }}
               onChange={(e, newValue) => setFilterData({ ...filterData, bookingStatus: newValue })}
               renderInput={(params) => <TextField {...params} label="Booking Status" variant="standard" />}
-            />
-
-            <Autocomplete
-              disablePortal
-              value={filterData.eventStatus}
-              id="eventStatus"
-              options={['Active', 'Inactive']}
-              sx={{ my: 1, minWidth: 140, mx: 1 }}
-              onChange={(e, newValue) => setFilterData({ ...filterData, eventStatus: newValue })}
-              renderInput={(params) => <TextField {...params} label="Event Status" variant="standard" />}
             />
 
             {/* {_.size(PATIENTSTATUS) > 0 && <Autocomplete

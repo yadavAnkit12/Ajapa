@@ -7,7 +7,7 @@ import _ from '@lodash';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css'
 import InputAdornment from '@mui/material/InputAdornment';
-import { Autocomplete, Checkbox, FormControlLabel, Grid, InputLabel, Stack } from '@mui/material';
+import { Autocomplete, Checkbox, FormControlLabel, Grid, InputLabel, Stack ,FormControl, FormLabel, FormGroup} from '@mui/material';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto'
 import IconButton from '@mui/material/IconButton';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -112,7 +112,13 @@ function SignUpPage() {
         if (!value) return true;
         const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
         return allowedTypes.includes(value.type);
-      }).required('Image is required'),
+      })
+      .test('fileSize', 'File size is too large (max 10MB)', (value) => {
+        if (!value) return true;
+        return value.size <= 10 * 1024 * 1024; // 10MB in bytes
+      })
+      
+      .required('Image is required'),
     isDisciple: yup.string()
   });
 
@@ -555,12 +561,35 @@ function SignUpPage() {
                 }
                 label="Are you an Ajapa Disciple ?"
               />
+                                              {/* <div>
+                                    <FormControl component="fieldset" required                     error={formik.touched.isDisciple && Boolean(formik.errors.isDiciple)}
+                    helperText={formik.touched.isDisciple && formik.errors.isDisciple}>
+                                        <FormLabel component="legend">Are you Ajapa Disciple ?</FormLabel>
+                                        <FormGroup>
+                                            <FormControlLabel
+                                                control={
+                                                    <Checkbox checked={formik.values.isDisciple === true}
+                                                        onChange={() => formik.setFieldValue('isDisciple', true)} />}
+                                                label="Yes"
+                                                
+                                            />
+                                            <FormControlLabel
+                                                control={
+                                                    <Checkbox checked={formik.values.isDisciple === false}
+                                                        onChange={() => formik.setFieldValue('isDisciple', false)} />}
+                                                label="No"
+                                            />
+                                        </FormGroup>
+                                    </FormControl>
+                                </div> */}
 
               <div>
+                <div>
                 <input
                   type="file"
                   name='profilePicture'
                   onChange={(event, newValue) => { formik.setFieldValue('profilePicture', event.target.files[0]) }}
+                  
                   style={{
                     fontSize: '1.8rem',
                     color: '#1a202c',
@@ -571,14 +600,20 @@ function SignUpPage() {
                     outline: 'none',
                     border: 'none',
                   }}
+                  
                 />
+        
+</div>
+               
+            
                 {formik.touched.profilePicture && formik.errors.profilePicture && (
                   <p style={{ fontSize: '13px', padding: '0.75rem', color: 'red' }}>
                     {formik.errors.profilePicture}
                   </p>
                 )}      
-                <p style={{ fontSize: '10px', padding: '0.75rem' }}>
+                <p style={{ fontSize: '15px', padding: '0.75rem' }}>
                   PNG, JPG, or JPEG (Must be a clear image).
+                  <span style={{ color: 'red' ,fontSize: '1.8rem'}}>*</span>
                 </p>
               </div>
             </Stack>

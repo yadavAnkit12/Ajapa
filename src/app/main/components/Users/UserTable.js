@@ -178,6 +178,7 @@ function UserTable(props) {
       },
     }).then((response) => {
       if (response.status === 200) {
+        // console.log("response", response)
         setUserListData(response?.data);
         setLoading(false);
       } else {
@@ -363,7 +364,11 @@ function UserTable(props) {
                   style={{ cursor: 'default' }}
                 >
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                    {n.familyId}
+                  </TableCell>
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.name}
+                    {n.role === 'User' ? <span style={{ color: 'red' ,fontSize: '1.8rem'}}>*</span> :""}
                   </TableCell>
 
                   <TableCell className="p-4 md:p-16" component="th" scope="row">

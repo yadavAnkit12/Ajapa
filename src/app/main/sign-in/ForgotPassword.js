@@ -307,12 +307,12 @@ const ForgotPassword = (props) => {
                 }
 
                 <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                    <Button variant="outlined" style={{ marginRight: '20px' }} onClick={() => props.setOpenModal(false)}>Close</Button>
-                      {!verifyOtp ? <Button variant="contained" type="submit" 
+                    <Button variant="outlined" style={{ marginRight: '20px', backgroundColor: '#792b00', color: 'white' }} onClick={() => props.setOpenModal(false)} >Close</Button>
+                      {!verifyOtp ? <Button variant="outlined" type="submit" style={{ backgroundColor: '#792b00', color: 'white' }}
                       > 
                       Send OTP
                       </Button>
-                       : <Button variant="contained" onClick={handleVerifyOtp} > Verify OTP</Button>} 
+                       : <Button variant="outlined" onClick={handleVerifyOtp} style={{ backgroundColor: '#792b00', color: 'white' }}> Verify OTP</Button>} 
                 </div>
 
             </form>
