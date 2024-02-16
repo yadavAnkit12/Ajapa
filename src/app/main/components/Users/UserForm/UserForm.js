@@ -55,6 +55,11 @@ function UserForm() {
     const [loading, setLoading] = useState(true)
     const [userID, setUserID] = useState('')
     const [showCredentials, setShowCredentials] = useState(true);
+    const [emailLabel, setEmailLabel] = useState('Email');
+    const [mobileNum, setMobileNum] = useState('Mobile Number');
+    const [password, setPassword] = useState('Password');
+    const [confirmPassword, setConfirmPassword] = useState('Confirm Password');
+    const [whatsAppNumber, setWhatsAppNumber] = useState('WhatsApp Number');
 
 
     const validationSchema = yup.object().shape({
@@ -85,7 +90,10 @@ function UserForm() {
         isDisciple: yup.string(),
         pinCode: yup
             .string()
-            .matches(/^\d{6}$/, 'Must be a 6-digit PIN code')
+            .matches(/^\d{6}$/, 'Must be a 6-digit PIN code'),
+        whatsAppNumber: yup
+            .string()
+            .matches(/^[1-9]\d{9}$/, 'Invalid mobile number'),
     });
 
 
@@ -123,7 +131,7 @@ function UserForm() {
                     role: response.data.user.role || '',
                     status: response.data.user.status || '',
                     pic: response.data.user.profileImage,// pic
-                    countryCode: response.data.user.countryCode || '+91 (IN)',
+                    countryCode: response.data.user.countryCode || '',
                     mobileNumber: response.data.user.mobileNumber || '',
                     country: response.data.user.country.split(':')[1] || '',
                     state: response.data.user.state.split(':')[1] || '',
@@ -301,7 +309,7 @@ function UserForm() {
             password: '',
             passwordConfirm: '',
             gender: '',
-            dob: null,
+            dob: '',
             role: '',
             status: '',
             pic: '',
@@ -323,6 +331,27 @@ function UserForm() {
         validationSchema: validationSchema,
         onSubmit: handleSubmit,
     });
+
+    
+    useEffect(() => {
+
+        if (!showCredentials) {
+            
+            setEmailLabel('Email (optional)')
+            setMobileNum('Mobile Number (optional)')
+            setPassword('Password (optional)')
+            setConfirmPassword('Confirm Password (optional)')
+            setWhatsAppNumber('WhatsApp Number (optional)')
+        }
+        else {
+            setEmailLabel('Email');
+            setMobileNum('Mobile Number')
+            setPassword('Password')
+            setConfirmPassword('Confirm Password')
+            setWhatsAppNumber('WhatsApp Number')
+        }
+    }, [showCredentials]);
+
 
     if (!formik.values.id) {
         return <FuseLoading />
@@ -393,14 +422,13 @@ function UserForm() {
                                     }}
                                 />
 
-                                {
-                                    showCredentials && (
+                                
 
                                 <TextField
                                     sx={{ mb: 2 }}
                                     className="max-w-md"
                                     name='email'
-                                    label="Email"
+                                    label={emailLabel}
                                     type="email"
                                     value={formik.values.email}
                                     onChange={formik.handleChange}
@@ -412,13 +440,8 @@ function UserForm() {
                                     fullWidth
 
                                 />
-                                    )
-                                }
-
-                                {
-                                    showCredentials && (
-
-                               
+                           
+                     
                                 <div className='d-flex max-w-md'>
                                     <Autocomplete
                                         options={phoneNumberCountryCodes}
@@ -440,7 +463,7 @@ function UserForm() {
                                     />
                                     <TextField
                                         name="mobileNumber"
-                                        label="Mobile Number"
+                                        label={mobileNum}
                                         type="number"
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
@@ -454,8 +477,7 @@ function UserForm() {
                                     />
 
                                 </div>
-                                  )
-                                }
+                             
                                 
 
                                 <Autocomplete
@@ -572,10 +594,10 @@ function UserForm() {
 
                             
                             <div className={tabValue !== 2 ? 'hidden' : ''}>
-                            {showCredentials && (
+                        
                                 <TextField
                                     name='password'
-                                    label="Password"
+                                    label={password}
                                     sx={{ mb: 2 }}
                                     className="max-w-md"
                                     type={showPassword ? 'text' : 'password'}
@@ -600,16 +622,13 @@ function UserForm() {
                                         ),
                                     }}
                                 />
-                                )}
-
-                                {showCredentials && (
-
+                        
                                 
                                 <TextField
                                     sx={{ mb: 2 }}
                                     className="max-w-md"
                                     name='passwordConfirm'
-                                    label="Confirm Password"
+                                    label={confirmPassword}
                                     type={showPassword ? 'text' : 'password'}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
@@ -632,7 +651,7 @@ function UserForm() {
                                         ),
                                     }}
                                 />
-                                )}
+                
 
 
                                 <div style={{ marginBottom: '16px' }}>
@@ -758,10 +777,9 @@ function UserForm() {
                                     fullWidth
                                 />
 
-                                {
-                                    showCredentials && (
+                 
                                 <TextField
-                                    label="WhatsApp Number"
+                                    label={whatsAppNumber}
                                     sx={{ mb: 2 }}
                                     className="max-w-md"
                                     name="whatsAppNumber"
@@ -774,8 +792,7 @@ function UserForm() {
                                     variant="outlined"
                                     fullWidth
                                 />
-                                )
-                            }
+                 
                             </div>
                        
                         </form>
