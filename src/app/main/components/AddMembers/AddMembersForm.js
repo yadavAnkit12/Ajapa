@@ -51,10 +51,12 @@ function AddMembersForm() {
     const [cityList, setCityList] = useState([])
     const [cityID, setCityID] = useState('')
     const [userID, setUserID] = useState('')
-    // const [isChecked, setIsChecked] = useState(false);
     const [showCredentials, setShowCredentials] = useState(true);
-    // const [isChild, setIsChild] = useState(false)
-    
+    const [emailLabel, setEmailLabel] = useState('Email');
+    const [mobileNum, setMobileNum] = useState('Mobile Number');
+    const [password, setPassword] = useState('Password');
+    const [confirmPassword, setConfirmPassword] = useState('Confirm Password');
+    const [whatsAppNumber, setWhatsAppNumber] = useState('WhatsApp Number');
     
 
 
@@ -90,12 +92,18 @@ function AddMembersForm() {
         isDisciple: yup.string(),
         pinCode: yup
             .string()
-            .matches(/^\d{6}$/, 'Must be a 6-digit PIN code')
+            .matches(/^\d{6}$/, 'Must be a 6-digit PIN code'),
+        whatsAppNumber: yup
+        .string()
+        .matches(/^[1-9]\d{9}$/, 'Invalid mobile number'),
     });
 
     useEffect(() => {
         formik.resetForm()
+        setShowCredentials(true)
     }, [routeParams])
+
+    
 
     useEffect(() => {
         const { id } = routeParams;
@@ -110,8 +118,7 @@ function AddMembersForm() {
             }).then((response) => {
                 if (response.status === 200) {
                     const today = new Date();
-                    const userAge = today.getFullYear() - parseInt(response.data.user.dob.split("-")[0])  ;
-                    console.log(userAge)
+                    const userAge = today.getFullYear() - parseInt(response.data.user.dob.split("-")[0]);
 
                     if (userAge < 15) {
                         setShowCredentials(false);
@@ -318,15 +325,24 @@ function AddMembersForm() {
         setShowCredentials(age > 15);
     };
 
-    // const handleCheckboxChange = (event) => {
-    //     const isChecked = event.target.checked;
-    //     setIsChecked(isChecked);
-    //     if (isChecked) {
-    //         setShowCredentials(true); 
-    //     } else {
-    //         setShowCredentials(false); 
-    //     }
-    // }
+    useEffect(() => {
+
+        if (!showCredentials) {
+            
+            setEmailLabel('Email (optional)')
+            setMobileNum('Mobile Number (optional)')
+            setPassword('Password (optional)')
+            setConfirmPassword('Confirm Password (optional)')
+            setWhatsAppNumber('WhatsApp Number (optional)')
+        }
+        else {
+            setEmailLabel('Email');
+            setMobileNum('Mobile Number')
+            setPassword('Password')
+            setConfirmPassword('Confirm Password')
+            setWhatsAppNumber('WhatsApp Number')
+        }
+    }, [showCredentials]);
 
     const formik = useFormik({
         initialValues: {
@@ -429,33 +445,14 @@ function AddMembersForm() {
                                         max: new Date().toISOString().split('T')[0], 
                                     }}
                                 />
-                                
-                                {/* {
-                                    isChild && (
-
-                                    <FormControlLabel 
-                                        control={
-                                            <Checkbox
-                                                style={{position:'relative'}}
-                                                checked={isChecked}
-                                                onChange={handleCheckboxChange}
-                                                color="primary"
-                                            />
-                                        }
-                                        label= "Want to add fields ?"
-                                    />
-                                    )
-                                } */}
-                           
-
-
-                                {showCredentials && (
+       
+                              
                                   
                                 <TextField
                                     sx={{ mb: 2 }}
                                     className="max-w-md"
                                     name='email'
-                                    label="Email"
+                                    label={emailLabel}
                                     type="email"
                                     value={formik.values.email}
                                     onChange={formik.handleChange}
@@ -467,8 +464,8 @@ function AddMembersForm() {
                                     fullWidth
 
                                     />
-                                )}
-                                {showCredentials && (
+                         
+                            
                                     <div className='d-flex max-w-md'>
                                         <Autocomplete
                                             options={phoneNumberCountryCodes}
@@ -491,7 +488,7 @@ function AddMembersForm() {
 
                                         <TextField
                                             name="mobileNumber"
-                                            label="Mobile Number"
+                                            label={mobileNum}
                                             type="number"
                                             onChange={formik.handleChange}
                                             onBlur={formik.handleBlur}
@@ -505,7 +502,7 @@ function AddMembersForm() {
                                         />
 
                                     </div>
-                                )}
+                             
 
                                 <Autocomplete
                                     options={['Male', 'Female', 'Others']}
@@ -620,11 +617,11 @@ function AddMembersForm() {
                             </div>
 
                             <div className={tabValue !== 2 ? 'hidden' : ''}>
-                                {showCredentials && (
-                                    <>
+                            
+                              
                                         <TextField
                                             name='password'
-                                            label="Password"
+                                            label={password}
                                             sx={{ mb: 2 }}
                                             className="max-w-md"
                                             type={showPassword ? 'text' : 'password'}
@@ -654,7 +651,7 @@ function AddMembersForm() {
                                             sx={{ mb: 2 }}
                                             className="max-w-md"
                                             name='passwordConfirm'
-                                            label="Confirm Password"
+                                            label={confirmPassword}
                                             type={showPassword ? 'text' : 'password'}
                                             onChange={formik.handleChange}
                                             onBlur={formik.handleBlur}
@@ -678,8 +675,8 @@ function AddMembersForm() {
                                             }}
                                         />
 
-                                    </>
-                                )}
+                              
+                         
                                 <div style={{ marginBottom: '16px' }}>
                                     <FormControlLabel
                                         control={
@@ -803,10 +800,9 @@ function AddMembersForm() {
                                     variant="outlined"
                                     fullWidth
                                 />
-
-                                {showCredentials && (
+                                
                                     <TextField
-                                        label="WhatsApp Number"
+                                        label={whatsAppNumber}
                                         sx={{ mb: 2 }}
                                         className="max-w-md"
                                         name="whatsAppNumber"
@@ -819,7 +815,7 @@ function AddMembersForm() {
                                         variant="outlined"
                                         fullWidth
                                     />
-                                )}
+                       
                             </div>
                         </form>
                     </div>
