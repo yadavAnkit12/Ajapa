@@ -80,7 +80,8 @@ function SignUpPage() {
     state: '',
     city: '',
     profilePicture: null,
-    isDisciple: 'false'
+    // isDisciple: 'false'
+    isDisciple:''
   };
 
   const validationSchema = yup.object().shape({
@@ -167,6 +168,9 @@ function SignUpPage() {
     if (recaptcha === null) {
       return dispatch(showMessage({ message: 'Please fill all the details', variant: 'error' }));
     }
+    if( formik.values.isDisciple === ''){
+      return dispatch(showMessage({ message: 'Please indicate whether you are an Ajapa disciple or not', variant: 'error' }));
+  }
     const formData = new FormData()
     formData.append('email', values.email)
     formData.append('countryCode', values.countryCode)
@@ -549,7 +553,7 @@ function SignUpPage() {
                   />
                 )}
               />
-              <FormControlLabel
+              {/* <FormControlLabel
                 control={
                   <Checkbox
                     checked={formik.values.isDisciple === 'true'}
@@ -560,12 +564,11 @@ function SignUpPage() {
                   />
                 }
                 label="Are you an Ajapa Disciple ?"
-              />
-                                              {/* <div>
-                                    <FormControl component="fieldset" required                     error={formik.touched.isDisciple && Boolean(formik.errors.isDiciple)}
-                    helperText={formik.touched.isDisciple && formik.errors.isDisciple}>
-                                        <FormLabel component="legend">Are you Ajapa Disciple ?</FormLabel>
-                                        <FormGroup>
+              />     */}
+                                              <div>
+                                    <FormControl component="fieldset" required   >
+                                        <FormLabel component="legend" className='text-black'>Are you an Ajapa Disciple ?</FormLabel>
+                                        <FormGroup className='flex flex-row'>
                                             <FormControlLabel
                                                 control={
                                                     <Checkbox checked={formik.values.isDisciple === true}
@@ -581,7 +584,7 @@ function SignUpPage() {
                                             />
                                         </FormGroup>
                                     </FormControl>
-                                </div> */}
+                                </div>
 
               <div>
                 <div>
