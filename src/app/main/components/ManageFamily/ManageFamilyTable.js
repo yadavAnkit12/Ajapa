@@ -148,7 +148,7 @@ function ManageFamilyTable(props) {
       },
     }).then((response) => {
       if (response.status === 200) {
-        // console.log(response)
+        //  console.log("AJ",response)
         setUserListData(response?.data);
         setLoading(false);
       } else {
@@ -340,6 +340,7 @@ function ManageFamilyTable(props) {
                 >
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.name}
+                    {n.role === 'User' ? <span style={{ color: 'red' ,fontSize: '1.8rem'}}>*</span> :""}
                   </TableCell>
 
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>

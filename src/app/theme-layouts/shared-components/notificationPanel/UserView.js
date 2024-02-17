@@ -162,7 +162,7 @@ export default function UserView(props) {
                     onClose={handleClose}
                     aria-describedby="alert-dialog-slide-description"
                 >
-                    <DialogTitle>{`Do you want to ${check} is user`}</DialogTitle>
+                    <DialogTitle>{`Do you want to ${check} this user?`}</DialogTitle>
 
                     <DialogActions>
                         <Button onClick={handleClose}>No</Button>

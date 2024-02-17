@@ -3,6 +3,14 @@ import { lighten } from '@mui/material/styles';
 
 function UserTableHead(props) {
     const rows = [
+      {
+        id: 'familyId',
+        align: 'center',
+        disablePadding: false,
+        label: 'Family-Id',
+        sort: true,
+        visibleIf: true
+      },
         {
           id: 'name',
           align: 'center',

@@ -103,11 +103,11 @@ if (isLoading) {
                         </div>
                         <hr />
 
-                        <div className="my-3 mx-4">
+                        {/* <div className="my-3 mx-4">
                             <p className='font-bold inline'>Role: </p>
                             <span className='font-semibold'>{userData.role}</span>
                         </div>
-                        <hr />
+                        <hr /> */}
 
                         <div className="my-3 mx-4">
                             <p className='font-bold inline'>Is Disciple: </p>
