@@ -176,8 +176,8 @@ const EventForm = () => {
                 }
             }),
 
-        file: Yup.mixed().nullable()
-            .test('fileType', 'Unsupported file type', (value) => {
+            file: Yup.mixed().nullable()
+            .test('fileType', 'Unsupported file type. Only JPG, JPEG, and PNG files are allowed.', (value) => {
                 if (!value) return true; // Allow null values
                 const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
                 return allowedTypes.includes(value.type);
@@ -257,7 +257,11 @@ const EventForm = () => {
                 }).catch((error) => console.log(error))
             }
         } else {
-            dispatch(showMessage({ message: "Please fill the required fields ", variant: 'error' }));
+            if (formik.errors.file) {
+                dispatch(showMessage({ message: formik.errors.file, variant: 'error' }));
+            } else {
+                dispatch(showMessage({ message: "Please fill the required fields ", variant: 'error' }));
+            }
         }
     };
 
@@ -409,6 +413,7 @@ const EventForm = () => {
                                     sx={{ mb: 2 }}
                                     className="max-w-md"
                                     required
+                                    inputProps={{ min: new Date().toISOString().split('T')[0] }}
                                 />
                                 {formik.values.eventType === 'Offline' && <> <TextField
                                     fullWidth
@@ -524,6 +529,7 @@ const EventForm = () => {
 
                                         <input
                                             type="file"
+                                            name='file'
                                             accept=".png, .jpg, .jpeg"
                                             className="hidden"
                                             id="profile-file"

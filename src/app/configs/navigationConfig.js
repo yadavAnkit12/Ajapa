@@ -79,6 +79,15 @@ const navigationConfig = [
     auth: ["Super"]
   },
   {
+    id: 'attendance',
+    title: "Attendance",
+    translate: "Attendance",
+    type: 'item',
+    icon: 'heroicons-outline:calendar',
+    url:'/attendance',
+    auth: ["Super"]
+  },
+  {
     id: 'app-manageFamily',
     title: "Manage Family",
     translate: "Manage Family",

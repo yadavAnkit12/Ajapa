@@ -44,17 +44,17 @@ const style = {
 
 const initialValues = {
   email: '',
-  countryCode: '',
+  countryCode: '+91',
   mobileNumber: '',
   password: '',
 };
 const phoneNumberCountryCodes = [
-  '+91 (IN)',
-  '+1 (US)',
-  '+44 (UK)',
-  '+33 (FR)',
-  '+49 (DE)',
-  '+81 (JP)',
+  '+91',
+  '+1',
+  '+44',
+  '+33',
+  '+49',
+  '+81',
   // Add more country codes as needed
 ];
 
@@ -106,9 +106,9 @@ function SignInPage() {
           'Content-type': 'multipart/form-data',
         },
       }).then((response) => {
-        console.log(response)
+        // console.log(response)
         if (response.status === 200) {
-          dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+          dispatch(showMessage({ message: 'OTP has been sent to your mobile number and email.', variant: 'success' }));
           setShowOtpInput(true);
           setOTPVerify(true)
         }
@@ -127,6 +127,7 @@ function SignInPage() {
 
   //  signin using password
   const handleSubmit = (values) => {
+    
     // check that any field that is required is empty
     const isRequired = Boolean((values.email || (values.countryCode && values.mobileNumber)) && values.password && recaptcha)
 
