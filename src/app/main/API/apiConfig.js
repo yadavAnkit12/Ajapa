@@ -33,6 +33,14 @@ export const eventAPIConfig = {
     registrationDelete: key +'/event/registration/delete'
 }
 
+
+
+
+
+export const foodAPIConfig = {
+    getFoodDetails: key + '/getFoodDetails'
+}
+
 export const doctorAPIConfig = {
     register: key + '/api/doctor/RegisterDoctor',
     getDoctorList: key + '/api/doctor/ListDoctors',
