@@ -82,7 +82,7 @@ function UserForm() {
             })
             .test("fileSize", "File size is too large (max 10MB)", (value) => {
                 if (!value) return true;
-                return value.size <= 1 * 1024 * 1024; // 10MB in bytes
+                return value.size <= 10 * 1024 * 1024; // 10MB in bytes
             }),
         mobileNumber: yup
             .string()
