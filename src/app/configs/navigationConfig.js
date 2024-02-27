@@ -123,6 +123,15 @@ const navigationConfig = [
     auth: ["User","Member"]
   },
   {
+    id: 'foodDetails-component',
+    title: "Food Details",
+    translate: "Food Details",
+    type: 'item',
+    icon: 'heroicons-outline:clipboard-check',
+    url: 'app/foodDetails',
+    auth: ["Super"]
+  },
+  {
     id: 'myprofile-component',
     title: "My Profile",
     translate: "My Profile",
