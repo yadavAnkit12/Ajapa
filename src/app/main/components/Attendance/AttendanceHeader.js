@@ -6,9 +6,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { showMessage } from 'app/store/fuse/messageSlice';
-import { eventAPIConfig } from '../../API/apiConfig';
+import { attendanceAPIConfig, eventAPIConfig } from '../../API/apiConfig';
 import axios from 'axios';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+import FuseLoading from '@fuse/core/FuseLoading';
 
 
 
@@ -28,27 +29,95 @@ const style = {
   overflow: 'auto'
 };
 function AttendanceHeader(props) {
+  // console.log("d",props.clearUsersList)
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [filterData, setFilterData] = useState({
     eventName: ''
   });
-
-  //userList based on registrations
-  const [usersList,setUsers] = useState([])
-
-  //EventId fetching
-  const [eventId, setEventId] = useState('');
-
-  useEffect(() => {
-    const selectedEvent = props.eventList.find(event => event.eventName === filterData.eventName);
-    if (selectedEvent) {
-      setEventId(selectedEvent.eventId);
-    } else {
-      setEventId('');
-    }
-  }, [filterData.eventName, props.eventList]);
   
+
+
+
+  const handleCreateReport = () => {
+    const eventId = props.eventList?.find((event) => event.eventName === filterData.eventName)?.eventId
+    axios.get(`${attendanceAPIConfig.attendanceReport}/${eventId}`, {
+        headers: {
+            'Content-type': 'multipart/form-data',
+            Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+        },
+    }).then((response) => {
+        
+        if (response.status === 200) {
+            // Extract filename from the URL
+            const urlParts = response.data.fileName.split('/');
+            const fileName = urlParts[urlParts.length - 1];
+
+            const baseUrl = 'http://18.212.201.202:8080/ajapa_yog-0.0.1-SNAPSHOT/reports/';
+            const fullUrl = baseUrl + fileName;
+            const link = document.createElement('a');
+            link.href = fullUrl;
+            link.setAttribute('download', fileName);
+            document.body.appendChild(link);
+
+            // Trigger the download
+            link.click();
+
+            // Remove the link from the DOM after the download
+            document.body.removeChild(link);
+
+        } else {
+            // Handling error
+            dispatch(showMessage({ message: "Failed to fetch Excel. Please try again later.", variant: 'error' }));
+        }
+    });
+
+
+}
+
+const handleCreateReportPDF = () => {
+  const eventId = props.eventList?.find((event) => event.eventName === filterData.eventName)?.eventId
+  axios.get(`${attendanceAPIConfig.attendancePdf}/${eventId}`,
+      {
+        headers: {
+          "Content-type": "multipart/form-data",
+          Authorization: `Bearer ${window.localStorage.getItem(
+            "jwt_access_token"
+          )}`,
+        },
+      }
+    )
+    .then((response) => {
+      
+      if (response.status === 200) {
+        // Extract filename from the URL
+        const urlParts = response.data.fileName.split("/");
+        const fileName = urlParts[urlParts.length - 1];
+        const baseUrl =
+          "http://18.212.201.202:8080/ajapa_yog-0.0.1-SNAPSHOT/reports/";
+        const fullUrl = baseUrl + fileName;
+
+        // Create a new tab and open the link in it
+        const newTab = window.open(fullUrl, "_blank");
+        if (!newTab) {
+          // If pop-up blocker prevents opening the new tab
+          dispatch(
+            showMessage({
+              message: "Please allow pop-ups to download the PDF.",
+              variant: "error",
+            })
+          );
+        }
+      } else {
+        dispatch(
+          showMessage({
+            message: "Failed to fetch PDF. Please try again later.",
+            variant: "error",
+          })
+        );
+      }
+    })
+};
 
   const id = 'new';
 
@@ -71,25 +140,10 @@ function AttendanceHeader(props) {
     setOpen(false);
   };
 
-  useEffect(() => {
-    axios.get(`${eventAPIConfig.fetchRegisterUserByEvent}/${eventId}`,{
-      headers: {
-        'Content-type': 'multipart/form-data',
-        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-      },
-    }).then((response) => {
-      console.log("hehehehe",response.data.users)
-      if (response.status === 200) {
-        setUsers(response?.data?.users)
-        props.setUsers(response?.data?.users);  //Update the parent component
-      } else {
-        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
-      }
-    });
-  },[eventId])
 
   return (
     <>
+     
       <div className="w-full flex flex-col min-h-full">
         <div className="flex flex-col sm:flex-row space-y-16 sm:space-y-0 flex-1 w-full items-center justify-between py-32 px-10">
           <Typography
@@ -102,7 +156,7 @@ function AttendanceHeader(props) {
             Attendance
           </Typography>
           <div className="flex flex-col w-full sm:w-auto sm:flex-row space-y-16 sm:space-y-0 flex-1 items-center justify-end space-x-8">
-            <Paper
+            {/* <Paper
               component={motion.div}
               initial={{ y: -20, opacity: 0 }}
               animate={{ y: 0, opacity: 1, transition: { delay: 0.2 } }}
@@ -128,14 +182,14 @@ function AttendanceHeader(props) {
                 heroicons-solid:x
               </FuseSvgIcon>
               }
-            </Paper>
+            </Paper>*/}
 
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0, transition: { delay: 0.2 } }}
               className="ml-lg-5 mr-lg-5 ml-sm-2 mr-sm-2"
-            >
-              <Button
+            > 
+              {/* <Button
                 className=""
                 // component={Link}
                 // to="/app/eventRegisteration/new"
@@ -144,7 +198,7 @@ function AttendanceHeader(props) {
                 startIcon={<FuseSvgIcon>heroicons-outline:plus</FuseSvgIcon>}
               >
                 Save
-              </Button>
+              </Button> */}
             </motion.div>
           </div>
         </div>
@@ -180,13 +234,13 @@ function AttendanceHeader(props) {
               value={filterData.eventName}
               id="eventName"
               options={props.eventList.length > 0 ? props.eventList.map((event) => event.eventName) : []}
-              sx={{ my: 1, minWidth: 140, mx: 1 }}
+              sx={{ my: 1, minWidth: 200, mx: 1 }}
               onChange={(e, newValue) => setFilterData({ ...filterData, eventName: newValue })}
               renderInput={(params) => <TextField {...params} label="Select Event" variant="standard" />}
             />
             <Button
               // component={Link}
-              // onClick={() => handleCreateReport()}
+              onClick={() => handleCreateReport()}
               variant="outlined"
               color="secondary"
               startIcon={<FileDownloadOutlinedIcon />}
@@ -196,7 +250,7 @@ function AttendanceHeader(props) {
             </Button>
             <Button
               // component={Link}
-              // onClick={() => handleCreateReportPDF()}
+              onClick={() => handleCreateReportPDF()}
               variant="outlined"
               color="secondary"
               startIcon={<FileDownloadOutlinedIcon />}
@@ -206,6 +260,7 @@ function AttendanceHeader(props) {
             </Button>
 
           </div>
+          
           <div className="flex flex-row justify-end">
             <Button
               component={Link}

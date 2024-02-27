@@ -130,7 +130,7 @@ const EventForm = () => {
         eventType: Yup.string().required('Event Type is required'),
         eventLocation: Yup.string().required('Event Location is required'),
         eventDate: Yup.date()
-            .min(new Date(new Date().setHours(0, 0, 0, 0)), 'Event Date must be today or in the future')
+            // .min(new Date(new Date().setHours(0, 0, 0, 0)), 'Event Date must be today or in the future')
             .nullable()
             .required('Event Date is required'),
 
@@ -535,7 +535,7 @@ const EventForm = () => {
                                             id="profile-file"
                                             onChange={(event) => {
                                                 formik.setFieldValue('file', event.target.files[0]);
-                                                setSelectedFileName(event.target.files[0].name);
+                                                setSelectedFileName(event?.target.files[0]?.name);
                                             }}
                                         />
                                         <FuseSvgIcon size={32} color="action">

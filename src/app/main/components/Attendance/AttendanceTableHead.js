@@ -4,11 +4,28 @@ import { lighten } from '@mui/material/styles';
 function AttendanceTableHead(props) {
   
   const rows = [
+    
+    {
+      id: 'familyId',
+      align: 'center',
+      disablePadding: false,
+      label: 'Family Id',
+      sort: true,
+      visibleIf: true
+    },
     {
       id: 'fullName',
       align: 'center',
       disablePadding: false,
       label: 'Full Name',
+      sort: true,
+      visibleIf: true
+    },
+    {
+      id: 'gender',
+      align: 'center',
+      disablePadding: false,
+      label: 'Gender',
       sort: true,
       visibleIf: true
     },
@@ -33,6 +50,14 @@ function AttendanceTableHead(props) {
       align: 'center',
       disablePadding: false,
       label: 'Mobile Number',
+      sort: true,
+      visibleIf: true
+    },
+    {
+      id: 'requirements',
+      align: 'center',
+      disablePadding: false,
+      label: 'Special Requirements',
       sort: true,
       visibleIf: true
     },

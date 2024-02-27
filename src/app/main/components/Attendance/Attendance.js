@@ -17,7 +17,7 @@ function Attendance() {
   const [eventList,setEventList]=useState([])
   //register users for particular event
   const [usersList, setUsers] = useState([]);
-  
+  const [eventid, setEventid] = useState('')
 
 useEffect(()=>{
     axios.get(eventAPIConfig.allEventList, {
@@ -42,8 +42,11 @@ const handleUpdateUsersList = (updatedUsersList) => {
 
   return (
     <FusePageCarded
-      header={<AttendanceHeader eventList={eventList} setChange={setChange} change={change} setUsers={handleUpdateUsersList} usersList={usersList} setFilterValue={setFilterValue} searchText={searchText} setSearchText={setSearchText}/>}
-      content={<AttendanceTable eventList={eventList} setChange={setChange} change={change} usersList={usersList} setUsers={handleUpdateUsersList} filterValue={filterValue} searchText={searchText}/>}
+      header={<AttendanceHeader eventList={eventList} setChange={setChange} change={change} eventId={eventid} setEventId={setEventid}
+      setUsers={handleUpdateUsersList} usersList={usersList} setFilterValue={setFilterValue} searchText={searchText} setSearchText={setSearchText}/>}
+      
+      content={<AttendanceTable eventList={eventList} setChange={setChange} change={change} eventId={eventid} setEventId={setEventid}
+      usersList={usersList} setUsers={handleUpdateUsersList} filterValue={filterValue} searchText={searchText}/>}
       scroll={isMobile ? 'normal' : 'content'}
     />
   );
