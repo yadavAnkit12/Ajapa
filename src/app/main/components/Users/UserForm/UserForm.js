@@ -3,7 +3,7 @@ import * as yup from 'yup';
 import _ from '@lodash';
 import 'react-phone-input-2/lib/style.css'
 import InputAdornment from '@mui/material/InputAdornment';
-import { Autocomplete, Checkbox, FormControlLabel } from '@mui/material';
+import { Autocomplete, Checkbox, FormControlLabel, FormControl, FormLabel, FormGroup, } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
@@ -79,11 +79,15 @@ function UserForm() {
                 if (!value) return true; // Allow null values
                 const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
                 return allowedTypes.includes(value.type);
+            })
+            .test("fileSize", "File size is too large (max 10MB)", (value) => {
+                if (!value) return true;
+                return value.size <= 10 * 1024 * 1024; // 10MB in bytes
             }),
         mobileNumber: yup
             .string()
             .matches(/^[1-9]\d{9}$/, 'Invalid mobile number'),
-            // .required('Please enter your mobile number'),
+        // .required('Please enter your mobile number'),
         country: yup.string().required('Please enter your country'),
         state: yup.string().required('Please enter your state'),
         city: yup.string().required('Please enter your city'),
@@ -102,7 +106,7 @@ function UserForm() {
     }, [routeParams])
     useEffect(() => {
         const { id } = routeParams;
-       
+
         axios.get(`${userAPIConfig.getUserById}/${id}`, {
             headers: {
                 'Content-type': 'multipart/form-data',
@@ -112,7 +116,7 @@ function UserForm() {
                 setUserID(response.data.user.id)
 
                 const today = new Date();
-                const userAge = today.getFullYear() - parseInt(response.data.user.dob.split("-")[0])  ;
+                const userAge = today.getFullYear() - parseInt(response.data.user.dob.split("-")[0]);
                 // console.log(userAge)
 
                 if (userAge < 15) {
@@ -199,9 +203,9 @@ function UserForm() {
 
 
     const handleSubmit = (values) => {
-        console.log(values)
+        console.log("Formik", formik)
 
-        
+
         if (showCredentials) {
 
             if (!values.email || !values.password || !values.passwordConfirm || (!values.mobileNumber || !values.countryCode)) {
@@ -264,10 +268,10 @@ function UserForm() {
                 }).catch((error) => console.log(error))
             }
             else {
-                
-                    formattedData.append('profileImage', values.pic)
-                
-                
+
+                formattedData.append('profileImage', values.pic)
+
+
                 axios.post(`${userAPIConfig.updateUser}`, formattedData, {
                     headers: {
                         'Content-type': 'multipart/form-data',
@@ -294,7 +298,7 @@ function UserForm() {
 
         }
         else {
-            
+
             dispatch(showMessage({ message: 'Please check the mandatory fields', variant: 'error' }));
         }
 
@@ -321,7 +325,8 @@ function UserForm() {
             state: '',
             city: '',
             profilePicture: null,
-            isDisciple: 'No',
+            // isDisciple: 'No',
+            isDisciple: '',
             addressLine: '',
             bloodGroup: "",
             dikshaDate: '',
@@ -334,11 +339,11 @@ function UserForm() {
         onSubmit: handleSubmit,
     });
 
-    
+
     useEffect(() => {
 
         if (!showCredentials) {
-            
+
             setEmailLabel('Email (optional)')
             setMobileNum('Mobile Number (optional)')
             setPassword('Password (optional)')
@@ -424,7 +429,7 @@ function UserForm() {
                                     }}
                                 />
 
-                                
+
 
                                 <TextField
                                     sx={{ mb: 2 }}
@@ -442,8 +447,8 @@ function UserForm() {
                                     fullWidth
 
                                 />
-                           
-                     
+
+
                                 <div className='d-flex max-w-md'>
                                     <Autocomplete
                                         options={phoneNumberCountryCodes}
@@ -479,8 +484,8 @@ function UserForm() {
                                     />
 
                                 </div>
-                             
-                                
+
+
 
                                 <Autocomplete
                                     options={['Male', 'Female', 'Others']}
@@ -594,9 +599,9 @@ function UserForm() {
 
                             </div>
 
-                            
+
                             <div className={tabValue !== 2 ? 'hidden' : ''}>
-                        
+
                                 <TextField
                                     name='password'
                                     label={password}
@@ -624,8 +629,8 @@ function UserForm() {
                                         ),
                                     }}
                                 />
-                        
-                                
+
+
                                 <TextField
                                     sx={{ mb: 2 }}
                                     className="max-w-md"
@@ -653,10 +658,10 @@ function UserForm() {
                                         ),
                                     }}
                                 />
-                
 
 
-                                <div style={{ marginBottom: '16px' }}>
+
+                                {/* <div style={{ marginBottom: '16px' }}>
                                     <FormControlLabel
                                         control={
                                             <Checkbox
@@ -669,11 +674,44 @@ function UserForm() {
                                         }
                                         label="Are you an Ajapa Disciple ?"
                                     />
+                                </div> */}
+
+                                <div style={{ marginBottom: '16px' }}>
+                                    <FormControl component="fieldset" required>
+                                        <FormLabel component="legend" className="text-black">
+                                            Are you an Ajapa Disciple ?
+                                        </FormLabel>
+                                        <FormGroup className="flex flex-row">
+                                            <FormControlLabel
+                                                control={
+                                                    <Checkbox
+                                                        checked={formik.values.isDisciple === 'Yes'}
+                                                        onChange={() =>
+                                                            formik.setFieldValue("isDisciple", 'Yes')
+                                                        }
+                                                    />
+                                                }
+                                                label="Yes"
+                                            />
+                                            <FormControlLabel
+                                                control={
+                                                    <Checkbox
+                                                        checked={formik.values.isDisciple === 'No'}
+                                                        onChange={() =>
+                                                            formik.setFieldValue("isDisciple", 'No')
+                                                        }
+                                                    />
+                                                }
+                                                label="No"
+                                            />
+                                        </FormGroup>
+                                    </FormControl>
                                 </div>
                                 <div>
                                     <input
                                         type="file"
                                         name='profilePicture'
+                                        onBlur={formik.handleBlur}
                                         onChange={(event, newValue) => { formik.setFieldValue('profilePicture', event.target.files[0]) }}
                                         style={{
                                             fontSize: '1.8rem',
@@ -686,14 +724,15 @@ function UserForm() {
                                             border: 'none',
                                         }}
                                     />
+
+                                    <p style={{ fontSize: '10px', padding: '0.75rem 0' }}>
+                                        PNG, JPG, or JPEG (Must be a clear image).
+                                    </p>
                                     {formik.touched.profilePicture && formik.errors.profilePicture && (
                                         <p style={{ fontSize: '12px', padding: '0.75rem', color: 'red' }}>
                                             {formik.errors.profilePicture}
                                         </p>
                                     )}
-                                    <p style={{ fontSize: '10px', padding: '0.75rem 0' }}>
-                                        PNG, JPG, or JPEG (Must be a clear image).
-                                    </p>
                                 </div>
                             </div>
                             <div className={tabValue !== 3 ? 'hidden' : ''}>
@@ -779,7 +818,7 @@ function UserForm() {
                                     fullWidth
                                 />
 
-                 
+
                                 <TextField
                                     label={whatsAppNumber}
                                     sx={{ mb: 2 }}
@@ -794,9 +833,9 @@ function UserForm() {
                                     variant="outlined"
                                     fullWidth
                                 />
-                 
+
                             </div>
-                       
+
                         </form>
                     </div>
                 </>
