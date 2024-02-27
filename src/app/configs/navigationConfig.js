@@ -123,6 +123,24 @@ const navigationConfig = [
     auth: ["User","Member"]
   },
   {
+    id: 'food-component',
+    title: "Food",
+    translate: "Food",
+    type: 'item',
+    icon: 'heroicons-outline:clipboard-check',
+    url: 'app/food',
+    auth: ["Super"]
+  },
+  {
+    id: 'sms-component',
+    title: "SMS",
+    translate: "SMS",
+    type: 'item',
+    icon: 'heroicons-outline:clipboard-check',
+    url: '/sms',
+    auth: ["Super"]
+  },
+  {
     id: 'myprofile-component',
     title: "My Profile",
     translate: "My Profile",
@@ -131,15 +149,7 @@ const navigationConfig = [
     url: `apps/profile/${sessionStorage.getItem('id')}`,
     auth: ["Super", "User","Member"]
   },
-  {
-    id: 'sms-component',
-    title: "SMS",
-    translate: "SMS",
-    type: 'item',
-    icon: 'heroicons-outline:logout',
-    url: '/sms',
-    auth: ["Super"]
-  },
+
   {
     id: 'logout-component',
     title: "Logout",

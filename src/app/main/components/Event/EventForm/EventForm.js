@@ -529,7 +529,7 @@ const EventForm = () => {
                                             id="profile-file"
                                             onChange={(event) => {
                                                 formik.setFieldValue('file', event.target.files[0]);
-                                                setSelectedFileName(event.target.files[0].name);
+                                                setSelectedFileName(event?.target?.files[0]?.name);
                                             }}
                                         />
                                         <FuseSvgIcon size={32} color="action">

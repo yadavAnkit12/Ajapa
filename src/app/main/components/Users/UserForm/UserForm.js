@@ -251,6 +251,7 @@ function UserForm() {
                         if (getLoggedInPartnerId() == userID) {
                             console.log('if me')
                             navigate(`/apps/profile/${getLoggedInPartnerId()}`)
+                            window.location.reload()
                         }
                         else {
                             console.log('elsemm')
@@ -277,6 +278,7 @@ function UserForm() {
                         dispatch(showMessage({ message: response.data.message, variant: 'success' }));
                         // this is beacuse suppose if super admin update the profile of user 
                         if (getLoggedInPartnerId() == userID) {
+                            window.location.reload()
                             navigate(`/apps/profile/${getLoggedInPartnerId()}`)
                         }
                         else {

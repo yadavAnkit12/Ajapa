@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Autocomplete, TextField } from "@mui/material";
+import { Typography, Autocomplete, TextField, Card } from "@mui/material";
 import { motion } from "framer-motion";
 import Button from "@mui/material/Button";
 import { useFormik } from "formik";
@@ -9,6 +9,7 @@ import { eventAPIConfig, userAPIConfig } from "../../API/apiConfig";
 import { useDispatch } from "react-redux";
 import { showMessage } from "app/store/fuse/messageSlice";
 import { Message } from "@mui/icons-material";
+import { Box } from "@mui/system";
 
 function SMS() {
   const dispatch = useDispatch();
@@ -138,123 +139,105 @@ function SMS() {
   });
 
   return (
-    <div className="flex justify-center  h-screen" style={{marginTop:'100px'}}>
-    <div className="flex flex-col w-full max-w-md">
-      <div className="py-20 px-10">
-        <Typography
-          component={motion.span}
-          initial={{ x: -20 }}
-          animate={{ x: 0, transition: { delay: 0.2 } }}
-          delay={300}
-          style={{
-            fontStyle: "normal",
-            fontSize: "24px",
-            lineHeight: "28px",
-            letterSpacing: "0px",
-            textAlign: "center",
-            fontWeight: "bold",
-          }}
-        >
-          Send SMS
-        </Typography>
-      </div>
-      <div className="px-10">
-        <form className="flex flex-col" onSubmit={formik.handleSubmit}>
-          <div>
-            <Autocomplete
-              options={
-                events.length > 0 ? events.map((event) => event.eventName) : []
-              }
-              value={formik.values.event}
-              onChange={(event, newValue) => {
-                const selectedEvent = events.find(
-                  (selected) => selected.eventName === newValue
-                )?.eventId;
-                setSelectedEventId(selectedEvent);
-                formik.setFieldValue("event", newValue);
-              }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  name="event"
-                  label="Event"
-                  sx={{ mb: 2, mt: 2, width: "100%" }}
-                  className="max-w-md"
-                  variant="outlined"
-                  required
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.event && Boolean(formik.errors.event)}
-                  helperText={formik.touched.event && formik.errors.event}
-                />
-              )}
-            />
-          </div>
+    <Box sx={{ width: '100%', padding: 2 }}>
+      <Card className='shadow-5' sx={{ padding: { md: '16px 64px', sm: '16px' }, margin: '0 auto', maxWidth: '700px' }}>
+   
+              <Typography variant="h4" fontWeight="700" fontSize="2.4rem" line-height="1.5" fontFamily="Helvetica" align="center" marginBottom="10px">
+                SMS
+              </Typography>
+              <form className="flex flex-col" onSubmit={formik.handleSubmit}>
+                <div>
+                  <Autocomplete
+                    options={
+                      events.length > 0 ? events.map((event) => event.eventName) : []
+                    }
+                    value={formik.values.event}
+                    onChange={(event, newValue) => {
+                      const selectedEvent = events.find(
+                        (selected) => selected.eventName === newValue
+                      )?.eventId;
+                      setSelectedEventId(selectedEvent);
+                      formik.setFieldValue("event", newValue);
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        name="event"
+                        label="Event"
+                        sx={{ mb: 2, mt: 2, width: "100%" }}
+                        className="max-w-md"
+                        variant="outlined"
+                        required
+                        onBlur={formik.handleBlur}
+                        error={formik.touched.event && Boolean(formik.errors.event)}
+                        helperText={formik.touched.event && formik.errors.event}
+                      />
+                    )}
+                  />
+                </div>
 
-          <div>
-            <Autocomplete
-              options={sendMessageTo.map((item) => item.key)}
-              value={formik.values.check}
-              onChange={(event, newValue) => {
-                const selectedValue = sendMessageTo.find(
-                  (item) => item.key === newValue
-                )?.value;
-                setValue(selectedValue);
-                // console.log("hi", selectedEventId)
-                formik.setFieldValue("check", newValue);
-              }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  name="check"
-                  label="Check"
-                  sx={{ mb: 2, mt: 2, width: "100%" }}
-                  className="max-w-md"
-                  variant="outlined"
-                  required
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.check && Boolean(formik.errors.check)}
-                  helperText={formik.touched.check && formik.errors.check}
-                />
-              )}
-            />
-          </div>
+                <div>
+                  <Autocomplete
+                    options={sendMessageTo.map((item) => item.key)}
+                    value={formik.values.check}
+                    onChange={(event, newValue) => {
+                      const selectedValue = sendMessageTo.find(
+                        (item) => item.key === newValue
+                      )?.value;
+                      setValue(selectedValue);
+                      // console.log("hi", selectedEventId)
+                      formik.setFieldValue("check", newValue);
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        name="check"
+                        label="Check"
+                        sx={{ mb: 2, width: "100%" }}
+                        className="max-w-md"
+                        variant="outlined"
+                        required
+                        onBlur={formik.handleBlur}
+                        error={formik.touched.check && Boolean(formik.errors.check)}
+                        helperText={formik.touched.check && formik.errors.check}
+                      />
+                    )}
+                  />
+                </div>
 
-          <div>
-            <TextField
-              label="Type Your Message"
-              name="message"
-              variant="outlined"
-              sx={{ mb: 2, mt: 2, width: "100%" }}
-              className="max-w-md"
-              type="text"
-              required
-              value={formik.values.message}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.message && Boolean(formik.errors.message)}
-              helperText={formik.touched.message && formik.errors.message}
-              multiline
-              rows={3} // Set the number of rows you want
-            />
-          </div>
+                <div>
+                  <TextField
+                    label="Type Your Message"
+                    name="message"
+                    variant="outlined"
+                    sx={{ mb: 2, width: "100%" }}
+                    className="max-w-md"
+                    type="text"
+                    required
+                    value={formik.values.message}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.message && Boolean(formik.errors.message)}
+                    helperText={formik.touched.message && formik.errors.message}
+                    multiline
+                    rows={3} // Set the number of rows you want
+                  />
+                </div>
 
-          
-            <Button
-              variant="contained"
-              color="secondary"
-              className="max-w-md mt-10"
-              aria-label="Register"
-              onClick={formik.handleSubmit}
-              size="large"
-              style={{ backgroundColor: "#792b00" }}
-            >
-              Send SMS
-            </Button>
-          
-        </form>
-      </div>
-    </div>
-  </div>
+
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  className="m-10"
+                  aria-label="Register"
+                  onClick={formik.handleSubmit}
+                >
+                  Send SMS
+                </Button>
+
+              </form>
+      </Card>
+    </Box>
   );
 }
 

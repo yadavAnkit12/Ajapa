@@ -67,14 +67,14 @@ function UserTableHead(props) {
           sort: true,
           visibleIf: true
         },
-        {
-          id: 'status',
-          align: 'center',
-          disablePadding: false,
-          label: 'Status',
-          sort: true,
-          visibleIf: true
-        },
+        // {
+        //   id: 'status',
+        //   align: 'center',
+        //   disablePadding: false,
+        //   label: 'Status',
+        //   sort: true,
+        //   visibleIf: true
+        // },
         {
           id: 'action',
           align: 'center',

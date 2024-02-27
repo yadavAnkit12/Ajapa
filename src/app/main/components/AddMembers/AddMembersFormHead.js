@@ -3,10 +3,24 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { motion } from 'framer-motion';
 import { useTheme } from '@mui/material/styles';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 
 function AddMembersFormHead(props) {
     const theme = useTheme()
+    const routeParams = useParams()
+    const [text, setText] = useState('')
+
+    useEffect(() => {
+        const { id } = routeParams
+        if (id === 'new') {
+             setText('Add Member')
+        } else{
+            setText('Update Member')
+        }
+    }, [routeParams])
+
     return <>
         <div className="flex flex-col sm:flex-row flex-1 w-full items-center justify-between space-y-8 sm:space-y-0 py-32 px-24 md:px-32">
             <div className="flex flex-col items-center sm:items-start space-y-8 sm:space-y-0 w-full sm:max-w-full min-w-0">
@@ -22,9 +36,9 @@ function AddMembersFormHead(props) {
                         initial={{ x: -20 }}
                         animate={{ x: 0, transition: { delay: 0.2 } }}
                         delay={300}
-                        style={{fontStyle:'normal',fontSize:'24px',lineHeight:'28px',letterSpacing:'0px',textAlign:'center',fontWeight:'bold'}}
+                        style={{ fontStyle: 'normal', fontSize: '24px', lineHeight: '28px', letterSpacing: '0px', textAlign: 'center', fontWeight: 'bold' }}
                     >
-                        Add Member
+                        {text}
                     </Typography>
                 </div>
             </div>

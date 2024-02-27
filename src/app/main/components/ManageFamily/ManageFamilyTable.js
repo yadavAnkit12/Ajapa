@@ -238,7 +238,7 @@ function ManageFamilyTable(props) {
     }).then((response) => {
       if (response.status === 200) {
         dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-        navigate('/sign-out')
+        window.location.reload()
       }
       else {
         dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));

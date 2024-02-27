@@ -42,10 +42,11 @@ import ManageFamilyConfig from '../main/components/ManageFamily/ManageFamilyConf
 import MyRegisterationConfig from '../main/components/MyRegistration/MyRegistrationConfig';
 import AllEventRegistrationConfig from '../main/components/AllEventRegistration/AllEventRegistrationConfig';
 import SMSConfig from '../main/components/SMS/SMSConfig';
+import FoodConfig from '../main/components/Food/FoodConfig';
 
 
 
-const routeConfigs = [SignOutConfig, SignInConfig,MyRegisterationConfig, AllEventRegistrationConfig, SignUpConfig, Error404PageConfig, DashboardConfig,UserConfig,EventConfig,EmployeeManagementConfig, AddMembersConfig,UserEventConfig,ManageFamilyConfig,DoctorManagementConfig, PatientConfig, AppointmentsAppConfig,SMSConfig, HomeConfig, MembershipPlanConfig, transactionConfig, SubscriptionPlanConfig, CouponPlanConfig, BannerPlanConfig, CaseConfig, SymptomConfig, ProductConfig, OrderConfig, LabOrderConfig,SettingConfig,NewCaseConfig,AllCaseConfig,FinalCaseReportConfig,ClinicManagementConfig];
+const routeConfigs = [SignOutConfig, SignInConfig,MyRegisterationConfig, AllEventRegistrationConfig, SignUpConfig, Error404PageConfig, DashboardConfig,UserConfig,EventConfig,EmployeeManagementConfig, AddMembersConfig,UserEventConfig,ManageFamilyConfig,FoodConfig,DoctorManagementConfig, PatientConfig, AppointmentsAppConfig,SMSConfig, HomeConfig, MembershipPlanConfig, transactionConfig, SubscriptionPlanConfig, CouponPlanConfig, BannerPlanConfig, CaseConfig, SymptomConfig, ProductConfig, OrderConfig, LabOrderConfig,SettingConfig,NewCaseConfig,AllCaseConfig,FinalCaseReportConfig,ClinicManagementConfig];
 
 const routes = [
   ...FuseUtils.generateRoutesFromConfigs(routeConfigs, settingsConfig.defaultAuth),

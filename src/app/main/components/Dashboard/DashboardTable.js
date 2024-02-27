@@ -125,8 +125,8 @@ function DashboardTable(props) {
       page: page + 1,
       rowsPerPage: rowsPerPage, // Example data to pass in req.query
       eventName: searchText,
-      eventStatus: (_.get(props, 'filterValue.eventStatus') === 'Active' || _.get(props, 'filterValue') === '') ? true : false,
-      bookingStatus: (_.get(props, 'filterValue.bookingStatus') === 'On' || _.get(props, 'filterValue') === '') ? true : false,
+      eventStatus: (_.get(props, 'filterValue.eventStatus') === 'On' || _.get(props, 'filterValue') === '' || _.get(props, 'filterValue.eventStatus') === null) ? true : false,
+      bookingStatus: (_.get(props, 'filterValue.bookingStatus') === 'On' || _.get(props, 'filterValue') === '' || _.get(props, 'filterValue.bookingStatus') === null) ? true : false,
     };
     axios.get(eventAPIConfig.list, { params }, {
       headers: {

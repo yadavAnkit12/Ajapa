@@ -35,9 +35,9 @@ const EventForm = (props) => {
 
 
     useEffect(() => {
-        console.log('unde',props)
         formik.resetForm()
     }, [props.person.id])
+    
     useEffect(() => {
         if (shivirHai === true) {
             setshivirCheckBox(true)

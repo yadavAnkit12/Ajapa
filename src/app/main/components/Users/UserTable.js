@@ -392,7 +392,7 @@ function UserTable(props) {
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.dob}
                   </TableCell>
-                  <TableCell
+                  {/* <TableCell
                     className="p-4 md:p-16"
                     component="th"
                     scope="row"
@@ -400,7 +400,7 @@ function UserTable(props) {
                     style={{ fontWeight: 'bold', color: getStatusColor(n.status) }}
                   >
                     {n.status}
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     <PopupState variant="popover" popupId="demo-popup-menu">
                       {(popupState) => (

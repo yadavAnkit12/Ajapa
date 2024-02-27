@@ -101,10 +101,10 @@ function UsersHeader(props) {
 
     const clearFilters = () => {
         setFilterData({
-            status: '',
-            country: '',
-            state: '',
-            city: ''
+            status: 'Approved',
+            country: 'All',
+            state: 'All',
+            city: 'All'
 
         });
         setCountryID('');
@@ -123,9 +123,9 @@ function UsersHeader(props) {
         const params = {
             searchText: props.searchText,
             status: filterData.status,
-            country: countryID !== '' ? `${countryID}:${filterData.country}` : 'All',
-            state: stateID !== '' ? `${stateID}:${filterData.state}` : 'All',
-            city: cityID !== '' ? `${cityID}:${filterData.city}` : 'All'
+            country:(countryID !== '' && countryID !==undefined) ? `${countryID}:${filterData.country}` : 'All',
+            state: (stateID !== '' && stateID !==undefined) ? `${stateID}:${filterData.state}` : 'All',
+            city: (cityID !== '' && cityID !==undefined) ? `${cityID}:${filterData.city}` : 'All'
         };
 
         axios.get(userAPIConfig.userReport, { params }, {
@@ -165,9 +165,9 @@ function UsersHeader(props) {
         const params = {
             searchText: props.searchText,
             status: filterData.status,
-            country: countryID !== '' ? `${countryID}:${filterData.country}` : 'All',
-            state: stateID !== '' ? `${stateID}:${filterData.state}` : 'All',
-            city: cityID !== '' ? `${cityID}:${filterData.city}` : 'All'
+            country:(countryID !== '' && countryID !==undefined) ? `${countryID}:${filterData.country}` : 'All',
+            state: (stateID !== '' && stateID !==undefined) ? `${stateID}:${filterData.state}` : 'All',
+            city: (cityID !== '' && cityID !==undefined) ? `${cityID}:${filterData.city}` : 'All'
         };
 
         axios.get(userAPIConfig.userReportPDF, { params }, {
