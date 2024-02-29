@@ -53,21 +53,12 @@ const fontStyles = {
 };
 
 const phoneNumberCountryCodes = [
-<<<<<<< HEAD
   '+91',
   '+1',
   '+44',
   '+33',
   '+49',
   '+81',
-=======
-  "+91 (IN)",
-  "+1 (US)",
-  "+44 (UK)",
-  "+33 (FR)",
-  "+49 (DE)",
-  "+81 (JP)",
->>>>>>> 6e6cc7bdf074b5534efcb7b1cd087b448988657b
   // Add more country codes as needed
 ];
 
@@ -89,19 +80,11 @@ function SignUpPage() {
     passwordConfirm: "",
     gender: "",
     dob: null,
-<<<<<<< HEAD
     countryCode: '+91',
     mobileNumber: '',
     country: '',
     state: '',
     city: '',
-=======
-    countryCode: "",
-    mobileNumber: "",
-    country: "",
-    state: "",
-    city: "",
->>>>>>> 6e6cc7bdf074b5534efcb7b1cd087b448988657b
     profilePicture: null,
     // isDisciple: 'false'
     isDisciple: "",
