@@ -3,7 +3,7 @@ import * as yup from "yup";
 import _ from "@lodash";
 import "react-phone-input-2/lib/style.css";
 import InputAdornment from "@mui/material/InputAdornment";
-import { Autocomplete, Checkbox, FormControlLabel } from "@mui/material";
+import { Autocomplete, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
@@ -24,6 +24,7 @@ import { userAPIConfig } from "src/app/main/API/apiConfig";
 import FuseLoading from "@fuse/core/FuseLoading";
 import AddMembersFormHead from "./AddMembersFormHead";
 import { getLoggedInPartnerId } from "src/app/auth/services/utils/common";
+import { CheckBox } from "@mui/icons-material";
 
 const phoneNumberCountryCodes = [
   "+91",
@@ -50,11 +51,12 @@ function AddMembersForm() {
   const [cityID, setCityID] = useState("");
   const [userID, setUserID] = useState("");
   const [showCredentials, setShowCredentials] = useState(true);
+  console.log("cc",showCredentials)
   const [isChild, setIsChild] = useState(false);
   const [sameAs, setSameAs] = useState([]);
   const [useMobileNumberForWhatsApp, setUseMobileNumberForWhatsApp] =
     useState(false);
-  const [showOptionalFields, setShowOptionalFields] = useState(false);
+  // const [showOptionalFields, setShowOptionalFields] = useState(false);
 
   // Event handler for radio button or checkbox change
   const handleWhatsAppOptionChange = (event) => {
@@ -124,7 +126,7 @@ function AddMembersForm() {
 
   useEffect(() => {
     formik.resetForm();
-    setShowCredentials(true);
+    // setShowCredentials(true);
   }, [routeParams]);
 
   useEffect(() => {
@@ -145,7 +147,7 @@ function AddMembersForm() {
             const userAge =
               today.getFullYear() -
               parseInt(response.data.user.dob.split("-")[0]);
-
+            
             if (userAge < 15) {
               if (
                 response?.data?.user?.email !== "" ||
@@ -210,35 +212,7 @@ function AddMembersForm() {
         }
       });
   }, []);
-  //fetching the country list
-  useEffect(() => {
-    axios
-      .get(jwtServiceConfig.country, {
-        headers: {
-          "Content-type": "multipart/form-data",
-        },
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          setCountryList(response.data);
-        }
-      });
-  }, []);
 
-  //fetch the state on the behalf of country
-  useEffect(() => {
-    axios
-      .get(`${jwtServiceConfig.state}/${countryID}`, {
-        headers: {
-          "Content-type": "multipart/form-data",
-        },
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          setStateList(response.data);
-        }
-      });
-  }, [countryID]);
   //fetch the state on the behalf of country
   useEffect(() => {
     axios
@@ -268,20 +242,7 @@ function AddMembersForm() {
         }
       });
   }, [stateID]);
-  //fetch the city on the behalf of state
-  useEffect(() => {
-    axios
-      .get(`${jwtServiceConfig.city}/${stateID}`, {
-        headers: {
-          "Content-type": "multipart/form-data",
-        },
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          setCityList(response.data);
-        }
-      });
-  }, [stateID]);
+
 
   const handleSubmit = (values) => {
     if (userID === "" && values.profilePicture === null) {
@@ -462,6 +423,7 @@ function AddMembersForm() {
     const age = today.getFullYear() - dob.getFullYear();
     setShowCredentials(age > 15);
     if (age <= 15) {
+      alert("nn")
       setIsChild(true);
     } else {
       setIsChild(false);
@@ -470,6 +432,7 @@ function AddMembersForm() {
 
   //Showing fields in case of child
   const handleCheckBoxChange = () => {
+    console.log("hii")
     setShowCredentials(!showCredentials);
 
     if (showCredentials) {
@@ -488,6 +451,7 @@ function AddMembersForm() {
           whatsAppNumber: "",
         });
       } else {
+        console.log("hi")
         setShowCredentials(true);
       }
     }
@@ -711,49 +675,7 @@ function AddMembersForm() {
                     )}
                   />
                 </div>
-                <div className={tabValue !== 1 ? "hidden" : ""}>
-                  <TextField
-                    label="Pin Code"
-                    sx={{ mb: 2 }}
-                    className="max-w-md"
-                    name="pinCode"
-                    type="text"
-                    value={formik.values.pinCode}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={
-                      formik.touched.pinCode && Boolean(formik.errors.pinCode)
-                    }
-                    helperText={formik.touched.pinCode && formik.errors.pinCode}
-                    variant="outlined"
-                    fullWidth
-                  />
-                  <Autocomplete
-                    options={["Male", "Female", "Others"]}
-                    fullWidth
-                    value={formik.values.gender}
-                    onChange={(event, newValue) => {
-                      formik.setFieldValue("gender", newValue);
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Gender"
-                        sx={{ mb: 2 }}
-                        className="max-w-md"
-                        variant="outlined"
-                        required
-                        error={
-                          formik.touched.gender && Boolean(formik.errors.gender)
-                        }
-                        helperText={
-                          formik.touched.gender && formik.errors.gender
-                        }
-                        disabled={formik.values.isActive}
-                      />
-                    )}
-                  />
-                </div>
+                  
                 <div className={tabValue !== 1 ? "hidden" : ""}>
                   <TextField
                     label="Pin Code"
