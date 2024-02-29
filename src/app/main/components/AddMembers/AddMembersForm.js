@@ -51,7 +51,7 @@ function AddMembersForm() {
   const [cityID, setCityID] = useState("");
   const [userID, setUserID] = useState("");
   const [showCredentials, setShowCredentials] = useState(true);
-  console.log("cc",showCredentials)
+  
   const [isChild, setIsChild] = useState(false);
   const [sameAs, setSameAs] = useState([]);
   const [useMobileNumberForWhatsApp, setUseMobileNumberForWhatsApp] =
@@ -126,7 +126,8 @@ function AddMembersForm() {
 
   useEffect(() => {
     formik.resetForm();
-    // setShowCredentials(true);
+    setShowCredentials(true);
+    setIsChild(false)
   }, [routeParams]);
 
   useEffect(() => {
