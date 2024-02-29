@@ -43,6 +43,14 @@ export const attendanceAPIConfig = {
     attendancePdf: key + "/reportPdf/event/registrations"
 }
 
+
+
+
+
+export const foodAPIConfig = {
+    getFoodDetails: key + '/getFoodDetails'
+}
+
 export const doctorAPIConfig = {
     register: key + '/api/doctor/RegisterDoctor',
     getDoctorList: key + '/api/doctor/ListDoctors',

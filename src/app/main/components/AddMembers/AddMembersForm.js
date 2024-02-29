@@ -61,28 +61,20 @@ function AddMembersForm() {
     setUseMobileNumberForWhatsApp(event.target.checked);
   };
 
-  const validationSchema = yup.object().shape({
-    name: yup
-      .string()
-      .max(100, "Full name should be less than 100 chars")
-      .required("Please enter your full name"),
-    email: yup
-      .string()
-      .email("Invalid email address")
-      .matches(
-        /^([A-Za-z0-9_\-\.])+\@(?!(?:[A-Za-z0-9_\-\.]+\.)?([A-Za-z]{2,4})\.\2)([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/,
-        "Invalid email"
-      ),
-    // .required('Please enter your email'),
-    password: yup
-      .string()
-      .min(4, "Password is too short - should be 4 chars minimum"),
-    // .required('Please enter your password.'),
-    passwordConfirm: yup
-      .string()
-      .oneOf([yup.ref("password"), null], "Passwords must match"),
-    gender: yup.string().required("Please select your gender"),
-    dob: yup.date().required("Please enter your date of birth"),
+    const validationSchema = yup.object().shape({
+        name: yup.string().max(100, 'Full name should be less than 100 chars').required('Please enter your full name'),
+        email: yup.string().email('Invalid email address')
+            .matches(/^([A-Za-z0-9_\-\.])+\@(?!(?:[A-Za-z0-9_\-\.]+\.)?([A-Za-z]{2,4})\.\2)([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/, 'Invalid email'),
+        // .required('Please enter your email'),
+        password: yup
+            .string()
+            .min(4, 'Password is too short - should be 4 chars minimum'),
+        // .required('Please enter your password.'),
+        passwordConfirm: yup
+            .string()
+            .oneOf([yup.ref('password'), null], 'Passwords must match'),
+        gender: yup.string().required('Please select your gender'),
+        dob: yup.date().required('Please enter your date of birth'),
 
     // countryCode: yup.string().required('select country code'),
     profilePicture: yup
@@ -218,6 +210,20 @@ function AddMembersForm() {
         }
       });
   }, []);
+  //fetching the country list
+  useEffect(() => {
+    axios
+      .get(jwtServiceConfig.country, {
+        headers: {
+          "Content-type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          setCountryList(response.data);
+        }
+      });
+  }, []);
 
   //fetch the state on the behalf of country
   useEffect(() => {
@@ -233,7 +239,35 @@ function AddMembersForm() {
         }
       });
   }, [countryID]);
+  //fetch the state on the behalf of country
+  useEffect(() => {
+    axios
+      .get(`${jwtServiceConfig.state}/${countryID}`, {
+        headers: {
+          "Content-type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          setStateList(response.data);
+        }
+      });
+  }, [countryID]);
 
+  //fetch the city on the behalf of state
+  useEffect(() => {
+    axios
+      .get(`${jwtServiceConfig.city}/${stateID}`, {
+        headers: {
+          "Content-type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          setCityList(response.data);
+        }
+      });
+  }, [stateID]);
   //fetch the city on the behalf of state
   useEffect(() => {
     axios
@@ -491,6 +525,7 @@ function AddMembersForm() {
     onSubmit: handleSubmit,
   });
 
+
   function handleTabChange(event, value) {
     setTabValue(value);
   }
@@ -650,6 +685,49 @@ function AddMembersForm() {
                     </div>
                   )}
 
+                  <Autocomplete
+                    options={["Male", "Female", "Others"]}
+                    fullWidth
+                    value={formik.values.gender}
+                    onChange={(event, newValue) => {
+                      formik.setFieldValue("gender", newValue);
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Gender"
+                        sx={{ mb: 2 }}
+                        className="max-w-md"
+                        variant="outlined"
+                        required
+                        error={
+                          formik.touched.gender && Boolean(formik.errors.gender)
+                        }
+                        helperText={
+                          formik.touched.gender && formik.errors.gender
+                        }
+                        disabled={formik.values.isActive}
+                      />
+                    )}
+                  />
+                </div>
+                <div className={tabValue !== 1 ? "hidden" : ""}>
+                  <TextField
+                    label="Pin Code"
+                    sx={{ mb: 2 }}
+                    className="max-w-md"
+                    name="pinCode"
+                    type="text"
+                    value={formik.values.pinCode}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={
+                      formik.touched.pinCode && Boolean(formik.errors.pinCode)
+                    }
+                    helperText={formik.touched.pinCode && formik.errors.pinCode}
+                    variant="outlined"
+                    fullWidth
+                  />
                   <Autocomplete
                     options={["Male", "Female", "Others"]}
                     fullWidth
@@ -921,23 +999,51 @@ function AddMembersForm() {
                   )}
 
                   <div style={{ marginBottom: "16px" }}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={formik.values.isDisciple === "Yes"}
-                          onChange={(event) => {
-                            formik.setFieldValue(
-                              "isDisciple",
-                              event.target.checked ? "Yes" : "No"
-                            );
-                          }}
-                          color="primary"
+                    {/* <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={formik.values.isDisciple === 'Yes'}
+                                                onChange={(event) => {
+                                                    formik.setFieldValue('isDisciple', event.target.checked ? 'Yes' : 'No');
+                                                }}
+                                                color="primary"
+                                            />
+                                        }
+                                        label="Are you an Ajapa Disciple ?"
+                                    /> */}
+
+                    <FormControl component="fieldset" required>
+                      <FormLabel component="legend" className="text-black">
+                        Are you an Ajapa Disciple ?
+                      </FormLabel>
+                      <FormGroup className="flex flex-row">
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={formik.values.isDisciple === "Yes"}
+                              onChange={() =>
+                                formik.setFieldValue("isDisciple", "Yes")
+                              }
+                            />
+                          }
+                          label="Yes"
                         />
-                      }
-                      label="Are you an Ajapa Disciple ?"
-                    />
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={formik.values.isDisciple === "No"}
+                              onChange={() =>
+                                formik.setFieldValue("isDisciple", "No")
+                              }
+                            />
+                          }
+                          label="No"
+                        />
+                      </FormGroup>
+                    </FormControl>
                   </div>
-                  <div>
+                  {/* <div>
+                    <div>
                     <input
                       type="file"
                       name="profilePicture"
@@ -958,23 +1064,71 @@ function AddMembersForm() {
                         border: "none",
                       }}
                     />
-                    {formik.touched.profilePicture &&
-                      formik.errors.profilePicture && (
-                        <p
-                          style={{
-                            fontSize: "12px",
-                            padding: "0.75rem",
-                            color: "red",
-                          }}
-                        >
-                          {formik.errors.profilePicture}
-                        </p>
-                      )}
-                    <p style={{ fontSize: "10px", padding: "0.75rem 0" }}>
-                      PNG, JPG, or JPEG (Must be a clear image).
-                    </p>
-                  </div>
+                    </div>
+                                      {formik.touched.profilePicture &&
+                    formik.errors.profilePicture && (
+                      <p
+                        style={{
+                          fontSize: "12px",
+                          padding: "0.75rem",
+                          color: "red",
+                        }}
+                      >
+                        {formik.errors.profilePicture}
+                      </p>
+                    )}
+                  <p style={{ fontSize: "15px", padding: "0.75rem" }}>
+                    PNG, JPG, or JPEG (Must be a clear image).
+                    <span style={{ color: "red", fontSize: "1.8rem" }}>*</span>
+                  </p>
+                  </div> */}
+
+<div>
+                <div>
+                  <input
+                    type="file"
+                    name="profilePicture"
+                    onBlur={formik.handleBlur}
+                    onChange={(event, newValue) => {
+                      formik.setFieldValue(
+                        "profilePicture",
+                        event.target.files[0]
+                      );
+                    }}
+                    style={{
+                      fontSize: "1.8rem",
+                      color: "#1a202c",
+                      padding: "0.75rem", // Adjust the padding to increase the size
+                      borderRadius: "0.375rem",
+                      cursor: "pointer",
+                      background: "transparent",
+                      outline: "none",
+                      border: "none",
+                    }}
+                  />
                 </div>
+
+                {formik.touched.profilePicture &&
+                  formik.errors.profilePicture && (
+                    <p
+                      style={{
+                        fontSize: "13px",
+                        padding: "0.75rem",
+                        color: "red",
+                      }}
+                    >
+                      {formik.errors.profilePicture}
+                    </p>
+                  )}
+                <p style={{ fontSize: "15px", padding: "0.75rem" }}>
+                  PNG, JPG, or JPEG (Must be a clear image).
+                  <span style={{ color: "red", fontSize: "1.8rem" }}>*</span>
+                </p>
+              </div>
+
+                </div>
+
+                
                 <div className={tabValue !== 3 ? "hidden" : ""}>
                   <TextField
                     label="Address Line"
