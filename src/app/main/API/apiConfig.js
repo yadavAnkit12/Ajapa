@@ -30,7 +30,8 @@ export const eventAPIConfig = {
     allEventList:key + '/event/all/list',
     checkEventRegistration: key + '/event/registration/family/event/list',
     myRegistration:key+'/event/registration',
-    registrationDelete: key +'/event/registration/delete'
+    registrationDelete: key +'/event/registration/delete',
+    fetchRegisterUserByEvent: key + '/event/registrations',
 }
 
 
@@ -38,6 +39,8 @@ export const eventAPIConfig = {
 
 
 export const foodAPIConfig = {
+    saveFood: key + '/saveFoodDetails',
+    getFoodCheck : key + '/getFoodDetail',
     getFoodDetails: key + '/getFoodDetails'
 }
 

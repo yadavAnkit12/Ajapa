@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import * as Yup from 'yup';
 import { showMessage } from "app/store/fuse/messageSlice";
 import { useDispatch } from "react-redux";
+import { foodAPIConfig } from "../../API/apiConfig";
 
 const validationSchema = Yup.object().shape({
     eventId: Yup.string().required('Event is required'),
@@ -34,7 +35,7 @@ const FoodForm = (props) => {
             formData.append('presentCount', values.presentCount)
             formData.append('totalCount', values.totalCount)
             formData.append('foodTakenCount', values.foodTakenCount)
-            axios.post(`http://18.212.201.202:8080/ajapa_yog-0.0.1-SNAPSHOT/saveFoodDetails`, formData, {
+            axios.post(foodAPIConfig.saveFood, formData, {
                 headers: {
                     'Content-type': 'multipart/form-data',
                     Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
@@ -80,7 +81,7 @@ const FoodForm = (props) => {
 
             } else {
                 const event = props.eventList.find((event) => event.eventName === formik.values.eventId).eventId
-                axios.get(`http://18.212.201.202:8080/ajapa_yog-0.0.1-SNAPSHOT/getFoodDetail/${event}/${formik.values.entryDate}/${formik.values.timings.split(' ')[0]}`, {
+                axios.get(`${foodAPIConfig.getFoodCheck}/${event}/${formik.values.entryDate}/${formik.values.timings.split(' ')[0]}`, {
                     headers: {
                         'Content-type': 'multipart/form-data',
                         Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,

@@ -84,18 +84,6 @@ export default function EventView(props) {
                             </div>
                             <hr />
 
-                            <div className="my-3 mx-4">
-                                <p className='font-bold inline'> Event Type: </p>
-                                <span className='font-semibold'> Conference</span>
-                            </div>
-                            <hr />
-
-
-                            <div className="my-3 mx-4">
-                                <p className='font-bold inline'>End Time: </p>
-                                <span className='font-semibold'> 10:00 AM</span>
-                            </div>
-                            <hr />
 
                             <div className="my-3 mx-4">
                                 <p className='font-bold inline'>Event Status: </p>

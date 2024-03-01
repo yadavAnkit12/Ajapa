@@ -33,13 +33,13 @@ import AddMembersFormHead from "./AddMembersFormHead";
 import { getLoggedInPartnerId } from "src/app/auth/services/utils/common";
 
 const phoneNumberCountryCodes = [
-  "+91 (IN)",
-  "+1 (US)",
-  "+44 (UK)",
-  "+33 (FR)",
-  "+49 (DE)",
-  "+81 (JP)",
-  // Add more country codes as needed
+    '+91',
+    '+1',
+    '+44',
+    '+33',
+    '+49',
+    '+81',
+    // Add more country codes as needed
 ];
 
 function AddMembersForm() {
@@ -88,15 +88,15 @@ function AddMembersForm() {
 
     countryCode: yup.string().required('select country code'),
     profilePicture: yup.mixed().nullable()
-        .test('fileType', 'Unsupported file type', (value) => {
-            if (!value) return true; // Allow null values
-            const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
-            return allowedTypes.includes(value.type);
-        })
-        .test("fileSize", "File size is too large (max 10MB)", (value) => {
-                if (!value) return true;
-                return value.size <= 10 * 1024 * 1024; // 10MB in bytes
-              }),
+      .test('fileType', 'Unsupported file type', (value) => {
+        if (!value) return true; // Allow null values
+        const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+        return allowedTypes.includes(value.type);
+      })
+      .test("fileSize", "File size is too large (max 10MB)", (value) => {
+        if (!value) return true;
+        return value.size <= 10 * 1024 * 1024; // 10MB in bytes
+      }),
     // profilePicture: yup
     //   .mixed()
     //   .test("fileType", "Unsupported file type", (value) => {
@@ -408,29 +408,32 @@ function AddMembersForm() {
     }
   };
 
-  // Function to handle DOB
-  const handleDobChange = (event) => {
-    const dob = new Date(event.target.value);
-    const today = new Date();
-    const age = today.getFullYear() - dob.getFullYear();
-    setShowCredentials(age > 15);
-  };
+// Function to handle DOB
+const handleDobChange = (event) => {
+  const dob = new Date(event.target.value);
+  const today = new Date();
+  const age = today.getFullYear() - dob.getFullYear();
+  setShowCredentials(age > 15);
+};
 
-  useEffect(() => {
-    if (!showCredentials) {
-      setEmailLabel("Email (optional)");
-      setMobileNum("Mobile Number (optional)");
-      setPassword("Password (optional)");
-      setConfirmPassword("Confirm Password (optional)");
-      setWhatsAppNumber("WhatsApp Number (optional)");
-    } else {
-      setEmailLabel("Email");
-      setMobileNum("Mobile Number");
-      setPassword("Password");
-      setConfirmPassword("Confirm Password");
-      setWhatsAppNumber("WhatsApp Number");
-    }
-  }, [showCredentials]);
+useEffect(() => {
+
+  if (!showCredentials) {
+
+      setEmailLabel('Email (optional)')
+      setMobileNum('Mobile Number (optional)')
+      setPassword('Password (optional)')
+      setConfirmPassword('Confirm Password (optional)')
+      setWhatsAppNumber('WhatsApp Number (optional)')
+  }
+  else {
+      setEmailLabel('Email');
+      setMobileNum('Mobile Number')
+      setPassword('Password')
+      setConfirmPassword('Confirm Password')
+      setWhatsAppNumber('WhatsApp Number')
+  }
+}, [showCredentials]);
 
   const formik = useFormik({
     initialValues: {
@@ -901,52 +904,52 @@ function AddMembersForm() {
                   </p>
                   </div> */}
 
-<div>
-                <div>
-                  <input
-                    type="file"
-                    name="profilePicture"
-                    onBlur={formik.handleBlur}
-                    onChange={(event, newValue) => {
-                      formik.setFieldValue(
-                        "profilePicture",
-                        event.target.files[0]
-                      );
-                    }}
-                    style={{
-                      fontSize: "1.8rem",
-                      color: "#1a202c",
-                      padding: "0.75rem", // Adjust the padding to increase the size
-                      borderRadius: "0.375rem",
-                      cursor: "pointer",
-                      background: "transparent",
-                      outline: "none",
-                      border: "none",
-                    }}
-                  />
-                </div>
+                  <div>
+                    <div>
+                      <input
+                        type="file"
+                        name="profilePicture"
+                        onBlur={formik.handleBlur}
+                        onChange={(event, newValue) => {
+                          formik.setFieldValue(
+                            "profilePicture",
+                            event.target.files[0]
+                          );
+                        }}
+                        style={{
+                          fontSize: "1.8rem",
+                          color: "#1a202c",
+                          padding: "0.75rem", // Adjust the padding to increase the size
+                          borderRadius: "0.375rem",
+                          cursor: "pointer",
+                          background: "transparent",
+                          outline: "none",
+                          border: "none",
+                        }}
+                      />
+                    </div>
 
-                {formik.touched.profilePicture &&
-                  formik.errors.profilePicture && (
-                    <p
-                      style={{
-                        fontSize: "13px",
-                        padding: "0.75rem",
-                        color: "red",
-                      }}
-                    >
-                      {formik.errors.profilePicture}
+                    {formik.touched.profilePicture &&
+                      formik.errors.profilePicture && (
+                        <p
+                          style={{
+                            fontSize: "13px",
+                            padding: "0.75rem",
+                            color: "red",
+                          }}
+                        >
+                          {formik.errors.profilePicture}
+                        </p>
+                      )}
+                    <p style={{ fontSize: "15px", padding: "0.75rem" }}>
+                      PNG, JPG, or JPEG (Must be a clear image).
+                      <span style={{ color: "red", fontSize: "1.8rem" }}>*</span>
                     </p>
-                  )}
-                <p style={{ fontSize: "15px", padding: "0.75rem" }}>
-                  PNG, JPG, or JPEG (Must be a clear image).
-                  <span style={{ color: "red", fontSize: "1.8rem" }}>*</span>
-                </p>
-              </div>
+                  </div>
 
                 </div>
 
-                
+
                 <div className={tabValue !== 3 ? "hidden" : ""}>
                   <TextField
                     label="Address Line"
