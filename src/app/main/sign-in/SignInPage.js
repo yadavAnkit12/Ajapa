@@ -44,7 +44,7 @@ const style = {
 
 const initialValues = {
   email: '',
-  countryCode: '+91',
+  countryCode: '',
   mobileNumber: '',
   password: '',
 };
@@ -72,6 +72,7 @@ function SignInPage() {
   const [recaptcha, setRecaptcha] = useState(null)
   const [showRecaptcha, setShowRecaptcha] = useState(true);
   const recaptchaRef = React.createRef();
+  const [showCheckBox, setShowBox] = useState(true)
 
 
   const handleOpenModal = () => {
@@ -87,6 +88,8 @@ function SignInPage() {
 
   const handleCheckboxOtp = () => {
     setPassword((prevShowPassword) => !prevShowPassword);
+    setShowOtpInput(false)
+    setOTPVerify(false)
   };
 
   // For Sending the Otp 
@@ -145,7 +148,7 @@ function SignInPage() {
         });
     }
     else {
-      recaptchaRef.current.reset();
+      recaptchaRef?.current?.reset();
       dispatch(showMessage({ message: "Fill all the details", variant: 'error' }));
     }
   }

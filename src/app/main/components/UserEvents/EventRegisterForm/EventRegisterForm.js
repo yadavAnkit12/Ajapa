@@ -202,9 +202,9 @@ const EventRegisterForm = () => {
                                                 <div style={{ display: 'flex', justifyContent: 'space-evenly', gap: '10px' }}>
                                                     <Button
                                                         // variant='contained'
-                                                        disabled={register.includes(person.id) || !isShivirAvailable?.data.bookingStatus}
+                                                        disabled={register.includes(person.id) || !isShivirAvailable?.data?.bookingStatus}
                                                         style={{
-                                                            backgroundColor: (register.includes(person.id) || !isShivirAvailable?.data.bookingStatus) ? '#d3d3d3' : 'green', color: 'white',
+                                                            backgroundColor: (register.includes(person.id) || !isShivirAvailable?.data?.bookingStatus) ? '#d3d3d3' : 'green', color: 'white',
                                                         }}
                                                         onClick={() => handleSave(person.id)}
                                                     >

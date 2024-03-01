@@ -118,7 +118,7 @@ function AllEventRegistrationTable(props) {
 
 
   const fetchData = () => {
-    console.log()
+    
     const params = {
       page: page + 1,
       rowsPerPage: rowsPerPage, // Example data to pass in req.query
@@ -138,7 +138,7 @@ function AllEventRegistrationTable(props) {
         setEventListData(response?.data);
         setLoading(false);
       } else {
-        dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
+        dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
       }
     });
   };
@@ -282,7 +282,7 @@ function AllEventRegistrationTable(props) {
         className="flex flex-1 items-center justify-center h-full"
       >
         <Typography color="text.secondary" variant="h5">
-          There are no Events!
+          There are no Registrations!
         </Typography>
       </motion.div>
     );

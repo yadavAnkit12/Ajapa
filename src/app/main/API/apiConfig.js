@@ -32,6 +32,15 @@ export const eventAPIConfig = {
     myRegistration:key+'/event/registration',
     registrationDelete: key +'/event/registration/delete',
     fetchRegisterUserByEvent: key + '/event/registrations',
+    sendRoomBookingStatus: key + '/bookingStatus/send' ,
+    saveOneAttendance: key + '/attendance/save/one',
+    eventReport:key + "/reportExcel/event/registration/list",
+    eventReportPdf:key + "/reportPDF/event/registration/list"
+}
+
+export const attendanceAPIConfig = {
+    attendanceReport: key + "/reportExcel/event/registrations",
+    attendancePdf: key + "/reportPdf/event/registrations"
 }
 
 

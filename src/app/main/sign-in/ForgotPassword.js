@@ -19,12 +19,12 @@ const validationSchema = Yup.object().shape({
 });
 
 const phoneNumberCountryCodes = [
-    '+91 (IN)',
-    '+1 (US)',
-    '+44 (UK)',
-    '+33 (FR)',
-    '+49 (DE)',
-    '+81 (JP)',
+    '+91',
+    '+1',
+    '+44',
+    '+33',
+    '+49',
+    '+81',
     // Add more country codes as needed
 ];
 

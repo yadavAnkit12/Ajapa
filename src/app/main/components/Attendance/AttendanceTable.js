@@ -41,12 +41,12 @@ const style = {
 
 
 function AttendanceTable(props) {
+  
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [eventListData, setEventListData] = useState([]);
   const searchText = props.searchText;
 
-  const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState([]);
   const tableRef = useRef(null)
   const [page, setPage] = useState(0);
@@ -62,14 +62,11 @@ function AttendanceTable(props) {
   const [viewid, setViewId] = useState("");
   const [change, setChange] = useState(false);
   const [open, setOpen] = useState(false)
-  const [deleteId, setDeleteId] = useState('')
-
-  //Registered UserList
-  const { usersList } = props
-  
-  const { setUsers } = props
-    
-  
+  const [loading, setLoading] = useState(true)
+  const [pageData, setPageData] = useState('')
+  //userList based on registrations
+  const [usersList,setUsers] = useState([])
+  const eventId = props.eventList?.find((event) => event.eventName === props.filterValue.eventName)?.eventId 
 
   useEffect(() => {
     fetchData();
@@ -105,23 +102,25 @@ function AttendanceTable(props) {
 
 
   const fetchData = () => {
-    
     const params = {
       page: page + 1,
       rowsPerPage: rowsPerPage, // Example data to pass in req.query
       eventId: props.eventList?.find((event) => event.eventName === props.filterValue.eventName)?.eventId || '',
     };
-    axios.get(eventAPIConfig.allEventRegistrationList, { params }, {
+    axios.get(`${eventAPIConfig.fetchRegisterUserByEvent}/${eventId}`, {params} , {
       headers: {
         'Content-type': 'multipart/form-data',
         Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
       },
     }).then((response) => {
       if (response.status === 200) {
-        setEventListData(response?.data);
-        setLoading(false);
+        // console.log("x",response)
+        setPageData(response?.data)
+        setUsers(response?.data?.users)
+        setLoading(false)
+        // props.setUsers(response?.data?.users);  //Update the parent component
       } else {
-        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
+        dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
       }
     });
   };
@@ -145,26 +144,7 @@ function AttendanceTable(props) {
     });
   }
 
-  // function getStatus(id, selectedValue) {
-
-  //   if (selectedValue === 'view') {
-  //     setOpenView(true)
-  //     setViewId(id)
-  //   }
-  //   else if (selectedValue === 'edit') {
-  //     navigate(`/app/eventRegisteration/${id}`)
-  //   }
-  //   // else if (selectedValue === 'delete') {
-  //   //   setDeleteId(id)
-  //   //   setOpen(true)
-
-  //   // }
-
-  // }
-
-  const handleClose = () => {
-    setOpen(false)
-  }
+  
 
   function handleSelectAllClick(event) {
     if (event.target.checked) {
@@ -176,11 +156,6 @@ function AttendanceTable(props) {
     }
     setSelected([]);
   }
-
-  function handleDeselect() {
-    setSelected([]);
-  }
-
 
   function handleChangePage(event, value) {
     event.preventDefault();
@@ -197,7 +172,7 @@ function AttendanceTable(props) {
   };
 
 
-  if (loading) {
+  if (loading ) {
     return (
       <div className="flex items-center justify-center h-full">
         <FuseLoading />
@@ -205,7 +180,7 @@ function AttendanceTable(props) {
     );
   }
 
-  if (!_.size(_.get(eventListData, 'data'))) {
+  if (_.isEmpty(usersList)) {
     return (
       <motion.div
         initial={{ opacity: 0 }}
@@ -213,36 +188,50 @@ function AttendanceTable(props) {
         className="flex flex-1 items-center justify-center h-full"
       >
         <Typography color="text.secondary" variant="h5">
-          There are no Data!
+          There is no Data!
         </Typography>
       </motion.div>
     );
   }
 
-//   useEffect(() => {
-//     // Initialize attendanceData based on props.usersList when component mounts
-//     setUsers(
-//         props.usersList.map((user) => ({
-//             user,
-//             present: false,
-//             hallNo: '',
-//         }))
-//     );
-// }, [props.usersList]);
 
   //CheckBox click
-  const handleToggle = (userId) => {
-    console.log('userId',userId)
+  const handleToggle = (userId,attendance) => {
     const updatedUserData = usersList.map((item) => {
         if (item.user.id === userId) {
-            return { ...item, present: !item.present };
+            return { ...item, present: !attendance };
         }
         return item;
     });
     setUsers(updatedUserData);
+
+   
+   const user = usersList.find((item) => item.user.id === userId);
+   const formData = new FormData();
+   formData.append('id', userId);
+   formData.append('eventId', eventId); 
+   formData.append('hallNo', user.hallNo);
+   formData.append('present', !attendance); 
+
+   axios.post(eventAPIConfig.saveOneAttendance, formData, {
+       headers: {
+           'Content-Type': 'multipart/form-data', 
+           'Authorization': `Bearer ${window.localStorage.getItem('jwt_access_token')}`
+       }
+   })
+   .then((response) => {
+       if(response.status === 200){
+        dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+       }else{
+        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
+       }
+   })
+   .catch((error) => {
+       console.error(error);
+   });
 };
 
-  //Change in HallNo
+  //Change in HallNo (textField)
   const handleHallNoChange = (event, userId) => {
     const { value } = event.target;
     const updatedUserData = usersList.map((item) => {
@@ -254,19 +243,35 @@ function AttendanceTable(props) {
     setUsers(updatedUserData);
 };
 
+  //Click on bell icon !!
+  const handleAttendance = (userid, hallNo, present) => {
+    const user = usersList.find(item => item.user.id === userid);
+    
+    if (user) {
+        const formattedData = new FormData();
+        formattedData.append('id', userid);
+        formattedData.append('eventId', eventId);
+        formattedData.append('hallNo', hallNo);
+        formattedData.append('present', present);
 
-const handleSave = () => {
-  const savedData = usersList.map((item) => ({
-      name: item.user.name,
-      email: item.user.email,
-      mobileNumber: item.user.mobileNumber,
-      dob: item.user.dob,
-      attendance: item.present,
-      accomodation: item.hallNo,
-  }));
+        axios.post(`${eventAPIConfig.sendRoomBookingStatus}`, formattedData, {
+            headers: {
+                'Content-type': 'multipart/form-data',
+                Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+            },
+        }).then((response) => {
+            if(response.status === 200){
+            dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+            }else{
+              dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
+            }
+        }).catch((error) => {
+            dispatch(showMessage({ message: "Something went wrong", variant: 'error' }));
+        });
+        
+    }
+};
 
-  console.log(savedData);
-}
 
 
   return (
@@ -283,22 +288,33 @@ const handleSave = () => {
         <TableBody>
           {
             usersList.map((user) => {
-              console.log("vv",user)
+              // console.log("vv",user)
               const isSelected = selected.indexOf(user.user.eventId) !== -1;
-              // const labelId = `enhanced-table-checkbox-${user.user.userId}`;
+              
               return (
                 <TableRow
-                  className="h-72 cursor-pointer"
+                  className="h-72 cursor-pointer "
                   hover
                   role="checkbox"
                   aria-checked={isSelected}
                   tabIndex={-1}
                   key={user.user._id}
                   selected={isSelected}
-                  style={{ cursor: 'default' }}
+                  style={{
+                    cursor: 'default',
+                    backgroundColor: user.specificRequirements ? '#ffeeba' : 'inherit',
+                    
+                  }}
                 >
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                    {user?.user?.familyId}
+                  </TableCell>
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {user?.user?.name}
+                  </TableCell>
+               
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                    {user?.user?.gender}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {user?.user?.email === '' ? 'N/A' : user?.user?.email }
@@ -309,23 +325,19 @@ const handleSave = () => {
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {user?.user?.mobileNumber === '' ? 'N/A' : user?.user?.mobileNumber }
                   </TableCell>
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                    {user?.specificRequirements === '' ? 'N/A' : user?.specificRequirements }
+                  </TableCell>
                   <TableCell className="p-4 md:p-16" align="center">
                     {/* <Checkbox
                        checked={user.present}
                        onChange={() => handleToggle(user.user.userId)}
                        inputProps={{ 'aria-labelledby': labelId }}
                       /> */}
-                      <Checkbox checked={user.present} onChange={() => handleToggle(user?.user?.id)} />
+                      <Checkbox checked={user.present} onChange={() => handleToggle(user?.user?.id,user.present)} />
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                  {/* <TextField
-                      id={`${user.user._id}`}
-                      defaultValue={user.hallNo}
-                      // value={hallNo} 
-                      variant="outlined"
-                      fullWidth
-                      onChange={(event) => event.target.value} 
-                  /> */}
+                  
                     <TextField
                         defaultValue={user.hallNo}
                         variant="outlined"
@@ -333,7 +345,8 @@ const handleSave = () => {
                         onChange={(event) => handleHallNoChange(event, user?.user?.id)}
                     />
                   </TableCell>
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                  <TableCell className="p-4 md:p-16" style={{cursor:'pointer'}}
+                  component="th" scope="row" align='center'  onClick={() => handleAttendance(user.user.id, user.hallNo, user.present)}>
                     <NotificationsIcon />
                   </TableCell>
             
@@ -348,9 +361,9 @@ const handleSave = () => {
       <TablePagination
         className="shrink-0 border-t-1"
         component="div"
-        count={eventListData.totalElement}
-        rowsPerPage={eventListData.rowPerPage}
-        page={eventListData.pageNumber - 1}
+        count={pageData.totalElement}
+        rowsPerPage={pageData.rowPerPage}
+        page={pageData.pageNumber - 1}
         backIconButtonProps={{
           'aria-label': 'Previous Page',
         }}

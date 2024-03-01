@@ -50,8 +50,6 @@ import FoodDetailsConfig from '../main/components/FoodDetails/FoodDetailsConfig'
 const routeConfigs = [SignOutConfig, SignInConfig,MyRegisterationConfig, AllEventRegistrationConfig, SignUpConfig, Error404PageConfig, AttendanceConfig,DashboardConfig,UserConfig,EventConfig,EmployeeManagementConfig, AddMembersConfig,UserEventConfig,ManageFamilyConfig,FoodConfig,FoodDetailsConfig,DoctorManagementConfig, PatientConfig, AppointmentsAppConfig,SMSConfig, HomeConfig, MembershipPlanConfig, transactionConfig, SubscriptionPlanConfig, CouponPlanConfig, BannerPlanConfig, CaseConfig, SymptomConfig, ProductConfig, OrderConfig, LabOrderConfig,SettingConfig,NewCaseConfig,AllCaseConfig,FinalCaseReportConfig,ClinicManagementConfig];
 
 
-
-
 const routes = [
   ...FuseUtils.generateRoutesFromConfigs(routeConfigs, settingsConfig.defaultAuth),
   {
