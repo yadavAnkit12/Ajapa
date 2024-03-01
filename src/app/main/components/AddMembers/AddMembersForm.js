@@ -3,18 +3,11 @@ import * as yup from "yup";
 import _ from "@lodash";
 import "react-phone-input-2/lib/style.css";
 import InputAdornment from "@mui/material/InputAdornment";
-import {
-  Autocomplete,
-  Checkbox,
-  FormControlLabel,
-  FormControl,
-  FormLabel,
-  FormGroup,
-} from "@mui/material";
+import { Autocomplete, Button, Checkbox, Dialog, DialogActions, DialogTitle, FormControl, FormControlLabel, FormGroup, FormLabel, Slide } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useDispatch } from "react-redux";
 import { showMessage } from "app/store/fuse/messageSlice";
@@ -31,16 +24,21 @@ import { userAPIConfig } from "src/app/main/API/apiConfig";
 import FuseLoading from "@fuse/core/FuseLoading";
 import AddMembersFormHead from "./AddMembersFormHead";
 import { getLoggedInPartnerId } from "src/app/auth/services/utils/common";
+import { CheckBox } from "@mui/icons-material";
 
 const phoneNumberCountryCodes = [
-  "+91 (IN)",
-  "+1 (US)",
-  "+44 (UK)",
-  "+33 (FR)",
-  "+49 (DE)",
-  "+81 (JP)",
+  '+91',
+  '+1',
+  '+44',
+  '+33',
+  '+49',
+  '+81',
   // Add more country codes as needed
 ];
+
+const Transition = forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 function AddMembersForm() {
   const dispatch = useDispatch();
@@ -57,59 +55,42 @@ function AddMembersForm() {
   const [cityID, setCityID] = useState("");
   const [userID, setUserID] = useState("");
   const [showCredentials, setShowCredentials] = useState(true);
-  const [emailLabel, setEmailLabel] = useState("Email");
-  const [mobileNum, setMobileNum] = useState("Mobile Number");
-  const [password, setPassword] = useState("Password");
-  const [confirmPassword, setConfirmPassword] = useState("Confirm Password");
-  const [whatsAppNumber, setWhatsAppNumber] = useState("WhatsApp Number");
+
+  const [isChild, setIsChild] = useState(false);
+  const [sameAs, setSameAs] = useState([]);
+  const [useMobileNumberForWhatsApp, setUseMobileNumberForWhatsApp] =
+    useState(false);
+  const [open, setOpen] = useState(false)
+
+  // Event handler for radio button or checkbox change
+  const handleWhatsAppOptionChange = (event) => {
+    setUseMobileNumberForWhatsApp(event.target.checked);
+  };
 
   const validationSchema = yup.object().shape({
-    name: yup
-      .string()
-      .max(100, "Full name should be less than 100 chars")
-      .required("Please enter your full name"),
-    email: yup
-      .string()
-      .email("Invalid email address")
-      .matches(
-        /^([A-Za-z0-9_\-\.])+\@(?!(?:[A-Za-z0-9_\-\.]+\.)?([A-Za-z]{2,4})\.\2)([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/,
-        "Invalid email"
-      ),
+    name: yup.string().max(100, 'Full name should be less than 100 chars').required('Please enter your full name'),
+    email: yup.string().email('Invalid email address')
+      .matches(/^([A-Za-z0-9_\-\.])+\@(?!(?:[A-Za-z0-9_\-\.]+\.)?([A-Za-z]{2,4})\.\2)([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/, 'Invalid email'),
     // .required('Please enter your email'),
     password: yup
       .string()
-      .min(4, "Password is too short - should be 4 chars minimum"),
+      .min(4, 'Password is too short - should be 4 chars minimum'),
     // .required('Please enter your password.'),
     passwordConfirm: yup
       .string()
-      .oneOf([yup.ref("password"), null], "Passwords must match"),
-    gender: yup.string().required("Please select your gender"),
-    dob: yup.date().required("Please enter your date of birth"),
+      .oneOf([yup.ref('password'), null], 'Passwords must match'),
+    gender: yup.string().required('Please select your gender'),
+    dob: yup.date().required('Please enter your date of birth'),
 
-    countryCode: yup.string().required('select country code'),
-    profilePicture: yup.mixed().nullable()
-        .test('fileType', 'Unsupported file type', (value) => {
-            if (!value) return true; // Allow null values
-            const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
-            return allowedTypes.includes(value.type);
-        })
-        .test("fileSize", "File size is too large (max 10MB)", (value) => {
-                if (!value) return true;
-                return value.size <= 10 * 1024 * 1024; // 10MB in bytes
-              }),
-    // profilePicture: yup
-    //   .mixed()
-    //   .test("fileType", "Unsupported file type", (value) => {
-    //     if (!value) return true;
-    //     const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
-    //     return allowedTypes.includes(value.type);
-    //   })
-    //   .test("fileSize", "File size is too large (max 10MB)", (value) => {
-    //     if (!value) return true;
-    //     return value.size <= 1 * 1024 * 1024; // 10MB in bytes
-    //   })
-    //   .required("Image is required"),
-
+    // countryCode: yup.string().required('select country code'),
+    profilePicture: yup
+      .mixed()
+      .nullable()
+      .test("fileType", "Unsupported file type", (value) => {
+        if (!value) return true; // Allow null values
+        const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+        return allowedTypes.includes(value.type);
+      }),
     mobileNumber: yup.string().matches(/^[1-9]\d{9}$/, "Invalid mobile number"),
     // .required('Please enter your mobile number'),
     country: yup.string().required("Please enter your country"),
@@ -123,8 +104,34 @@ function AddMembersForm() {
   });
 
   useEffect(() => {
+    axios
+      .get(`${userAPIConfig.getUserByFamily}`, {
+        headers: {
+          "Content-type": "multipart/form-data",
+          Authorization: `Bearer ${window.localStorage.getItem(
+            "jwt_access_token"
+          )}`,
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          // console.log("AJ", response?.data?.users);
+          setSameAs(response?.data?.users);
+        } else {
+          dispatch(
+            showMessage({
+              message: response.data.errorMessage,
+              variant: "error",
+            })
+          );
+        }
+      });
+  }, []);
+
+  useEffect(() => {
     formik.resetForm();
     setShowCredentials(true);
+    setIsChild(false)
   }, [routeParams]);
 
   useEffect(() => {
@@ -132,6 +139,7 @@ function AddMembersForm() {
     if (id === "new") {
     } else {
       setUserID(id);
+
       axios
         .get(`${userAPIConfig.getUserById}/${id}`, {
           headers: {
@@ -146,7 +154,17 @@ function AddMembersForm() {
               parseInt(response.data.user.dob.split("-")[0]);
 
             if (userAge < 15) {
-              setShowCredentials(false);
+              if (
+                response?.data?.user?.email !== "" ||
+                response.data.user.mobileNumber !== "" ||
+                response.data.user.password !== ""
+              ) {
+                setIsChild(true);
+                setShowCredentials(true);
+              } else {
+                setIsChild(true);
+                setShowCredentials(false);
+              }
             }
 
             formik.setValues({
@@ -230,9 +248,8 @@ function AddMembersForm() {
       });
   }, [stateID]);
 
-  const handleSubmit = (values) => {
-    console.log(formik);
 
+  const handleSubmit = (values) => {
     if (userID === "" && values.profilePicture === null) {
       dispatch(
         showMessage({
@@ -244,7 +261,7 @@ function AddMembersForm() {
       return;
     }
 
-    if (showCredentials) {
+    if (showCredentials && !isChild) {
       if (
         !values.email ||
         !values.password ||
@@ -261,17 +278,8 @@ function AddMembersForm() {
         return;
       }
     }
-    if (formik.values.isDisciple === "") {
-      return dispatch(
-        showMessage({
-          message: "Please indicate whether you are an Ajapa disciple or not",
-          variant: "error",
-        })
-      );
-    }
 
     if (formik.isValid) {
-      console.log(formik);
       const formattedData = new FormData();
 
       formattedData.append("familyId", sessionStorage.getItem("familyId"));
@@ -291,7 +299,12 @@ function AddMembersForm() {
       formattedData.append("occupation", values.occupation);
       formattedData.append("pinCode", values.pinCode);
       formattedData.append("qualification", values.qualification);
-      formattedData.append("whatsAppNumber", values.whatsAppNumber);
+      //   formattedData.append("whatsAppNumber", values.whatsAppNumber);
+      if (useMobileNumberForWhatsApp) {
+        formattedData.append("whatsAppNumber", `${values.mobileNumber}`);
+      } else {
+        formattedData.append("whatsAppNumber", values.whatsAppNumber);
+      }
       formattedData.append(
         "isDisciple",
         values.isDisciple === "Yes" ? true : false
@@ -414,23 +427,43 @@ function AddMembersForm() {
     const today = new Date();
     const age = today.getFullYear() - dob.getFullYear();
     setShowCredentials(age > 15);
+    if (age <= 15) {
+
+      setIsChild(true);
+    } else {
+      setIsChild(false);
+    }
   };
 
-  useEffect(() => {
-    if (!showCredentials) {
-      setEmailLabel("Email (optional)");
-      setMobileNum("Mobile Number (optional)");
-      setPassword("Password (optional)");
-      setConfirmPassword("Confirm Password (optional)");
-      setWhatsAppNumber("WhatsApp Number (optional)");
-    } else {
-      setEmailLabel("Email");
-      setMobileNum("Mobile Number");
-      setPassword("Password");
-      setConfirmPassword("Confirm Password");
-      setWhatsAppNumber("WhatsApp Number");
+  //Showing fields in case of child
+  const handleCheckBoxChange = () => {
+    setShowCredentials(!showCredentials);
+    if(showCredentials){
+      setShowCredentials(true)
+      setOpen(true)
     }
-  }, [showCredentials]);
+   
+  };
+
+  const clearFieldsForChild=()=>{
+        setShowCredentials(false)
+        formik.setValues({
+          ...formik.values,
+          email: "",
+          password: "",
+          passwordConfirm: "",
+          mobileNumber: "",
+          countryCode: "",
+          whatsAppNumber: "",
+        }); 
+        setOpen(false)
+
+  } 
+
+  const handleClose=()=>{
+    setShowCredentials(true)
+    setOpen(false)
+  }
 
   const formik = useFormik({
     initialValues: {
@@ -451,8 +484,7 @@ function AddMembersForm() {
       state: "",
       city: "",
       profilePicture: null,
-      // isDisciple: 'No',
-      isDisciple: "",
+      isDisciple: "No",
       addressLine: "",
       bloodGroup: "",
       dikshaDate: "",
@@ -464,6 +496,7 @@ function AddMembersForm() {
     validationSchema: validationSchema,
     onSubmit: handleSubmit,
   });
+
 
   function handleTabChange(event, value) {
     setTabValue(value);
@@ -514,92 +547,115 @@ function AddMembersForm() {
                     fullWidth
                   />
 
-                  <TextField
-                    name="dob"
-                    label="Date of Birth"
-                    type="date"
-                    InputLabelProps={{ shrink: true }}
-                    sx={{ mb: 2 }}
-                    className="max-w-md"
-                    onChange={(e) => {
-                      formik.handleChange(e);
-                      handleDobChange(e);
-                    }}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.dob}
-                    error={formik.touched.dob && Boolean(formik.errors.dob)}
-                    helperText={formik.touched.dob && formik.errors.dob}
-                    variant="outlined"
-                    required
-                    fullWidth
-                    inputProps={{
-                      max: new Date().toISOString().split("T")[0],
-                    }}
-                  />
-
-                  <TextField
-                    sx={{ mb: 2 }}
-                    className="max-w-md"
-                    name="email"
-                    label={emailLabel}
-                    type="email"
-                    value={formik.values.email}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.email && Boolean(formik.errors.email)}
-                    helperText={formik.touched.email && formik.errors.email}
-                    variant="outlined"
-                    required
-                    fullWidth
-                  />
-
-                  <div className="d-flex max-w-md">
-                    <Autocomplete
-                      options={phoneNumberCountryCodes}
-                      value={formik.values.countryCode}
-                      onChange={(event, newValue) => {
-                        formik.setFieldValue("countryCode", newValue);
-                      }}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Code"
-                          variant="outlined"
-                          sx={{ mb: 2 }}
-                          required
-                          error={
-                            formik.touched.countryCode &&
-                            Boolean(formik.errors.countryCode)
-                          }
-                          helperText={
-                            formik.touched.countryCode &&
-                            formik.errors.countryCode
-                          }
-                        />
-                      )}
-                    />
-
+                  <div style={{ display: "flex", flexDirection: "column" }}>
                     <TextField
-                      name="mobileNumber"
-                      label={mobileNum}
-                      type="number"
-                      onChange={formik.handleChange}
+                      name="dob"
+                      label="Date of Birth"
+                      type="date"
+                      InputLabelProps={{ shrink: true }}
+                      sx={{ mb: 2 }}
+                      className="max-w-md"
+                      onChange={(e) => {
+                        formik.handleChange(e);
+                        handleDobChange(e);
+                      }}
                       onBlur={formik.handleBlur}
-                      value={formik.values.mobileNumber}
-                      error={
-                        formik.touched.mobileNumber &&
-                        Boolean(formik.errors.mobileNumber)
-                      }
-                      helperText={
-                        formik.touched.mobileNumber &&
-                        formik.errors.mobileNumber
-                      }
+                      value={formik.values.dob}
+                      error={formik.touched.dob && Boolean(formik.errors.dob)}
+                      helperText={formik.touched.dob && formik.errors.dob}
                       variant="outlined"
                       required
                       fullWidth
-                      sx={{ mb: 2 }}
+                      inputProps={{
+                        max: new Date().toISOString().split("T")[0],
+                      }}
                     />
+
+                    {isChild && (
+                      <div style={{ marginBottom: "16px" }}>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={showCredentials}
+                              onChange={handleCheckBoxChange}
+                              color="primary"
+                            />
+                          }
+                          label="Complete the following fields: Email, Phone Number, and Password?"
+                        />
+                      </div>
+                    )}
                   </div>
+
+                  {showCredentials && (
+                    <TextField
+                      sx={{ mb: 2 }}
+                      className="max-w-md"
+                      name="email"
+                      label="Email"
+                      type="email"
+                      value={formik.values.email}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      error={
+                        formik.touched.email && Boolean(formik.errors.email)
+                      }
+                      helperText={formik.touched.email && formik.errors.email}
+                      variant="outlined"
+                      required
+                      fullWidth
+                    />
+                  )}
+
+                  {showCredentials && (
+                    <div className="d-flex max-w-md">
+                      <Autocomplete
+                        options={phoneNumberCountryCodes}
+                        value={formik.values.countryCode}
+                        onChange={(event, newValue) => {
+                          formik.setFieldValue("countryCode", newValue);
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Code"
+                            variant="outlined"
+                            sx={{ mb: 2 }}
+                            required
+                            error={
+                              formik.touched.countryCode &&
+                              Boolean(formik.errors.countryCode)
+                            }
+                            helperText={
+                              formik.touched.countryCode &&
+                              formik.errors.countryCode
+                            }
+                          />
+                        )}
+                      />
+
+                      <TextField
+                        name="mobileNumber"
+                        label="Mobile Number"
+                        type="number"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.mobileNumber}
+                        error={
+                          formik.touched.mobileNumber &&
+                          Boolean(formik.errors.mobileNumber)
+                        }
+                        helperText={
+                          formik.touched.mobileNumber &&
+                          formik.errors.mobileNumber
+                        }
+                        variant="outlined"
+                        required
+                        fullWidth
+                        sx={{ mb: 2 }}
+                      />
+                    </div>
+                  )}
 
                   <Autocomplete
                     options={["Male", "Female", "Others"]}
@@ -627,6 +683,7 @@ function AddMembersForm() {
                     )}
                   />
                 </div>
+
                 <div className={tabValue !== 1 ? "hidden" : ""}>
                   <TextField
                     label="Pin Code"
@@ -643,6 +700,56 @@ function AddMembersForm() {
                     helperText={formik.touched.pinCode && formik.errors.pinCode}
                     variant="outlined"
                     fullWidth
+                  />
+
+                  <Autocomplete
+                    options={
+                      sameAs.length > 0 ? sameAs.map((user) => user.name) : []
+                    }
+                    fullWidth
+                    value={formik.values.user}
+                    onChange={(event, newValue) => {
+                      formik.setFieldValue("sameAs", newValue);
+                      // Update country, city, and state based on the selected user
+                      const selectedUser = sameAs.find(
+                        (user) => user.name === newValue
+                      );
+                      if (selectedUser) {
+                        // Update country
+                        const selectedCountry =
+                          selectedUser.country.split(":")[1];
+                        const countryID = selectedUser.country.split(":")[0];
+                        setCountryID(countryID);
+                        formik.setFieldValue("country", selectedCountry);
+
+                        // Update state
+                        const selectedState = selectedUser.state.split(":")[1];
+                        const stateID = selectedUser.state.split(":")[0];
+                        setStateID(stateID);
+                        formik.setFieldValue("state", selectedState);
+
+                        // Update city
+                        const selectedCity = selectedUser.city.split(":")[1];
+                        const cityID = selectedUser.city.split(":")[0];
+                        setCityID(cityID);
+                        formik.setFieldValue("city", selectedCity);
+
+                        formik.setFieldValue(
+                          "addressLine",
+                          selectedUser?.addressLine
+                        );
+                      }
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Address Same As"
+                        name="sameAs"
+                        variant="outlined"
+                        sx={{ mb: 2 }}
+                        className="max-w-md"
+                      />
+                    )}
                   />
 
                   <Autocomplete
@@ -742,79 +849,84 @@ function AddMembersForm() {
                 </div>
 
                 <div className={tabValue !== 2 ? "hidden" : ""}>
-                  <TextField
-                    name="password"
-                    label={password}
-                    sx={{ mb: 2 }}
-                    className="max-w-md"
-                    type={showPassword ? "text" : "password"}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.password}
-                    error={
-                      formik.touched.password && Boolean(formik.errors.password)
-                    }
-                    helperText={
-                      formik.touched.password && formik.errors.password
-                    }
-                    variant="outlined"
-                    required
-                    fullWidth
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            onClick={() => setShowPassword(!showPassword)}
-                            edge="end"
-                          >
-                            {showPassword ? (
-                              <VisibilityIcon />
-                            ) : (
-                              <VisibilityOffIcon />
-                            )}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
+                  {showCredentials && (
+                    <>
+                      <TextField
+                        name="password"
+                        label="Password"
+                        sx={{ mb: 2 }}
+                        className="max-w-md"
+                        type={showPassword ? "text" : "password"}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.password}
+                        error={
+                          formik.touched.password &&
+                          Boolean(formik.errors.password)
+                        }
+                        helperText={
+                          formik.touched.password && formik.errors.password
+                        }
+                        variant="outlined"
+                        required
+                        fullWidth
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                onClick={() => setShowPassword(!showPassword)}
+                                edge="end"
+                              >
+                                {showPassword ? (
+                                  <VisibilityIcon />
+                                ) : (
+                                  <VisibilityOffIcon />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
 
-                  <TextField
-                    sx={{ mb: 2 }}
-                    className="max-w-md"
-                    name="passwordConfirm"
-                    label={confirmPassword}
-                    type={showPassword ? "text" : "password"}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.passwordConfirm}
-                    error={
-                      formik.touched.passwordConfirm &&
-                      Boolean(formik.errors.passwordConfirm)
-                    }
-                    helperText={
-                      formik.touched.passwordConfirm &&
-                      formik.errors.passwordConfirm
-                    }
-                    variant="outlined"
-                    required
-                    fullWidth
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            onClick={() => setShowPassword(!showPassword)}
-                            edge="end"
-                          >
-                            {showPassword ? (
-                              <VisibilityIcon />
-                            ) : (
-                              <VisibilityOffIcon />
-                            )}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
+                      <TextField
+                        sx={{ mb: 2 }}
+                        className="max-w-md"
+                        name="passwordConfirm"
+                        label="Confirm Password"
+                        type={showPassword ? "text" : "password"}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.passwordConfirm}
+                        error={
+                          formik.touched.passwordConfirm &&
+                          Boolean(formik.errors.passwordConfirm)
+                        }
+                        helperText={
+                          formik.touched.passwordConfirm &&
+                          formik.errors.passwordConfirm
+                        }
+                        variant="outlined"
+                        required
+                        fullWidth
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                onClick={() => setShowPassword(!showPassword)}
+                                edge="end"
+                              >
+                                {showPassword ? (
+                                  <VisibilityIcon />
+                                ) : (
+                                  <VisibilityOffIcon />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    </>
+                  )}
 
                   <div style={{ marginBottom: "16px" }}>
                     {/* <FormControlLabel
@@ -901,52 +1013,52 @@ function AddMembersForm() {
                   </p>
                   </div> */}
 
-<div>
-                <div>
-                  <input
-                    type="file"
-                    name="profilePicture"
-                    onBlur={formik.handleBlur}
-                    onChange={(event, newValue) => {
-                      formik.setFieldValue(
-                        "profilePicture",
-                        event.target.files[0]
-                      );
-                    }}
-                    style={{
-                      fontSize: "1.8rem",
-                      color: "#1a202c",
-                      padding: "0.75rem", // Adjust the padding to increase the size
-                      borderRadius: "0.375rem",
-                      cursor: "pointer",
-                      background: "transparent",
-                      outline: "none",
-                      border: "none",
-                    }}
-                  />
-                </div>
+                  <div>
+                    <div>
+                      <input
+                        type="file"
+                        name="profilePicture"
+                        onBlur={formik.handleBlur}
+                        onChange={(event, newValue) => {
+                          formik.setFieldValue(
+                            "profilePicture",
+                            event.target.files[0]
+                          );
+                        }}
+                        style={{
+                          fontSize: "1.8rem",
+                          color: "#1a202c",
+                          padding: "0.75rem", // Adjust the padding to increase the size
+                          borderRadius: "0.375rem",
+                          cursor: "pointer",
+                          background: "transparent",
+                          outline: "none",
+                          border: "none",
+                        }}
+                      />
+                    </div>
 
-                {formik.touched.profilePicture &&
-                  formik.errors.profilePicture && (
-                    <p
-                      style={{
-                        fontSize: "13px",
-                        padding: "0.75rem",
-                        color: "red",
-                      }}
-                    >
-                      {formik.errors.profilePicture}
+                    {formik.touched.profilePicture &&
+                      formik.errors.profilePicture && (
+                        <p
+                          style={{
+                            fontSize: "13px",
+                            padding: "0.75rem",
+                            color: "red",
+                          }}
+                        >
+                          {formik.errors.profilePicture}
+                        </p>
+                      )}
+                    <p style={{ fontSize: "15px", padding: "0.75rem" }}>
+                      PNG, JPG, or JPEG (Must be a clear image).
+                      <span style={{ color: "red", fontSize: "1.8rem" }}>*</span>
                     </p>
-                  )}
-                <p style={{ fontSize: "15px", padding: "0.75rem" }}>
-                  PNG, JPG, or JPEG (Must be a clear image).
-                  <span style={{ color: "red", fontSize: "1.8rem" }}>*</span>
-                </p>
-              </div>
+                  </div>
 
                 </div>
 
-                
+
                 <div className={tabValue !== 3 ? "hidden" : ""}>
                   <TextField
                     label="Address Line"
@@ -1054,28 +1166,64 @@ function AddMembersForm() {
                     fullWidth
                   />
 
-                  <TextField
-                    label={whatsAppNumber}
-                    sx={{ mb: 2 }}
-                    className="max-w-md"
-                    name="whatsAppNumber"
-                    type="text"
-                    value={formik.values.whatsAppNumber}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={
-                      formik.touched.whatsAppNumber &&
-                      Boolean(formik.errors.whatsAppNumber)
-                    }
-                    helperText={
-                      formik.touched.whatsAppNumber &&
-                      formik.errors.whatsAppNumber
-                    }
-                    variant="outlined"
-                    fullWidth
-                  />
+                  {showCredentials && (
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                      <div style={{ marginBottom: "16px" }}>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={useMobileNumberForWhatsApp}
+                              onChange={handleWhatsAppOptionChange}
+                              color="primary"
+                            />
+                          }
+                          label="Use Mobile Number for WhatsApp"
+                        />
+                      </div>
+                      <TextField
+                        label="WhatsApp Number"
+                        name="whatsAppNumber"
+                        sx={{ marginBottom: 2 }}
+                        className="max-w-md"
+                        type="text"
+                        value={
+                          useMobileNumberForWhatsApp
+                            ? formik.values.mobileNumber
+                            : formik.values.whatsAppNumber
+                        }
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={
+                          formik.touched.whatsAppNumber &&
+                          Boolean(formik.errors.whatsAppNumber)
+                        }
+                        helperText={
+                          formik.touched.whatsAppNumber &&
+                          formik.errors.whatsAppNumber
+                        }
+                        variant="outlined"
+                        fullWidth
+                      />
+                    </div>
+                  )}
                 </div>
               </form>
+              <Dialog
+                open={open}
+                TransitionComponent={Transition}
+                keepMounted
+                onClose={() => setOpen(false)}
+                aria-describedby="alert-dialog-slide-description"
+              >
+                <DialogTitle>{"Do you want to clear the fields"}</DialogTitle>
+
+                <DialogActions>
+                  <Button onClick={() => handleClose()}>No</Button>
+                  <Button onClick={()=>clearFieldsForChild()} autoFocus>
+                    Yes
+                  </Button>
+                </DialogActions>
+              </Dialog>
             </div>
           </>
         }

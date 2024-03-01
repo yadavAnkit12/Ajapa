@@ -2,8 +2,9 @@ import TextField from '@mui/material/TextField';
 import * as yup from 'yup';
 import _ from '@lodash';
 import 'react-phone-input-2/lib/style.css'
-import { Autocomplete, Card, Checkbox, FormControlLabel, Button, FormControl, FormLabel, FormGroup } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { Autocomplete, Card, Checkbox, FormControlLabel, Button, FormControl, 
+    FormLabel, FormGroup, Dialog, DialogTitle, DialogActions, Slide } from '@mui/material';
+import { useEffect, useState,forwardRef } from 'react';
 import { useFormik } from 'formik';
 import { useDispatch } from 'react-redux';
 import { showMessage } from 'app/store/fuse/messageSlice';
@@ -14,15 +15,18 @@ import { useNavigate } from 'react-router-dom';
 import { eventAPIConfig, userAPIConfig } from "src/app/main/API/apiConfig";
 import { values } from 'lodash';
 
+const Transition = forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
+
 
 
 const EventForm = (props) => {
-    console.log(props.person.id)
+    // console.log(props.person)
     const dispatch = useDispatch()
     const shivirHai = props.isShivirAvailable.data.shivirAvailable
     const lockarrivaldate = props.isShivirAvailable.data.lockArrivalDate
     const lockdeparturedetail = props.isShivirAvailable.data.lockDepartureDate
-    // console.log(lockdeparturedetail,"hnn",lockarrivaldate)
     const eventDate = props.eventDate
     const [countryList, setCountryList] = useState([])
     const [countryID, setCountryID] = useState('')
@@ -33,22 +37,21 @@ const EventForm = (props) => {
     const [shivirCheckBox, setshivirCheckBox] = useState(false)
     const [arrModeOfTransport, setArrModeOfTransport] = useState(false)
     const [depModeOfTransport, setDepModeOfTransport] = useState(false)
+    const [open, setOpen] = useState(false)
 
 
     useEffect(() => {
-        console.log('unde',props)
         formik.resetForm()
     }, [props.person.id])
+    
+
+
     useEffect(() => {
         if (shivirHai === true) {
             setshivirCheckBox(true)
         }
     }, [])
 
-
-
-
-    
 
 
     const validationSchema = yup.object().shape({
@@ -59,21 +62,43 @@ const EventForm = (props) => {
         arrivalTime: yup.string().required('Please select arrival time'),
         arrivalModeOfTransport: yup.string().required('Please select arrival mode of transport'),
         arrivalTrainNumber: yup.string()
-            .matches(/^[0-9]{6}$/, 'Train number must be exactly 6 digits'),
+            .matches(/^[0-9]{5}$/, 'Train number must be exactly 5 digits'),
         departureDate: yup.string().required('Please select departure date'),
         departureTime: yup.string().required('Please select departure time'),
         departureModeOfTransport: yup.string().required('Please select departure mode of transport'),
         departureTrainNumber: yup.string()
-            .matches(/^[0-9]{6}$/, 'Train number must be exactly 6 digits'),
-        specificRequirements: yup.string(),
+            .matches(/^[0-9]{5}$/, 'Train number must be exactly 5 digits'),
+        specificRequirements: yup.string()
+            .max(160, "Message can have atmost 160 characters."),
         attendingShivir: yup.boolean(),
     });
 
+    //Default Country,City,State
+    useEffect(() => {
+        if (props.person) {
+
+            formik.setValues({
+ 
+                fromCity: props.person.city.split(":")[1] || '',
+                fromState: props.person.state.split(":")[1] || '',
+                fromCountry: props.person.country.split(":")[1] || '',
+                
+            })
+            setCountryID(props.person.country.split(':')[0])
+            setStateID(props.person.state.split(':')[0])
+            setCityID(props.person.city.split(':')[0])
+
+
+        }
+
+    }, [props.person])
+    
 
     useEffect(() => {
         if (props.registerUser) {
 
             formik.setValues({
+                
                 registrationId: props.registerUser.registrationId || '',
                 eventId: props.registerUser.eventId || '',
                 userId: props.registerUser.userId || '',
@@ -177,8 +202,8 @@ const EventForm = (props) => {
         } else {
             formData.append('departureTrainNumber', formik.values.departureTrainNumber);
         }
-        formData.append('specificRequirements', formik.values.specificRequirements)
-        // formData.append('attendingShivir', formik.values.attendingShivir )
+        formData.append('specificRequirements', formik.values.specificRequirements || '')
+
         if(shivirCheckBox){
             formData.append('attendingShivir', formik.values.attendingShivir )
         }else{
@@ -252,6 +277,15 @@ const EventForm = (props) => {
         validationSchema: validationSchema,
         onSubmit: handleSubmit,
     });
+
+    const handleClose = () => {
+        setOpen(false)
+    }
+
+    const openDialog = () => {
+        setOpen(true)
+    }
+
     const closeForm = () => {
         formik.resetForm()
         props.handleClose()
@@ -595,8 +629,10 @@ const EventForm = (props) => {
                             }
                             <div>
                                 <TextField
-                                    label="Specific Requirements"
+                                    label="Do You Have Any Specific Requirements "
                                     name="specificRequirements"
+                                    InputLabelProps={{ shrink: true }}
+                                    placeholder='Max 160 Characters'
                                     variant="outlined"
                                     sx={{ mb: 2, mt: 2, width: '100%' }}
                                     className="max-w-md"
@@ -638,9 +674,25 @@ const EventForm = (props) => {
 
                 <div style={{ float: 'right', padding: '10px' }}>
 
-                    <Button variant="outlined" onClick={closeForm}>Close</Button>
+                    <Button variant="outlined" onClick={openDialog}>Close</Button>
                     <Button variant="outlined" type='submit'>Save</Button>
                 </div>
+                       <Dialog
+                            open={open}
+                            TransitionComponent={Transition}
+                            keepMounted
+                            onClose={handleClose}
+                            aria-describedby="alert-dialog-slide-description"
+                        >
+                            <DialogTitle>{`Do you want to close this form ?`}</DialogTitle>
+
+                            <DialogActions>
+                                <Button onClick={handleClose}>No</Button>
+                                <Button onClick={closeForm} autoFocus>
+                                    Yes
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
 
             </form>
         </Card>

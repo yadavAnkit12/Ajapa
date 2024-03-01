@@ -165,7 +165,7 @@ function UserTable(props) {
       page: page + 1,
       rowsPerPage: rowsPerPage, // Example data to pass in req.query
       searchText: searchText,
-      status: _.get(props, 'filterValue') === '' ? 'Approved' : _.get(props, 'filterValue.status'),
+      status: _.get(props, 'filterValue') === '' ? 'Approved' : _.get(props, 'filterValue.status')==='' ?'Approved': _.get(props, 'filterValue.status')===null? 'Approved': _.get(props, 'filterValue.status'),
       country: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.country') === '' ? 'All' : _.get(props, 'filterValue.country'),
       state: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.state') === '' ? 'All' : _.get(props, 'filterValue.state'),
       city: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.city') === '' ? 'All' : _.get(props, 'filterValue.city'),
@@ -392,7 +392,7 @@ function UserTable(props) {
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.dob}
                   </TableCell>
-                  <TableCell
+                  {/* <TableCell
                     className="p-4 md:p-16"
                     component="th"
                     scope="row"
@@ -400,7 +400,7 @@ function UserTable(props) {
                     style={{ fontWeight: 'bold', color: getStatusColor(n.status) }}
                   >
                     {n.status}
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     <PopupState variant="popover" popupId="demo-popup-menu">
                       {(popupState) => (

@@ -1,10 +1,11 @@
+
 import withRouter from '@fuse/core/withRouter';
 import FuseLoading from '@fuse/core/FuseLoading';
 import _ from '@lodash';
 import EditIcon from '@mui/icons-material/Edit';
 import PersonIcon from '@mui/icons-material/Person';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import { Modal, Table, TableBody, TableCell, TablePagination, TableRow, Typography, IconButton, Box, Button, MenuItem, Menu, Dialog, DialogTitle, DialogActions, Slide, Switch } from '@mui/material';
+import { Modal, Table, TableBody, TableCell, TablePagination, TableRow, Typography, IconButton, Box, Button, MenuItem, Menu, Dialog, DialogTitle, DialogActions, Slide, Switch, FormControlLabel, Checkbox, TextField } from '@mui/material';
 import axios from 'axios';
 import { color, motion } from 'framer-motion';
 import { useEffect, useState, useRef, forwardRef } from 'react';
@@ -13,8 +14,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 import { eventAPIConfig } from '../../API/apiConfig';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
-import AllEventRegistrationTableHead from './AllEventRegistraionTableHead';
 import EventView from '../MyRegistration/EventView';
+import AttendanceTableHead from './AttendanceTableHead';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import { values } from 'lodash';
+
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -34,39 +38,15 @@ const style = {
   overflow: 'auto',
 };
 
-const menuItemArray = [
-  {
-    key: 1,
-    label: 'View',
-    status: 'view',
-    // visibleIf: ['complete', 'active', 'inactive'],
-    loadIf: true
-  },
-  {
-    key: 1,
-    label: 'Edit',
-    status: 'edit',
-    // visibleIf: ['complete', 'active', 'inactive'],
-    loadIf: true
-  },
-  // {
-  //   key: 1,
-  //   label: 'Delete',
-  //   status: 'delete',
-  //   // visibleIf: ['complete', 'active', 'inactive'],
-  //   loadIf: true
-  // },
-]
 
 
-function AllEventRegistrationTable(props) {
-  // console.log(props)
+function AttendanceTable(props) {
+  
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [eventListData, setEventListData] = useState([]);
   const searchText = props.searchText;
 
-  const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState([]);
   const tableRef = useRef(null)
   const [page, setPage] = useState(0);
@@ -82,7 +62,11 @@ function AllEventRegistrationTable(props) {
   const [viewid, setViewId] = useState("");
   const [change, setChange] = useState(false);
   const [open, setOpen] = useState(false)
-  const [deleteId, setDeleteId] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [pageData, setPageData] = useState('')
+  //userList based on registrations
+  const [usersList,setUsers] = useState([])
+  const eventId = props.eventList?.find((event) => event.eventName === props.filterValue.eventName)?.eventId 
 
   useEffect(() => {
     fetchData();
@@ -118,25 +102,23 @@ function AllEventRegistrationTable(props) {
 
 
   const fetchData = () => {
-    
     const params = {
       page: page + 1,
       rowsPerPage: rowsPerPage, // Example data to pass in req.query
       eventId: props.eventList?.find((event) => event.eventName === props.filterValue.eventName)?.eventId || '',
-      //   eventStatus: (_.get(props, 'filterValue.eventStatus') === 'Active' || _.get(props, 'filterValue') === '') ? true : false,
-      //   bookingStatus: (_.get(props, 'filterValue.bookingStatus') === 'On' || _.get(props, 'filterValue') === '') ? true : false,
     };
-    axios.get(eventAPIConfig.allEventRegistrationList, { params }, {
+    axios.get(`${eventAPIConfig.fetchRegisterUserByEvent}/${eventId}`, {params} , {
       headers: {
         'Content-type': 'multipart/form-data',
         Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
       },
     }).then((response) => {
       if (response.status === 200) {
-        console.log(response)
-        //
-        setEventListData(response?.data);
-        setLoading(false);
+        // console.log("x",response)
+        setPageData(response?.data)
+        setUsers(response?.data?.users)
+        setLoading(false)
+        // props.setUsers(response?.data?.users);  //Update the parent component
       } else {
         dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
       }
@@ -162,78 +144,7 @@ function AllEventRegistrationTable(props) {
     });
   }
 
-  function getStatus(id, selectedValue) {
-
-    if (selectedValue === 'view') {
-      setOpenView(true)
-      setViewId(id)
-    }
-    else if (selectedValue === 'edit') {
-      navigate(`/app/eventRegisteration/${id}`)
-    }
-    // else if (selectedValue === 'delete') {
-    //   setDeleteId(id)
-    //   setOpen(true)
-
-    // }
-
-  }
-
-  const handleClose = () => {
-    setOpen(false)
-  }
-
-  //deleting the event
-  // const deleteEvent = () => {
-  //   axios.post(`${eventAPIConfig.delete}/${deleteId}`, {
-  //     headers: {
-  //       'Content-type': 'multipart/form-data',
-  //       Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-  //     },
-  //   }).then((response) => {
-  //     if (response.status === 200) {
-  //       dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-  //     } else {
-  //       dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
-  //     }
-  //   }).catch((error) => console.log(error))
-  // }
-
-  //chnaging the booking status
-  const handleChnangeBookingStatus = (id, status) => {
-    axios.post(`${eventAPIConfig.changeBookingStatus}/${id}/${!status}`, {
-      headers: {
-        'Content-type': 'multipart/form-data',
-        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-      },
-    }).then((response) => {
-      if (response.status === 200) {
-        fetchData()
-        dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-
-      } else {
-        dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
-      }
-    }).catch((error) => console.log(error))
-
-  }
-  //chnaging the event status
-  const handleChangeEventStatus = (id, status) => {
-    axios.post(`${eventAPIConfig.changeEventStatus}/${id}/${!status}`, {
-      headers: {
-        'Content-type': 'multipart/form-data',
-        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-      },
-    }).then((response) => {
-      if (response.status === 200) {
-        fetchData()
-        dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-      } else {
-        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
-      }
-    }).catch((error) => console.log(error))
-
-  }
+  
 
   function handleSelectAllClick(event) {
     if (event.target.checked) {
@@ -245,11 +156,6 @@ function AllEventRegistrationTable(props) {
     }
     setSelected([]);
   }
-
-  function handleDeselect() {
-    setSelected([]);
-  }
-
 
   function handleChangePage(event, value) {
     event.preventDefault();
@@ -266,7 +172,7 @@ function AllEventRegistrationTable(props) {
   };
 
 
-  if (loading) {
+  if (loading ) {
     return (
       <div className="flex items-center justify-center h-full">
         <FuseLoading />
@@ -274,7 +180,7 @@ function AllEventRegistrationTable(props) {
     );
   }
 
-  if (!_.size(_.get(eventListData, 'data'))) {
+  if (_.isEmpty(usersList)) {
     return (
       <motion.div
         initial={{ opacity: 0 }}
@@ -282,86 +188,168 @@ function AllEventRegistrationTable(props) {
         className="flex flex-1 items-center justify-center h-full"
       >
         <Typography color="text.secondary" variant="h5">
-          There are no Registrations!
+          There is no Data!
         </Typography>
       </motion.div>
     );
   }
 
+
+  //CheckBox click
+  const handleToggle = (userId,attendance) => {
+    const updatedUserData = usersList.map((item) => {
+        if (item.user.id === userId) {
+            return { ...item, present: !attendance };
+        }
+        return item;
+    });
+    setUsers(updatedUserData);
+
+   
+   const user = usersList.find((item) => item.user.id === userId);
+   const formData = new FormData();
+   formData.append('id', userId);
+   formData.append('eventId', eventId); 
+   formData.append('hallNo', user.hallNo);
+   formData.append('present', !attendance); 
+
+   axios.post(eventAPIConfig.saveOneAttendance, formData, {
+       headers: {
+           'Content-Type': 'multipart/form-data', 
+           'Authorization': `Bearer ${window.localStorage.getItem('jwt_access_token')}`
+       }
+   })
+   .then((response) => {
+       if(response.status === 200){
+        dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+       }else{
+        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
+       }
+   })
+   .catch((error) => {
+       console.error(error);
+   });
+};
+
+  //Change in HallNo (textField)
+  const handleHallNoChange = (event, userId) => {
+    const { value } = event.target;
+    const updatedUserData = usersList.map((item) => {
+        if (item.user.id === userId) {
+            return { ...item, hallNo: value };
+        }
+        return item;
+    });
+    setUsers(updatedUserData);
+};
+
+  //Click on bell icon !!
+  const handleAttendance = (userid, hallNo, present) => {
+    const user = usersList.find(item => item.user.id === userid);
+    
+    if (user) {
+        const formattedData = new FormData();
+        formattedData.append('id', userid);
+        formattedData.append('eventId', eventId);
+        formattedData.append('hallNo', hallNo);
+        formattedData.append('present', present);
+
+        axios.post(`${eventAPIConfig.sendRoomBookingStatus}`, formattedData, {
+            headers: {
+                'Content-type': 'multipart/form-data',
+                Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+            },
+        }).then((response) => {
+            if(response.status === 200){
+            dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+            }else{
+              dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
+            }
+        }).catch((error) => {
+            dispatch(showMessage({ message: "Something went wrong", variant: 'error' }));
+        });
+        
+    }
+};
+
+
+
   return (
     <div className="w-full flex flex-col min-h-full" style={{ overflow: 'auto' }}>
       <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle" ref={tableRef}>
-        <AllEventRegistrationTableHead
+        <AttendanceTableHead
           selectedProductIds={selected}
           order={order}
           onSelectAllClick={handleSelectAllClick}
           onRequestSort={handleRequestSort}
-          rowCount={eventListData?.length}
-          onMenuItemClick={handleDeselect}
+          rowCount={props.usersList?.length}
+          // onMenuItemClick={handleDeselect}
         />
         <TableBody>
           {
-            eventListData?.data?.map((n) => {
-              const isSelected = selected.indexOf(n.eventId) !== -1;
+            usersList.map((user) => {
+              // console.log("vv",user)
+              const isSelected = selected.indexOf(user.user.eventId) !== -1;
+              
               return (
                 <TableRow
-                  className="h-72 cursor-pointer"
+                  className="h-72 cursor-pointer "
                   hover
                   role="checkbox"
                   aria-checked={isSelected}
                   tabIndex={-1}
-                  key={n._id}
+                  key={user.user._id}
                   selected={isSelected}
-                  style={{ cursor: 'default' }}
+                  style={{
+                    cursor: 'default',
+                    backgroundColor: user.specificRequirements ? '#ffeeba' : 'inherit',
+                    
+                  }}
                 >
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.userName}
+                    {user?.user?.familyId}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.eventName}
+                    {user?.user?.name}
+                  </TableCell>
+               
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                    {user?.user?.gender}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.eventDate}
+                    {user?.user?.email === '' ? 'N/A' : user?.user?.email }
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.fromCountry.split(':')[1]}
+                    {user?.user?.dob}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.fromState.split(':')[1]}
+                    {user?.user?.mobileNumber === '' ? 'N/A' : user?.user?.mobileNumber }
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.fromCity.split(':')[1]}
+                    {user?.specificRequirements === '' ? 'N/A' : user?.specificRequirements }
+                  </TableCell>
+                  <TableCell className="p-4 md:p-16" align="center">
+                    {/* <Checkbox
+                       checked={user.present}
+                       onChange={() => handleToggle(user.user.userId)}
+                       inputProps={{ 'aria-labelledby': labelId }}
+                      /> */}
+                      <Checkbox checked={user.present} onChange={() => handleToggle(user?.user?.id,user.present)} />
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.shivirAvailable ? 'Yes' : 'No'}
+                  
+                    <TextField
+                        defaultValue={user.hallNo}
+                        variant="outlined"
+                        fullWidth
+                        onChange={(event) => handleHallNoChange(event, user?.user?.id)}
+                    />
                   </TableCell>
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    <PopupState variant="popover" popupId="demo-popup-menu">
-                      {(popupState) => (
-                        <>
-                          <Button variant="contained" style={{ borderRadius: 0 }}{...bindTrigger(popupState)}>
-                            Action
-                          </Button>
-                          <Menu {...bindMenu(popupState)}>
-
-                            {menuItemArray.map((value) => (
-                              (value.loadIf) && <MenuItem
-                                onClick={() => {
-                                  getStatus(n.registrationId, value.status);
-                                  popupState.close();
-                                }}
-                                key={value.key}
-                              >
-                                {value.label}
-                              </MenuItem>
-                            )
-                            )}
-                          </Menu>
-
-                        </>
-                      )}
-                    </PopupState>
+                  <TableCell className="p-4 md:p-16" style={{cursor:'pointer'}}
+                  component="th" scope="row" align='center'  onClick={() => handleAttendance(user.user.id, user.hallNo, user.present)}>
+                    <NotificationsIcon />
                   </TableCell>
+            
                 </TableRow>
               );
 
@@ -373,9 +361,9 @@ function AllEventRegistrationTable(props) {
       <TablePagination
         className="shrink-0 border-t-1"
         component="div"
-        count={eventListData.totalElement}
-        rowsPerPage={eventListData.rowPerPage}
-        page={eventListData.pageNumber - 1}
+        count={pageData.totalElement}
+        rowsPerPage={pageData.rowPerPage}
+        page={pageData.pageNumber - 1}
         backIconButtonProps={{
           'aria-label': 'Previous Page',
         }}
@@ -424,4 +412,4 @@ function AllEventRegistrationTable(props) {
   );
 }
 
-export default withRouter(AllEventRegistrationTable);
+export default withRouter(AttendanceTable);

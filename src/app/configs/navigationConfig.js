@@ -22,7 +22,7 @@ const navigationConfig = [
     type: 'item',
     icon: 'heroicons-outline:home',
     url: '/',
-    auth: ["Super", "User","Member"]
+    auth: ["Super", "User", "Member"]
   },
   {
     id: 'dashboard-component',
@@ -48,8 +48,8 @@ const navigationConfig = [
     translate: "User Events",
     type: 'item',
     icon: 'heroicons-outline:calendar',
-    url:'app/UserEvents/',
-    auth: ["User","Member"]
+    url: 'app/UserEvents/',
+    auth: ["User", "Member"]
   },
   {
     id: 'app-event',
@@ -57,7 +57,7 @@ const navigationConfig = [
     translate: "Events",
     type: 'item',
     icon: 'heroicons-outline:calendar',
-    url:'app/event/',
+    url: 'app/event/',
     auth: ["Super"]
   },
   {
@@ -66,7 +66,7 @@ const navigationConfig = [
     translate: "Add Members",
     type: 'item',
     icon: 'heroicons-outline:plus',
-    url:'app/addMembers/new',
+    url: 'app/addMembers/new',
     auth: ["User"]
   },
   {
@@ -75,7 +75,16 @@ const navigationConfig = [
     translate: "Event Registrations",
     type: 'item',
     icon: 'heroicons-outline:calendar',
-    url:'app/allRegistrationDetails',
+    url: 'app/allRegistrationDetails',
+    auth: ["Super"]
+  },
+  {
+    id: 'attendance',
+    title: "Attendance",
+    translate: "Attendance",
+    type: 'item',
+    icon: 'heroicons-outline:calendar',
+    url:'/attendance',
     auth: ["Super"]
   },
   {
@@ -84,34 +93,34 @@ const navigationConfig = [
     translate: "Manage Family",
     type: 'item',
     icon: 'heroicons-outline:user',
-    url:'app/manageFamily',
-    auth: ["User","Member"]
+    url: 'app/manageFamily',
+    auth: ["User", "Member"]
   },
-    // children: [
+  // children: [
 
-    //   {
-    //     id: 'app-employee-component',
-    //     title: "Employee",
-    //     type: 'item',
-    //     url: 'app/user/',
-    //     auth: ["admin", "employee"],
-    //     end: true,
-    //   },
-    //   {
-    //     id: 'app-doctor-component',
-    //     title: "Doctor",
-    //     type: 'item',
-    //     url: '/app/doctor/',
-    //     auth: ["admin", "employee"]
-    //   },
-    //   // {
-    //   //   id: 'app-patient-component',
-    //   //   title: "Patient",
-    //   //   type: 'item',
-    //   //   url: 'app/patient/',
-    //   //   auth: ["admin", "employee","clinic","doctor"]
-    //   // },
-    // ],
+  //   {
+  //     id: 'app-employee-component',
+  //     title: "Employee",
+  //     type: 'item',
+  //     url: 'app/user/',
+  //     auth: ["admin", "employee"],
+  //     end: true,
+  //   },
+  //   {
+  //     id: 'app-doctor-component',
+  //     title: "Doctor",
+  //     type: 'item',
+  //     url: '/app/doctor/',
+  //     auth: ["admin", "employee"]
+  //   },
+  //   // {
+  //   //   id: 'app-patient-component',
+  //   //   title: "Patient",
+  //   //   type: 'item',
+  //   //   url: 'app/patient/',
+  //   //   auth: ["admin", "employee","clinic","doctor"]
+  //   // },
+  // ],
 
   {
     id: 'myRegisteration-component',
@@ -120,7 +129,16 @@ const navigationConfig = [
     type: 'item',
     icon: 'heroicons-outline:clipboard-check',
     url: 'app/myregistration',
-    auth: ["User","Member"]
+    auth: ["User", "Member"]
+  },
+  {
+    id: 'food-component',
+    title: "Food",
+    translate: "Food",
+    type: 'item',
+    icon: 'heroicons-outline:clipboard-check',
+    url: 'app/food',
+    auth: ["Super"]
   },
   {
     id: 'foodDetails-component',
@@ -132,23 +150,23 @@ const navigationConfig = [
     auth: ["Super"]
   },
   {
+    id: 'sms-component',
+    title: "SMS",
+    translate: "SMS",
+    type: 'item',
+    icon: 'heroicons-outline:clipboard-check',
+    url: '/sms',
+  },
+  {
     id: 'myprofile-component',
     title: "My Profile",
     translate: "My Profile",
     type: 'item',
     icon: 'heroicons-outline:user-circle',
     url: `apps/profile/${sessionStorage.getItem('id')}`,
-    auth: ["Super", "User","Member"]
+    auth: ["Super", "User", "Member"]
   },
-  {
-    id: 'sms-component',
-    title: "SMS",
-    translate: "SMS",
-    type: 'item',
-    icon: 'heroicons-outline:logout',
-    url: '/sms',
-    auth: ["Super"]
-  },
+
   {
     id: 'logout-component',
     title: "Logout",
@@ -156,51 +174,51 @@ const navigationConfig = [
     type: 'item',
     icon: 'heroicons-outline:logout',
     url: '/sign-out',
-    auth: ["Super", "User","Member"]
+    auth: ["Super", "User", "Member"]
   },
-  {
-    id: 'app-partner-component',
-    title: "Clinic",
-    translate: "Clinic",
-    type: 'collapse',
-    icon: 'material-outline:science',
-    auth: ["admin", "employee","doctor","clinic"],
+  // {
+  //   id: 'app-partner-component',
+  //   title: "Clinic",
+  //   translate: "Clinic",
+  //   type: 'collapse',
+  //   icon: 'material-outline:science',
+  //   auth: ["admin", "employee","doctor","clinic"],
 
-    children: [
-      {
-        id: 'app-patient-component',
-        title: "Patient",
-        type: 'item',
-        url: 'app/patient/',
-        auth: ["admin", "employee","clinic","doctor"]
-      },
-      {
-        id: 'app-partner-component',
-        title: "Clinic",
-        type: 'item',
-        url: '/app/clinic/',
-        auth: ["admin", "employee"],
-        end: true,
-      },
-      {
-        id: 'app-ServicePlan-component',
-        title: "Cases",
-        type: 'item',
-        url: '/app/case/',
-        auth: ["admin", "employee","clinic"],
-        end: true,
-      }
+  //   children: [
+  //     {
+  //       id: 'app-patient-component',
+  //       title: "Patient",
+  //       type: 'item',
+  //       url: 'app/patient/',
+  //       auth: ["admin", "employee","clinic","doctor"]
+  //     },
+  //     {
+  //       id: 'app-partner-component',
+  //       title: "Clinic",
+  //       type: 'item',
+  //       url: '/app/clinic/',
+  //       auth: ["admin", "employee"],
+  //       end: true,
+  //     },
+  //     {
+  //       id: 'app-ServicePlan-component',
+  //       title: "Cases",
+  //       type: 'item',
+  //       url: '/app/case/',
+  //       auth: ["admin", "employee","clinic"],
+  //       end: true,
+  //     }
 
-      // {
-      //   id: 'app-LabOrderPlan-component',
-      //   title: "Lab Order",
-      //   type: 'item',
-      //   url: '/app/pathologyOrder/',
-      //   auth: ["admin", "employee", "partner"],
-      //   end: true,
-      // },
-    ],
-  },
+  //     // {
+  //     //   id: 'app-LabOrderPlan-component',
+  //     //   title: "Lab Order",
+  //     //   type: 'item',
+  //     //   url: '/app/pathologyOrder/',
+  //     //   auth: ["admin", "employee", "partner"],
+  //     //   end: true,
+  //     // },
+  //   ],
+  // },
 
   // {
   //   id: 'app-appointment-component',

@@ -41,12 +41,14 @@ import AddMembersConfig from '../main/components/AddMembers/AddMembersConfig';
 import ManageFamilyConfig from '../main/components/ManageFamily/ManageFamilyConfig';
 import MyRegisterationConfig from '../main/components/MyRegistration/MyRegistrationConfig';
 import AllEventRegistrationConfig from '../main/components/AllEventRegistration/AllEventRegistrationConfig';
+import AttendanceConfig from '../main/components/Attendance/AttendanceConfig';
 import SMSConfig from '../main/components/SMS/SMSConfig';
+import FoodConfig from '../main/components/Food/FoodConfig';
 import FoodDetailsConfig from '../main/components/FoodDetails/FoodDetailsConfig';
 
 
+const routeConfigs = [SignOutConfig, SignInConfig,MyRegisterationConfig, AllEventRegistrationConfig, SignUpConfig, Error404PageConfig, AttendanceConfig,DashboardConfig,UserConfig,EventConfig,EmployeeManagementConfig, AddMembersConfig,UserEventConfig,ManageFamilyConfig,FoodConfig,FoodDetailsConfig,DoctorManagementConfig, PatientConfig, AppointmentsAppConfig,SMSConfig, HomeConfig, MembershipPlanConfig, transactionConfig, SubscriptionPlanConfig, CouponPlanConfig, BannerPlanConfig, CaseConfig, SymptomConfig, ProductConfig, OrderConfig, LabOrderConfig,SettingConfig,NewCaseConfig,AllCaseConfig,FinalCaseReportConfig,ClinicManagementConfig];
 
-const routeConfigs = [SignOutConfig, SignInConfig,MyRegisterationConfig, AllEventRegistrationConfig, SignUpConfig, Error404PageConfig, DashboardConfig,UserConfig,EventConfig,EmployeeManagementConfig, AddMembersConfig,UserEventConfig,ManageFamilyConfig,DoctorManagementConfig, PatientConfig, FoodDetailsConfig,AppointmentsAppConfig,SMSConfig, HomeConfig, MembershipPlanConfig, transactionConfig, SubscriptionPlanConfig, CouponPlanConfig, BannerPlanConfig, CaseConfig, SymptomConfig, ProductConfig, OrderConfig, LabOrderConfig,SettingConfig,NewCaseConfig,AllCaseConfig,FinalCaseReportConfig,ClinicManagementConfig];
 
 const routes = [
   ...FuseUtils.generateRoutesFromConfigs(routeConfigs, settingsConfig.defaultAuth),

@@ -217,7 +217,7 @@ function MyRegistrationHeader(props) {
                     >
                         My Registrations
                     </Typography>
-                    <div className="flex flex-col w-full sm:w-auto sm:flex-row space-y-16 sm:space-y-0 flex-1 items-center justify-end space-x-8">
+                    {/* <div className="flex flex-col w-full sm:w-auto sm:flex-row space-y-16 sm:space-y-0 flex-1 items-center justify-end space-x-8">
                         <Paper
                             component={motion.div}
                             initial={{ y: -20, opacity: 0 }}
@@ -245,9 +245,9 @@ function MyRegistrationHeader(props) {
                             </FuseSvgIcon>
                             }
                         </Paper>
-                    </div>
+                    </div> */}
                 </div>
-                <div className='flex sm:flex-row flex-wrap flex-col justify-between mx-10  mb-10 shadow-1 rounded-16'>
+                {/* <div className='flex sm:flex-row flex-wrap flex-col justify-between mx-10  mb-10 shadow-1 rounded-16'>
                     <div className="flex sm:flex-row flex-wrap flex-col justify-start">
                         <Autocomplete
                             disablePortal
@@ -347,7 +347,7 @@ function MyRegistrationHeader(props) {
                             Reset
                         </Button>
                     </div>
-                </div>
+                </div> */}
             </div>
 
 

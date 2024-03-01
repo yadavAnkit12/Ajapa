@@ -1,59 +1,73 @@
-import withRouter from '@fuse/core/withRouter';
-import FuseLoading from '@fuse/core/FuseLoading';
-import _ from '@lodash';
-import EditIcon from '@mui/icons-material/Edit';
-import PersonIcon from '@mui/icons-material/Person';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import { Modal, Table, TableBody, TableCell, TablePagination, TableRow, Typography, IconButton, Box, Button, MenuItem, Menu, Dialog, DialogTitle, DialogActions, Slide } from '@mui/material';
-import axios from 'axios';
-import { motion } from 'framer-motion';
-import { useEffect, useState, useRef, forwardRef } from 'react';
-import { showMessage } from 'app/store/fuse/messageSlice';
-import { useSelector, useDispatch } from 'react-redux';
+import withRouter from "@fuse/core/withRouter";
+import FuseLoading from "@fuse/core/FuseLoading";
+import _ from "@lodash";
+import EditIcon from "@mui/icons-material/Edit";
+import PersonIcon from "@mui/icons-material/Person";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import {
+  Modal,
+  Table,
+  TableBody,
+  TableCell,
+  TablePagination,
+  TableRow,
+  Typography,
+  IconButton,
+  Box,
+  Button,
+  MenuItem,
+  Menu,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  Slide,
+} from "@mui/material";
+import axios from "axios";
+import { motion } from "framer-motion";
+import { useEffect, useState, useRef, forwardRef } from "react";
+import { showMessage } from "app/store/fuse/messageSlice";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { eventAPIConfig, userAPIConfig } from '../../API/apiConfig';
-import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
-import ManageFamilyTableHead from './ManageFamilyTableHead';
-import { getLoggedInPartnerId, getUserRoles } from 'src/app/auth/services/utils/common';
-import MemberView from './MemberView';
-
-
+import { eventAPIConfig, userAPIConfig } from "../../API/apiConfig";
+import PopupState, { bindMenu, bindTrigger } from "material-ui-popup-state";
+import ManageFamilyTableHead from "./ManageFamilyTableHead";
+import {
+  getLoggedInPartnerId,
+  getUserRoles,
+} from "src/app/auth/services/utils/common";
+import MemberView from "./MemberView";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  bgcolor: 'background.paper',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  bgcolor: "background.paper",
   boxShadow: 24,
   p: 4,
-  borderRadius: '20px',
-  maxWidth: '1200px',
-  maxHeight: '650px',
-  overflow: 'auto'
+  borderRadius: "20px",
+  maxWidth: "1200px",
+  maxHeight: "650px",
+  overflow: "auto",
 };
-
-
-
-
 
 function ManageFamilyTable(props) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [userListData, setUserListData] = useState('');
+  const [userListData, setUserListData] = useState("");
   const searchText = props.searchText;
 
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState([]);
-  const tableRef = useRef(null)
+  const tableRef = useRef(null);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [order, setOrder] = useState({
-    direction: 'asc',
+    direction: "asc",
     id: null,
   });
 
@@ -62,39 +76,36 @@ function ManageFamilyTable(props) {
   const [openView, setOpenView] = useState(false);
   const [viewid, setViewId] = useState("");
   const [change, setChange] = useState(false);
-  const [open, setOpen] = useState(false)
-  const [deleteId, setDeleteId] = useState('')
-  const [changeStatus, setChangeStatus] = useState('')
-  const [changeHead, setChangeHead] = useState('')
+  const [open, setOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState("");
+  const [changeStatus, setChangeStatus] = useState("");
+  const [changeHead, setChangeHead] = useState("");
 
   const menuItemArray = [
     {
       key: 1,
-      label: 'View',
-      status: 'View',
-      visibleIf: true
+      label: "View",
+      status: "View",
+      visibleIf: true,
     },
     {
       key: 2,
-      label: 'Edit',
-      status: 'Edit',
-      visibleIf: localStorage.getItem('role') === 'User'
+      label: "Edit",
+      status: "Edit",
+      visibleIf: localStorage.getItem("role") === "User",
     },
     {
       key: 3,
-      label: 'Delete',
-      status: 'Delete',
-      visibleIf: localStorage.getItem('role') === 'User'
-  
+      label: "Delete",
+      status: "Delete",
+      visibleIf: localStorage.getItem("role") === "User",
     },
     {
       key: 4,
-      label: 'Make Head',
-      status: 'Make Head',
-      visibleIf: localStorage.getItem('role') === 'User'
-  
+      label: "Make Head",
+      status: "Make Head",
+      visibleIf: localStorage.getItem("role") === "User",
     },
-  
   ];
 
   useEffect(() => {
@@ -105,7 +116,7 @@ function ManageFamilyTable(props) {
     if (page !== 0) {
       setPage(0);
     }
-  }, [props.filterValue])
+  }, [props.filterValue]);
 
   useEffect(() => {
     const delay = 500;
@@ -129,34 +140,59 @@ function ManageFamilyTable(props) {
     };
   }, [searchText]);
 
-
   const fetchData = () => {
     const params = {
       page: page + 1,
       rowsPerPage: rowsPerPage, // Example data to pass in req.query
       searchText: searchText,
-      status: _.get(props, 'filterValue') === '' ? 'Approved' : _.get(props, 'filterValue.status'),
-      country: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.country') === '' ? 'All' : _.get(props, 'filterValue.country'),
-      state: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.state') === '' ? 'All' : _.get(props, 'filterValue.state'),
-      city: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.city') === '' ? 'All' : _.get(props, 'filterValue.city'),
+      status:
+        _.get(props, "filterValue") === ""
+          ? "Approved"
+          : _.get(props, "filterValue.status"),
+      country:
+        _.get(props, "filterValue") === ""
+          ? "All"
+          : _.get(props, "filterValue.country") === ""
+          ? "All"
+          : _.get(props, "filterValue.country"),
+      state:
+        _.get(props, "filterValue") === ""
+          ? "All"
+          : _.get(props, "filterValue.state") === ""
+          ? "All"
+          : _.get(props, "filterValue.state"),
+      city:
+        _.get(props, "filterValue") === ""
+          ? "All"
+          : _.get(props, "filterValue.city") === ""
+          ? "All"
+          : _.get(props, "filterValue.city"),
     };
     // console.log('params', params)
-    axios.get(`${userAPIConfig.getUserByFamily}`, {
-      headers: {
-        'Content-type': 'multipart/form-data',
-        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-      },
-    }).then((response) => {
-      if (response.status === 200) {
-        //  console.log("AJ",response)
-        setUserListData(response?.data);
-        setLoading(false);
-      } else {
-        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
-      }
-    });
+    axios
+      .get(`${userAPIConfig.getUserByFamily}`, {
+        headers: {
+          "Content-type": "multipart/form-data",
+          Authorization: `Bearer ${window.localStorage.getItem(
+            "jwt_access_token"
+          )}`,
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          //  console.log("AJ",response)
+          setUserListData(response?.data);
+          setLoading(false);
+        } else {
+          dispatch(
+            showMessage({
+              message: response.data.errorMessage,
+              variant: "error",
+            })
+          );
+        }
+      });
   };
-
 
   const handleViewClose = () => {
     setOpenView(false);
@@ -164,10 +200,10 @@ function ManageFamilyTable(props) {
 
   function handleRequestSort(event, property) {
     const id = property;
-    let direction = 'desc';
+    let direction = "desc";
 
-    if (order.id === property && order.direction === 'desc') {
-      direction = 'asc';
+    if (order.id === property && order.direction === "desc") {
+      direction = "asc";
     }
 
     setOrder({
@@ -177,82 +213,92 @@ function ManageFamilyTable(props) {
   }
 
   function getStatus(id, selectedValue) {
-
-    if (selectedValue === 'View') {
-      setOpenView(true)
-      setViewId(id)
-
+    if (selectedValue === "View") {
+      setOpenView(true);
+      setViewId(id);
+    } else if (selectedValue === "Edit") {
+      navigate(`/app/addMembers/${id}`);
+    } else if (selectedValue === "Delete") {
+      setOpen(true);
+      setViewId(id);
+    } else if (selectedValue === "Make Head") {
+      setViewId(id);
+      setChangeHead(true);
     }
-    else if (selectedValue === 'Edit') {
-      navigate(`/app/addMembers/${id}`)
-    }
-    else if (selectedValue === 'Delete') {
-      setOpen(true)
-      setViewId(id)
-
-    }
-    else if (selectedValue === 'Make Head') {
-      setViewId(id)
-      setChangeHead(true)
-    }
-
   }
 
   const handleClose = () => {
-    setOpen(false)
-  }
+    setOpen(false);
+  };
 
   const handleDeleteUser = () => {
-    const formData = new FormData()
+    const formData = new FormData();
 
-    formData.append('status', 'Deleted')
-    formData.append('id', viewid)
-    axios.post(userAPIConfig.changeStatus, formData, {
-      headers: {
-        'Content-type': 'multipart/form-data',
-        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`
-      },
-    }).then((response) => {
-      if (response.status === 200) {
-        dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-        handleClose()
-        fetchData()
-
-      }
-      else {
-        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
-
-      }
-    })
-  }
+    formData.append("status", "Deleted");
+    formData.append("id", viewid);
+    axios
+      .post(userAPIConfig.changeStatus, formData, {
+        headers: {
+          "Content-type": "multipart/form-data",
+          Authorization: `Bearer ${window.localStorage.getItem(
+            "jwt_access_token"
+          )}`,
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          dispatch(
+            showMessage({ message: response.data.message, variant: "success" })
+          );
+          handleClose();
+          fetchData();
+        } else {
+          dispatch(
+            showMessage({
+              message: response.data.errorMessage,
+              variant: "error",
+            })
+          );
+        }
+      });
+  };
 
   const handleChangeHead = () => {
-    const formData = new FormData()
-    formData.append('id', viewid)
+    const formData = new FormData();
+    formData.append("id", viewid);
 
-    axios.post(userAPIConfig.changeHead, formData, {
-      headers: {
-        'Content-type': 'multipart/form-data',
-        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`
-      },
-    }).then((response) => {
-      if (response.status === 200) {
-        dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-        navigate('/sign-out')
-      }
-      else {
-        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
-
-      }
-    })
-  }
-
+    axios
+      .post(userAPIConfig.changeHead, formData, {
+        headers: {
+          "Content-type": "multipart/form-data",
+          Authorization: `Bearer ${window.localStorage.getItem(
+            "jwt_access_token"
+          )}`,
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          dispatch(
+            showMessage({ message: response.data.message, variant: "success" })
+          );
+          window.location.reload()
+        } else {
+          dispatch(
+            showMessage({
+              message: response.data.errorMessage,
+              variant: "error",
+            })
+          );
+        }
+      });
+  };
 
   function handleSelectAllClick(event) {
     if (event.target.checked) {
-      setSelected(_.size(_.get(userListData, 'users')) > 0 ?
-        _.get(userListData, 'users').map((n) => n.userId) :
-        {}
+      setSelected(
+        _.size(_.get(userListData, "users")) > 0
+          ? _.get(userListData, "users").map((n) => n.userId)
+          : {}
       );
       return;
     }
@@ -263,30 +309,35 @@ function ManageFamilyTable(props) {
     setSelected([]);
   }
 
-
   function handleChangePage(event, value) {
     event.preventDefault();
     setPage(value);
     tableRef.current && tableRef.current.scrollIntoView();
-
   }
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
     tableRef.current && tableRef.current.scrollIntoView();
-
   };
+
+  //To Check Make Head Option
+  const isUserOldEnough = (user) => {
+    const userDob = new Date(user.dob);
+    const age = new Date().getFullYear() - userDob.getFullYear();
+    return age >= 18;
+  };
+
   const getStatusColor = (status) => {
     switch (status.toLowerCase()) {
-      case 'approved':
-        return 'green';
-      case 'pending':
-        return '#FFC72C';
-      case 'rejected':
-        return 'red';
+      case "approved":
+        return "green";
+      case "pending":
+        return "#FFC72C";
+      case "rejected":
+        return "red";
       default:
-        return 'inherit';
+        return "inherit";
     }
   };
 
@@ -298,7 +349,7 @@ function ManageFamilyTable(props) {
     );
   }
 
-  if (!_.size(_.get(userListData, 'users'))) {
+  if (!_.size(_.get(userListData, "users"))) {
     return (
       <motion.div
         initial={{ opacity: 0 }}
@@ -313,8 +364,16 @@ function ManageFamilyTable(props) {
   }
   // console.log(userListData)
   return (
-    <div className="w-full flex flex-col min-h-full" style={{ overflow: 'auto' }}>
-      <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle" ref={tableRef}>
+    <div
+      className="w-full flex flex-col min-h-full"
+      style={{ overflow: "auto" }}
+    >
+      <Table
+        stickyHeader
+        className="min-w-xl"
+        aria-labelledby="tableTitle"
+        ref={tableRef}
+      >
         <ManageFamilyTableHead
           selectedProductIds={selected}
           order={order}
@@ -324,68 +383,127 @@ function ManageFamilyTable(props) {
           onMenuItemClick={handleDeselect}
         />
         <TableBody>
-          {
-            userListData?.users?.map((n) => {
-              const isSelected = selected.indexOf(n.eventId) !== -1;
-              return (
-                <TableRow
-                  className="h-72 cursor-pointer"
-                  hover
-                  role="checkbox"
-                  aria-checked={isSelected}
-                  tabIndex={-1}
-                  key={n._id}
-                  selected={isSelected}
-                  style={{ cursor: 'default' }}
+          {userListData?.users?.map((n) => {
+            const isSelected = selected.indexOf(n.eventId) !== -1;
+            return (
+              <TableRow
+                className="h-72 cursor-pointer"
+                hover
+                role="checkbox"
+                aria-checked={isSelected}
+                tabIndex={-1}
+                key={n._id}
+                selected={isSelected}
+                style={{ cursor: "default" }}
+              >
+                <TableCell
+                  className="p-4 md:p-16"
+                  component="th"
+                  scope="row"
+                  align="center"
                 >
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.name}
-                    {n.role === 'User' ? <span style={{ color: 'red' ,fontSize: '1.8rem'}}>*</span> :""}
-                  </TableCell>
+                  {n.name}
+                  {n.role === "User" ? (
+                    <span style={{ color: "red", fontSize: "1.8rem" }}>*</span>
+                  ) : (
+                    ""
+                  )}
+                </TableCell>
 
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.email || 'N/A'}
-                  </TableCell>
+                <TableCell
+                  className="p-4 md:p-16"
+                  component="th"
+                  scope="row"
+                  align="center"
+                >
+                  {n.email || "N/A"}
+                </TableCell>
 
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center' >
-                    {n.mobileNumber || 'N/A'}
+                <TableCell
+                  className="p-4 md:p-16"
+                  component="th"
+                  scope="row"
+                  align="center"
+                >
+                  {n.mobileNumber || "N/A"}
+                </TableCell>
+                <TableCell
+                  className="p-4 md:p-16"
+                  component="th"
+                  scope="row"
+                  align="center"
+                >
+                  {n.country.split(":")[1]}
+                </TableCell>
+                <TableCell
+                  className="p-4 md:p-16"
+                  component="th"
+                  scope="row"
+                  align="center"
+                >
+                  {n.state.split(":")[1]}
+                </TableCell>
+                <TableCell
+                  className="p-4 md:p-16"
+                  component="th"
+                  scope="row"
+                  align="center"
+                >
+                  {n.city.split(":")[1]}
+                </TableCell>
 
-                  </TableCell>
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.country.split(':')[1]}
-                  </TableCell>
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.state.split(':')[1]}
-                  </TableCell>
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.city.split(':')[1]}
-                  </TableCell>
+                <TableCell
+                  className="p-4 md:p-16"
+                  component="th"
+                  scope="row"
+                  align="center"
+                >
+                  {n.dob}
+                </TableCell>
+                <TableCell
+                  className="p-4 md:p-16"
+                  component="th"
+                  scope="row"
+                  align="center"
+                  style={{
+                    fontWeight: "bold",
+                    color: getStatusColor(n.status),
+                  }}
+                >
+                  {n.status}
+                </TableCell>
+                <TableCell
+                  className="p-4 md:p-16"
+                  component="th"
+                  scope="row"
+                  align="center"
+                >
+                  <PopupState variant="popover" popupId="demo-popup-menu">
+                    {(popupState) => (
+                      <>
+                        <Button
+                          variant="contained"
+                          style={{ borderRadius: 0 }}
+                          {...bindTrigger(popupState)}
+                        >
+                          Action
+                        </Button>
+                        <Menu {...bindMenu(popupState)}>
+                          {menuItemArray.map(
+                            ({ visibleIf, status, key, label }) => {
+                              if (n.role === "User" && status === "Make Head") {
+                                return null;
+                              }
+                              if (status === "Delete" && n.role === "User" ) {
+                                
+                                return null;
+                              }
 
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.dob}
-                  </TableCell>
-                  <TableCell
-                    className="p-4 md:p-16"
-                    component="th"
-                    scope="row"
-                    align="center"
-                    style={{ fontWeight: 'bold', color: getStatusColor(n.status) }}
-                  >
-                    {n.status}
-                  </TableCell>
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    <PopupState variant="popover" popupId="demo-popup-menu">
-                      {(popupState) => (
-                        <>
-                          <Button variant="contained" style={{ borderRadius: 0 }}{...bindTrigger(popupState)}>
-                            Action
-                          </Button>
-                          <Menu {...bindMenu(popupState)}>
-
-                            {menuItemArray.map(({ visibleIf, status, key, label }) => (
-                              visibleIf && (
-                                (status !== 'Make Head' || (status === 'Make Head' && (n.email || n.mobileNumber))) &&
-                                (
+                              if (
+                                visibleIf &&
+                                !(status === "Make Head" && !isUserOldEnough(n))
+                              ) {
+                                return (
                                   <MenuItem
                                     onClick={() => {
                                       getStatus(n.id, status);
@@ -395,22 +513,21 @@ function ManageFamilyTable(props) {
                                   >
                                     {label}
                                   </MenuItem>
-                                )
-                              )
-                            ))}
-
-                          </Menu>
-
-                        </>
-                      )}
-                    </PopupState>
-                  </TableCell>
-                </TableRow>
-              );
-
-            })}
+                                );
+                              } else {
+                                return null;
+                              }
+                            }
+                          )}
+                        </Menu>
+                      </>
+                    )}
+                  </PopupState>
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
-
       </Table>
 
       {/* <TablePagination

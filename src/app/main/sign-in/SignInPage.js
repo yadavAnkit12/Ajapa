@@ -49,12 +49,12 @@ const initialValues = {
   password: '',
 };
 const phoneNumberCountryCodes = [
-  '+91 (IN)',
-  '+1 (US)',
-  '+44 (UK)',
-  '+33 (FR)',
-  '+49 (DE)',
-  '+81 (JP)',
+  '+91',
+  '+1',
+  '+44',
+  '+33',
+  '+49',
+  '+81',
   // Add more country codes as needed
 ];
 
@@ -72,6 +72,7 @@ function SignInPage() {
   const [recaptcha, setRecaptcha] = useState(null)
   const [showRecaptcha, setShowRecaptcha] = useState(true);
   const recaptchaRef = React.createRef();
+  const [showCheckBox, setShowBox] = useState(true)
 
 
   const handleOpenModal = () => {
@@ -87,6 +88,8 @@ function SignInPage() {
 
   const handleCheckboxOtp = () => {
     setPassword((prevShowPassword) => !prevShowPassword);
+    setShowOtpInput(false)
+    setOTPVerify(false)
   };
 
   // For Sending the Otp 
@@ -106,9 +109,9 @@ function SignInPage() {
           'Content-type': 'multipart/form-data',
         },
       }).then((response) => {
-        console.log(response)
+        // console.log(response)
         if (response.status === 200) {
-          dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+          dispatch(showMessage({ message: 'OTP has been sent to your mobile number and email.', variant: 'success' }));
           setShowOtpInput(true);
           setOTPVerify(true)
         }
@@ -127,6 +130,7 @@ function SignInPage() {
 
   //  signin using password
   const handleSubmit = (values) => {
+    
     // check that any field that is required is empty
     const isRequired = Boolean((values.email || (values.countryCode && values.mobileNumber)) && values.password && recaptcha)
 
@@ -144,7 +148,7 @@ function SignInPage() {
         });
     }
     else {
-      recaptchaRef.current.reset();
+      recaptchaRef?.current?.reset();
       dispatch(showMessage({ message: "Fill all the details", variant: 'error' }));
     }
   }
