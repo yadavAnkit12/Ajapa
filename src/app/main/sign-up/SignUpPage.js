@@ -53,12 +53,12 @@ const fontStyles = {
 };
 
 const phoneNumberCountryCodes = [
-  '+91',
-  '+1',
-  '+44',
-  '+33',
-  '+49',
-  '+81',
+  "+91",
+  "+1",
+  "+44",
+  "+33",
+  "+49",
+  "+81",
   // Add more country codes as needed
 ];
 
@@ -80,11 +80,11 @@ function SignUpPage() {
     passwordConfirm: "",
     gender: "",
     dob: null,
-    countryCode: '+91',
-    mobileNumber: '',
-    country: '',
-    state: '',
-    city: '',
+    countryCode: "+91",
+    mobileNumber: "",
+    country: "",
+    state: "",
+    city: "",
     profilePicture: null,
     // isDisciple: 'false'
     isDisciple: "",
