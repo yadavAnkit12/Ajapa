@@ -404,7 +404,7 @@ function FoodDetailsTable(props) {
 
       </Table>
 
-      <TablePagination
+      {/* <TablePagination
         className="shrink-0 border-t-1"
         component="div"
         count={eventListData.totalElement}
@@ -418,7 +418,7 @@ function FoodDetailsTable(props) {
         }}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+      /> */}
       {/* <Dialog
         open={open}
         TransitionComponent={Transition}

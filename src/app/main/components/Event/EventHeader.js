@@ -91,14 +91,6 @@ function EventHeader(props) {
                 }}
                 onChange={(ev) => props?.setSearchText(ev.target.value)}
               />
-              {props?.searchText && <FuseSvgIcon
-                color="disabled"
-                size={16}
-                style={{ cursor: "pointer" }}
-                onClick={() => props?.setSearchText('')}>
-                heroicons-solid:x
-              </FuseSvgIcon>
-              }
             </Paper>
 
             <motion.div

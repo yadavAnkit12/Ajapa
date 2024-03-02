@@ -70,7 +70,7 @@ function DashboardHeader(props) {
               // variant === 'warning' && 'bg-orange-600 text-white',
               // className
             )}
-            onClick={() => handleView(item)}
+            // onClick={() => handleView(item)}
             elevation={0}
           // component={item.useRouter ? NavLinkAdapter : 'div'}
           // to={item.link || ''}
@@ -132,7 +132,7 @@ function DashboardHeader(props) {
               // variant === 'warning' && 'bg-orange-600 text-white',
               // className
             )}
-            onClick={() => handleView(item)}
+            // onClick={() => handleView(item)}
             elevation={0}
           // component={item.useRouter ? NavLinkAdapter : 'div'}
           // to={item.link || ''}
@@ -194,7 +194,7 @@ function DashboardHeader(props) {
               // variant === 'warning' && 'bg-orange-600 text-white',
               // className
             )}
-            onClick={() => handleView(item)}
+            // onClick={() => handleView(item)}
             elevation={0}
           // component={item.useRouter ? NavLinkAdapter : 'div'}
           // to={item.link || ''}
@@ -280,7 +280,7 @@ function DashboardHeader(props) {
               disablePortal
               value={filterData.eventStatus}
               id="eventStatus"
-              options={['Active', 'Inactive']}
+              options={['On', 'Off']}
               sx={{ my: 1, minWidth: 140, mx: 1 }}
               onChange={(e, newValue) => setFilterData({ ...filterData, eventStatus: newValue })}
               renderInput={(params) => <TextField {...params} label="Event Status" variant="standard" />}
