@@ -9,7 +9,7 @@ import Tabs from '@mui/material/Tabs';
 import { Formik, useFormik } from 'formik';
 import useThemeMediaQuery from '@fuse/hooks/useThemeMediaQuery';
 import { TextField, Autocomplete, Typography } from '@mui/material';
-import {  eventAPIConfig } from "src/app/main/API/apiConfig";
+import { eventAPIConfig } from "src/app/main/API/apiConfig";
 import { useParams } from "react-router-dom";
 import { getUserRoles } from "src/app/auth/services/utils/common";
 import { useNavigate } from "react-router-dom";
@@ -70,7 +70,7 @@ const EventForm = () => {
 
 
     useEffect(() => {
-       
+
         const { eventId } = routeParams;
         if (eventId == "new") {
 
@@ -129,11 +129,7 @@ const EventForm = () => {
 
         eventType: Yup.string().required('Event Type is required'),
         eventLocation: Yup.string().required('Event Location is required'),
-        eventDate: Yup.date()
-            // .min(new Date(new Date().setHours(0, 0, 0, 0)), 'Event Date must be today or in the future')
-            .nullable()
-            .required('Event Date is required'),
-
+        eventDate: Yup.date().required('Event Date is required'),
         lockArrivalDate: Yup.date()
             .nullable()
             .test({
@@ -176,7 +172,7 @@ const EventForm = () => {
                 }
             }),
 
-            file: Yup.mixed().nullable()
+        file: Yup.mixed().nullable()
             .test('fileType', 'Unsupported file type. Only JPG, JPEG, and PNG files are allowed.', (value) => {
                 if (!value) return true; // Allow null values
                 const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
@@ -186,7 +182,11 @@ const EventForm = () => {
 
 
     const handleSubmit = (values) => {
-        
+        if (new Date(values.eventDate) < new Date()) {
+            return dispatch(showMessage({ message: "Event Date must be current or future date", variant: 'error' }));
+
+        }
+
         if (values.eventType === 'Offline' && (!values.lockArrivalDate || !values.lockDepartureDate)) {
             dispatch(showMessage({ message: "Lock Dates are required for offline events", variant: 'error' }));
             return;
@@ -213,7 +213,7 @@ const EventForm = () => {
             formData.append('eventStatus', values.eventStatus)
             formData.append('bookingStatus', values.bookingStatus)
             if (eventId !== '') {
-                
+
                 formData.append('eventId', eventId)
 
             }
@@ -236,7 +236,7 @@ const EventForm = () => {
                 })
 
             } else {
-                if(eventId!==''){
+                if (eventId !== '') {
 
                     formData.append('eventImage', values.eventImage)
                 }
@@ -294,7 +294,7 @@ const EventForm = () => {
 
     return (
         <FusePageCarded
-            header={<EventFormHead handleSubmit={handleSubmit} values={formik.values} eventId={eventId}/>}
+            header={<EventFormHead handleSubmit={handleSubmit} values={formik.values} eventId={eventId} />}
 
             content={
                 <>

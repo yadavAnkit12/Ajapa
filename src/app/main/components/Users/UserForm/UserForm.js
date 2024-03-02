@@ -135,10 +135,10 @@ function UserForm() {
               setShowCredentials(false);
             }
           }
-
+console.log(response)
           formik.setValues({
             id: response.data.user.id || "",
-            familyId: response.data.user.familyId || "",
+            familyId: response.data.user.familyId,
             name: response.data.user.name || "",
             email: response.data.user.email || "",
             password: response.data.user.password || "",
@@ -218,7 +218,7 @@ function UserForm() {
   }, [stateID]);
 
   const handleSubmit = (values) => {
-    // console.log(values)
+    console.log(values)
 
     if (showCredentials && !isChild) {
       if (
@@ -380,7 +380,7 @@ function UserForm() {
   const formik = useFormik({
     initialValues: {
       id: "",
-      familyId: "",
+      familyId : "",
       name: "",
       email: "",
       password: "",
@@ -415,7 +415,7 @@ function UserForm() {
   function handleTabChange(event, value) {
     setTabValue(value);
   }
-
+ console.log(formik)
   return (
     <FormProvider>
       <FusePageCarded
