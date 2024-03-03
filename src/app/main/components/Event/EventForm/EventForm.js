@@ -182,6 +182,8 @@ const EventForm = () => {
 
 
     const handleSubmit = (values) => {
+        console.log("Formik",formik)
+
         if (new Date(values.eventDate) < new Date()) {
             return dispatch(showMessage({ message: "Event Date must be current or future date", variant: 'error' }));
 
@@ -533,6 +535,7 @@ const EventForm = () => {
                                             accept=".png, .jpg, .jpeg"
                                             className="hidden"
                                             id="profile-file"
+                                            onBlur={formik.handleBlur}
                                             onChange={(event) => {
                                                 formik.setFieldValue('file', event.target.files[0]);
                                                 setSelectedFileName(event?.target.files[0]?.name);
@@ -542,14 +545,28 @@ const EventForm = () => {
                                             heroicons-outline:upload
                                         </FuseSvgIcon>
                                     </Box>
-
+                                    
                                     {selectedFileName && (
                                         <Typography variant="body2" color="blue" sx={{ mt: 1 }}>
                                             Selected File: {selectedFileName}
                                         </Typography>
                                     )}
+                        
+        
 
                                 </div>
+                                {
+                      formik.errors.file && (
+                        <p
+                          style={{
+                            fontSize: "12px",
+                            padding: "0.75rem",
+                            color: "red",
+                          }}
+                        >
+                          {formik.errors.file}
+                        </p>
+                      )}
                             </div>
                         </form>
                     </div>

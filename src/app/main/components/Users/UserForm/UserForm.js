@@ -231,7 +231,7 @@ function UserForm() {
   }, [stateID]);
 
   const handleSubmit = (values) => {
-    console.log(formik)
+    // console.log(formik)
 
     if (showCredentials && !isChild) {
       if (
