@@ -1,3 +1,5 @@
+const secret = 'E-School'
+
 import TextField from "@mui/material/TextField";
 import * as yup from "yup";
 import _ from "@lodash";
@@ -23,8 +25,9 @@ import { useNavigate } from "react-router-dom";
 import { userAPIConfig } from "src/app/main/API/apiConfig";
 import FuseLoading from "@fuse/core/FuseLoading";
 import AddMembersFormHead from "./AddMembersFormHead";
-import { getLoggedInPartnerId } from "src/app/auth/services/utils/common";
-import { CheckBox } from "@mui/icons-material";
+import { AES } from "crypto-js";
+import CryptoJS from "crypto-js";
+
 
 const phoneNumberCountryCodes = [
   '+91',
@@ -148,6 +151,11 @@ function AddMembersForm() {
         })
         .then((response) => {
           if (response.status === 200) {
+            let decrypted = ''
+            if(response.data.user.password){
+              decrypted = AES.decrypt(response.data.user.password, secret).toString(CryptoJS.enc.Utf8)
+            }
+            
             const today = new Date();
             const userAge =
               today.getFullYear() -
@@ -172,8 +180,8 @@ function AddMembersForm() {
               familyId: response.data.user.familyId || "",
               name: response.data.user.name || "",
               email: response.data.user.email || "",
-              password: response.data.user.password || "",
-              passwordConfirm: response.data.user.password || "",
+              password: decrypted || "",
+              passwordConfirm: decrypted || "",
               gender: response.data.user.gender || "",
               dob: response.data.user.dob || "",
               role: response.data.user.role || "",
@@ -250,6 +258,8 @@ function AddMembersForm() {
 
 
   const handleSubmit = (values) => {
+    
+    
     if (userID === "" && values.profilePicture === null) {
       dispatch(
         showMessage({
@@ -279,13 +289,20 @@ function AddMembersForm() {
       }
     }
 
+
     if (formik.isValid) {
+      let encryptedPassword = '';
+
+      if(values.password){
+        encryptedPassword = AES.encrypt( values.password , secret).toString();
+      }
+      
       const formattedData = new FormData();
 
       formattedData.append("familyId", sessionStorage.getItem("familyId"));
       formattedData.append("name", values.name);
       formattedData.append("email", values.email);
-      formattedData.append("password", values.password);
+      formattedData.append("password", encryptedPassword);
       formattedData.append("gender", values.gender);
       formattedData.append("countryCode", values.countryCode.split(" ")[0]);
       formattedData.append("dob", values.dob);
