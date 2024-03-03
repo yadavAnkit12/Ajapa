@@ -1,4 +1,3 @@
-const secret = 'E-School'
 
 import TextField from '@mui/material/TextField';
 import * as yup from 'yup';
@@ -27,8 +26,7 @@ import { userAPIConfig } from 'src/app/main/API/apiConfig';
 import FuseLoading from '@fuse/core/FuseLoading';
 import { getLoggedInPartnerId } from 'src/app/auth/services/utils/common';
 import { forwardRef } from 'react';
-import { AES } from 'crypto-js';
-import CryptoJS from "crypto-js";
+
 
 const fontStyles = {
   fontFamily:
@@ -96,6 +94,10 @@ function UserForm() {
         if (!value) return true; // Allow null values
         const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
         return allowedTypes.includes(value.type);
+      })
+      .test("fileSize", "File size is too large (max 10MB)", (value) => {
+        if (!value) return true;
+        return value.size <= 10 * 1024 * 1024; // 10MB in bytes
       }),
     mobileNumber: yup.string().matches(/^[1-9]\d{9}$/, "Invalid mobile number"),
     // .required('Please enter your mobile number'),
@@ -166,7 +168,7 @@ function UserForm() {
             city: response.data.user.city?.split(":")[1] || "",
             profilePicture: null,
             isDisciple:
-              response.data.user.isDisciple === true ? "Yes" : "No" || "No",
+              response.data.user.isDisciple === true ? true : false,
             addressLine: response.data.user.addressLine || "",
             bloodGroup: response.data.user.bloodGroup || "",
             dikshaDate: response.data.user.dikshaDate || "",
@@ -229,6 +231,7 @@ function UserForm() {
   }, [stateID]);
 
   const handleSubmit = (values) => {
+    console.log(formik)
 
     if (showCredentials && !isChild) {
       if (
@@ -248,6 +251,15 @@ function UserForm() {
       }
     }
 
+    
+    if (formik.values.isDisciple === "") {
+      return dispatch(
+        showMessage({
+          message: "Please indicate whether you are an Ajapa disciple or not",
+          variant: "error",
+        })
+      );
+    }
    
     if (formik.isValid) {
      
@@ -275,7 +287,7 @@ function UserForm() {
       formattedData.append("whatsAppNumber", values.whatsAppNumber);
       formattedData.append(
         "isDisciple",
-        values.isDisciple === "Yes" ? true : false
+        values.isDisciple === true ? true : false
       );
       if (values.profilePicture !== null) {
         formattedData.append("file", values.profilePicture);
@@ -413,7 +425,8 @@ function UserForm() {
       state: "",
       city: "",
       profilePicture: null,
-      isDisciple: "No",
+      // isDisciple: "No",
+      isDisciple:"",
       addressLine: "",
       bloodGroup: "",
       dikshaDate: "",
@@ -807,8 +820,8 @@ function UserForm() {
                     </>
                   )}
 
-                  <div style={{ marginBottom: "16px" }}>
-                    <FormControlLabel
+                  {/* <div style={{ marginBottom: "16px" }}> */}
+                    {/* <FormControlLabel
                       control={
                         <Checkbox
                           checked={formik.values.isDisciple === "Yes"}
@@ -823,7 +836,43 @@ function UserForm() {
                       }
                       label="Are you an Ajapa Disciple ?"
                     />
-                  </div>
+                  </div> */}
+                  
+              <div>
+                <FormControl component="fieldset" required>
+                  <FormLabel component="legend" className="text-black">
+                    Are you an Ajapa Disciple ?
+                  </FormLabel>
+                  <FormGroup className="flex flex-row">
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={formik.values.isDisciple === true}
+                          onChange={() =>
+                            formik.setFieldValue("isDisciple", true)
+                          }
+                        />
+                      }
+                      label="Yes"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={formik.values.isDisciple === false}
+                          onChange={() =>
+                            formik.setFieldValue("isDisciple", false)
+                          }
+                        />
+                      }
+                      label="No"
+                    />
+                  </FormGroup>
+                </FormControl>
+              </div>
+
+
+
+
                   <div>
                     <input
                       type="file"
@@ -834,6 +883,7 @@ function UserForm() {
                           event.target.files[0]
                         );
                       }}
+                      onBlur={formik.handleBlur}
                       style={{
                         fontSize: "1.8rem",
                         color: "#1a202c",
