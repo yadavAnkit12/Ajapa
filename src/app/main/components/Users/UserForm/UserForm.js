@@ -1,9 +1,10 @@
+
 import TextField from '@mui/material/TextField';
 import * as yup from 'yup';
 import _ from '@lodash';
 import 'react-phone-input-2/lib/style.css'
 import InputAdornment from '@mui/material/InputAdornment';
-import { Autocomplete, Checkbox, FormControlLabel, FormControl, FormLabel, FormGroup, } from '@mui/material';
+import { Autocomplete, Checkbox, FormControlLabel, FormControl, FormLabel, FormGroup, Dialog, DialogTitle, DialogActions, Button, Slide, } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
@@ -24,6 +25,8 @@ import { useNavigate } from 'react-router-dom';
 import { userAPIConfig } from 'src/app/main/API/apiConfig';
 import FuseLoading from '@fuse/core/FuseLoading';
 import { getLoggedInPartnerId } from 'src/app/auth/services/utils/common';
+import { forwardRef } from 'react';
+
 
 const fontStyles = {
   fontFamily:
@@ -39,6 +42,10 @@ const phoneNumberCountryCodes = [
   "+81",
   // Add more country codes as needed
 ];
+
+const Transition = forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 function UserForm() {
   const dispatch = useDispatch();
@@ -57,6 +64,7 @@ function UserForm() {
   const [userID, setUserID] = useState("");
   const [showCredentials, setShowCredentials] = useState(true);
   const [isChild, setIsChild] = useState(false);
+  const [open,setOpen] = useState(false)
 
   const validationSchema = yup.object().shape({
     name: yup
@@ -86,6 +94,10 @@ function UserForm() {
         if (!value) return true; // Allow null values
         const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
         return allowedTypes.includes(value.type);
+      })
+      .test("fileSize", "File size is too large (max 10MB)", (value) => {
+        if (!value) return true;
+        return value.size <= 10 * 1024 * 1024; // 10MB in bytes
       }),
     mobileNumber: yup.string().matches(/^[1-9]\d{9}$/, "Invalid mobile number"),
     // .required('Please enter your mobile number'),
@@ -114,8 +126,9 @@ function UserForm() {
       })
       .then((response) => {
         if (response.status === 200) {
+          
           setUserID(response.data.user.id);
-
+         
           const today = new Date();
           const userAge =
             today.getFullYear() -
@@ -135,14 +148,14 @@ function UserForm() {
               setShowCredentials(false);
             }
           }
-console.log(response)
+
           formik.setValues({
             id: response.data.user.id || "",
             familyId: response.data.user.familyId,
             name: response.data.user.name || "",
             email: response.data.user.email || "",
-            password: response.data.user.password || "",
-            passwordConfirm: response.data.user.password || "",
+            password: response.data.user.password  || "",
+            passwordConfirm: response.data.user.password  || "",
             gender: response.data.user.gender || "",
             dob: response.data.user.dob || "",
             role: response.data.user.role || "",
@@ -155,7 +168,7 @@ console.log(response)
             city: response.data.user.city?.split(":")[1] || "",
             profilePicture: null,
             isDisciple:
-              response.data.user.isDisciple === true ? "Yes" : "No" || "No",
+              response.data.user.isDisciple === true ? true : false,
             addressLine: response.data.user.addressLine || "",
             bloodGroup: response.data.user.bloodGroup || "",
             dikshaDate: response.data.user.dikshaDate || "",
@@ -218,7 +231,7 @@ console.log(response)
   }, [stateID]);
 
   const handleSubmit = (values) => {
-    console.log(values)
+    // console.log(formik)
 
     if (showCredentials && !isChild) {
       if (
@@ -238,15 +251,26 @@ console.log(response)
       }
     }
 
+    
+    if (formik.values.isDisciple === "") {
+      return dispatch(
+        showMessage({
+          message: "Please indicate whether you are an Ajapa disciple or not",
+          variant: "error",
+        })
+      );
+    }
+   
     if (formik.isValid) {
+     
       const formattedData = new FormData();
       formattedData.append("id", values.id);
       formattedData.append("familyId", values.familyId);
       formattedData.append("name", values.name);
       formattedData.append("email", values.email);
-      formattedData.append("password", values.password);
+      formattedData.append("password",  values.password);
       formattedData.append("gender", values.gender);
-      formattedData.append("countryCode", values.countryCode.split(" ")[0]);
+      formattedData.append("countryCode", values.countryCode?.split(" ")[0]);
       formattedData.append("dob", values.dob);
       formattedData.append("mobileNumber", values.mobileNumber);
       formattedData.append("country", `${countryID}:${values.country}`);
@@ -263,7 +287,7 @@ console.log(response)
       formattedData.append("whatsAppNumber", values.whatsAppNumber);
       formattedData.append(
         "isDisciple",
-        values.isDisciple === "Yes" ? true : false
+        values.isDisciple === true ? true : false
       );
       if (values.profilePicture !== null) {
         formattedData.append("file", values.profilePicture);
@@ -355,13 +379,15 @@ console.log(response)
   //Showing fields in case of child
   const handleCheckBoxChange = () => {
     setShowCredentials(!showCredentials);
+    if(showCredentials){
+      setShowCredentials(true)
+      setOpen(true)
+    }
+   
+  };
 
-    if (showCredentials) {
-      const confirmation = confirm(
-        "Are you sure you want to clear the fields ?"
-      );
-
-      if (confirmation) {
+  const clearFieldsForChild=()=>{
+        setShowCredentials(false)
         formik.setValues({
           ...formik.values,
           email: "",
@@ -370,12 +396,15 @@ console.log(response)
           mobileNumber: "",
           countryCode: "",
           whatsAppNumber: "",
-        });
-      } else {
-        setShowCredentials(true);
-      }
-    }
-  };
+        }); 
+        setOpen(false)
+
+  } 
+
+  const handleClose=()=>{
+    setShowCredentials(true)
+    setOpen(false)
+  }
 
   const formik = useFormik({
     initialValues: {
@@ -396,7 +425,8 @@ console.log(response)
       state: "",
       city: "",
       profilePicture: null,
-      isDisciple: "No",
+      // isDisciple: "No",
+      isDisciple:"",
       addressLine: "",
       bloodGroup: "",
       dikshaDate: "",
@@ -495,7 +525,7 @@ console.log(response)
                               color="primary"
                             />
                           }
-                          label="Want fields"
+                          label="Complete the following fields: Email, Phone Number, and Password?"
                         />
                       </div>
                     )}
@@ -790,8 +820,8 @@ console.log(response)
                     </>
                   )}
 
-                  <div style={{ marginBottom: "16px" }}>
-                    <FormControlLabel
+                  {/* <div style={{ marginBottom: "16px" }}> */}
+                    {/* <FormControlLabel
                       control={
                         <Checkbox
                           checked={formik.values.isDisciple === "Yes"}
@@ -806,7 +836,43 @@ console.log(response)
                       }
                       label="Are you an Ajapa Disciple ?"
                     />
-                  </div>
+                  </div> */}
+                  
+              <div>
+                <FormControl component="fieldset" required>
+                  <FormLabel component="legend" className="text-black">
+                    Are you an Ajapa Disciple ?
+                  </FormLabel>
+                  <FormGroup className="flex flex-row">
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={formik.values.isDisciple === true}
+                          onChange={() =>
+                            formik.setFieldValue("isDisciple", true)
+                          }
+                        />
+                      }
+                      label="Yes"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={formik.values.isDisciple === false}
+                          onChange={() =>
+                            formik.setFieldValue("isDisciple", false)
+                          }
+                        />
+                      }
+                      label="No"
+                    />
+                  </FormGroup>
+                </FormControl>
+              </div>
+
+
+
+
                   <div>
                     <input
                       type="file"
@@ -817,6 +883,7 @@ console.log(response)
                           event.target.files[0]
                         );
                       }}
+                      onBlur={formik.handleBlur}
                       style={{
                         fontSize: "1.8rem",
                         color: "#1a202c",
@@ -975,6 +1042,22 @@ console.log(response)
                   )}
                 </div>
               </form>
+              <Dialog
+                open={open}
+                TransitionComponent={Transition}
+                keepMounted
+                onClose={() => setOpen(false)}
+                aria-describedby="alert-dialog-slide-description"
+              >
+                <DialogTitle>{"Do you want to clear the fields"}</DialogTitle>
+
+                <DialogActions>
+                  <Button onClick={() => handleClose()}>No</Button>
+                  <Button onClick={()=>clearFieldsForChild()} autoFocus>
+                    Yes
+                  </Button>
+                </DialogActions>
+              </Dialog>
             </div>
           </>
         }

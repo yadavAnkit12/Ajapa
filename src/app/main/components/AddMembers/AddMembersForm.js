@@ -23,8 +23,7 @@ import { useNavigate } from "react-router-dom";
 import { userAPIConfig } from "src/app/main/API/apiConfig";
 import FuseLoading from "@fuse/core/FuseLoading";
 import AddMembersFormHead from "./AddMembersFormHead";
-import { getLoggedInPartnerId } from "src/app/auth/services/utils/common";
-import { CheckBox } from "@mui/icons-material";
+
 
 const phoneNumberCountryCodes = [
   '+91',
@@ -148,6 +147,7 @@ function AddMembersForm() {
         })
         .then((response) => {
           if (response.status === 200) {
+            
             const today = new Date();
             const userAge =
               today.getFullYear() -
@@ -250,6 +250,8 @@ function AddMembersForm() {
 
 
   const handleSubmit = (values) => {
+    
+    
     if (userID === "" && values.profilePicture === null) {
       dispatch(
         showMessage({
@@ -279,7 +281,9 @@ function AddMembersForm() {
       }
     }
 
+
     if (formik.isValid) {
+      
       const formattedData = new FormData();
 
       formattedData.append("familyId", sessionStorage.getItem("familyId"));
