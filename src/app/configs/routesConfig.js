@@ -25,9 +25,12 @@ import AttendanceConfig from '../main/components/Attendance/AttendanceConfig';
 import SMSConfig from '../main/components/SMS/SMSConfig';
 import FoodConfig from '../main/components/Food/FoodConfig';
 import FoodDetailsConfig from '../main/components/FoodDetails/FoodDetailsConfig';
+import Report1Config from '../main/components/Report/Report1/Report1Config';
+import Repor2Config from '../main/components/Report/Report2/Report2Config';
+import Report3Config from '../main/components/Report/Report3/Report3Config';
 
 
-const routeConfigs = [SignOutConfig, SignInConfig,MyRegisterationConfig, AllEventRegistrationConfig, SignUpConfig, Error404PageConfig, AttendanceConfig,DashboardConfig,UserConfig,EventConfig, AddMembersConfig,UserEventConfig,ManageFamilyConfig,FoodConfig,FoodDetailsConfig,SMSConfig, HomeConfig];
+const routeConfigs = [SignOutConfig, SignInConfig,MyRegisterationConfig, AllEventRegistrationConfig, SignUpConfig, Error404PageConfig, Report1Config,Repor2Config,Report3Config,AttendanceConfig,DashboardConfig,UserConfig,EventConfig, AddMembersConfig,UserEventConfig,ManageFamilyConfig,FoodConfig,FoodDetailsConfig,SMSConfig, HomeConfig];
 
 
 const routes = [

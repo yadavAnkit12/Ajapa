@@ -125,6 +125,42 @@ const navigationConfig = [
     auth: ["Super"]
   },
   {
+    id: 'app-report',
+    title: "Report",
+    translate: "Report",
+    type: 'collapse',
+    icon: 'heroicons-outline:clipboard-check',
+    auth: ["Super"],
+    children: [
+
+      {
+        id: 'app-report1-component',
+        title: "Report 1",
+        translate: "Report 1",
+        type: 'item',
+        url: 'app/report1/',
+        auth: ["Super"],
+      },
+      {
+        id: 'app-report2-component',
+        title: "Report 2",
+        translate: "Report 2",
+        url: 'app/report2/',
+        type: 'item',
+        auth: ["Super"],
+      },
+      {
+        id: 'app-report3-component',
+        title: "Report 3",
+        translate: "Report 3",
+        url: 'app/report3/',
+        type: 'item',
+        auth: ["Super"],
+      }
+
+    ],
+  },
+  {
     id: 'sms-component',
     title: "SMS",
     translate: "SMS",

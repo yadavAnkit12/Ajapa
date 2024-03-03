@@ -3,8 +3,6 @@ import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 import jwtServiceConfig from './jwtServiceConfig';
 import { setPermissions } from '../utils/common';
-// import { getToken } from "firebase/messaging";
-// import { messaging } from '../../../configs/firebase'
 
 class JwtService extends FuseUtils.EventEmitter {
   init() {
