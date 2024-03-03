@@ -126,10 +126,7 @@ function UserForm() {
         if (response.status === 200) {
           
           setUserID(response.data.user.id);
-          let decrypted = ''
-        if(response.data.user.password){
-          decrypted = AES.decrypt(response.data.user.password, secret).toString(CryptoJS.enc.Utf8)
-        }
+         
           const today = new Date();
           const userAge =
             today.getFullYear() -
@@ -155,8 +152,8 @@ function UserForm() {
             familyId: response.data.user.familyId,
             name: response.data.user.name || "",
             email: response.data.user.email || "",
-            password: decrypted  || "",
-            passwordConfirm: decrypted  || "",
+            password: response.data.user.password  || "",
+            passwordConfirm: response.data.user.password  || "",
             gender: response.data.user.gender || "",
             dob: response.data.user.dob || "",
             role: response.data.user.role || "",
@@ -253,17 +250,13 @@ function UserForm() {
 
    
     if (formik.isValid) {
-      let encryptedPassword = '';
-
-      if(values.password){
-        encryptedPassword = AES.encrypt( values.password , secret).toString();
-      }
+     
       const formattedData = new FormData();
       formattedData.append("id", values.id);
       formattedData.append("familyId", values.familyId);
       formattedData.append("name", values.name);
       formattedData.append("email", values.email);
-      formattedData.append("password",  encryptedPassword);
+      formattedData.append("password",  values.password);
       formattedData.append("gender", values.gender);
       formattedData.append("countryCode", values.countryCode?.split(" ")[0]);
       formattedData.append("dob", values.dob);

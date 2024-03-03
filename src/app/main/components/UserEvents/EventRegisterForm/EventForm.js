@@ -116,7 +116,7 @@ const EventForm = (props) => {
                 departureModeOfTransport: props.registerUser.departureModeOfTransport || '',
                 departureTrainNumber: props.registerUser.departureTrainNumber || '',
                 specificRequirements: props.registerUser.specificRequirements || '',
-                attendingShivir: props.registerUser.attendingShivir,
+                attendingShivir: props.registerUser.attendingShivir ,
                 
             })
             setCountryID(props.registerUser.fromCountry.split(':')[0])
@@ -172,8 +172,8 @@ const EventForm = (props) => {
 
     const handleSubmit = (values) => {
 
-        if(shivirCheckBox && formik.values.attendingShivir === ''){
-            return dispatch(showMessage({ message: 'Please Check', variant: 'error' }));
+        if(shivirCheckBox && formik.values.attendingShivir === undefined){
+          return dispatch(showMessage({ message: 'Please tell whether you are attending the shivir or not', variant: 'error' }));
         }
 
         const formData = new FormData()
