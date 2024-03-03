@@ -1,3 +1,4 @@
+const secret = 'E-School'
 import React, { useState, useEffect, useRef } from 'react'
 import { useDispatch } from "react-redux";
 import { Typography, Container, Button, TextField, Stack, IconButton } from '@mui/material';
@@ -7,7 +8,6 @@ import { MuiOtpInput } from 'mui-one-time-password-input';
 import CloseIcon from '@mui/icons-material/Close';
 import jwtServiceConfig from 'src/app/auth/services/jwtService/jwtServiceConfig';
 import { useNavigate } from 'react-router-dom';
-
 
 const INITIAL_COUNT = 120
 
@@ -43,7 +43,7 @@ const OTPVerify = ({ data, handleEditClose, countryID, stateID, cityID }) => {
                 setStatus(STATUS.STARTED);
                 setSecondsRemaining(INITIAL_COUNT);
             } else {
-                dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
+                dispatch(showMessage({ message: response.data.erroMessage, variant: 'error' }));
             }
         });
     };
@@ -70,8 +70,11 @@ const OTPVerify = ({ data, handleEditClose, countryID, stateID, cityID }) => {
                 'Content-type': 'multipart/form-data',
             },
         }).then((response) => {
+            dispatch(showMessage({ message: 'OTP verify successfully', variant: 'success' }));
+
             // after successfully verifying the otp register the user
             if (response.status === 200) {
+ 
                 const formattedData = new FormData()
                 formattedData.append('name', data.name)
                 formattedData.append('email', data.email)

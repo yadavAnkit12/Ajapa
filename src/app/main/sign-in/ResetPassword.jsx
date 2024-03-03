@@ -1,3 +1,5 @@
+const secret = 'E-School'
+
 import React, { useState } from 'react';
 import { Card, CardContent, TextField, Button, IconButton, InputAdornment } from '@mui/material';
 import { useFormik, Form, Field } from 'formik';
@@ -6,6 +8,7 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import jwtServiceConfig from 'src/app/auth/services/jwtService/jwtServiceConfig';
 import axios from 'axios';
 import { useDispatch } from "react-redux";
+
 
 
 import { showMessage } from "app/store/fuse/messageSlice";
@@ -37,11 +40,9 @@ const ResetPassword = () => {
     });
 
     const handleSubmit = (values) => {
-        // const urlParams = new URLSearchParams(window.location.search);
-        const token = localStorage.getItem('token')
-        
+        const token = localStorage.getItem('token')    
         const formData = new FormData()
-        formData.append('password', values.newPassword)
+        formData.append('password',values.newPassword)
         
         axios.post(jwtServiceConfig.resetPassword, formData, {
             headers: {
@@ -50,7 +51,6 @@ const ResetPassword = () => {
             },
         }).then((response) => {
             if (response.status === 200) {
-            console.log(response)
                 localStorage.removeItem('token')
                 localStorage.removeItem('userData')
                 localStorage.removeItem('_grecaptcha')
@@ -62,7 +62,7 @@ const ResetPassword = () => {
                 dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }))
 
             }
-        }).catch('Something went wrong')
+        }).catch(()=>dispatch(showMessage({ message: 'Something went wrong', variant: 'error' })))
     };
 
     const handleLogin = () => {
