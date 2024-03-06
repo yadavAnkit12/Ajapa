@@ -28,7 +28,7 @@ function EventRegisterFormHead(props) {
                         delay={300}
                         style={{fontStyle:'normal',fontSize:'24px',lineHeight:'28px',letterSpacing:'0px',textAlign:'center',fontWeight:'bold'}}
                     >
-                        Event Registeration
+                        Event Registration
                     </Typography>
                 </div>
             </div>

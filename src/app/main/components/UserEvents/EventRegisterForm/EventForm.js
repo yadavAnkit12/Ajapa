@@ -221,11 +221,11 @@ const EventForm = (props) => {
             }).then((response) => {
                 if (response.status === 200) {
                     formik.resetForm()
-                    dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+                    dispatch(showMessage({ message: `Jai Guru. Your registration for ${props.eventName} is updated successfull`, variant: 'success' }));
                     props.setChange(!props.change)
                     props.setEventFormOpen(false)
                 } else {
-                    dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
+                    dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
                 }
             });
 
@@ -239,11 +239,11 @@ const EventForm = (props) => {
             }).then((response) => {
                 if (response.status === 200) {
                     formik.resetForm()
-                    dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+                    dispatch(showMessage({ message: `Jai Guru. Your registration for ${props.eventName} is successfull`, variant: 'success' }));
                     props.setChange(!props.change)
                     props.setEventFormOpen(false)
                 } else {
-                    dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
+                    dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
                 }
             });
         }

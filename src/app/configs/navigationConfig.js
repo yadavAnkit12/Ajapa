@@ -44,8 +44,8 @@ const navigationConfig = [
   },
   {
     id: 'app-userevent',
-    title: "User Events",
-    translate: "User Events",
+    title: "Events",
+    translate: "Events",
     type: 'item',
     icon: 'heroicons-outline:calendar',
     url: 'app/UserEvents/',
