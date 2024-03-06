@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { showMessage } from 'app/store/fuse/messageSlice';
 import clsx from 'clsx';
+import axios from 'axios';
+import { cardAPIConfig, eventAPIConfig, userAPIConfig } from '../../API/apiConfig';
 
 
 const style = {
@@ -33,6 +35,15 @@ function DashboardHeader(props) {
     eventStatus: 'On'
   });
 
+  const [ families, setFamilies] = useState(0)
+  const [ disciples, setDisciples] = useState(0)
+  const [ nonDisciples, setNonDisciples] = useState(0)
+  const [ events, setEvents] = useState(0)
+  const [ activeEvent, setActiveEvent]= useState(0)
+  const [ pendingUsers, setPendingUsers] = useState(0)
+  const [ rejectedUsers, setRejectedUsers] = useState(0)
+  const [approvedUsers, setApprovedUsers] = useState(0)
+
 
   const filterPartnerData = () => {
     props.setFilterValue(filterData);
@@ -56,6 +67,44 @@ function DashboardHeader(props) {
   const handleClose = () => {
     setOpen(false);
   };
+
+
+
+
+
+
+
+
+
+
+  useEffect (() =>{
+    axios.get(cardAPIConfig.carddetails, {
+      headers: {
+        'Content-type': 'multipart/form-data',
+        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+      },
+    }).then((response) => {
+      if (response.status === 200) {
+        
+          console.log("response 34", response.data)
+          setFamilies(response.data.familyCount)
+          setDisciples(response.data.discipleCount)
+          setNonDisciples(response.data.nonDiscipleCount)
+          setEvents(response.data.totalEvents)
+          setActiveEvent(response.data.countActiveEvents)
+          setPendingUsers(response.data.countPendingUsers)
+          setRejectedUsers(response.data.countRejectedUsers)
+          setApprovedUsers(response.data.countApprovedUsers)
+
+      
+      } else {
+        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
+      }
+    });
+  },[])
+
+
+
 
   return (
     <>
@@ -88,18 +137,18 @@ function DashboardHeader(props) {
         </Box>
       )} */}
 
-
+{/* 
             <img
               className="shrink-0 w-32 h-32 mr-12 rounded-full overflow-hidden object-cover object-center"
               src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSIyr_FwMIcppToiOqzBPOSE4P5N_PuM67WaoJN31twHQ&s'
               alt="Notification"
-            />
+            /> */}
 
             <div className="flex flex-col flex-auto">
-              <Typography className="font-semibold line-clamp-1">Ankit</Typography>
+              <Typography className="font-semibold line-clamp-1">Families</Typography>
 
 
-              <div className=" font-semibold line-clamp-2" dangerouslySetInnerHTML={{ __html: 'item.mobileNumber' }} />
+              {/* <div className=" font-semibold line-clamp-2" dangerouslySetInnerHTML={{ __html: 'item.mobileNumber' }} /> */}
 
 
               {/* {item.country && (
@@ -108,7 +157,7 @@ function DashboardHeader(props) {
           </Typography>
         )} */}
             </div>
-            <Typography className="font-semibold line-clamp-1">hkdh</Typography>
+            <Typography className="font-semibold line-clamp-1">{families}</Typography>
 
             {/* <IconButton
         disableRipple
@@ -123,132 +172,122 @@ function DashboardHeader(props) {
       </IconButton> */}
             {/* {item.country.split(':')[1]} */}
           </Card>
+
           <Card
             className={clsx(
               'flex items-center relative w-full rounded-16 p-20 min-h-64 shadow space-x-8 m-2',
-              // variant === 'success' && 'bg-green-600 text-white',
-              // variant === 'info' && 'bg-blue-700 text-white',
-              // variant === 'error' && 'bg-red-600 text-white',
-              // variant === 'warning' && 'bg-orange-600 text-white',
-              // className
+
             )}
-            // onClick={() => handleView(item)}
+
             elevation={0}
-          // component={item.useRouter ? NavLinkAdapter : 'div'}
-          // to={item.link || ''}
-          // role={item.link && 'button'}
-
           >
-            {/* {item.image && !item.image && (
-        <Box
-          sx={{ backgroundColor: 'background.default' }}
-          className="flex shrink-0 items-center justify-center w-32 h-32 mr-12 rounded-full"
-        >
-          <FuseSvgIcon className="opacity-75" color="inherit">
-          {`${key}/images/${props.data.id}.jpg`}
-          </FuseSvgIcon>
-        </Box>
-      )} */}
-
-
-            <img
-              className="shrink-0 w-32 h-32 mr-12 rounded-full overflow-hidden object-cover object-center"
-              src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSIyr_FwMIcppToiOqzBPOSE4P5N_PuM67WaoJN31twHQ&s'
-              alt="Notification"
-            />
 
             <div className="flex flex-col flex-auto">
-              <Typography className="font-semibold line-clamp-1">Ankit</Typography>
-
-
-              <div className=" font-semibold line-clamp-2" dangerouslySetInnerHTML={{ __html: 'item.mobileNumber' }} />
-
-
-              {/* {item.country && (
-          <Typography className="mt-8 text-sm leading-none " color="text.secondary">
-            {formatDistanceToNow(new Date(item.time), { addSuffix: true })}
-          </Typography>
-        )} */}
+              <Typography className="font-semibold line-clamp-1">Disciples</Typography>
             </div>
-            <Typography className="font-semibold line-clamp-1">hkdh</Typography>
-
-            {/* <IconButton
-        disableRipple
-        className="top-0 right-0 absolute p-8"
-        color="inherit"
-        size="small"
-        onClick={()=>handleClose(item.id)}
-      >
-        <FuseSvgIcon size={12} className="opacity-75" color="inherit">
-          heroicons-solid:x
-        </FuseSvgIcon>
-      </IconButton> */}
-            {/* {item.country.split(':')[1]} */}
+            <Typography className="font-semibold line-clamp-1">{disciples}</Typography>
           </Card>
+
           <Card
             className={clsx(
               'flex items-center relative w-full rounded-16 p-20 min-h-64 shadow space-x-8 m-2',
-              // variant === 'success' && 'bg-green-600 text-white',
-              // variant === 'info' && 'bg-blue-700 text-white',
-              // variant === 'error' && 'bg-red-600 text-white',
-              // variant === 'warning' && 'bg-orange-600 text-white',
-              // className
+
             )}
-            // onClick={() => handleView(item)}
+
             elevation={0}
-          // component={item.useRouter ? NavLinkAdapter : 'div'}
-          // to={item.link || ''}
-          // role={item.link && 'button'}
-
           >
-            {/* {item.image && !item.image && (
-        <Box
-          sx={{ backgroundColor: 'background.default' }}
-          className="flex shrink-0 items-center justify-center w-32 h-32 mr-12 rounded-full"
-        >
-          <FuseSvgIcon className="opacity-75" color="inherit">
-          {`${key}/images/${props.data.id}.jpg`}
-          </FuseSvgIcon>
-        </Box>
-      )} */}
-
-
-            <img
-              className="shrink-0 w-32 h-32 mr-12 rounded-full overflow-hidden object-cover object-center"
-              src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSIyr_FwMIcppToiOqzBPOSE4P5N_PuM67WaoJN31twHQ&s'
-              alt="Notification"
-            />
 
             <div className="flex flex-col flex-auto">
-              <Typography className="font-semibold line-clamp-1">Ankit</Typography>
-
-
-              <div className=" font-semibold line-clamp-2" dangerouslySetInnerHTML={{ __html: 'item.mobileNumber' }} />
-
-
-              {/* {item.country && (
-          <Typography className="mt-8 text-sm leading-none " color="text.secondary">
-            {formatDistanceToNow(new Date(item.time), { addSuffix: true })}
-          </Typography>
-        )} */}
+              <Typography className="font-semibold line-clamp-1">Non Disciples</Typography>
             </div>
-            <Typography className="font-semibold line-clamp-1">hkdh</Typography>
-
-            {/* <IconButton
-        disableRipple
-        className="top-0 right-0 absolute p-8"
-        color="inherit"
-        size="small"
-        onClick={()=>handleClose(item.id)}
-      >
-        <FuseSvgIcon size={12} className="opacity-75" color="inherit">
-          heroicons-solid:x
-        </FuseSvgIcon>
-      </IconButton> */}
-            {/* {item.country.split(':')[1]} */}
+            <Typography className="font-semibold line-clamp-1">{nonDisciples}</Typography>
           </Card>
 
+
+          <Card
+            className={clsx(
+              'flex items-center relative w-full rounded-16 p-20 min-h-64 shadow space-x-8 m-2',
+
+            )}
+
+            elevation={0}
+          >
+
+            <div className="flex flex-col flex-auto">
+              <Typography className="font-semibold line-clamp-1">Events</Typography>
+            </div>
+            <Typography className="font-semibold line-clamp-1">{events}</Typography>
+          </Card>
+
+        
         </div>
+
+
+        <div className="flex flex-col sm:flex-row space-y-16 sm:space-y-0 flex-1 w-full items-center justify-between pb-32 px-10">
+        <Card
+            className={clsx(
+              'flex items-center relative w-full rounded-16 p-20 min-h-64 shadow space-x-8 m-2',
+
+            )}
+
+            elevation={0}
+          >
+
+            <div className="flex flex-col flex-auto">
+              <Typography className="font-semibold line-clamp-1">Active Events</Typography>
+            </div>
+            <Typography className="font-semibold line-clamp-1">{activeEvent}</Typography>
+          </Card>
+
+                    <Card
+            className={clsx(
+              'flex items-center relative w-full rounded-16 p-20 min-h-64 shadow space-x-8 m-2',
+
+            )}
+
+            elevation={0}
+          >
+
+            <div className="flex flex-col flex-auto">
+              <Typography className="font-semibold line-clamp-1">Pending Users</Typography>
+            </div>
+            <Typography className="font-semibold line-clamp-1">{pendingUsers}</Typography>
+          </Card>
+
+                    <Card
+            className={clsx(
+              'flex items-center relative w-full rounded-16 p-20 min-h-64 shadow space-x-8 m-2',
+
+            )}
+
+            elevation={0}
+          >
+
+            <div className="flex flex-col flex-auto">
+              <Typography className="font-semibold line-clamp-1">Rejected Users</Typography>
+            </div>
+            <Typography className="font-semibold line-clamp-1">{rejectedUsers}</Typography>
+          </Card>
+          
+          <Card
+            className={clsx(
+              'flex items-center relative w-full rounded-16 p-20 min-h-64 shadow space-x-8 m-2',
+
+            )}
+
+            elevation={0}
+          >
+
+            <div className="flex flex-col flex-auto">
+              <Typography className="font-semibold line-clamp-1">Approved Users</Typography>
+            </div>
+            <Typography className="font-semibold line-clamp-1">{approvedUsers}</Typography>
+          </Card>
+        
+        </div>
+
+
+        
         <div className='flex sm:flex-row flex-wrap flex-col justify-between mx-10  mb-10 shadow-1 rounded-16'>
           <div className="flex sm:flex-row flex-wrap flex-col justify-start">
             {/* <TextField

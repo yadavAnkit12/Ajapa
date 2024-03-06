@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { eventAPIConfig } from 'src/app/main/API/apiConfig';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import Report1TableHead from './Report1TableHead';
+import { reportAPIConfig } from '../../../API/apiConfig';
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -39,7 +40,8 @@ function Report1Table(props) {
   // console.log(props)
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [eventListData, setEventListData] = useState([]);
+  // const [eventListData, setEventListData] = useState([]);
+  const [reportData, setReportData] = useState([]);
   const searchText = props.searchText;
 
   const [loading, setLoading] = useState(true);
@@ -95,29 +97,109 @@ function Report1Table(props) {
 
   const fetchData = () => {
     
-    const params = {
-      page: page + 1,
-      rowsPerPage: rowsPerPage, // Example data to pass in req.query
-      eventId: props.eventList?.find((event) => event.eventName === props.filterValue.eventName)?.eventId || '',
-      //   eventStatus: (_.get(props, 'filterValue.eventStatus') === 'Active' || _.get(props, 'filterValue') === '') ? true : false,
-      //   bookingStatus: (_.get(props, 'filterValue.bookingStatus') === 'On' || _.get(props, 'filterValue') === '') ? true : false,
-    };
-    axios.get(eventAPIConfig.allEventRegistrationList, { params }, {
-      headers: {
-        'Content-type': 'multipart/form-data',
-        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-      },
-    }).then((response) => {
-      if (response.status === 200) {
-        console.log(response)
-        //
-        setEventListData(response?.data);
-        setLoading(false);
-      } else {
-        dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
+        
+
+    const eventId = props.eventList?.find((event) => event.eventName === props.filterValue.eventName)?.eventId || '';
+
+    if(eventId ==='')
+    {
+      dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
+      return
+    }
+
+    if(props.filterValue.selectDate === '')
+    {
+      dispatch(showMessage({ message: "Please select the Arrival/Departure mode", variant: 'error' }));
+      return
+    }
+
+    if(props.filterValue.selectDate !=='' && props.filterValue.selectDate === 'Arrival' )
+    {
+      if( props.filterValue.attendingShivir === '' || props.filterValue.attendingShivir === 'All')
+      {
+
+        axios.get(`${reportAPIConfig.report1arrival}/${eventId}` ,{
+          headers: {
+            'Content-type': 'multipart/form-data',
+            Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+          },
+        }).then((response) => {
+          if (response.status === 200) {
+            console.log("report", response)
+            setReportData(response?.data);
+            setLoading(false);
+          } else {
+            dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
+          }
+        });
       }
-    });
+
+      else if(props.filterValue.attendingShivir === 'No' || props.filterValue.attendingShivir === 'Yes')
+      {
+        const attendingShivir =  props.filterValue.attendingShivir === "Yes" ? true : false; 
+        axios.get(`${reportAPIConfig.report1arrival}/${eventId}/${attendingShivir}` ,{
+          headers: {
+            'Content-type': 'multipart/form-data',
+            Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+          },
+        }).then((response) => {
+          if (response.status === 200) {
+            console.log("report", response)
+            setReportData(response?.data);
+            setLoading(false);
+          } else {
+            dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
+          }
+        });
+
+      }
+  }
+
+ else if(props.filterValue.selectDate !=='' && props.filterValue.selectDate === 'Departure' )
+    {
+      if( props.filterValue.attendingShivir === '' || props.filterValue.attendingShivir === 'All')
+      {
+        console.log("case 1")
+        axios.get(`${reportAPIConfig.report1departue}/${eventId}` ,{
+          headers: {
+            'Content-type': 'multipart/form-data',
+            Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+          },
+        }).then((response) => {
+          if (response.status === 200) {
+            console.log("report", response)
+            setReportData(response?.data);
+            setLoading(false);
+          } else {
+            dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
+          }
+        });
+      }
+
+      else if(props.filterValue.attendingShivir === 'No' || props.filterValue.attendingShivir === 'Yes')
+      {
+        console.log("case 2")
+        const attendingShivir =  props.filterValue.attendingShivir === "Yes" ? true : false; 
+        axios.get(`${reportAPIConfig.report1departue}/${eventId}/${attendingShivir}` ,{
+          headers: {
+            'Content-type': 'multipart/form-data',
+            Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+          },
+        }).then((response) => {
+          if (response.status === 200) {
+            console.log("report", response)
+            setReportData(response?.data);
+            setLoading(false);
+          } else {
+            dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
+          }
+        });
+
+      }
+  }
+
   };
+
 
 
   const handleViewClose = () => {
@@ -162,8 +244,8 @@ function Report1Table(props) {
 
   function handleSelectAllClick(event) {
     if (event.target.checked) {
-      setSelected(_.size(_.get(eventListData, 'data')) > 0 ?
-        _.get(eventListData, 'data').map((n) => n.eventId) :
+      setSelected(_.size(_.get(reportData, 'data')) > 0 ?
+        _.get(reportData, 'data').map((n) => n.eventId) :
         {}
       );
       return;
@@ -199,7 +281,7 @@ function Report1Table(props) {
     );
   }
 
-  if (!_.size(_.get(eventListData, 'data'))) {
+  if (!_.size(_.get(reportData, 'data'))) {
     return (
       <motion.div
         initial={{ opacity: 0 }}
@@ -207,7 +289,7 @@ function Report1Table(props) {
         className="flex flex-1 items-center justify-center h-full"
       >
         <Typography color="text.secondary" variant="h5">
-          There are no Registrations!
+          There is no Data.
         </Typography>
       </motion.div>
     );
@@ -221,12 +303,12 @@ function Report1Table(props) {
           order={order}
           onSelectAllClick={handleSelectAllClick}
           onRequestSort={handleRequestSort}
-          rowCount={eventListData?.length}
+          rowCount={reportData?.length}
           onMenuItemClick={handleDeselect}
         />
         <TableBody>
           {
-            eventListData?.data?.map((n) => {
+            reportData?.data?.map((n) => {
               const isSelected = selected.indexOf(n.eventId) !== -1;
               return (
                 <TableRow
@@ -240,26 +322,26 @@ function Report1Table(props) {
                   style={{ cursor: 'default' }}
                 >
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.userName}
+                    {n.date}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.eventName}
+                    {n.familyCount}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.eventDate}
+                    {n.maleCount}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.fromCountry.split(':')[1]}
+                    {n.femaleCount}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.fromState.split(':')[1]}
+                    {n.kidsCount}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.fromCity.split(':')[1]}
+                    {n.seniorCount}
                   </TableCell>
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                  {/* <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.shivirAvailable ? 'Yes' : 'No'}
-                  </TableCell>
+                  </TableCell> */}
               
                 </TableRow>
               );
@@ -269,7 +351,7 @@ function Report1Table(props) {
 
       </Table>
 
-      <TablePagination
+      {/* <TablePagination
         className="shrink-0 border-t-1"
         component="div"
         count={eventListData.totalElement}
@@ -283,7 +365,7 @@ function Report1Table(props) {
         }}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+      /> */}
       {/* <Dialog
         open={open}
         TransitionComponent={Transition}
@@ -315,7 +397,7 @@ function Report1Table(props) {
             width: '93%', // Set width to 82% for screens up to 280px
           },
         }}>
-          <EventView handleViewClose={handleViewClose} registrationId={viewid} />
+          {/* <EventView handleViewClose={handleViewClose} registrationId={viewid} /> */}
         </Box>
       </Modal>
 
