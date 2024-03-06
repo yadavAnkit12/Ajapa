@@ -85,7 +85,7 @@ const UserEventCard = () => {
                         <div className="flex items-center gap-2 mb-2">
                             <EventIcon />
                             <span className="text-lg" style={{
-                                fontStyle: 'normal', fontSize: '16px',
+                                fontStyle: 'normal', fontSize: '12px',
                                 lineHeight: '28px', letterSpacing: '0px',
                                 textAlign: 'center', fontWeight: 600,
                                 marginTop: '3px'

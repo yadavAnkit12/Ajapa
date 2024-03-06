@@ -315,7 +315,6 @@ const EventForm = (props) => {
 
             formik.setValues({
                 ...formik.values,
-                registrationId: newValue.registrationId || '',
                 eventId: newValue.eventId || '',
                 userId: newValue.userId || '',
                 userName: newValue.userName || '',
@@ -346,6 +345,8 @@ const EventForm = (props) => {
         }
     };
 
+    const filteredOptions = props.sameAsDD.filter(option => option.userId !== props.selectedUserId);
+
 
     return (
         <Card style={{ marginTop: '10px' }} className='shadow-5'>
@@ -354,7 +355,7 @@ const EventForm = (props) => {
                     disablePortal
                     value={props.sameAsDD.userName}
                     id="userName"
-                    options={props.sameAsDD.length > 0 ? props.sameAsDD : []}
+                    options={props.sameAsDD.length > 0 ? filteredOptions : []}
                     getOptionLabel={(option) => option.userName}
                     sx={{ my: 1, mx: 1 }}
                     onChange={(e, newValue) => handleUserNameChange(newValue)}

@@ -460,7 +460,7 @@ function ManageFamilyTable(props) {
                 >
                   {n.dob}
                 </TableCell>
-                <TableCell
+                {/* <TableCell
                   className="p-4 md:p-16"
                   component="th"
                   scope="row"
@@ -471,12 +471,12 @@ function ManageFamilyTable(props) {
                   }}
                 >
                   {n.status}
-                </TableCell>
+                </TableCell> */}
                 <TableCell
                   className="p-4 md:p-16"
                   component="th"
                   scope="row"
-                  align="center"
+                  align="left"
                 >
                   <PopupState variant="popover" popupId="demo-popup-menu">
                     {(popupState) => (
