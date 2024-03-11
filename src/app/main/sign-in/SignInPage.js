@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import _ from '@lodash';
 import store from '../../store/index'
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import jwtService from '../../auth/services/jwtService';
 import { showMessage } from "app/store/fuse/messageSlice";
 import Visibility from '@mui/icons-material/Visibility';
@@ -20,6 +20,10 @@ import { values } from 'lodash';
 import axios from 'axios';
 import jwtServiceConfig from 'src/app/auth/services/jwtService/jwtServiceConfig';
 import ReCAPTCHA from 'react-google-recaptcha';
+
+const INITIAL_COUNT = 120
+
+const twoDigit = (num) => String(num).padStart(2, '0')
 
 
 const validationSchema = yup.object().shape({
@@ -44,7 +48,7 @@ const style = {
 
 const initialValues = {
   email: '',
-  countryCode: '',
+  countryCode: '+91',
   mobileNumber: '',
   password: '',
 };
@@ -71,8 +75,15 @@ function SignInPage() {
   const [OTPVerify, setOTPVerify] = useState(false)
   const [recaptcha, setRecaptcha] = useState(null)
   const [showRecaptcha, setShowRecaptcha] = useState(true);
-  const recaptchaRef = React.createRef();
 
+  //for timmer
+  const [secondsRemaining, setSecondsRemaining] = useState(INITIAL_COUNT);
+  const [status, setStatus] = useState(null);
+  const secondsToDisplay = secondsRemaining % 60;
+  const minutesRemaining = (secondsRemaining - secondsToDisplay) / 60;
+  const minutesToDisplay = minutesRemaining % 60;
+
+  const recaptchaRef = React.createRef();
 
   const handleOpenModal = () => {
     setOpenModal(true);
@@ -91,11 +102,84 @@ function SignInPage() {
     setOTPVerify(false)
   };
 
+  //for timmer
+  const handleStart = () => {
+    const formData = new FormData()
+    formData.append('email', formik.values.email)
+    formData.append('countryCode', formik.values.countryCode.split(' ')[0])
+    formData.append('mobileNumber', formik.values.mobileNumber)
+
+    axios.post(`${jwtServiceConfig.sentOTPForLogin}`, formData, {
+      headers: {
+        'Content-type': 'multipart/form-data',
+      },
+    }).then((response) => {
+        if (response.status === 200) {
+            setStatus(STATUS.STARTED);
+            setSecondsRemaining(INITIAL_COUNT);
+        } else {
+            dispatch(showMessage({ message: response.data.erroMessage, variant: 'error' }));
+        }
+    });
+};
+const STATUS = {
+    STOPPED: <b>
+        <a
+            type="button"
+            onClick={handleStart}
+            className="text-danger"
+            style={{ marginLeft: '160px', cursor: 'pointer', textDecoration: 'underline',fontSize:'1.3rem' }}
+        > Resend OTP
+        </a>
+    </b>
+}
+
+useInterval(
+  () => {
+      if (secondsRemaining > 0) {
+          setSecondsRemaining(secondsRemaining - 1)
+      }
+
+      else {
+          setStatus(STATUS.STOPPED)
+      }
+  },
+  status === STATUS.STARTED ? 1000 : null,
+  // passing null stops the interval
+)
+
+function useInterval(callback, delay) {
+  const savedCallback = useRef()
+  useEffect(() => {
+
+      savedCallback.current = callback
+
+  }, [callback])
+
+  useEffect(() => {
+
+      function tick() {
+
+          savedCallback.current()
+
+      }
+
+      if (delay !== null) {
+
+          let id = setInterval(tick, delay)
+          return () => clearInterval(id)
+      }
+
+  }, [delay])
+
+}
+
+
   // For Sending the Otp 
   const handleSendOtp = async (e) => {
     e.preventDefault();
 
-    const isRequired = Boolean(formik.values.email || (formik.values.countryCode && formik.values.mobileNumber))
+    const isRequired = Boolean(formik.values.email && recaptcha || (formik.values.countryCode && formik.values.mobileNumber) && recaptcha)
     if (isRequired) {
       setShowRecaptcha(false)
       const formData = new FormData()
@@ -110,6 +194,8 @@ function SignInPage() {
       }).then((response) => {
         // console.log(response)
         if (response.status === 200) {
+          setStatus(STATUS.STARTED)
+          setSecondsRemaining(INITIAL_COUNT)
           dispatch(showMessage({ message: 'OTP has been sent to your mobile number and email.', variant: 'success' }));
           setShowOtpInput(true);
           setOTPVerify(true)
@@ -327,11 +413,28 @@ function SignInPage() {
                 }}
               />
             )}
-            {showOtpInput &&
+            {showOtpInput && status == STATUS.STARTED ?(
+              <>
               <Stack spacing={2} sx={{ mt: 2, marginBottom: 2 }}>
                 <MuiOtpInput style={{ maxWidth: '400px' }} value={otp} onChange={(newValue) => setOtp(newValue)} />
               </Stack>
+                              <div style={{ display: 'flex', justifyContent: 'center' }}> <b className="text-success" style={{fontSize:'1.3rem'}}>Resend OTP </b>
+                              <b className="ml-2 text-danger" style={{fontSize:'1.3rem'}}> {twoDigit(minutesToDisplay)}:
+                                  {twoDigit(secondsToDisplay)}</b>
+                          </div>
+                          </>
+            ):(
+              status
+            )
             }
+                        {/* {status == STATUS.STARTED ?
+                <div style={{ display: 'flex', justifyContent: 'center' }}> <b className="text-success" style={{fontSize:'1.3rem'}}>Resend OTP </b>
+                    <b className="ml-2 text-danger" style={{fontSize:'1.3rem'}}> {twoDigit(minutesToDisplay)}:
+                        {twoDigit(secondsToDisplay)}</b>
+                </div>
+                :
+                status
+            } */}
 
             <FormControlLabel
               control={

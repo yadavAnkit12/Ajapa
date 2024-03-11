@@ -172,7 +172,7 @@ const ForgotPassword = (props) => {
     const formik = useFormik({
         initialValues: {
             email: '',
-            countryCode: '',
+            countryCode: '+91',
             mobileNumber: ''
         },
         validationSchema: validationSchema,
