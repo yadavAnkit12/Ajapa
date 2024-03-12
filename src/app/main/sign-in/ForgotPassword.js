@@ -96,7 +96,9 @@ const ForgotPassword = (props) => {
           onClick={handleStart}
           className="text-danger"
           style={{
-            marginLeft: "160px",
+            // marginLeft: "160px",
+            display:'flex',
+            justifyContent:'center',
             cursor: "pointer",
             textDecoration: "underline",
             fontSize: "1.3rem",
@@ -365,7 +367,7 @@ const ForgotPassword = (props) => {
               letterSpacing: "0px",
             }}
           />
-
+         
           {showOtpInput && status === STATUS.STARTED ? (
                <div style={{ display: 'flex', justifyContent: 'center' }}> <b className="text-success" style={{fontSize:'1.3rem'}}>Resend OTP </b>
                <b className="ml-2 text-danger" style={{fontSize:'1.3rem'}}> {twoDigit(minutesToDisplay)}:
