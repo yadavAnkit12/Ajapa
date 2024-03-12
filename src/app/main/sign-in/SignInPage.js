@@ -439,7 +439,7 @@ function SignInPage() {
 
       <Box
         className="relative hidden md:flex flex-auto items-center justify-center h-full p-64 lg:px-112 overflow-hidden"
-        sx={{ backgroundImage: 'url("assets/images/logo/bg.avif")', backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }}
+        sx={{ backgroundImage: 'url("assets/images/logo/bg.jpg")', backgroundSize: 'cover', backgroundRepeat: 'no-repeat',backgroundPosition:'center' }}
       >
         <svg
           className="absolute inset-0 pointer-events-none"

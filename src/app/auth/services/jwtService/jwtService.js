@@ -72,7 +72,6 @@ class JwtService extends FuseUtils.EventEmitter {
       axios
         .post(jwtServiceConfig.signIn, formData)
         .then((response) => {
-          console.log(response)
           if (response.status !== 200) {
             reject(response?.data?.errorMessage)
           }
@@ -95,6 +94,8 @@ class JwtService extends FuseUtils.EventEmitter {
               sessionStorage.setItem('userRole', _.get(response, 'data.user.role'));
               sessionStorage.setItem('id', _.get(response, 'data.user.id'));
               sessionStorage.setItem('familyId', _.get(response, 'data.user.familyId'));
+              sessionStorage.setItem('user_data', JSON.stringify(response.data.user));
+
               this.setSession(userData.access_token);
               // this.getPermissions(_.get(response, 'data.user.roleID'));
               resolve(response.data.user);
@@ -142,6 +143,8 @@ class JwtService extends FuseUtils.EventEmitter {
               sessionStorage.setItem('userRole', _.get(response, 'data.user.role'));
               sessionStorage.setItem('id', _.get(response, 'data.user.id'));
               sessionStorage.setItem('familyId', _.get(response, 'data.user.familyId'));
+              sessionStorage.setItem('user_data', JSON.stringify(response.data.user));
+
               this.setSession(userData.access_token);
               // this.getPermissions(_.get(response, 'data.user.roleID'));
               resolve(response.data.user);
@@ -183,6 +186,8 @@ class JwtService extends FuseUtils.EventEmitter {
             sessionStorage.setItem('userRole', _.get(response, 'data.user.role'));
             sessionStorage.setItem('id', _.get(response, 'data.user.id'));
             sessionStorage.setItem('familyId', _.get(response, 'data.user.familyId'));
+            sessionStorage.setItem('user_data', JSON.stringify(response.data.user));
+
             this.setSession(userData.access_token);
             // this.getPermissions(_.get(response, 'data.data.userDetails.roleID'));
             resolve(userData.user);
@@ -232,6 +237,7 @@ class JwtService extends FuseUtils.EventEmitter {
   logout = () => {
     localStorage.removeItem('role')
     localStorage.removeItem('jwt_access_token')
+    localStorage.removeItem('user_data')
     sessionStorage.removeItem('userRole');
     sessionStorage.removeItem('id');
     sessionStorage.removeItem('familyId');
