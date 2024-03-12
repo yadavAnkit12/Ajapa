@@ -99,8 +99,8 @@ const navigationConfig = [
 
   {
     id: 'myRegisteration-component',
-    title: "My Registration",
-    translate: "My Registration",
+    title: "My Registrations",
+    translate: "My Registrations",
     type: 'item',
     icon: 'heroicons-outline:clipboard-check',
     url: 'app/myregistration',
