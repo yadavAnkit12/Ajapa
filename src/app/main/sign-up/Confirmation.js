@@ -21,9 +21,10 @@ const Confirmation = () => {
                     <img className="w-95" src="assets/images/logo/logo1.png" alt="logo" style={{ margin: '0 auto' }} />
                     <hr style={{ border: '2px solid #72A0C1', margin: '10px 0' }} />
                     <div style={{ textAlign: 'center', lineHeight: '20px' }}>
-                        <h3 >Dear User,</h3>
-                        <h3 >Your request has been received successfully!</h3>
-                        <h3 >You can explore all our services by login after Approval</h3>
+                        <h3 >We've received your signup request!</h3>
+                        <h3 >Our Admin team is currently reviewing your information.</h3>
+                        <h3 >We'll notify you via Email/SMS once your registration has been confirmed or if any further action is required.</h3>
+                        <h3>Meanwhile, if you have any questions or concerns, feel free to reach out to us at contact <a href="https://ajapayog.org/"  target="_blank" style={{color:'blue', backgroundColor:'transparent', cursor:'pointer'}}> @ajapayog.org</a>.</h3>
                         <Button
                             variant="contained"
                             color="primary"

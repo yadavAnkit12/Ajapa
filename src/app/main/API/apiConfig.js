@@ -14,7 +14,8 @@ export const userAPIConfig = {
     changeHead:key + '/changeHead',
     getUserByFamily: key + '/getApprovedUsersByFamilyId',
     myRegistration: key + '/event/registration/family/list',
-    sendSMS: key +'/sendCusmtomSMS'
+    sendSMS: key +'/sendCusmtomSMS',
+    smsTemplate: key + '/groupSMS/list'
 }
 export const eventAPIConfig = {
     create: key + '/saveEvent',
