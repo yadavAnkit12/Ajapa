@@ -1,14 +1,15 @@
 import { Typography } from '@mui/material'
 import { motion } from 'framer-motion';
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 function Home() {
+  const [profileUpdate,setProfileUpdate]=useState(false)
   useEffect(() => {
+
     const userData = sessionStorage.getItem('user_data');
     if (userData) {
       const user = JSON.parse(userData);
-      console.log(delete user.password)
-      console.log(user)
+      delete user.password
     const status=  Object.keys(user).every(key => user[key]==='' || user[key]===undefined  || user[key]==='undefined' || user[key]==='null' || user[key]===null);
     if(!status){
 
