@@ -178,8 +178,13 @@ function useInterval(callback, delay) {
   // For Sending the Otp 
   const handleSendOtp = async (e) => {
     e.preventDefault();
+    if(! recaptcha)
+    {
+      dispatch(showMessage({ message: "Fill the Recaptcha", variant: 'error' }));
+      return
+    }
 
-    const isRequired = Boolean(formik.values.email && recaptcha || (formik.values.countryCode && formik.values.mobileNumber) && recaptcha)
+    const isRequired = Boolean(formik.values.email  || (formik.values.countryCode && formik.values.mobileNumber) )
     if (isRequired) {
       setShowRecaptcha(false)
       const formData = new FormData()
