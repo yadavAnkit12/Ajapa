@@ -178,11 +178,11 @@ const EventForm = (props) => {
 
 
         if (formik.values.arrivalDate < lockarrivaldate || formik.values.arrivalDate > eventDate) {
-            return dispatch(showMessage({ message: 'Arrival Date should be in between lock arrival and event date', variant: 'error' }));
+            return dispatch(showMessage({ message: `Arrival Date should be in between ${lockarrivaldate} and ${eventDate}`, variant: 'error' }));
         }
         
         if (formik.values.departureDate < eventDate || formik.values.departureDate > lockdeparturedetail) {
-            return dispatch(showMessage({ message: 'Departure Date should be in between event and lock departure date', variant: 'error' }));
+            return dispatch(showMessage({ message: `Departure Date should be in between ${eventDate} and ${lockdeparturedetail}`, variant: 'error' }));
         }
         
 
