@@ -61,7 +61,7 @@ function Report1TableHead(props) {
   };
 
   return (
-    <TableHead>
+    <TableHead >
       <TableRow className="h-48 sm:h-64">
         {rows.map((row) => {
           if (row.visibleIf)

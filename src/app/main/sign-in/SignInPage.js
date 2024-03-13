@@ -72,7 +72,6 @@ function SignInPage() {
   const [recaptcha, setRecaptcha] = useState(null)
   const [showRecaptcha, setShowRecaptcha] = useState(true);
   const recaptchaRef = React.createRef();
-  const [showCheckBox, setShowBox] = useState(true)
 
 
   const handleOpenModal = () => {
@@ -124,7 +123,7 @@ function SignInPage() {
     }
     else {
       recaptchaRef.current.reset();
-      dispatch(showMessage({ message: "Fill all the details", variant: 'error' }));
+      dispatch(showMessage({ message: "Fill the required details", variant: 'error' }));
     }
   };
 
@@ -164,6 +163,7 @@ function SignInPage() {
         .then((user) => {
           if (user) {
             dispatch(showMessage({ message: 'Login successfully', variant: 'success' }));
+
           }
         })
         .catch((_errors) => {
@@ -517,7 +517,6 @@ function SignInPage() {
           <ForgotPassword setOpenModal={setOpenModal} />
         </Box>
       </Modal>
-
     </div >
   );
 }

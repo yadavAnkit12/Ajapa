@@ -43,15 +43,24 @@ export const attendanceAPIConfig = {
     attendancePdf: key + "/reportPdf/event/registrations"
 }
 
-
-
-
-
 export const foodAPIConfig = {
     saveFood: key + '/saveFoodDetails',
     getFoodCheck : key + '/getFoodDetail',
     getFoodDetails: key + '/getFoodDetails'
 }
+
+export const reportAPIConfig = {
+   report1arrival: key + '/report1/arrival/event/registrations',
+   report1departue : key +'/report1/departure/event/registrations' 
+}
+
+
+export const cardAPIConfig = {
+    carddetails: key + '/getCardsDetails'
+ }
+
+
+
 
 export const doctorAPIConfig = {
     register: key + '/api/doctor/RegisterDoctor',

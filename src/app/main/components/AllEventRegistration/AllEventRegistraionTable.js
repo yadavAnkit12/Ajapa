@@ -42,13 +42,13 @@ const menuItemArray = [
     // visibleIf: ['complete', 'active', 'inactive'],
     loadIf: true
   },
-  {
-    key: 1,
-    label: 'Edit',
-    status: 'edit',
-    // visibleIf: ['complete', 'active', 'inactive'],
-    loadIf: true
-  },
+  // {
+  //   key: 1,
+  //   label: 'Edit',
+  //   status: 'edit',
+  //   // visibleIf: ['complete', 'active', 'inactive'],
+  //   loadIf: true
+  // },
   // {
   //   key: 1,
   //   label: 'Delete',
