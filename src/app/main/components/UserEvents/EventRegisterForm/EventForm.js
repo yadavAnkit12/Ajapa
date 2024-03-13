@@ -176,6 +176,17 @@ const EventForm = (props) => {
           return dispatch(showMessage({ message: 'Please tell whether you are attending the shivir or not', variant: 'error' }));
         }
 
+
+        if (formik.values.arrivalDate < lockarrivaldate || formik.values.arrivalDate > eventDate) {
+            return dispatch(showMessage({ message: 'Arrival Date should be in between lock arrival and event date', variant: 'error' }));
+        }
+        
+        if (formik.values.departureDate < eventDate || formik.values.departureDate > lockdeparturedetail) {
+            return dispatch(showMessage({ message: 'Departure Date should be in between event and lock departure date', variant: 'error' }));
+        }
+        
+
+
         const formData = new FormData()
         formData.append('eventId', props.eventId)   
         formData.append('userId', props.selectedUserId)
