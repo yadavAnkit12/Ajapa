@@ -28,10 +28,12 @@ const twoDigit = (num) => String(num).padStart(2, '0')
 
 const validationSchema = yup.object().shape({
   email: yup.string().email('Invalid email address').matches(/^([A-Za-z0-9_\-\.])+\@(?!(?:[A-Za-z0-9_\-\.]+\.)?([A-Za-z]{2,4})\.\2)([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/, 'Invalid email'),
-  countryCode: yup.string(),
+  // countryCode: yup.string(),
   mobileNumber: yup.string().matches(/^\d{10}$/, 'Mobile number must be 10 digits'),
   password: yup.string()
 });
+
+
 const style = {
   position: 'absolute',
   top: '50%',
@@ -180,7 +182,7 @@ function useInterval(callback, delay) {
     e.preventDefault();
     if(! recaptcha)
     {
-      dispatch(showMessage({ message: "Fill the Recaptcha", variant: 'error' }));
+      dispatch(showMessage({ message: "Select I'm not a robot", variant: 'error' }));
       return
     }
 
@@ -318,12 +320,12 @@ function useInterval(callback, delay) {
                   onChange={(event, newValue) => {
                     formik.setFieldValue('countryCode', newValue);
                   }}
+                  onBlur={formik.handleBlur}
                   renderInput={(params) => (
                     <TextField
                       {...params}
                       label="Code"
                       variant="outlined"
-                      required
                       error={formik.touched.countryCode && Boolean(formik.errors.countryCode)}
                       helperText={formik.touched.countryCode && formik.errors.countryCode}
                       sx={{

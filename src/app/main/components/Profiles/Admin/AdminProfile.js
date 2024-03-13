@@ -8,11 +8,12 @@ import AdminProfileEdit from './AdminProfileEdit'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import EditIcon from '@mui/icons-material/Edit';
-import { IconButton } from '@mui/material';
+import { Button, IconButton, Typography } from '@mui/material';
 import { useDispatch } from "react-redux";
 import { showMessage } from "app/store/fuse/messageSlice";
 import FuseLoading from '@fuse/core/FuseLoading';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 
 
@@ -55,7 +56,7 @@ function AdminProfile() {
         <div>
             <div className="container">
                 <div className="row gutters">
-                    <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                    {/* <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                         <div className="card h-100">
                             <div className="card-body">
                                 <div className="account-settings">
@@ -73,7 +74,19 @@ function AdminProfile() {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
+                                    <div className="flex flex-col sm:flex-row space-y-16 sm:space-y-0 flex-1 w-full items-center justify-between py-32 px-10">
+                    <Typography
+                        component={motion.span}
+                        initial={{ x: -20 }}
+                        animate={{ x: 0, transition: { delay: 0.2 } }}
+                        delay={300}
+                        style={{ fontStyle: 'normal', fontSize: '24px', lineHeight: '28px', letterSpacing: '0px', textAlign: 'center', fontWeight: 'bold' }}
+                    >
+                        My Profile
+                    </Typography>
+
+                </div>
                     <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                         <div className="card h-100">
                             <div className="card-body">
@@ -170,6 +183,18 @@ function AdminProfile() {
                                         </div>
                                     </div>
                                 </fieldset>
+                                <Button
+                                                        // variant='contained'
+                                                
+                                                        style={{
+                                                            backgroundColor: true ? '#4f46e5' : '#d3d3d3', // Use light gray for disabled
+                                                            color: 'white',
+                                                        }}
+                                                        onClick={() => handleEditProfile(data.id)}
+                                                        className='float-right m-1 cursor-pointer'
+                                                    >
+                                                        Edit Profile
+                                                    </Button>
                             </div>
                         </div>
                     </div>

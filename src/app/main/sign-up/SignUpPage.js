@@ -113,6 +113,7 @@ function SignUpPage() {
     gender: yup.string().required("Please select your gender"),
     dob: yup
       .date()
+      .typeError("Please enter a valid date")
       .required("Please enter your date of birth")
       .test("is-adult", "You must be at least 18 years old", function (value) {
         const currentDate = new Date();
