@@ -28,10 +28,12 @@ const twoDigit = (num) => String(num).padStart(2, '0')
 
 const validationSchema = yup.object().shape({
   email: yup.string().email('Invalid email address').matches(/^([A-Za-z0-9_\-\.])+\@(?!(?:[A-Za-z0-9_\-\.]+\.)?([A-Za-z]{2,4})\.\2)([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/, 'Invalid email'),
-  countryCode: yup.string(),
+  // countryCode: yup.string(),
   mobileNumber: yup.string().matches(/^\d{10}$/, 'Mobile number must be 10 digits'),
   password: yup.string()
 });
+
+
 const style = {
   position: 'absolute',
   top: '50%',
@@ -75,6 +77,7 @@ function SignInPage() {
   const [OTPVerify, setOTPVerify] = useState(false)
   const [recaptcha, setRecaptcha] = useState(null)
   const [showRecaptcha, setShowRecaptcha] = useState(true);
+  const [codeError, setCodeError] = useState(false) //state for showing country code error
 
   //for timmer
   const [secondsRemaining, setSecondsRemaining] = useState(INITIAL_COUNT);
@@ -94,6 +97,8 @@ function SignInPage() {
 
   const handleCheckboxChange = () => {
     setShowEmail((prevShowEmail) => !prevShowEmail);
+    formik.values.mobileNumber= ''
+    formik.values.email=''
   };
 
   const handleCheckboxOtp = () => {
@@ -178,11 +183,18 @@ function useInterval(callback, delay) {
   // For Sending the Otp 
   const handleSendOtp = async (e) => {
     e.preventDefault();
+
+    console.log("Formik", formik)
     if(! recaptcha)
     {
-      dispatch(showMessage({ message: "Fill the Recaptcha", variant: 'error' }));
+      dispatch(showMessage({ message: "Select you are not a robot", variant: 'error' }));
       return
     }
+
+    // if(formik.values.countryCode == undefined)
+    // {
+    //   setCodeError(true)
+    // }
 
     const isRequired = Boolean(formik.values.email  || (formik.values.countryCode && formik.values.mobileNumber) )
     if (isRequired) {
@@ -220,6 +232,11 @@ function useInterval(callback, delay) {
 
   //  signin using password
   const handleSubmit = (values) => {
+
+    // if(formik.values.countryCode == undefined)
+    // {
+    //   setCodeError(true)
+    // }
     
     // check that any field that is required is empty
     const isRequired = Boolean((values.email || (values.countryCode && values.mobileNumber)) && values.password && recaptcha)
@@ -311,19 +328,20 @@ function useInterval(callback, delay) {
 
             ) : (
               <div className='d-flex'>
+                <div>
                 <Autocomplete
                   options={phoneNumberCountryCodes}
                   value={formik.values.countryCode}
-                  className="mb-24"
+                  className="mb-0"
                   onChange={(event, newValue) => {
                     formik.setFieldValue('countryCode', newValue);
                   }}
+                  onBlur={formik.handleBlur}
                   renderInput={(params) => (
                     <TextField
                       {...params}
                       label="Code"
                       variant="outlined"
-                      required
                       error={formik.touched.countryCode && Boolean(formik.errors.countryCode)}
                       helperText={formik.touched.countryCode && formik.errors.countryCode}
                       sx={{
@@ -336,6 +354,11 @@ function useInterval(callback, delay) {
                     />
                   )}
                 />
+                {/* {
+                   !showEmail && codeError ?      <p className='text-red-500 text-md' >Country code is required</p> : ''
+                } */}
+              
+                </div>
                 <TextField
                   name="mobileNumber"
                   label="Mobile Number"
