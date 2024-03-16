@@ -77,6 +77,7 @@ function SignInPage() {
   const [OTPVerify, setOTPVerify] = useState(false)
   const [recaptcha, setRecaptcha] = useState(null)
   const [showRecaptcha, setShowRecaptcha] = useState(true);
+  const [codeError, setCodeError] = useState(false) //state for showing country code error
 
   //for timmer
   const [secondsRemaining, setSecondsRemaining] = useState(INITIAL_COUNT);
@@ -96,6 +97,8 @@ function SignInPage() {
 
   const handleCheckboxChange = () => {
     setShowEmail((prevShowEmail) => !prevShowEmail);
+    formik.values.mobileNumber= ''
+    formik.values.email=''
   };
 
   const handleCheckboxOtp = () => {
@@ -180,11 +183,18 @@ function useInterval(callback, delay) {
   // For Sending the Otp 
   const handleSendOtp = async (e) => {
     e.preventDefault();
+
+    console.log("Formik", formik)
     if(! recaptcha)
     {
-      dispatch(showMessage({ message: "Select I'm not a robot", variant: 'error' }));
+      dispatch(showMessage({ message: "Select you are not a robot", variant: 'error' }));
       return
     }
+
+    // if(formik.values.countryCode == undefined)
+    // {
+    //   setCodeError(true)
+    // }
 
     const isRequired = Boolean(formik.values.email  || (formik.values.countryCode && formik.values.mobileNumber) )
     if (isRequired) {
@@ -222,6 +232,11 @@ function useInterval(callback, delay) {
 
   //  signin using password
   const handleSubmit = (values) => {
+
+    // if(formik.values.countryCode == undefined)
+    // {
+    //   setCodeError(true)
+    // }
     
     // check that any field that is required is empty
     const isRequired = Boolean((values.email || (values.countryCode && values.mobileNumber)) && values.password && recaptcha)
@@ -313,10 +328,11 @@ function useInterval(callback, delay) {
 
             ) : (
               <div className='d-flex'>
+                <div>
                 <Autocomplete
                   options={phoneNumberCountryCodes}
                   value={formik.values.countryCode}
-                  className="mb-24"
+                  className="mb-0"
                   onChange={(event, newValue) => {
                     formik.setFieldValue('countryCode', newValue);
                   }}
@@ -338,6 +354,11 @@ function useInterval(callback, delay) {
                     />
                   )}
                 />
+                {/* {
+                   !showEmail && codeError ?      <p className='text-red-500 text-md' >Country code is required</p> : ''
+                } */}
+              
+                </div>
                 <TextField
                   name="mobileNumber"
                   label="Mobile Number"

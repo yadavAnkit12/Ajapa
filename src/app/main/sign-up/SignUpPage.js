@@ -31,6 +31,7 @@ import { Modal, Box } from "@mui/material";
 import axios from "axios";
 import jwtServiceConfig from "src/app/auth/services/jwtService/jwtServiceConfig";
 import ReCAPTCHA from "react-google-recaptcha";
+import FuseLoading from "@fuse/core/FuseLoading";
 
 const style = {
   position: "absolute",
@@ -73,6 +74,8 @@ function SignUpPage() {
   const [cityList, setCityList] = useState([]);
   const [cityID, setCityID] = useState("");
   const [recaptcha, setRecaptcha] = useState(null);
+  const [loading, setLoading] = useState(false)
+  const [stateName, setStateName]= useState('')  //for handling a state whic have no state
   const initialValues = {
     name: "",
     email: "",
@@ -188,17 +191,23 @@ function SignUpPage() {
       })
       .then((response) => {
         if (response.status === 200) {
-          setCityList(response.data);
+          if (response.data.length === 0) {
+            // If no cities are available, set the city list to an array containing the state name
+            setCityList([{ id: stateID, name: stateName }]);
+          } else {
+            // If cities are available, set the city list to the response data
+            setCityList(response.data);
+          }
         }
       });
   }, [stateID]);
 
   const handleSubmit = (values) => {
-    console.log("ghjk", formik);
+    // console.log("ghjk", formik);
     if (recaptcha === null) {
       return dispatch(
         showMessage({
-          message: "Please fill all the details",
+          message: "Select you are not a robot",
           variant: "error",
         })
       );
@@ -211,29 +220,44 @@ function SignUpPage() {
         })
       );
     }
-    const formData = new FormData();
-    formData.append("email", values.email);
-    formData.append("countryCode", values.countryCode);
-    formData.append("mobileNumber", values.mobileNumber);
-    axios
-      .post(`${jwtServiceConfig.otpSent}`, formData, {
-        headers: {
-          "Content-type": "multipart/form-data",
-        },
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          setOpenEdit(true);
-        } else {
-          dispatch(
-            showMessage({
-              message: response.data.errorMessage,
-              variant: "error",
-            })
-          );
-        }
-      })
-      .catch((error) => console.log(error));
+
+    if(formik.isValid)
+    {
+      setLoading(true)
+      const formData = new FormData();
+      formData.append("email", values.email);
+      formData.append("countryCode", values.countryCode);
+      formData.append("mobileNumber", values.mobileNumber);
+      axios
+        .post(`${jwtServiceConfig.otpSent}`, formData, {
+          headers: {
+            "Content-type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setLoading(false);
+            setOpenEdit(true);
+          } else {
+            dispatch(
+              showMessage({
+                message: response.data.errorMessage,
+                variant: "error",
+              })
+            );
+          }
+        })
+        .catch((error) => console.log(error));
+    }
+    else{
+      return dispatch(
+        showMessage({
+          message: "Please fill all details",
+          variant: "error",
+        })
+      )
+    }
+
   };
 
   const handleEditClose = () => {
@@ -244,6 +268,14 @@ function SignUpPage() {
     validationSchema: validationSchema,
     onSubmit: handleSubmit,
   });
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <FuseLoading />
+      </div>
+    );
+  }
 
   return (
     <div
@@ -612,6 +644,10 @@ function SignUpPage() {
                   const selectedSate = stateList.find(
                     (state) => state.name === newValue
                   )?.id;
+                  const selectedStateName = stateList.find(
+                    (state) => state.name === newValue
+                  )?.name;
+                  setStateName(selectedStateName)
                   setStateID(selectedSate);
                   formik.setFieldValue("state", newValue);
                 }}

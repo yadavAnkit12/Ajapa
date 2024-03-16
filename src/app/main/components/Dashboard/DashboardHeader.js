@@ -283,7 +283,7 @@ function DashboardHeader(props) {
           sx={{ backgroundColor: 'background.default' }}
           className="flex shrink-0 items-center justify-center w-32 h-32 mr-12 rounded-full"
         >
-          <Avatar className="opacity-75" color="inherit" src="assets/images/avatars/pendingUser.jpeg">
+          <Avatar className="opacity-75" color="inherit" src="assets/images/avatars/pendingUser.png">
 
           </Avatar>
         </Box>
@@ -306,7 +306,7 @@ function DashboardHeader(props) {
           sx={{ backgroundColor: 'background.default' }}
           className="flex shrink-0 items-center justify-center w-32 h-32 mr-12 rounded-full"
         >
-          <Avatar className="opacity-75" color="inherit" src="assets/images/avatars/rejectedUser.jpeg">
+          <Avatar className="opacity-75" color="inherit" src="assets/images/avatars/rejectedUser.jpg">
 
           </Avatar>
         </Box>
@@ -329,7 +329,7 @@ function DashboardHeader(props) {
           sx={{ backgroundColor: 'background.default' }}
           className="flex shrink-0 items-center justify-center w-32 h-32 mr-12 rounded-full"
         >
-          <Avatar className="opacity-75" color="inherit" src="assets/images/avatars/approvedUser.jpg">
+          <Avatar className="opacity-75" color="inherit" src="assets/images/avatars/approvedUser.jpeg">
 
           </Avatar>
         </Box>

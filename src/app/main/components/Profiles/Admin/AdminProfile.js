@@ -187,13 +187,13 @@ function AdminProfile() {
                                                         // variant='contained'
                                                 
                                                         style={{
-                                                            backgroundColor: true ? '#4f46e5' : '#d3d3d3', // Use light gray for disabled
+                                                            backgroundColor:  '#4f46e5' , // Use light gray for disabled
                                                             color: 'white',
                                                         }}
                                                         onClick={() => handleEditProfile(data.id)}
                                                         className='float-right m-1 cursor-pointer'
                                                     >
-                                                        Edit Profile
+                                                        Edit 
                                                     </Button>
                             </div>
                         </div>
