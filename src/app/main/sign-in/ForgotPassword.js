@@ -22,7 +22,9 @@ import JwtService from "src/app/auth/services/jwtService";
 const validationSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email address"),
   countryCode: Yup.string(),
-  mobileNumber: Yup.string(),
+  mobileNumber: Yup
+  .string()
+  .matches(/^[1-9]\d{9}$/, "Invalid mobile number")
 });
 
 const phoneNumberCountryCodes = [
@@ -46,6 +48,8 @@ const ForgotPassword = (props) => {
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [verifyOtp, setVerifyOtp] = useState(false);
   const [otp, setOtp] = useState(""); //OTP states
+  const [text,setText] = useState("Reset Password")
+  const [hideCheckBox, setHideCheckBox] = useState(true)
 
   //Timer to resend the Otp
   const [secondsRemaining, setSecondsRemaining] = useState(INITIAL_COUNT);
@@ -202,6 +206,8 @@ const ForgotPassword = (props) => {
       .then((response) => {
         // console.log(response)
         if (response.status === 200) {
+          setText("Fill the OTP")
+          setHideCheckBox(false)
           setShowOtpInput(true); //Function for making otp field visible
           setVerifyOtp(true);
           // Start the timer
@@ -240,7 +246,7 @@ const ForgotPassword = (props) => {
     <Container>
       <React.Fragment>
         <form onSubmit={formik.handleSubmit}>
-          <h4>Reset Password</h4>
+          <h4>{text}</h4>
 
           {showOtpInput ? (
             <Stack spacing={2} sx={{ mt: 2, marginBottom: 2 }}>
@@ -273,6 +279,7 @@ const ForgotPassword = (props) => {
                       },
                     },
                     width: "300px",
+                    marginTop:'1rem'
                   }}
                 />
               )}
@@ -345,7 +352,9 @@ const ForgotPassword = (props) => {
             </React.Fragment>
           )}
           <br />
+         
           <div style={{display:'flex', flexDirection:'column'}}>
+          {hideCheckBox && (
           <FormControlLabel
             control={
               <Checkbox
@@ -367,7 +376,7 @@ const ForgotPassword = (props) => {
               letterSpacing: "0px",
             }}
           />
-         
+          )}
           {showOtpInput && status === STATUS.STARTED ? (
                <div style={{ display: 'flex', justifyContent: 'center' }}> <b className="text-success" style={{fontSize:'1.3rem'}}>Resend OTP </b>
                <b className="ml-2 text-danger" style={{fontSize:'1.3rem'}}> {twoDigit(minutesToDisplay)}:
