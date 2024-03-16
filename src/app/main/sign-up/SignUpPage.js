@@ -203,7 +203,6 @@ function SignUpPage() {
   }, [stateID]);
 
   const handleSubmit = (values) => {
-    // console.log("ghjk", formik);
     if (recaptcha === null) {
       return dispatch(
         showMessage({
@@ -469,7 +468,7 @@ function SignUpPage() {
                   },
                 }}
                 inputProps={{
-                  max: new Date().toISOString().split("T")[0], // Set max date to current date
+                  max: new Date().toISOString().split("T")[0],
                 }}
               />
 
