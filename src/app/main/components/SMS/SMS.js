@@ -16,72 +16,87 @@ function SMS() {
   const [events, setEvents] = useState([]);
   const [selectedEventId, setSelectedEventId] = useState("");
   const [value, setValue] = useState("");
+  const [smsTemplate, setSMSTemplate] = useState([])
 
   const [sendMessageTo, setSendMessageTo] = useState([
     {
-      key: "to all memebers registered",
-      value: 1,
+      key: 1,
+      value: "to all memebers registered",
     },
     {
-      key: "to the head of the families who have registered",
-      value: 2,
+      key: 2,
+      value: "to the head of the families who have registered",
     },
     {
-      key: "to the people currently Marked as Present",
-      value: 3,
+      key: 3,
+      value: "to the people currently Marked as Present",
     },
     {
-      key: "to only head of the family those who are marked as Present",
-      value: 4,
+      key: 4,
+      value: "to only head of the family those who are marked as Present",
     },
     {
-      key: "to the members attending Shivir",
-      value: 5,
+      key: 5,
+      value: "to the members attending Shivir",
     },
     {
-      key: "to all the approved users",
-      value: 6,
+      key: 6,
+      value: "to all the approved users",
     },
     {
-      key: "to all the Head of the families",
-      value: 7,
+      key: 7,
+      value: "to all the Head of the families",
     },
   ]);
+
+  useEffect(() => {
+    formik.resetForm()
+  }, [])
+
+  useEffect(() => {
+    axios
+      .get(userAPIConfig.smsTemplate, {
+        headers: {
+          "Content-type": "multipart/form-data",
+          Authorization: ` Bearer ${window.localStorage.getItem("jwt_access_token")}`,
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          setSMSTemplate(response?.data?.messageTemplates)
+        } else {
+          dispatch(showMessage({ message: response.data.errorMessage, variant: "error", }));
+        }
+      });
+  }, []);
+
 
   useEffect(() => {
     axios
       .get(eventAPIConfig.allEventList, {
         headers: {
           "Content-type": "multipart/form-data",
-          Authorization: ` Bearer ${window.localStorage.getItem(
-            "jwt_access_token"
-          )}`,
+          Authorization: ` Bearer ${window.localStorage.getItem("jwt_access_token")}`,
         },
       })
       .then((response) => {
         if (response.status === 200) {
-          // console.log("Attendance",response)
           setEvents(response?.data?.data);
-          //  console.log("hello",events)
         } else {
-          dispatch(
-            showMessage({
-              message: response.data.errorMessage,
-              variant: "error",
-            })
-          );
+          dispatch(showMessage({ message: response.data.errorMessage, variant: "error", }));
         }
       });
   }, []);
 
   const initialValues = {
-    event: "",
     check: "",
+    event: "",
+    smsType: '',
     message: "",
   };
 
   const validationSchema = yup.object().shape({
-    event: yup.string().required("Please select the event"),
+    // event: yup.string().required("Please select the event"),
     check: yup.string().required("Please select the check"),
     message: yup
       .string()
@@ -90,44 +105,27 @@ function SMS() {
   });
 
   const handleSubmit = (values) => {
-    // console.log("hi");
-    // console.log(values.message);
-    // console.log(selectedEventId);
-    // console.log(value);
+    console.log(values)
+    if ((value !== 6 && value !== 7) && selectedEventId === "") {
+      return dispatch(showMessage({ message: 'Please select an event', variant: "error" }))
+    }
 
-    axios
-      .post(
-        `${userAPIConfig.sendSMS}/${selectedEventId}/${value}/${values.message}`,
-        {
-          headers: {
-            "Content-type": "multipart/form-data",
-            Authorization: ` Bearer ${window.localStorage.getItem(
-              "jwt_access_token"
-            )}`,
-          },
-        }
-      )
+    let event = value === 6 || value === 7 ? 0 : selectedEventId
+    axios.post(`${userAPIConfig.sendSMS}/${event}/${value}/${values.message}`,
+      {
+        headers: {
+          "Content-type": "multipart/form-data",
+          Authorization: `Bearer ${window.localStorage.getItem("jwt_access_token")}`,
+        },
+      }
+    )
       .then((response) => {
         if (response.status === 200) {
           console.log("Attendance", response);
-          formik.resetForm();
-          dispatch(
-            showMessage({ message: response.data.message, variant: "success" })
-          );
-          //  formik.setFieldValue('event', '');
-          //  formik.setFieldValue('check', '');
-          //  formik.setFieldValue('message', '');
-          //  setEvents(response?.data?.data)
-          //  console.log("hello",events)
-
-          //  formik.setFieldError('message', null);
+          dispatch(showMessage({ message: response.data.message, variant: "success" }));
+          formik.resetForm()
         } else {
-          dispatch(
-            showMessage({
-              message: response.data.errorMessage,
-              variant: "error",
-            })
-          );
+          dispatch(showMessage({ message: response.data.errorMessage, variant: "error" }));
         }
       });
   };
@@ -141,101 +139,107 @@ function SMS() {
   return (
     <Box sx={{ width: '100%', padding: 2 }}>
       <Card className='shadow-5' sx={{ padding: { md: '16px 64px', sm: '16px' }, margin: '0 auto', maxWidth: '700px' }}>
-   
-              <Typography variant="h4" fontWeight="700" fontSize="2.4rem" line-height="1.5" fontFamily="Helvetica" align="center" marginBottom="10px">
-                SMS
-              </Typography>
-              <form className="flex flex-col" onSubmit={formik.handleSubmit}>
-                <div>
-                  <Autocomplete
-                    options={
-                      events.length > 0 ? events.map((event) => event.eventName) : []
-                    }
-                    value={formik.values.event}
-                    onChange={(event, newValue) => {
-                      const selectedEvent = events.find(
-                        (selected) => selected.eventName === newValue
-                      )?.eventId;
-                      setSelectedEventId(selectedEvent);
-                      formik.setFieldValue("event", newValue);
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        name="event"
-                        label="Event"
-                        sx={{ mb: 2, mt: 2, width: "100%" }}
-                        className="max-w-md"
-                        variant="outlined"
-                        required
-                        onBlur={formik.handleBlur}
-                        error={formik.touched.event && Boolean(formik.errors.event)}
-                        helperText={formik.touched.event && formik.errors.event}
-                      />
-                    )}
-                  />
-                </div>
 
-                <div>
-                  <Autocomplete
-                    options={sendMessageTo.map((item) => item.key)}
-                    value={formik.values.check}
-                    onChange={(event, newValue) => {
-                      const selectedValue = sendMessageTo.find(
-                        (item) => item.key === newValue
-                      )?.value;
-                      setValue(selectedValue);
-                      // console.log("hi", selectedEventId)
-                      formik.setFieldValue("check", newValue);
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        name="check"
-                        label="Check"
-                        sx={{ mb: 2, width: "100%" }}
-                        className="max-w-md"
-                        variant="outlined"
-                        required
-                        onBlur={formik.handleBlur}
-                        error={formik.touched.check && Boolean(formik.errors.check)}
-                        helperText={formik.touched.check && formik.errors.check}
-                      />
-                    )}
-                  />
-                </div>
+        <Typography variant="h4" fontWeight="700" fontSize="2.4rem" line-height="1.5" fontFamily="Helvetica" align="center" marginBottom="10px">
+          SMS
+        </Typography>
+        <form className="flex flex-col" onSubmit={formik.handleSubmit}>
+          <Autocomplete
+            options={sendMessageTo.map((item) => item.value)}
+            value={formik.values.check}
+            onChange={(event, newValue) => {
+              const selectedValue = sendMessageTo.find((item) => item.value === newValue)?.key;
+              setValue(selectedValue);
+              formik.setFieldValue("check", newValue);
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                name="check"
+                label="Check"
+                sx={{ mb: 2, mt: 2, width: "100%" }}
+                className="max-w-md"
+                variant="outlined"
+                required
+                onBlur={formik.handleBlur}
+                error={formik.touched.check && Boolean(formik.errors.check)}
+                helperText={formik.touched.check && formik.errors.check}
+              />
+            )}
+          />
+          {!(value === 6 || value === 7) && <Autocomplete
+            options={events.length > 0 ? events.map((event) => event.eventName) : []}
+            value={formik.values.event}
+            onChange={(event, newValue) => {
+              const selectedEvent = events.find((selected) => selected.eventName === newValue)?.eventId;
+              setSelectedEventId(selectedEvent);
+              formik.setFieldValue("event", newValue);
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                name="event"
+                label="Event"
+                sx={{ mb: 2, width: "100%" }}
+                className="max-w-md"
+                variant="outlined"
+                onBlur={formik.handleBlur}
+                error={formik.touched.event && Boolean(formik.errors.event)}
+                helperText={formik.touched.event && formik.errors.event}
+              />
+            )}
+          />}
+          <Autocomplete
+            options={smsTemplate.length > 0 ? smsTemplate.map((sms) => sms.title) : []}
+            value={formik.values.sms}
+            onChange={(event, newValue) => {
+              formik.setFieldValue('sms', newValue)
+              formik.setFieldValue('message', smsTemplate.find((sms) => sms.title === newValue).message)
 
-                <div>
-                  <TextField
-                    label="Type Your Message"
-                    name="message"
-                    variant="outlined"
-                    sx={{ mb: 2, width: "100%" }}
-                    className="max-w-md"
-                    type="text"
-                    required
-                    value={formik.values.message}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.message && Boolean(formik.errors.message)}
-                    helperText={formik.touched.message && formik.errors.message}
-                    multiline
-                    rows={3} // Set the number of rows you want
-                  />
-                </div>
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                name="sms"
+                label="SMS Type"
+                sx={{ mb: 2, width: "100%" }}
+                className="max-w-md"
+                variant="outlined"
+                required
+                onBlur={formik.handleBlur}
+              // error={formik.touched.event && Boolean(formik.errors.event)}
+              // helperText={formik.touched.event && formik.errors.event}
+              />
+            )}
+          />
+          <TextField
+            label="Type Your Message"
+            name="message"
+            variant="outlined"
+            sx={{ mb: 2, width: "100%" }}
+            className="max-w-md"
+            type="text"
+            required
+            value={formik.values.message}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.message && Boolean(formik.errors.message)}
+            helperText={formik.touched.message && formik.errors.message}
+            multiline
+            rows={3}
+          />
 
+          <Button
+            variant="contained"
+            color="secondary"
+            className="m-10"
+            aria-label="Register"
+            onClick={formik.handleSubmit}
+          >
+            Send SMS
+          </Button>
 
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  className="m-10"
-                  aria-label="Register"
-                  onClick={formik.handleSubmit}
-                >
-                  Send SMS
-                </Button>
-
-              </form>
+        </form>
       </Card>
     </Box>
   );

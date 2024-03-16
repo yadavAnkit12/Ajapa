@@ -36,6 +36,8 @@ const style = {
 
 
 
+
+
 function Report1Table(props) {
   // console.log(props)
   const navigate = useNavigate();
@@ -297,7 +299,7 @@ function Report1Table(props) {
 
   return (
     <div className="w-full flex flex-col min-h-full" style={{ overflow: 'auto' }}>
-      <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle" ref={tableRef}>
+      <Table stickyHeader className="min-w-xl"  aria-labelledby="tableTitle" ref={tableRef}>
         <Report1TableHead
           selectedProductIds={selected}
           order={order}

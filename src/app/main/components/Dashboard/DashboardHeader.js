@@ -1,6 +1,6 @@
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import Autocomplete from '@mui/material/Autocomplete';
-import { Input, Paper, Typography, Modal, Box, Button, TextField, Card } from '@mui/material';
+import { Input, Paper, Typography, Modal, Box, Button, TextField, Card, Avatar } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -126,16 +126,15 @@ function DashboardHeader(props) {
           // role={item.link && 'button'}
 
           >
-            {/* {item.image && !item.image && (
+        
         <Box
           sx={{ backgroundColor: 'background.default' }}
           className="flex shrink-0 items-center justify-center w-32 h-32 mr-12 rounded-full"
         >
-          <FuseSvgIcon className="opacity-75" color="inherit">
-          {`${key}/images/${props.data.id}.jpg`}
-          </FuseSvgIcon>
+          <Avatar className="opacity-75" color="inherit" src="assets/images/avatars/family.jpg">
+
+          </Avatar>
         </Box>
-      )} */}
 
 {/* 
             <img
@@ -182,6 +181,15 @@ function DashboardHeader(props) {
             elevation={0}
           >
 
+<Box
+          sx={{ backgroundColor: 'background.default' }}
+          className="flex shrink-0 items-center justify-center w-32 h-32 mr-12 rounded-full"
+        >
+          <Avatar className="opacity-75" color="inherit" src="assets/images/avatars/disciple.png">
+
+          </Avatar>
+        </Box>
+
             <div className="flex flex-col flex-auto">
               <Typography className="font-semibold line-clamp-1">Disciples</Typography>
             </div>
@@ -196,6 +204,14 @@ function DashboardHeader(props) {
 
             elevation={0}
           >
+                    <Box
+          sx={{ backgroundColor: 'background.default' }}
+          className="flex shrink-0 items-center justify-center w-32 h-32 mr-12 rounded-full"
+        >
+          <Avatar className="opacity-75" color="inherit" src="assets/images/avatars/non_desciple.png">
+
+          </Avatar>
+        </Box>
 
             <div className="flex flex-col flex-auto">
               <Typography className="font-semibold line-clamp-1">Non Disciples</Typography>
@@ -212,6 +228,14 @@ function DashboardHeader(props) {
 
             elevation={0}
           >
+                    <Box
+          sx={{ backgroundColor: 'background.default' }}
+          className="flex shrink-0 items-center justify-center w-32 h-32 mr-12 rounded-full"
+        >
+          <Avatar className="opacity-75" color="inherit" src="assets/images/avatars/event.jpeg">
+
+          </Avatar>
+        </Box>
 
             <div className="flex flex-col flex-auto">
               <Typography className="font-semibold line-clamp-1">Events</Typography>
@@ -232,6 +256,14 @@ function DashboardHeader(props) {
 
             elevation={0}
           >
+                    <Box
+          sx={{ backgroundColor: 'background.default' }}
+          className="flex shrink-0 items-center justify-center w-32 h-32 mr-12 rounded-full"
+        >
+          <Avatar className="opacity-75" color="inherit" src="assets/images/avatars/active_event.jpeg">
+
+          </Avatar>
+        </Box>
 
             <div className="flex flex-col flex-auto">
               <Typography className="font-semibold line-clamp-1">Active Events</Typography>
@@ -247,6 +279,14 @@ function DashboardHeader(props) {
 
             elevation={0}
           >
+                    <Box
+          sx={{ backgroundColor: 'background.default' }}
+          className="flex shrink-0 items-center justify-center w-32 h-32 mr-12 rounded-full"
+        >
+          <Avatar className="opacity-75" color="inherit" src="assets/images/avatars/pendingUser.jpeg">
+
+          </Avatar>
+        </Box>
 
             <div className="flex flex-col flex-auto">
               <Typography className="font-semibold line-clamp-1">Pending Users</Typography>
@@ -262,6 +302,14 @@ function DashboardHeader(props) {
 
             elevation={0}
           >
+                    <Box
+          sx={{ backgroundColor: 'background.default' }}
+          className="flex shrink-0 items-center justify-center w-32 h-32 mr-12 rounded-full"
+        >
+          <Avatar className="opacity-75" color="inherit" src="assets/images/avatars/rejectedUser.jpeg">
+
+          </Avatar>
+        </Box>
 
             <div className="flex flex-col flex-auto">
               <Typography className="font-semibold line-clamp-1">Rejected Users</Typography>
@@ -277,6 +325,14 @@ function DashboardHeader(props) {
 
             elevation={0}
           >
+                    <Box
+          sx={{ backgroundColor: 'background.default' }}
+          className="flex shrink-0 items-center justify-center w-32 h-32 mr-12 rounded-full"
+        >
+          <Avatar className="opacity-75" color="inherit" src="assets/images/avatars/approvedUser.jpg">
+
+          </Avatar>
+        </Box>
 
             <div className="flex flex-col flex-auto">
               <Typography className="font-semibold line-clamp-1">Approved Users</Typography>
