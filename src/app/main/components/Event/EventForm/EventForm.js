@@ -120,12 +120,7 @@ const EventForm = () => {
     }, [eventData]);
 
     const validationSchema = Yup.object().shape({
-        eventName: Yup.string()
-            .matches(/^[A-Za-z\s]+$/, 'Only characters and spaces are allowed')
-            .test('no-numbers', 'Numbers are not allowed', value => {
-                return !/\d/.test(value);
-            })
-            .required('Event Name is required'),
+        eventName: Yup.string().required('Event Name is required'),
 
         eventType: Yup.string().required('Event Type is required'),
         eventLocation: Yup.string().required('Event Location is required'),
