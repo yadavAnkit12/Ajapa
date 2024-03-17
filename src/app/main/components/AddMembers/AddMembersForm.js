@@ -133,6 +133,7 @@ function AddMembersForm() {
     setIsChild(false)
   }, [routeParams]);
 
+
   useEffect(() => {
     const { id } = routeParams;
     if (id === "new") {
@@ -506,6 +507,10 @@ function AddMembersForm() {
     setTabValue(value);
   }
 
+  const showMembersDD = sameAs.filter(user => user.id != routeParams.id)
+
+
+
   return (
     <FormProvider>
       <FusePageCarded
@@ -708,14 +713,14 @@ function AddMembersForm() {
 
                   <Autocomplete
                     options={
-                      sameAs.length > 0 ? sameAs.map((user) => user.name) : []
+                      sameAs.length > 0 ? showMembersDD.map((user) => user.name) : []
                     }
                     fullWidth
                     value={formik.values.user}
                     onChange={(event, newValue) => {
                       formik.setFieldValue("sameAs", newValue);
                       // Update country, city, and state based on the selected user
-                      const selectedUser = sameAs.find(
+                      const selectedUser = showMembersDD.find(
                         (user) => user.name === newValue
                       );
                       if (selectedUser) {

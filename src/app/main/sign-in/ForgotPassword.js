@@ -49,6 +49,7 @@ const ForgotPassword = (props) => {
   const [verifyOtp, setVerifyOtp] = useState(false);
   const [otp, setOtp] = useState(""); //OTP states
   const [text,setText] = useState("Reset Password")
+  const [hideCheckBox, setHideCheckBox] = useState(true)
 
   //Timer to resend the Otp
   const [secondsRemaining, setSecondsRemaining] = useState(INITIAL_COUNT);
@@ -206,6 +207,7 @@ const ForgotPassword = (props) => {
         // console.log(response)
         if (response.status === 200) {
           setText("Fill the OTP")
+          setHideCheckBox(false)
           setShowOtpInput(true); //Function for making otp field visible
           setVerifyOtp(true);
           // Start the timer
@@ -277,6 +279,7 @@ const ForgotPassword = (props) => {
                       },
                     },
                     width: "300px",
+                    marginTop:'1rem'
                   }}
                 />
               )}
@@ -349,7 +352,9 @@ const ForgotPassword = (props) => {
             </React.Fragment>
           )}
           <br />
+         
           <div style={{display:'flex', flexDirection:'column'}}>
+          {hideCheckBox && (
           <FormControlLabel
             control={
               <Checkbox
@@ -371,7 +376,7 @@ const ForgotPassword = (props) => {
               letterSpacing: "0px",
             }}
           />
-         
+          )}
           {showOtpInput && status === STATUS.STARTED ? (
                <div style={{ display: 'flex', justifyContent: 'center' }}> <b className="text-success" style={{fontSize:'1.3rem'}}>Resend OTP </b>
                <b className="ml-2 text-danger" style={{fontSize:'1.3rem'}}> {twoDigit(minutesToDisplay)}:
