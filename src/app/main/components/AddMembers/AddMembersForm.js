@@ -54,6 +54,7 @@ function AddMembersForm() {
   const [cityID, setCityID] = useState("");
   const [userID, setUserID] = useState("");
   const [showCredentials, setShowCredentials] = useState(true);
+  const [loading, setLoading] = useState(false)
 
   const [isChild, setIsChild] = useState(false);
   const [sameAs, setSameAs] = useState([]);
@@ -139,7 +140,7 @@ function AddMembersForm() {
     if (id === "new") {
     } else {
       setUserID(id);
-
+      setLoading(true)
       axios
         .get(`${userAPIConfig.getUserById}/${id}`, {
           headers: {
@@ -148,7 +149,7 @@ function AddMembersForm() {
         })
         .then((response) => {
           if (response.status === 200) {
-            
+            setLoading(false)
             const today = new Date();
             const userAge =
               today.getFullYear() -
@@ -200,6 +201,7 @@ function AddMembersForm() {
             setStateID(response.data.user.state.split(":")[0]);
             setCityID(response.data.user.city.split(":")[0]);
           }
+          setLoading(false)
         });
     }
   }, []);
@@ -251,8 +253,9 @@ function AddMembersForm() {
 
 
   const handleSubmit = (values) => {
-    
-    
+
+
+
     if (userID === "" && values.profilePicture === null) {
       dispatch(
         showMessage({
@@ -284,7 +287,7 @@ function AddMembersForm() {
 
 
     if (formik.isValid) {
-      
+      setLoading(true)
       const formattedData = new FormData();
 
       formattedData.append("familyId", sessionStorage.getItem("familyId"));
@@ -332,6 +335,7 @@ function AddMembersForm() {
           })
           .then((response) => {
             if (response.status === 200) {
+              setLoading(false)
               navigate("/app/manageFamily");
               dispatch(
                 showMessage({
@@ -340,6 +344,7 @@ function AddMembersForm() {
                 })
               );
             } else {
+              setLoading(false)
               dispatch(
                 showMessage({
                   message: response.data.errorMessage,
@@ -348,7 +353,10 @@ function AddMembersForm() {
               );
             }
           })
-          .catch((error) => console.log(error));
+          .catch((error) => {
+            setLoading(false)
+            console.log(error)
+          });
       } else {
         // for update the existing member
         formattedData.append("id", values.id);
@@ -367,6 +375,7 @@ function AddMembersForm() {
             })
             .then((response) => {
               if (response.status === 200) {
+                setLoading(false)
                 navigate("/app/manageFamily");
                 dispatch(
                   showMessage({
@@ -375,6 +384,7 @@ function AddMembersForm() {
                   })
                 );
               } else {
+                setLoading(false)
                 dispatch(
                   showMessage({
                     message: response.data.errorMessage,
@@ -383,7 +393,10 @@ function AddMembersForm() {
                 );
               }
             })
-            .catch((error) => console.log(error));
+            .catch((error) => {
+              setLoading(false)
+              console.log(error)
+            });
         } else {
           formattedData.append("profileImage", values.profileImage);
           axios
@@ -397,6 +410,7 @@ function AddMembersForm() {
             })
             .then((response) => {
               if (response.status === 200) {
+                setLoading(false)
                 navigate("/app/manageFamily");
                 dispatch(
                   showMessage({
@@ -405,6 +419,7 @@ function AddMembersForm() {
                   })
                 );
               } else {
+                setLoading(false)
                 dispatch(
                   showMessage({
                     message: response.data.errorMessage,
@@ -413,7 +428,10 @@ function AddMembersForm() {
                 );
               }
             })
-            .catch((error) => console.log(error));
+            .catch((error) => {
+              setLoading(false)
+              console.log(error)
+            });
         }
       }
     } else {
@@ -443,29 +461,29 @@ function AddMembersForm() {
   //Showing fields in case of child
   const handleCheckBoxChange = () => {
     setShowCredentials(!showCredentials);
-    if(showCredentials){
+    if (showCredentials) {
       setShowCredentials(true)
       setOpen(true)
     }
-   
+
   };
 
-  const clearFieldsForChild=()=>{
-        setShowCredentials(false)
-        formik.setValues({
-          ...formik.values,
-          email: "",
-          password: "",
-          passwordConfirm: "",
-          mobileNumber: "",
-          countryCode: "",
-          whatsAppNumber: "",
-        }); 
-        setOpen(false)
+  const clearFieldsForChild = () => {
+    setShowCredentials(false)
+    formik.setValues({
+      ...formik.values,
+      email: "",
+      password: "",
+      passwordConfirm: "",
+      mobileNumber: "",
+      countryCode: "",
+      whatsAppNumber: "",
+    });
+    setOpen(false)
 
-  } 
+  }
 
-  const handleClose=()=>{
+  const handleClose = () => {
     setShowCredentials(true)
     setOpen(false)
   }
@@ -509,7 +527,9 @@ function AddMembersForm() {
 
   const showMembersDD = sameAs.filter(user => user.id != routeParams.id)
 
-
+  if (loading) {
+    return <FuseLoading />
+  }
 
   return (
     <FormProvider>
@@ -1228,7 +1248,7 @@ function AddMembersForm() {
 
                 <DialogActions>
                   <Button onClick={() => handleClose()}>No</Button>
-                  <Button onClick={()=>clearFieldsForChild()} autoFocus>
+                  <Button onClick={() => clearFieldsForChild()} autoFocus>
                     Yes
                   </Button>
                 </DialogActions>

@@ -98,6 +98,8 @@ function SignInPage() {
     setShowEmail(!showEmail);
     formik.setFieldValue('mobileNumber', '')
     formik.setFieldValue('email', '')
+    formik.setFieldValue('countryCode', '+91')
+
   };
 
   const handleCheckboxOtp = () => {
@@ -181,12 +183,8 @@ function SignInPage() {
 
   // For Sending the Otp 
   const handleSendOtp = async (e) => {
-    console.log("Formik", formik)
-    if (!recaptcha) {
-      dispatch(showMessage({ message: "Select you are not a robot", variant: 'error' }));
-      return
-    }
-    const isRequired = Boolean(formik.values.email || (formik.values.countryCode && formik.values.mobileNumber))
+ 
+    const isRequired = Boolean((formik.values.email || (formik.values.countryCode && formik.values.mobileNumber)) && recaptcha)
     if (isRequired) {
       // setShowRecaptcha(false)
       const formData = new FormData()
@@ -215,7 +213,10 @@ function SignInPage() {
       })
     }
     else {
-      recaptchaRef.current.reset();
+      if (recaptcha === null && ((formik.values.email || (formik.values.countryCode && formik.values.mobileNumber)))) {
+        return dispatch(showMessage({ message: "Select you are not a robot", variant: 'error' }));
+      }
+      // recaptchaRef.current.reset();
       dispatch(showMessage({ message: "Fill the required details", variant: 'error' }));
     }
   };
@@ -227,8 +228,7 @@ function SignInPage() {
 
     if (isRequired) {
       // setShowRecaptcha(false)
-      jwtService
-        .signInWithEmailAndPassword(values.email, values.countryCode, values.mobileNumber, values.password)
+      jwtService.signInWithEmailAndPassword(values.email, values.countryCode, values.mobileNumber, values.password)
         .then((user) => {
           if (user) {
             dispatch(showMessage({ message: 'Login successfully', variant: 'success' }));
@@ -251,10 +251,10 @@ function SignInPage() {
     if (otp !== '' && otp.length === 4) {
       const formData = new FormData()
       formData.append('email', formik.values.email)
-      formData.append('countryCode', formik.values.countryCode.split(' ')[0])
+      formData.append('countryCode', formik.values.countryCode)
       formData.append('mobileNumber', formik.values.mobileNumber)
       formData.append('otp', otp)
-      jwtService.signInWithOTP(formik.values.email, formik.values.countryCode.split(' ')[0], formik.values.mobileNumber, otp)
+      jwtService.signInWithOTP(formik.values.email, formik.values.countryCode, formik.values.mobileNumber, otp)
         .then((user) => {
           if (user) {
             dispatch(showMessage({ message: 'Login successfully', variant: 'success' }));
@@ -362,6 +362,7 @@ function SignInPage() {
                   helperText={formik.touched.mobileNumber && formik.errors.mobileNumber}
                   variant="outlined"
                   fullWidth
+                  autoFocus
                   sx={{
                     '& .MuiOutlinedInput-root': {
                       '& fieldset': {

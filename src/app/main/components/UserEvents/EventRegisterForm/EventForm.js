@@ -2,9 +2,11 @@ import TextField from '@mui/material/TextField';
 import * as yup from 'yup';
 import _ from '@lodash';
 import 'react-phone-input-2/lib/style.css'
-import { Autocomplete, Card, Checkbox, FormControlLabel, Button, FormControl, 
-    FormLabel, FormGroup, Dialog, DialogTitle, DialogActions, Slide } from '@mui/material';
-import { useEffect, useState,forwardRef } from 'react';
+import {
+    Autocomplete, Card, Checkbox, FormControlLabel, Button, FormControl,
+    FormLabel, FormGroup, Dialog, DialogTitle, DialogActions, Slide
+} from '@mui/material';
+import { useEffect, useState, forwardRef } from 'react';
 import { useFormik } from 'formik';
 import { useDispatch } from 'react-redux';
 import { showMessage } from 'app/store/fuse/messageSlice';
@@ -14,6 +16,7 @@ import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { eventAPIConfig, userAPIConfig } from "src/app/main/API/apiConfig";
 import { values } from 'lodash';
+import FuseLoading from '@fuse/core/FuseLoading';
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -43,7 +46,7 @@ const EventForm = (props) => {
     useEffect(() => {
         formik.resetForm()
     }, [props.person.id])
-    
+
 
 
     useEffect(() => {
@@ -51,8 +54,6 @@ const EventForm = (props) => {
             setshivirCheckBox(true)
         }
     }, [])
-
-
 
     const validationSchema = yup.object().shape({
         fromCountry: yup.string().required('Please enter your country'),
@@ -76,29 +77,23 @@ const EventForm = (props) => {
     //Default Country,City,State
     useEffect(() => {
         if (props.person) {
-
             formik.setValues({
- 
                 fromCity: props.person.city.split(":")[1] || '',
                 fromState: props.person.state.split(":")[1] || '',
                 fromCountry: props.person.country.split(":")[1] || '',
-                
             })
             setCountryID(props.person.country.split(':')[0])
             setStateID(props.person.state.split(':')[0])
             setCityID(props.person.city.split(':')[0])
-
-
         }
 
     }, [props.person])
-    
+
 
     useEffect(() => {
         if (props.registerUser) {
 
             formik.setValues({
-                
                 registrationId: props.registerUser.registrationId || '',
                 eventId: props.registerUser.eventId || '',
                 userId: props.registerUser.userId || '',
@@ -116,14 +111,12 @@ const EventForm = (props) => {
                 departureModeOfTransport: props.registerUser.departureModeOfTransport || '',
                 departureTrainNumber: props.registerUser.departureTrainNumber || '',
                 specificRequirements: props.registerUser.specificRequirements || '',
-                attendingShivir: props.registerUser.attendingShivir ,
-                
+                attendingShivir: props.registerUser.attendingShivir,
+
             })
             setCountryID(props.registerUser.fromCountry.split(':')[0])
             setStateID(props.registerUser.fromState.split(':')[0])
             setCityID(props.registerUser.fromCity.split(':')[0])
-
-
         }
 
     }, [props.registerUser])
@@ -172,23 +165,23 @@ const EventForm = (props) => {
 
     const handleSubmit = (values) => {
 
-        if(shivirCheckBox && formik.values.attendingShivir === undefined){
-          return dispatch(showMessage({ message: 'Please tell whether you are attending the shivir or not', variant: 'error' }));
+        if (shivirCheckBox && formik.values.attendingShivir === undefined) {
+            return dispatch(showMessage({ message: 'Please tell whether you are attending the shivir or not', variant: 'error' }));
         }
 
 
         if (formik.values.arrivalDate < lockarrivaldate || formik.values.arrivalDate > eventDate) {
             return dispatch(showMessage({ message: `Arrival Date should be in between ${lockarrivaldate} and ${eventDate}`, variant: 'error' }));
         }
-        
+
         if (formik.values.departureDate < eventDate || formik.values.departureDate > lockdeparturedetail) {
             return dispatch(showMessage({ message: `Departure Date should be in between ${eventDate} and ${lockdeparturedetail}`, variant: 'error' }));
         }
-        
 
 
+        props.setLoading(true)
         const formData = new FormData()
-        formData.append('eventId', props.eventId)   
+        formData.append('eventId', props.eventId)
         formData.append('userId', props.selectedUserId)
         formData.append('userName', props.person.name)
         formData.append('eventDate', props.eventDate)
@@ -215,12 +208,12 @@ const EventForm = (props) => {
         }
         formData.append('specificRequirements', formik.values.specificRequirements || '')
 
-        if(shivirCheckBox){
-            formData.append('attendingShivir', formik.values.attendingShivir )
-        }else{
-            formData.append('attendingShivir', false )
+        if (shivirCheckBox) {
+            formData.append('attendingShivir', formik.values.attendingShivir)
+        } else {
+            formData.append('attendingShivir', false)
         }
-        
+
 
         if (props.registerUser) {
             formData.append('registrationId', values.registrationId)
@@ -231,14 +224,20 @@ const EventForm = (props) => {
                 },
             }).then((response) => {
                 if (response.status === 200) {
+                    props.setLoading(false)
                     formik.resetForm()
                     dispatch(showMessage({ message: `Jai Guru. Your registration for ${props.eventName} is updated successfull`, variant: 'success' }));
                     props.setChange(!props.change)
                     props.setEventFormOpen(false)
                 } else {
+                    props.setLoading(false)
                     dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
                 }
-            });
+            }).catch((error) => {
+                props.setLoading(false)
+                dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
+
+            })
 
         } else {
 
@@ -249,14 +248,20 @@ const EventForm = (props) => {
                 },
             }).then((response) => {
                 if (response.status === 200) {
+                    props.setLoading(false)
                     formik.resetForm()
                     dispatch(showMessage({ message: `Jai Guru. Your registration for ${props.eventName} is successfull`, variant: 'success' }));
                     props.setChange(!props.change)
                     props.setEventFormOpen(false)
                 } else {
+                    props.setLoading(false)
                     dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
                 }
-            });
+            }).catch((error) => {
+                props.setLoading(false)
+                dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
+
+            })
         }
 
     }
@@ -361,7 +366,7 @@ const EventForm = (props) => {
 
     return (
         <Card style={{ marginTop: '10px' }} className='shadow-5'>
-            <div style={{display:'flex',justifyContent:'center',alignContent:'center'}}>
+            <div style={{ display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
                 <Autocomplete
                     disablePortal
                     value={props.sameAsDD.userName}
@@ -370,7 +375,7 @@ const EventForm = (props) => {
                     getOptionLabel={(option) => option.userName}
                     sx={{ my: 1, mx: 1 }}
                     onChange={(e, newValue) => handleUserNameChange(newValue)}
-                    renderInput={(params) => <TextField fullWidth sty {...params} label="Same as" variant="standard" sx={{minWidth:'300px'}} />}
+                    renderInput={(params) => <TextField fullWidth sty {...params} label="Same as" variant="standard" sx={{ minWidth: '300px' }} />}
                 />
             </div>
             <form onSubmit={formik.handleSubmit}>
@@ -668,7 +673,7 @@ const EventForm = (props) => {
                                                     <Checkbox checked={formik.values.attendingShivir === true}
                                                         onChange={() => formik.setFieldValue('attendingShivir', true)} />}
                                                 label="Yes"
-                                                
+
                                             />
                                             <FormControlLabel
                                                 control={
@@ -689,22 +694,22 @@ const EventForm = (props) => {
                     <Button variant="outlined" onClick={openDialog}>Close</Button>
                     <Button variant="outlined" type='submit'>Save</Button>
                 </div>
-                       <Dialog
-                            open={open}
-                            TransitionComponent={Transition}
-                            keepMounted
-                            onClose={handleClose}
-                            aria-describedby="alert-dialog-slide-description"
-                        >
-                            <DialogTitle>{`Do you want to close this form ?`}</DialogTitle>
+                <Dialog
+                    open={open}
+                    TransitionComponent={Transition}
+                    keepMounted
+                    onClose={handleClose}
+                    aria-describedby="alert-dialog-slide-description"
+                >
+                    <DialogTitle>{`Do you want to close this form ?`}</DialogTitle>
 
-                            <DialogActions>
-                                <Button onClick={handleClose}>No</Button>
-                                <Button onClick={closeForm} autoFocus>
-                                    Yes
-                                </Button>
-                            </DialogActions>
-                        </Dialog>
+                    <DialogActions>
+                        <Button onClick={handleClose}>No</Button>
+                        <Button onClick={closeForm} autoFocus>
+                            Yes
+                        </Button>
+                    </DialogActions>
+                </Dialog>
 
             </form>
         </Card>
