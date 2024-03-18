@@ -30,7 +30,7 @@ const validationSchema = yup.object().shape({
   email: yup.string().email('Invalid email address').matches(/^([A-Za-z0-9_\-\.])+\@(?!(?:[A-Za-z0-9_\-\.]+\.)?([A-Za-z]{2,4})\.\2)([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/, 'Invalid email'),
   // countryCode: yup.string(),
   mobileNumber: yup.string().matches(/^\d{10}$/, 'Mobile number must be 10 digits'),
-  password: yup.string()
+  // password: yup.string()
 });
 
 
@@ -77,7 +77,6 @@ function SignInPage() {
   const [OTPVerify, setOTPVerify] = useState(false)
   const [recaptcha, setRecaptcha] = useState(null)
   const [showRecaptcha, setShowRecaptcha] = useState(true);
-  const [codeError, setCodeError] = useState(false) //state for showing country code error
 
   //for timmer
   const [secondsRemaining, setSecondsRemaining] = useState(INITIAL_COUNT);
@@ -96,13 +95,15 @@ function SignInPage() {
   };
 
   const handleCheckboxChange = () => {
-    setShowEmail((prevShowEmail) => !prevShowEmail);
-    formik.values.mobileNumber= ''
-    formik.values.email=''
+    setShowEmail(!showEmail);
+    formik.setFieldValue('mobileNumber', '')
+    formik.setFieldValue('email', '')
+    formik.setFieldValue('countryCode', '+91')
+
   };
 
   const handleCheckboxOtp = () => {
-    setPassword((prevShowPassword) => !prevShowPassword);
+    setPassword(!password);
     setShowOtpInput(false)
     setOTPVerify(false)
   };
@@ -111,7 +112,7 @@ function SignInPage() {
   const handleStart = () => {
     const formData = new FormData()
     formData.append('email', formik.values.email)
-    formData.append('countryCode', formik.values.countryCode.split(' ')[0])
+    formData.append('countryCode', formik.values.countryCode)
     formData.append('mobileNumber', formik.values.mobileNumber)
 
     axios.post(`${jwtServiceConfig.sentOTPForLogin}`, formData, {
@@ -119,89 +120,76 @@ function SignInPage() {
         'Content-type': 'multipart/form-data',
       },
     }).then((response) => {
-        if (response.status === 200) {
-            setStatus(STATUS.STARTED);
-            setSecondsRemaining(INITIAL_COUNT);
-        } else {
-            dispatch(showMessage({ message: response.data.erroMessage, variant: 'error' }));
-        }
+      if (response.status === 200) {
+        setStatus(STATUS.STARTED);
+        setSecondsRemaining(INITIAL_COUNT);
+      } else {
+        dispatch(showMessage({ message: response.data.erroMessage, variant: 'error' }));
+      }
     });
-};
-const STATUS = {
+  };
+  const STATUS = {
     STOPPED: <b>
-        <a
-            type="button"
-            onClick={handleStart}
-            className="text-danger"
-            style={{ marginLeft: '160px', cursor: 'pointer', textDecoration: 'underline',fontSize:'1.3rem' }}
-        > Resend OTP
-        </a>
+      <a
+        type="button"
+        onClick={handleStart}
+        className="text-danger"
+        style={{ marginLeft: '160px', cursor: 'pointer', textDecoration: 'underline', fontSize: '1.3rem' }}
+      > Resend OTP
+      </a>
     </b>
-}
+  }
 
-useInterval(
-  () => {
+  useInterval(
+    () => {
       if (secondsRemaining > 0) {
-          setSecondsRemaining(secondsRemaining - 1)
+        setSecondsRemaining(secondsRemaining - 1)
       }
 
       else {
-          setStatus(STATUS.STOPPED)
+        setStatus(STATUS.STOPPED)
       }
-  },
-  status === STATUS.STARTED ? 1000 : null,
-  // passing null stops the interval
-)
+    },
+    status === STATUS.STARTED ? 1000 : null,
+    // passing null stops the interval
+  )
 
-function useInterval(callback, delay) {
-  const savedCallback = useRef()
-  useEffect(() => {
+  function useInterval(callback, delay) {
+    const savedCallback = useRef()
+    useEffect(() => {
 
       savedCallback.current = callback
 
-  }, [callback])
+    }, [callback])
 
-  useEffect(() => {
+    useEffect(() => {
 
       function tick() {
 
-          savedCallback.current()
+        savedCallback.current()
 
       }
 
       if (delay !== null) {
 
-          let id = setInterval(tick, delay)
-          return () => clearInterval(id)
+        let id = setInterval(tick, delay)
+        return () => clearInterval(id)
       }
 
-  }, [delay])
+    }, [delay])
 
-}
+  }
 
 
   // For Sending the Otp 
   const handleSendOtp = async (e) => {
-    e.preventDefault();
-
-    console.log("Formik", formik)
-    if(! recaptcha)
-    {
-      dispatch(showMessage({ message: "Select you are not a robot", variant: 'error' }));
-      return
-    }
-
-    // if(formik.values.countryCode == undefined)
-    // {
-    //   setCodeError(true)
-    // }
-
-    const isRequired = Boolean(formik.values.email  || (formik.values.countryCode && formik.values.mobileNumber) )
+ 
+    const isRequired = Boolean((formik.values.email || (formik.values.countryCode && formik.values.mobileNumber)) && recaptcha)
     if (isRequired) {
-      setShowRecaptcha(false)
+      // setShowRecaptcha(false)
       const formData = new FormData()
       formData.append('email', formik.values.email)
-      formData.append('countryCode', formik.values.countryCode.split(' ')[0])
+      formData.append('countryCode', formik.values.countryCode)
       formData.append('mobileNumber', formik.values.mobileNumber)
 
       axios.post(`${jwtServiceConfig.sentOTPForLogin}`, formData, {
@@ -209,7 +197,7 @@ function useInterval(callback, delay) {
           'Content-type': 'multipart/form-data',
         },
       }).then((response) => {
-        // console.log(response)
+        console.log(response)
         if (response.status === 200) {
           setStatus(STATUS.STARTED)
           setSecondsRemaining(INITIAL_COUNT)
@@ -218,33 +206,29 @@ function useInterval(callback, delay) {
           setOTPVerify(true)
         }
         else {
-          dispatch(showMessage({ message: response.data.message, variant: 'error' }));
+          dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
         }
       }).catch((error) => {
         console.log(error)
       })
     }
     else {
-      recaptchaRef.current.reset();
+      if (recaptcha === null && ((formik.values.email || (formik.values.countryCode && formik.values.mobileNumber)))) {
+        return dispatch(showMessage({ message: "Select you are not a robot", variant: 'error' }));
+      }
+      // recaptchaRef.current.reset();
       dispatch(showMessage({ message: "Fill the required details", variant: 'error' }));
     }
   };
 
   //  signin using password
   const handleSubmit = (values) => {
-
-    // if(formik.values.countryCode == undefined)
-    // {
-    //   setCodeError(true)
-    // }
-    
     // check that any field that is required is empty
     const isRequired = Boolean((values.email || (values.countryCode && values.mobileNumber)) && values.password && recaptcha)
 
     if (isRequired) {
-      setShowRecaptcha(false)
-      jwtService
-        .signInWithEmailAndPassword(values.email, values.countryCode.split(' ')[0], values.mobileNumber, values.password)
+      // setShowRecaptcha(false)
+      jwtService.signInWithEmailAndPassword(values.email, values.countryCode, values.mobileNumber, values.password)
         .then((user) => {
           if (user) {
             dispatch(showMessage({ message: 'Login successfully', variant: 'success' }));
@@ -255,19 +239,22 @@ function useInterval(callback, delay) {
         });
     }
     else {
-      recaptchaRef?.current?.reset();
-      dispatch(showMessage({ message: "Fill all the details", variant: 'error' }));
+      if (recaptcha === null && ((values.email || (values.countryCode && values.mobileNumber)) && values.password)) {
+        return dispatch(showMessage({ message: "Select you are not a robot", variant: 'error' }));
+      }
+      // recaptchaRef?.current?.reset();
+      dispatch(showMessage({ message: "Fill the required details", variant: 'error' }));
+
     }
   }
-
   const handleOTPverification = () => {
     if (otp !== '' && otp.length === 4) {
       const formData = new FormData()
       formData.append('email', formik.values.email)
-      formData.append('countryCode', formik.values.countryCode.split(' ')[0])
+      formData.append('countryCode', formik.values.countryCode)
       formData.append('mobileNumber', formik.values.mobileNumber)
       formData.append('otp', otp)
-      jwtService.signInWithOTP(formik.values.email, formik.values.countryCode.split(' ')[0], formik.values.mobileNumber, otp)
+      jwtService.signInWithOTP(formik.values.email, formik.values.countryCode, formik.values.mobileNumber, otp)
         .then((user) => {
           if (user) {
             dispatch(showMessage({ message: 'Login successfully', variant: 'success' }));
@@ -275,11 +262,10 @@ function useInterval(callback, delay) {
           }
         })
         .catch((_errors) => {
-          dispatch(showMessage({ message: _errors, variant: 'error' }));
+          console.log(_errors)
         });
     } else {
       dispatch(showMessage({ message: "Fill all the OTP" }));
-
     }
   }
 
@@ -316,7 +302,6 @@ function useInterval(callback, delay) {
                 error={formik.touched.email && Boolean(formik.errors.email)}
                 helperText={formik.touched.email && formik.errors.email}
                 variant="outlined"
-                required
                 fullWidth
                 sx={{
                   '& .MuiOutlinedInput-root': {
@@ -324,40 +309,44 @@ function useInterval(callback, delay) {
                       borderColor: 'darkslategray',
                     },
                   },
-                }} />
+                }}
+              />
+
 
             ) : (
               <div className='d-flex'>
                 <div>
-                <Autocomplete
-                  options={phoneNumberCountryCodes}
-                  value={formik.values.countryCode}
-                  className="mb-0"
-                  onChange={(event, newValue) => {
-                    formik.setFieldValue('countryCode', newValue);
-                  }}
-                  onBlur={formik.handleBlur}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Code"
-                      variant="outlined"
-                      error={formik.touched.countryCode && Boolean(formik.errors.countryCode)}
-                      helperText={formik.touched.countryCode && formik.errors.countryCode}
-                      sx={{
-                        '& .MuiOutlinedInput-root': {
-                          '& fieldset': {
-                            borderColor: 'darkslategray',
+                  <Autocomplete
+                    options={phoneNumberCountryCodes}
+                    value={formik.values.countryCode}
+                    className="mb-0"
+                    onChange={(event, newValue) => {
+                      if (newValue) {
+                        formik.setFieldValue('countryCode', newValue);
+
+                      } else {
+                        formik.setFieldValue('countryCode', '');
+                      }
+                    }}
+                    onBlur={formik.handleBlur}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Code"
+                        variant="outlined"
+                        error={formik.touched.countryCode && Boolean(formik.errors.countryCode)}
+                        helperText={formik.touched.countryCode && formik.errors.countryCode}
+                        sx={{
+                          '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                              borderColor: 'darkslategray',
+                            },
                           },
-                        },
-                      }}
-                    />
-                  )}
-                />
-                {/* {
-                   !showEmail && codeError ?      <p className='text-red-500 text-md' >Country code is required</p> : ''
-                } */}
-              
+                        }}
+                      />
+                    )}
+                  />
+
                 </div>
                 <TextField
                   name="mobileNumber"
@@ -372,8 +361,8 @@ function useInterval(callback, delay) {
                   error={formik.touched.mobileNumber && Boolean(formik.errors.mobileNumber)}
                   helperText={formik.touched.mobileNumber && formik.errors.mobileNumber}
                   variant="outlined"
-                  required
                   fullWidth
+                  autoFocus
                   sx={{
                     '& .MuiOutlinedInput-root': {
                       '& fieldset': {
@@ -428,7 +417,6 @@ function useInterval(callback, delay) {
                     },
                   },
                 }}
-                required
                 fullWidth
                 InputProps={{
                   endAdornment: (
@@ -441,29 +429,20 @@ function useInterval(callback, delay) {
                 }}
               />
             )}
-            {showOtpInput && status == STATUS.STARTED ?(
+            {showOtpInput && status == STATUS.STARTED ? (
               <>
-              <Stack spacing={2} sx={{ mt: 2, marginBottom: 2 }}>
-                <MuiOtpInput style={{ maxWidth: '400px' }} value={otp} onChange={(newValue) => setOtp(newValue)} />
-              </Stack>
-                              <div style={{ display: 'flex', justifyContent: 'center' }}> <b className="text-success" style={{fontSize:'1.3rem'}}>Resend OTP </b>
-                              <b className="ml-2 text-danger" style={{fontSize:'1.3rem'}}> {twoDigit(minutesToDisplay)}:
-                                  {twoDigit(secondsToDisplay)}</b>
-                          </div>
-                          </>
-            ):(
+                <Stack spacing={2} sx={{ mt: 2, marginBottom: 2 }}>
+                  <MuiOtpInput style={{ maxWidth: '400px' }} value={otp} onChange={(newValue) => setOtp(newValue)} />
+                </Stack>
+                <div style={{ display: 'flex', justifyContent: 'center' }}> <b className="text-success" style={{ fontSize: '1.3rem' }}>Resend OTP </b>
+                  <b className="ml-2 text-danger" style={{ fontSize: '1.3rem' }}> {twoDigit(minutesToDisplay)}:
+                    {twoDigit(secondsToDisplay)}</b>
+                </div>
+              </>
+            ) : (
               status
             )
             }
-                        {/* {status == STATUS.STARTED ?
-                <div style={{ display: 'flex', justifyContent: 'center' }}> <b className="text-success" style={{fontSize:'1.3rem'}}>Resend OTP </b>
-                    <b className="ml-2 text-danger" style={{fontSize:'1.3rem'}}> {twoDigit(minutesToDisplay)}:
-                        {twoDigit(secondsToDisplay)}</b>
-                </div>
-                :
-                status
-            } */}
-
             <FormControlLabel
               control={
                 <Checkbox
@@ -472,9 +451,9 @@ function useInterval(callback, delay) {
                   color="primary"
                   style={{
                     '& .MuiSvgIcon-root': {
-                      fontSize: 18, // Adjust the font size as needed
-                      border: '1px solid #000', // Set the border style
-                      borderRadius: 1, // Adjust the border radius as needed
+                      fontSize: 18,
+                      border: '1px solid #000',
+                      borderRadius: 1,
                     },
                   }}
                 />
@@ -514,7 +493,7 @@ function useInterval(callback, delay) {
                   color="secondary"
                   className="w-full mt-16"
                   size="large"
-                  onClick={handleSendOtp} // Click to receive OTP
+                  onClick={handleSendOtp}
                   style={{ backgroundColor: '#792b00' }}
                 >
                   Send OTP
@@ -537,10 +516,8 @@ function useInterval(callback, delay) {
           <div className="d-flex justify-content-center">
 
             <Button
-              // className="text-md font-medium"
               onClick={handleOpenModal}
               style={{
-                // fontFamily: "BentonSans bold",
                 fontStyle: 'normal', fontSize: '16px',
                 lineHeight: '28px', letterSpacing: '0px',
                 textAlign: 'center', fontWeight: 600,
@@ -570,81 +547,23 @@ function useInterval(callback, delay) {
 
       <Box
         className="relative hidden md:flex flex-auto items-center justify-center h-full p-64 lg:px-112 overflow-hidden"
-        sx={{ backgroundImage: 'url("assets/images/logo/bg.jpg")', backgroundSize: 'cover', backgroundRepeat: 'no-repeat',backgroundPosition:'center' }}
+        sx={{ backgroundImage: 'url("assets/images/logo/bg.jpg")', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }}
       >
-        <svg
-          className="absolute inset-0 pointer-events-none"
-          viewBox="0 0 960 540"
-          width="100%"
-          height="100%"
-          preserveAspectRatio="xMidYMax slice"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <Box
-            component="g"
-            sx={{ color: 'primary.light' }}
-            className="opacity-20"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="100"
-          >
-          </Box>
-        </svg>
-        <Box
-          component="svg"
-          className="absolute -top-64 -right-64 opacity-20"
-          sx={{ color: 'primary.light' }}
-          viewBox="0 0 220 192"
-          width="220px"
-          height="192px"
-          fill="none"
-        >
-          <rect width="220" height="192" fill="url(#837c3e70-6c3a-44e6-8854-cc48c737b659)" />
-        </Box>
-
-        <div className="z-10 relative w-full max-w-2xl">
-          <div className="text-7xl font-bold leading-none text-gray-100">
-            <div>Welcome to</div>
-            <div>our community</div>
-          </div>
-          <div className="mt-24 text-lg tracking-tight leading-6 text-gray-400">
-            Fuse helps developers to build organized and well coded dashboards full of beautiful and
-            rich modules. Join us and start building your application today.
-          </div>
-          <div className="flex items-center mt-32">
-            <AvatarGroup
-              sx={{
-                '& .MuiAvatar-root': {
-                  borderColor: 'primary.main',
-                },
-              }}
-            >
-              <Avatar src="assets/images/avatars/female-18.jpg" />
-              <Avatar src="assets/images/avatars/female-11.jpg" />
-              <Avatar src="assets/images/avatars/male-09.jpg" />
-              <Avatar src="assets/images/avatars/male-16.jpg" />
-            </AvatarGroup>
-
-            <div className="ml-16 font-medium tracking-tight text-gray-400">
-              More than 17k people joined us, it's your turn
-            </div>
-          </div>
-        </div>
       </Box>
       <Modal
         open={openModal}
         onClose={handleCloseModal}
         closeAfterTransition
       >
-         <Box  sx={{
+        <Box sx={{
           ...style,
-          '@media (max-width: 700px) and (min-width: 500px)': { 
-            width: '65%', 
+          '@media (max-width: 700px) and (min-width: 500px)': {
+            width: '65%',
           },
-          '@media (max-width: 500px)': { 
-          width: '100%', 
-      },
-    }}>
+          '@media (max-width: 500px)': {
+            width: '100%',
+          },
+        }}>
           <ForgotPassword setOpenModal={setOpenModal} />
         </Box>
       </Modal>

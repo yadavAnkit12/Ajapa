@@ -22,9 +22,7 @@ import JwtService from "src/app/auth/services/jwtService";
 const validationSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email address"),
   countryCode: Yup.string(),
-  mobileNumber: Yup
-  .string()
-  .matches(/^[1-9]\d{9}$/, "Invalid mobile number")
+  mobileNumber: Yup.string().matches(/^[1-9]\d{9}$/, "Invalid mobile number")
 });
 
 const phoneNumberCountryCodes = [
@@ -48,7 +46,7 @@ const ForgotPassword = (props) => {
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [verifyOtp, setVerifyOtp] = useState(false);
   const [otp, setOtp] = useState(""); //OTP states
-  const [text,setText] = useState("Reset Password")
+  const [text, setText] = useState("Reset Password")
   const [hideCheckBox, setHideCheckBox] = useState(true)
 
   //Timer to resend the Otp
@@ -60,16 +58,19 @@ const ForgotPassword = (props) => {
 
   const handleCheckboxChange = () => {
     setShowEmail((prevShowEmail) => !prevShowEmail);
+    formik.setFieldValue('countryCode', '+91')
+    formik.setFieldValue('email', '')
+    formik.setFieldValue('mobileNumber', '')
   };
 
   useEffect(() => {
     setStatus(STATUS.STARTED);
-}, []);
+  }, []);
 
   const handleStart = () => {
     const formData = new FormData();
     formData.append("email", formik.values.email);
-    formData.append("countryCode", formik.values.countryCode.split(" ")[0]);
+    formData.append("countryCode", formik.values.countryCode);
     formData.append("mobileNumber", formik.values.mobileNumber);
     axios
       .post(`${jwtServiceConfig.sentOTPForLogin}`, formData, {
@@ -100,9 +101,8 @@ const ForgotPassword = (props) => {
           onClick={handleStart}
           className="text-danger"
           style={{
-            // marginLeft: "160px",
-            display:'flex',
-            justifyContent:'center',
+            display: 'flex',
+            justifyContent: 'center',
             cursor: "pointer",
             textDecoration: "underline",
             fontSize: "1.3rem",
@@ -149,7 +149,7 @@ const ForgotPassword = (props) => {
     if (otp !== "" && otp.length === 4) {
       const formData = new FormData();
       formData.append("email", formik.values.email);
-      formData.append("countryCode", formik.values.countryCode.split(" ")[0]);
+      formData.append("countryCode", formik.values.countryCode);
       formData.append("mobileNumber", formik.values.mobileNumber);
       formData.append("otp", otp);
 
@@ -184,18 +184,20 @@ const ForgotPassword = (props) => {
           dispatch(
             showMessage({ message: "Something went wrong", variant: "error" })
           );
-          console.log("ghnj", error);
         });
     } else {
-      dispatch(showMessage({ message: "Fill all the OTP" }));
+      dispatch(showMessage({ message: "Fill the OTP" }));
     }
   };
 
   const handleSubmit = (values) => {
+    if(!values.email || (values.countryCode && values.mobileNumber)){
+      return dispatch(showMessage({ message: "Fill the required details",variant:'error' }))
+    }
     const formData = new FormData();
-    formData.append("email", formik.values.email);
-    formData.append("countryCode", formik.values.countryCode.split(" ")[0]);
-    formData.append("mobileNumber", formik.values.mobileNumber);
+    formData.append("email", values.email);
+    formData.append("countryCode", values.countryCode);
+    formData.append("mobileNumber", values.mobileNumber);
 
     axios
       .post(`${jwtServiceConfig.sentOTPForLogin}`, formData, {
@@ -230,13 +232,13 @@ const ForgotPassword = (props) => {
       });
   };
 
- 
+
 
   const formik = useFormik({
     initialValues: {
       email: "",
       countryCode: "",
-      mobileNumber: "",
+      mobileNumber: "+91",
     },
     validationSchema: validationSchema,
     onSubmit: handleSubmit,
@@ -270,7 +272,6 @@ const ForgotPassword = (props) => {
                   error={formik.touched.email && Boolean(formik.errors.email)}
                   helperText={formik.touched.email && formik.errors.email}
                   variant="outlined"
-                  required
                   fullWidth
                   sx={{
                     "& .MuiOutlinedInput-root": {
@@ -279,7 +280,7 @@ const ForgotPassword = (props) => {
                       },
                     },
                     width: "300px",
-                    marginTop:'1rem'
+                    mt:1
                   }}
                 />
               )}
@@ -298,7 +299,6 @@ const ForgotPassword = (props) => {
                         {...params}
                         label="Code"
                         variant="outlined"
-                        required
                         error={
                           formik.touched.countryCode &&
                           Boolean(formik.errors.countryCode)
@@ -314,6 +314,7 @@ const ForgotPassword = (props) => {
                             },
                           },
                           width: "100px",
+                          mt:1
                         }}
                       />
                     )}
@@ -321,11 +322,8 @@ const ForgotPassword = (props) => {
                   <TextField
                     name="mobileNumber"
                     label="Mobile Number"
-                    type="number"
+                    // type="text"
                     className="mb-20"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     error={
@@ -336,7 +334,6 @@ const ForgotPassword = (props) => {
                       formik.touched.mobileNumber && formik.errors.mobileNumber
                     }
                     variant="outlined"
-                    required
                     fullWidth
                     sx={{
                       "& .MuiOutlinedInput-root": {
@@ -345,6 +342,7 @@ const ForgotPassword = (props) => {
                         },
                       },
                       width: "200px",
+                      mt:1
                     }}
                   />
                 </div>
@@ -352,46 +350,46 @@ const ForgotPassword = (props) => {
             </React.Fragment>
           )}
           <br />
-         
-          <div style={{display:'flex', flexDirection:'column'}}>
-          {hideCheckBox && (
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={!showEmail}
-                onChange={handleCheckboxChange}
-                color="primary"
+
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            {hideCheckBox && (
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={!showEmail}
+                    onChange={handleCheckboxChange}
+                    color="primary"
+                    style={{
+                      "& .MuiSvgIcon-root": {
+                        fontSize: 18,
+                        border: "2px solid #000",
+                        borderRadius: 1,
+                      },
+                    }}
+                  />
+                }
+                label="Login Through Mobile"
                 style={{
-                  "& .MuiSvgIcon-root": {
-                    fontSize: 18, // Adjust the font size as needed
-                    border: "2px solid #000", // Set the border style
-                    borderRadius: 1, // Adjust the border radius as needed
-                  },
+                  fontWeight: 600,
+                  letterSpacing: "0px",
                 }}
               />
-            }
-            label="Login Through Mobile"
-            style={{
-              fontWeight: 600,
-              letterSpacing: "0px",
-            }}
-          />
-          )}
-          {showOtpInput && status === STATUS.STARTED ? (
-               <div style={{ display: 'flex', justifyContent: 'center' }}> <b className="text-success" style={{fontSize:'1.3rem'}}>Resend OTP </b>
-               <b className="ml-2 text-danger" style={{fontSize:'1.3rem'}}> {twoDigit(minutesToDisplay)}:
-                   {twoDigit(secondsToDisplay)}</b>
-               </div>
-            ) : (
-               status
             )}
-            </div>
+            {showOtpInput && status === STATUS.STARTED ? (
+              <div style={{ display: 'flex', justifyContent: 'center' }}> <b className="text-success" style={{ fontSize: '1.3rem' }}>Resend OTP </b>
+                <b className="ml-2 text-danger" style={{ fontSize: '1.3rem' }}> {twoDigit(minutesToDisplay)}:
+                  {twoDigit(secondsToDisplay)}</b>
+              </div>
+            ) : (
+              status
+            )}
+          </div>
 
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
             <Button
               variant="outlined"
               style={{
-                marginRight: "20px",
+                marginRight: "1rem",
                 backgroundColor: "#792b00",
                 color: "white",
               }}

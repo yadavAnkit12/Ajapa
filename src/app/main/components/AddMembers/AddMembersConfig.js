@@ -1,4 +1,3 @@
-import MemberView from "../ManageFamily/MemberView";
 import AddMembersForm from "./AddMembersForm";
 
 const AddMembersConfig = {

@@ -50,10 +50,13 @@ const EventRegisterForm = () => {
             },
         }).then((response) => {
             if (response.status === 200) {
-                // console.log("jii",response?.data)
                 setIsShivirAvailable(response?.data)
+                if (!response.data.data?.bookingStatus) {
+                    dispatch(showMessage({ message: 'Note : Booking status is off' }));
+
+                }
             } else {
-                dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
+                dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
             }
         }).catch((error) => console.log(error))
 
@@ -79,10 +82,7 @@ const EventRegisterForm = () => {
                             const matchingEventRegister = response.data.data.find((eventRegister) => eventRegister.userId === user.id);
                             return matchingEventRegister ? user.id : null;
                         });
-
-
                         setRegister(arr)
-
                     }
                 }
 
@@ -116,10 +116,7 @@ const EventRegisterForm = () => {
         return <FuseLoading />
     }
 
-
-
     //Edit button functionality
-
     const handleEdit = (userId) => {
         setRegisterUser(registerList.find((register) => register.userId === userId))
         setSelectedUserId(userId);
@@ -128,6 +125,7 @@ const EventRegisterForm = () => {
     }
 
     const handleDelete = () => {
+        setLoading(true)
         const registrationId = registerList.find((register) => register.userId === deleteId)?.registrationId
         const formData = new FormData()
         formData.append('registrationId', registrationId)
@@ -138,12 +136,17 @@ const EventRegisterForm = () => {
             },
         }).then((response) => {
             if (response.status === 200) {
+                setLoading(false)
                 dispatch(showMessage({ message: response.data.message, variant: 'success' }));
                 setOpen(false)
                 setChange(!change)
             } else {
+                setLoading(false)
                 dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
             }
+        }).catch((error) => {
+            setLoading(false)
+            dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
         })
     }
 
@@ -171,16 +174,15 @@ const EventRegisterForm = () => {
     return (
         <>
             <FusePageCarded
-                header={<EventRegisterFormHead />}
+                header={<EventRegisterFormHead eventData={isShivirAvailable} registerList={registerList} setChange={setChange} change={change} setLoading={setLoading} />}
                 content={
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-50">
                                 <tr>
-                                    <th scope="col" className="px-6 py-3.5 text-15 font-bold text-gray-700">
+                                    <th scope="col" className="px-16 py-3.5 text-15 font-bold text-gray-700">
                                         Disciple Name
                                     </th>
-
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200 bg-white">
@@ -254,6 +256,7 @@ const EventRegisterForm = () => {
                                                     isShivirAvailable={isShivirAvailable}
                                                     // registerList={registerList}
                                                     sameAsDD={sameAsDD}
+                                                    setLoading={setLoading}
                                                 />
                                             )}
                                         </td>
