@@ -5,10 +5,13 @@ import { motion } from 'framer-motion';
 import { useTheme } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useNavigate } from 'react-router-dom';
 
 
 function AddMembersFormHead(props) {
     const theme = useTheme()
+    const navigate=useNavigate()
     const routeParams = useParams()
     const [text, setText] = useState('')
 
@@ -31,6 +34,7 @@ function AddMembersFormHead(props) {
                 </motion.div>
 
                 <div className="flex items-center max-w-full">
+                <Button onClick={() => window.history.back()}><ArrowBackIcon sx={{mr:1}}/></Button>
                     <Typography
                         component={motion.span}
                         initial={{ x: -20 }}

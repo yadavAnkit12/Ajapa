@@ -37,7 +37,7 @@ function Home() {
   }, []);
 
   const handleClose = () => {
-    setOpen(close)
+    setOpen(false)
   }
 
   const handleComplete = () => {
