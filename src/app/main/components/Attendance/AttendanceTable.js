@@ -114,7 +114,7 @@ function AttendanceTable(props) {
       },
     }).then((response) => {
       if (response.status === 200) {
-        // console.log("x",response)
+        
         setPageData(response?.data)
         setUsers(response?.data?.users)
         setLoading(false)
@@ -288,7 +288,7 @@ function AttendanceTable(props) {
         <TableBody>
           {
             usersList.map((user) => {
-              // console.log("vv",user)
+              
               const isSelected = selected.indexOf(user.user.eventId) !== -1;
               
               return (
