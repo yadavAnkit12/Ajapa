@@ -170,13 +170,13 @@ const EventForm = (props) => {
         }
 
 
-        if (formik.values.arrivalDate < lockarrivaldate || formik.values.arrivalDate > eventDate) {
-            return dispatch(showMessage({ message: `Arrival Date should be in between ${lockarrivaldate} and ${eventDate}`, variant: 'error' }));
-        }
+        // if (formik.values.arrivalDate < lockarrivaldate || formik.values.arrivalDate > eventDate) {
+        //     return dispatch(showMessage({ message: `Arrival Date should be in between ${lockarrivaldate} and ${eventDate}`, variant: 'error' }));
+        // }
 
-        if (formik.values.departureDate < eventDate || formik.values.departureDate > lockdeparturedetail) {
-            return dispatch(showMessage({ message: `Departure Date should be in between ${eventDate} and ${lockdeparturedetail}`, variant: 'error' }));
-        }
+        // if (formik.values.departureDate < eventDate || formik.values.departureDate > lockdeparturedetail) {
+        //     return dispatch(showMessage({ message: `Departure Date should be in between ${eventDate} and ${lockdeparturedetail}`, variant: 'error' }));
+        // }
 
 
         props.setLoading(true)
@@ -483,10 +483,17 @@ const EventForm = (props) => {
                                     value={formik.values.arrivalDate}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
-                                    error={formik.touched.arrivalDate && Boolean(formik.errors.arrivalDate)}
-                                    helperText={formik.touched.arrivalDate && formik.errors.arrivalDate}
-                                    inputProps={{ min: lockarrivaldate, max: eventDate }}
+                                    error={
+                                        (formik.touched.arrivalDate && Boolean(formik.errors.arrivalDate)) ||
+                                        (formik.values.arrivalDate < (lockarrivaldate || eventDate) || formik.values.arrivalDate > eventDate)
+                                    }
+                                    helperText={
+                                        formik.touched.arrivalDate && (formik.errors.arrivalDate ||
+                                            (formik.values.arrivalDate < (lockarrivaldate || eventDate) || formik.values.arrivalDate > eventDate) ? lockarrivaldate ? `Date must be ${lockarrivaldate} - ${eventDate} `:`Date must be ${eventDate}` : "")
+                                    }
+                                    inputProps={{ min: lockarrivaldate || eventDate, max: eventDate }}
                                 />
+
                             </div>
                             <div>
                                 <TextField
@@ -576,10 +583,17 @@ const EventForm = (props) => {
                                     value={formik.values.departureDate}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
-                                    error={formik.touched.departureDate && Boolean(formik.errors.departureDate)}
-                                    helperText={formik.touched.departureDate && formik.errors.departureDate}
-                                    inputProps={{ min: eventDate, max: lockdeparturedetail }}
+                                    error={
+                                        (formik.touched.departureDate && Boolean(formik.errors.departureDate)) ||
+                                        (formik.values.departureDate < eventDate || formik.values.departureDate > (lockdeparturedetail || eventDate))
+                                    }
+                                    helperText={
+                                        formik.touched.departureDate && (formik.errors.departureDate ||
+                                            (formik.values.departureDate < eventDate || formik.values.departureDate > (lockdeparturedetail || eventDate)) ? lockdeparturedetail ? `Date must be ${lockdeparturedetail} - ${eventDate} `:`Date must be ${eventDate}` : "")
+                                    }
+                                    inputProps={{ min: eventDate, max: lockdeparturedetail || eventDate }}
                                 />
+
                             </div>
                             <div>
                                 <TextField
