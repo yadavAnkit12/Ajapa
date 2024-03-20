@@ -18,8 +18,8 @@ const validationSchema = Yup.object().shape({
 
 
 const FoodForm = (props) => {
-    // console.log(props)
     const dispatch = useDispatch()
+    const [loading, setLoading] = useState(false)
     const [lowerLimit, setLowerLimit] = useState('')
     const [upperLimit, setUpperLimit] = useState('')
 
@@ -28,6 +28,7 @@ const FoodForm = (props) => {
     const handleSubmit = (values) => {
 
         if (formik.isValid) {
+            setLoading(true)
             const formData = new FormData()
             formData.append('eventId', props.eventList.find((event) => event.eventName === formik.values.eventId).eventId)
             formData.append('entryDate', values.entryDate)
@@ -42,12 +43,18 @@ const FoodForm = (props) => {
                 },
             }).then((response) => {
                 if (response.status === 200) {
+                    formik.resetForm()
+                    setLoading(false)
                     dispatch(showMessage({ message: response.data.message, variant: 'success' }));
 
                 } else {
+                    setLoading(false)
                     dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
                 }
-            }).catch((error) => dispatch(showMessage({ message: 'Something went wrong', variant: 'error' })))
+            }).catch((error) => {
+                setLoading(false)
+                dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
+            })
         }
 
     }

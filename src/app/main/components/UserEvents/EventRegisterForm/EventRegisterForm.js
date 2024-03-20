@@ -52,13 +52,17 @@ const EventRegisterForm = () => {
             if (response.status === 200) {
                 setIsShivirAvailable(response?.data)
                 if (!response.data.data?.bookingStatus) {
-                    dispatch(showMessage({ message: 'Note : Booking status is off' }));
+                    dispatch(showMessage({ message: 'Note : Registration status is off' }));
 
                 }
             } else {
                 dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
             }
-        }).catch((error) => console.log(error))
+        }).catch(()=>{
+            setLoading(false)
+            dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
+
+        })
 
     }, [])
 
@@ -80,16 +84,23 @@ const EventRegisterForm = () => {
 
                         const arr = userListData.users.map((user) => {
                             const matchingEventRegister = response.data.data.find((eventRegister) => eventRegister.userId === user.id);
-                            return matchingEventRegister ? user.id : null;
+                            return matchingEventRegister ? user.id : '';
                         });
                         setRegister(arr)
                     }
+                } else {
+                    setRegisterList([])
+                    setRegister([])
                 }
 
             } else {
                 dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
             }
-        });
+        }).catch(()=>{
+            setLoading(false)
+            dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
+
+        })
 
     }, [userListData, change])
 
@@ -103,13 +114,17 @@ const EventRegisterForm = () => {
             },
         }).then((response) => {
             if (response.status === 200) {
-                // console.log(response)
                 setUserListData(response?.data);
                 setLoading(false)
             } else {
-                dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
+                setLoading(false)
+                dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
             }
-        });
+        }).catch(()=>{
+            setLoading(false)
+            dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
+
+        })
     }, [change]);
 
     if (loading) {
@@ -192,7 +207,6 @@ const EventRegisterForm = () => {
                                             <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
                                                 <Typography variant="h5"
                                                     style={{
-                                                        // fontFamily: "BentonSans bold",
                                                         fontStyle: 'normal', fontSize: '16px',
                                                         lineHeight: '28px', letterSpacing: '0px',
                                                         textAlign: 'center', fontWeight: 600,
@@ -203,7 +217,6 @@ const EventRegisterForm = () => {
                                                 </Typography>
                                                 <div style={{ display: 'flex', justifyContent: 'space-evenly', gap: '10px' }}>
                                                     <Button
-                                                        // variant='contained'
                                                         disabled={register.includes(person.id) || !isShivirAvailable?.data?.bookingStatus}
                                                         style={{
                                                             backgroundColor: (register.includes(person.id) || !isShivirAvailable?.data?.bookingStatus) ? '#d3d3d3' : 'green', color: 'white',
@@ -214,7 +227,6 @@ const EventRegisterForm = () => {
                                                     </Button>
 
                                                     <Button
-                                                        // variant='contained'
                                                         disabled={!register.includes(person.id)}
                                                         style={{
                                                             backgroundColor: register.includes(person.id) ? '#4f46e5' : '#d3d3d3', // Use light gray for disabled
@@ -226,7 +238,6 @@ const EventRegisterForm = () => {
                                                     </Button>
 
                                                     <Button
-                                                        // variant='contained'
                                                         disabled={!register.includes(person.id)}
                                                         style={{
                                                             backgroundColor: register.includes(person.id) ? '#D70040' : '#d3d3d3', // Use light gray for disabled

@@ -60,7 +60,7 @@ function EventRegisterFormHead(props) {
         }).then((response) => {
             if (response.status === 200) {
                 props.setLoading(false)
-                dispatch(showMessage({ message: `Jai Guru. Your registration for ${props.eventName} is delete successfull for all members`, variant: 'success' }));
+                dispatch(showMessage({ message: `Jai Guru. Your registration for ${data.eventName} is delete successfull for all members`, variant: 'success' }));
                 setOpen(false)
                 props.setChange(!props.change)
             } else {
@@ -221,7 +221,7 @@ function EventRegisterFormHead(props) {
                         delay={300}
                         style={fontSmall}
                     >
-                        Booking status :
+                        Registration status :
                     </Typography>
                     <Typography
                         component={motion.span}

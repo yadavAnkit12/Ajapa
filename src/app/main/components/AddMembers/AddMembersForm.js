@@ -253,9 +253,6 @@ function AddMembersForm() {
 
 
   const handleSubmit = (values) => {
-
-
-
     if (userID === "" && values.profilePicture === null) {
       dispatch(
         showMessage({

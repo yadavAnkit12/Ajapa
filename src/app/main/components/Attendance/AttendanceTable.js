@@ -102,6 +102,7 @@ function AttendanceTable(props) {
 
 
   const fetchData = () => {
+    setLoading(true)
     const params = {
       page: page + 1,
       rowsPerPage: rowsPerPage, // Example data to pass in req.query
@@ -114,15 +115,20 @@ function AttendanceTable(props) {
       },
     }).then((response) => {
       if (response.status === 200) {
-
         setPageData(response?.data)
         setUsers(response?.data?.users)
         setLoading(false)
-        // props.setUsers(response?.data?.users);  //Update the parent component
       } else {
+        setPageData('')
+        setUsers([])
+        setLoading(false)
         dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
       }
-    });
+    }).catch(()=>{
+      setLoading(false)
+      dispatch(showMessage({ message: "something went wrong", variant: 'error' }));
+
+    })
   };
 
 
@@ -188,7 +194,7 @@ function AttendanceTable(props) {
         className="flex flex-1 items-center justify-center h-full"
       >
         <Typography color="text.secondary" variant="h5">
-          There is no Data!
+          There is no user !
         </Typography>
       </motion.div>
     );
@@ -197,6 +203,7 @@ function AttendanceTable(props) {
 
   //CheckBox click
   const handleToggle = (userId, attendance) => {
+    setLoading(true)
     const updatedUserData = usersList.map((item) => {
       if (item.user.id === userId) {
         return { ...item, present: !attendance };
@@ -221,13 +228,17 @@ function AttendanceTable(props) {
     })
       .then((response) => {
         if (response.status === 200) {
+          fetchData()
+          setLoading(false)
           dispatch(showMessage({ message: response.data.message, variant: 'success' }));
         } else {
+          setLoading(false)
           dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
         }
       })
       .catch((error) => {
-        console.error(error);
+        setLoading(false)
+        dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
       });
   };
 
@@ -245,9 +256,11 @@ function AttendanceTable(props) {
 
   //Click on bell icon !!
   const handleAttendance = (userid, hallNo, present) => {
+   
     const user = usersList.find(item => item.user.id === userid);
 
     if (user) {
+      setLoading(true)
       const formattedData = new FormData();
       formattedData.append('id', userid);
       formattedData.append('eventId', eventId);
@@ -261,11 +274,15 @@ function AttendanceTable(props) {
         },
       }).then((response) => {
         if (response.status === 200) {
+          fetchData()
+          setLoading(false)
           dispatch(showMessage({ message: `Jai Guru. Your room/hall number for ${props?.filterValue?.eventName} is ${hallNo}. Please visit reception desk once you reach Ashram.`, variant: 'success' }));
         } else {
+          setLoading(false)
           dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
         }
       }).catch((error) => {
+        setLoading(false)
         dispatch(showMessage({ message: "Something went wrong", variant: 'error' }));
       });
 
@@ -333,14 +350,8 @@ function AttendanceTable(props) {
                           : user?.specificRequirements || 'N/A'}
                       </span>
                     </Tooltip>
-                    {/* {user?.specificRequirements === '' ? 'N/A' : user?.specificRequirements} */}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" align="center">
-                    {/* <Checkbox
-                       checked={user.present}
-                       onChange={() => handleToggle(user.user.userId)}
-                       inputProps={{ 'aria-labelledby': labelId }}
-                      /> */}
                     <Checkbox checked={user.present} onChange={() => handleToggle(user?.user?.id, user.present)} />
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
@@ -380,22 +391,7 @@ function AttendanceTable(props) {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      {/* <Dialog
-        open={open}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={handleClose}
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <DialogTitle>{"Do you want to delete this Event?"}</DialogTitle>
 
-        <DialogActions>
-          <Button onClick={handleClose}>No</Button>
-          <Button onClick={deleteEvent} autoFocus>
-            Yes
-          </Button>
-        </DialogActions>
-      </Dialog> */}
       <Modal
         open={openView}
         onClose={handleViewClose}

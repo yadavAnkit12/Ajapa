@@ -42,25 +42,10 @@ const menuItemArray = [
     // visibleIf: ['complete', 'active', 'inactive'],
     loadIf: true
   },
-  // {
-  //   key: 1,
-  //   label: 'Edit',
-  //   status: 'edit',
-  //   // visibleIf: ['complete', 'active', 'inactive'],
-  //   loadIf: true
-  // },
-  // {
-  //   key: 1,
-  //   label: 'Delete',
-  //   status: 'delete',
-  //   // visibleIf: ['complete', 'active', 'inactive'],
-  //   loadIf: true
-  // },
 ]
 
 
 function AllEventRegistrationTable(props) {
-  // console.log(props)
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [eventListData, setEventListData] = useState([]);
@@ -75,9 +60,6 @@ function AllEventRegistrationTable(props) {
     direction: 'asc',
     id: null,
   });
-
-  const [openEdit, setOpenEdit] = useState(false);
-  const [editId, setEditId] = useState("");
   const [openView, setOpenView] = useState(false);
   const [viewid, setViewId] = useState("");
   const [change, setChange] = useState(false);
@@ -118,13 +100,11 @@ function AllEventRegistrationTable(props) {
 
 
   const fetchData = () => {
-    
+    setLoading(true)
     const params = {
       page: page + 1,
-      rowsPerPage: rowsPerPage, // Example data to pass in req.query
+      rowsPerPage: rowsPerPage, 
       eventId: props.eventList?.find((event) => event.eventName === props.filterValue.eventName)?.eventId || '',
-      //   eventStatus: (_.get(props, 'filterValue.eventStatus') === 'Active' || _.get(props, 'filterValue') === '') ? true : false,
-      //   bookingStatus: (_.get(props, 'filterValue.bookingStatus') === 'On' || _.get(props, 'filterValue') === '') ? true : false,
     };
     axios.get(eventAPIConfig.allEventRegistrationList, { params }, {
       headers: {
@@ -133,14 +113,18 @@ function AllEventRegistrationTable(props) {
       },
     }).then((response) => {
       if (response.status === 200) {
-        console.log(response)
-        //
         setEventListData(response?.data);
         setLoading(false);
       } else {
+        setEventListData([])
+        setLoading(false)
         dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
       }
-    });
+    }).catch(()=>{
+      setLoading(false)
+      dispatch(showMessage({ message: "Something went wrong", variant: 'error' }));
+
+    })
   };
 
 
@@ -171,67 +155,6 @@ function AllEventRegistrationTable(props) {
     else if (selectedValue === 'edit') {
       navigate(`/app/eventRegisteration/${id}`)
     }
-    // else if (selectedValue === 'delete') {
-    //   setDeleteId(id)
-    //   setOpen(true)
-
-    // }
-
-  }
-
-  const handleClose = () => {
-    setOpen(false)
-  }
-
-  //deleting the event
-  // const deleteEvent = () => {
-  //   axios.post(`${eventAPIConfig.delete}/${deleteId}`, {
-  //     headers: {
-  //       'Content-type': 'multipart/form-data',
-  //       Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-  //     },
-  //   }).then((response) => {
-  //     if (response.status === 200) {
-  //       dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-  //     } else {
-  //       dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
-  //     }
-  //   }).catch((error) => console.log(error))
-  // }
-
-  //chnaging the booking status
-  const handleChnangeBookingStatus = (id, status) => {
-    axios.post(`${eventAPIConfig.changeBookingStatus}/${id}/${!status}`, {
-      headers: {
-        'Content-type': 'multipart/form-data',
-        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-      },
-    }).then((response) => {
-      if (response.status === 200) {
-        fetchData()
-        dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-
-      } else {
-        dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
-      }
-    }).catch((error) => console.log(error))
-
-  }
-  //chnaging the event status
-  const handleChangeEventStatus = (id, status) => {
-    axios.post(`${eventAPIConfig.changeEventStatus}/${id}/${!status}`, {
-      headers: {
-        'Content-type': 'multipart/form-data',
-        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-      },
-    }).then((response) => {
-      if (response.status === 200) {
-        fetchData()
-        dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-      } else {
-        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
-      }
-    }).catch((error) => console.log(error))
 
   }
 
@@ -385,22 +308,7 @@ function AllEventRegistrationTable(props) {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      {/* <Dialog
-        open={open}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={handleClose}
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <DialogTitle>{"Do you want to delete this Event?"}</DialogTitle>
-
-        <DialogActions>
-          <Button onClick={handleClose}>No</Button>
-          <Button onClick={deleteEvent} autoFocus>
-            Yes
-          </Button>
-        </DialogActions>
-      </Dialog> */}
+    
       <Modal
         open={openView}
         onClose={handleViewClose}

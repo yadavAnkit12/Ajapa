@@ -4,8 +4,10 @@ import _ from '@lodash';
 import EditIcon from '@mui/icons-material/Edit';
 import PersonIcon from '@mui/icons-material/Person';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import { Modal, Table, TableBody, TableCell, TablePagination, TableRow, Typography, IconButton, Box, 
-  Button, MenuItem, Menu, Dialog, DialogTitle, DialogActions, Slide } from '@mui/material';
+import {
+  Modal, Table, TableBody, TableCell, TablePagination, TableRow, Typography, IconButton, Box,
+  Button, MenuItem, Menu, Dialog, DialogTitle, DialogActions, Slide
+} from '@mui/material';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { useEffect, useState, useRef, forwardRef } from 'react';
@@ -159,13 +161,14 @@ function UserTable(props) {
     };
   }, [searchText]);
 
-  
+
   const fetchData = () => {
+    setLoading(true)
     const params = {
       page: page + 1,
       rowsPerPage: rowsPerPage, // Example data to pass in req.query
       searchText: searchText,
-      status: _.get(props, 'filterValue') === '' ? 'Approved' : _.get(props, 'filterValue.status')==='' ?'Approved': _.get(props, 'filterValue.status')===null? 'Approved': _.get(props, 'filterValue.status'),
+      status: _.get(props, 'filterValue') === '' ? 'Approved' : _.get(props, 'filterValue.status') === '' ? 'Approved' : _.get(props, 'filterValue.status') === null ? 'Approved' : _.get(props, 'filterValue.status'),
       country: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.country') === '' ? 'All' : _.get(props, 'filterValue.country'),
       state: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.state') === '' ? 'All' : _.get(props, 'filterValue.state'),
       city: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.city') === '' ? 'All' : _.get(props, 'filterValue.city'),
@@ -178,13 +181,16 @@ function UserTable(props) {
       },
     }).then((response) => {
       if (response.status === 200) {
-        // console.log("response", response)
         setUserListData(response?.data);
         setLoading(false);
       } else {
+        setLoading(false)
         dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
       }
-    }).catch((error)=>dispatch(showMessage({ message: 'Something went wrong', variant: 'error' })))
+    }).catch((error) => {
+      setLoading(false)
+      dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
+    })
   };
 
 
@@ -242,18 +248,18 @@ function UserTable(props) {
   }
 
   const handleChangeStatus = () => {
-      const formData=new FormData()
-      if(changeStatus==='Approve'){
+    const formData = new FormData()
+    if (changeStatus === 'Approve') {
 
-        formData.append('status','Approved')
-      }
-      else if(changeStatus==='Reject'){
-        formData.append('status','Rejected')
-      }
-      else {
-        formData.append('status','Pending')
-      }
-      formData.append('id',viewid)
+      formData.append('status', 'Approved')
+    }
+    else if (changeStatus === 'Reject') {
+      formData.append('status', 'Rejected')
+    }
+    else {
+      formData.append('status', 'Pending')
+    }
+    formData.append('id', viewid)
     axios.post(userAPIConfig.changeStatus, formData, {
       headers: {
         'Content-type': 'multipart/form-data',
@@ -264,7 +270,7 @@ function UserTable(props) {
         dispatch(showMessage({ message: response.data.message, variant: 'success' }));
         handleClose()
         fetchData()
-      
+
       }
       else {
         dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
@@ -338,7 +344,7 @@ function UserTable(props) {
   }
 
   return (
-    <div className="w-full flex flex-col min-h-full" style={{overflow:'auto'}}>
+    <div className="w-full flex flex-col min-h-full" style={{ overflow: 'auto' }}>
       <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle" ref={tableRef}>
         <UserTableHead
           selectedProductIds={selected}
@@ -368,7 +374,7 @@ function UserTable(props) {
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.name}
-                    {n.role === 'User' ? <span style={{ color: 'red' ,fontSize: '1.8rem'}}>*</span> :""}
+                    {n.role === 'User' ? <span style={{ color: 'red', fontSize: '1.8rem' }}>*</span> : ""}
                   </TableCell>
 
                   <TableCell className="p-4 md:p-16" component="th" scope="row">
@@ -474,15 +480,15 @@ function UserTable(props) {
         aria-labelledby="modal-modaltitle-"
         aria-describedby="modal-modal-description"
       >
-        <Box  sx={{
+        <Box sx={{
           ...style,
           '@media (max-width: 600px)': { // Apply media query for mobile devices
-          width: '70%', // Set width to 100% for smaller screens
-      },
-        '@media (max-width: 280px)': { // Additional media query for smaller screens
-         width: '93%', // Set width to 82% for screens up to 280px
-      },
-    }}>
+            width: '70%', // Set width to 100% for smaller screens
+          },
+          '@media (max-width: 280px)': { // Additional media query for smaller screens
+            width: '93%', // Set width to 82% for screens up to 280px
+          },
+        }}>
           <UserView data={viewid} handleViewClose={handleViewClose} />
         </Box>
       </Modal>

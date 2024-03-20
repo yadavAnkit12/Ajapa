@@ -25,7 +25,6 @@ const Transition = forwardRef(function Transition(props, ref) {
 
 
 const EventForm = (props) => {
-    // console.log(props.person)
     const dispatch = useDispatch()
     const shivirHai = props.isShivirAvailable.data.shivirAvailable
     const lockarrivaldate = props.isShivirAvailable.data.lockArrivalDate

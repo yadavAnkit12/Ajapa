@@ -61,7 +61,6 @@ const menuItemArray = [
 
 
 function FoodDetailsTable(props) {
-  console.log("Props", props.foodData)
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [eventListData, setEventListData] = useState([]);
@@ -85,7 +84,7 @@ function FoodDetailsTable(props) {
   const [open, setOpen] = useState(false)
   const [deleteId, setDeleteId] = useState('')
   const [foodDetails, setFoodDetails] = useState([])
-  const [foodData, setFoodData]= useState([])
+  const [foodData, setFoodData] = useState([])
   // const { foodData } = props
 
   useEffect(() => {
@@ -124,21 +123,8 @@ function FoodDetailsTable(props) {
 
 
   const fetchData = () => {
-  
-    // const params = {
-    //   page: page + 1,
-    //   rowsPerPage: rowsPerPage, // Example data to pass in req.query
-    //   eventId: props.eventList?.find((event) => event.eventName === props.filterValue.eventName)?.eventId || '',
-    //   //   eventStatus: (_.get(props, 'filterValue.eventStatus') === 'Active' || _.get(props, 'filterValue') === '') ? true : false,
-    //   //   bookingStatus: (_.get(props, 'filterValue.bookingStatus') === 'On' || _.get(props, 'filterValue') === '') ? true : false,
-    // };
-
-    // if(!props.filterValue.eventName){
-    //   return
-    // }
-
-    console.log("Filter value", props.filterValue.eventName)
-    const eventId = props.eventList.find((event)=> event.eventName === props.filterValue.eventName)?.eventId
+    setLoading(true)
+    const eventId = props.eventList.find((event) => event.eventName === props.filterValue.eventName)?.eventId
     axios.get(`${foodAPIConfig.getFoodDetails}/${eventId}`, {
 
       headers: {
@@ -146,14 +132,18 @@ function FoodDetailsTable(props) {
         // Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
       },
     }).then((response) => {
-      console.log("Hello",response)
       if (response.status === 200) {
         setFoodData(response?.data)
         setLoading(false)
       } else {
+        setLoading(false)
         dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
       }
-    });
+    }).catch(() => {
+      setLoading(false)
+      dispatch(showMessage({ message: "Something went wrong", variant: 'error' }));
+
+    })
   };
 
 
@@ -184,69 +174,11 @@ function FoodDetailsTable(props) {
     else if (selectedValue === 'edit') {
       navigate(`/app/eventRegisteration/${id}`)
     }
-    // else if (selectedValue === 'delete') {
-    //   setDeleteId(id)
-    //   setOpen(true)
 
-    // }
 
   }
 
-  const handleClose = () => {
-    setOpen(false)
-  }
 
-  //deleting the event
-  // const deleteEvent = () => {
-  //   axios.post(`${eventAPIConfig.delete}/${deleteId}`, {
-  //     headers: {
-  //       'Content-type': 'multipart/form-data',
-  //       Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-  //     },
-  //   }).then((response) => {
-  //     if (response.status === 200) {
-  //       dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-  //     } else {
-  //       dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
-  //     }
-  //   }).catch((error) => console.log(error))
-  // }
-
-  //chnaging the booking status
-  const handleChnangeBookingStatus = (id, status) => {
-    axios.post(`${eventAPIConfig.changeBookingStatus}/${id}/${!status}`, {
-      headers: {
-        'Content-type': 'multipart/form-data',
-        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-      },
-    }).then((response) => {
-      if (response.status === 200) {
-        fetchData()
-        dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-
-      } else {
-        dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
-      }
-    }).catch((error) => console.log(error))
-
-  }
-  //chnaging the event status
-  const handleChangeEventStatus = (id, status) => {
-    axios.post(`${eventAPIConfig.changeEventStatus}/${id}/${!status}`, {
-      headers: {
-        'Content-type': 'multipart/form-data',
-        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-      },
-    }).then((response) => {
-      if (response.status === 200) {
-        fetchData()
-        dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-      } else {
-        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
-      }
-    }).catch((error) => console.log(error))
-
-  }
 
   function handleSelectAllClick(event) {
     if (event.target.checked) {
@@ -279,7 +211,7 @@ function FoodDetailsTable(props) {
   };
 
 
-  if (loading || !props.filterValue.eventName ) {
+  if (loading || !props.filterValue.eventName) {
     return (
       <div className="flex items-center justify-center h-full">
         <FuseLoading />
@@ -309,7 +241,7 @@ function FoodDetailsTable(props) {
         className="flex flex-1 items-center justify-center h-full"
       >
         <Typography color="text.secondary" variant="h5">
-          There is no data!
+          There is no food data!
         </Typography>
       </motion.div>
     );
@@ -329,7 +261,7 @@ function FoodDetailsTable(props) {
         <TableBody>
           {
             foodData?.map((n) => {
-              
+
               const isSelected = selected.indexOf(n.eventId) !== -1;
               return (
                 <TableRow
