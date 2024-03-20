@@ -32,7 +32,8 @@ function Report2Header(props) {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [filterData, setFilterData] = useState({
-    eventName: ''
+    eventName: '',
+    selectDate: ''
   });
   
 
@@ -177,6 +178,19 @@ function Report2Header(props) {
               onChange={(e, newValue) => setFilterData({ ...filterData, eventName: newValue })}
               renderInput={(params) => <TextField {...params} label="Select Event" variant="standard" />}
             />
+
+
+<Autocomplete
+              disablePortal
+              value={filterData.selectDate}
+              id="selectDate"
+              options={["Arrival", "Departure"]}
+              getOptionLabel={(option) => option}
+              sx={{ my: 1, minWidth: 200, mx: 1 }}
+              onChange={(e, newValue) => setFilterData({ ...filterData, selectDate: newValue })}
+              renderInput={(params) => <TextField {...params} label="Arrival/Departure" variant="standard" />}
+            />
+
             <Button
               // component={Link}
             //   onClick={() => handleCreateReport()}

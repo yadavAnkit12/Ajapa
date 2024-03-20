@@ -11,7 +11,7 @@ import { useEffect, useState, useRef, forwardRef } from 'react';
 import { showMessage } from 'app/store/fuse/messageSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from "react-router-dom";
-import { eventAPIConfig } from 'src/app/main/API/apiConfig';
+import { eventAPIConfig, reportAPIConfig } from 'src/app/main/API/apiConfig';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import Report2TableHead from './Report2TableHead';
 
@@ -37,6 +37,8 @@ const style = {
 
 function Report2Table(props) {
   // console.log(props)
+
+  const[reportData, setReportData] = useState([])
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [eventListData, setEventListData] = useState([]);
@@ -94,29 +96,70 @@ function Report2Table(props) {
 
 
   const fetchData = () => {
-    
-    const params = {
-      page: page + 1,
-      rowsPerPage: rowsPerPage, // Example data to pass in req.query
-      eventId: props.eventList?.find((event) => event.eventName === props.filterValue.eventName)?.eventId || '',
-      //   eventStatus: (_.get(props, 'filterValue.eventStatus') === 'Active' || _.get(props, 'filterValue') === '') ? true : false,
-      //   bookingStatus: (_.get(props, 'filterValue.bookingStatus') === 'On' || _.get(props, 'filterValue') === '') ? true : false,
-    };
-    axios.get(eventAPIConfig.allEventRegistrationList, { params }, {
+
+
+    if(props.filterValue.eventName === '' || props.filterValue.eventName === null)
+    {
+      dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
+      return
+    }
+
+    if(props.filterValue.selectDate === '' || props.filterValue.selectDate === null)
+    {
+      dispatch(showMessage({ message: "Please select the Arrival/Departure mode", variant: 'error' }));
+      return
+    }
+
+    console.log("Event Name",props.filterValue.eventName )
+    console.log("Event Name",props.filterValue.selectDate )
+
+    const eventId = props.eventList?.find((event) => event.eventName === props.filterValue.eventName)?.eventId || '';
+    console.log("Event Id",eventId)
+
+
+    if(props.filterValue.selectDate === 'Arrival')
+    {
+           axios.get(`${reportAPIConfig.report2arrival}/${eventId}` ,{
       headers: {
         'Content-type': 'multipart/form-data',
         Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
       },
     }).then((response) => {
       if (response.status === 200) {
-        console.log(response)
-        //
-        setEventListData(response?.data);
+        console.log("report", response?.data)
+        setReportData(response?.data);
         setLoading(false);
       } else {
         dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
       }
     });
+    }
+
+    else if(props.filterValue.selectDate === 'Departure')
+    {
+    axios.get(`${reportAPIConfig.report2departure}/${eventId}` ,{
+      headers: {
+        'Content-type': 'multipart/form-data',
+        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+      },
+    }).then((response) => {
+      if (response.status === 200) {
+        console.log("report", response?.data)
+        setReportData(response?.data);
+        setLoading(false);
+      } else {
+        dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
+      }
+    });
+    }
+
+
+
+    
+
+
+
+
   };
 
 
@@ -162,8 +205,8 @@ function Report2Table(props) {
 
   function handleSelectAllClick(event) {
     if (event.target.checked) {
-      setSelected(_.size(_.get(eventListData, 'data')) > 0 ?
-        _.get(eventListData, 'data').map((n) => n.eventId) :
+      setSelected(_.size(_.get(reportData, 'data')) > 0 ?
+        _.get(reportData, 'data').map((n) => n.eventId) :
         {}
       );
       return;
@@ -199,7 +242,7 @@ function Report2Table(props) {
     );
   }
 
-  if (!_.size(_.get(eventListData, 'data'))) {
+  if (!_.size(_.get(reportData, 'data'))) {
     return (
       <motion.div
         initial={{ opacity: 0 }}
@@ -207,7 +250,7 @@ function Report2Table(props) {
         className="flex flex-1 items-center justify-center h-full"
       >
         <Typography color="text.secondary" variant="h5">
-          There are no Registrations!
+          There is no Data!
         </Typography>
       </motion.div>
     );
@@ -226,7 +269,7 @@ function Report2Table(props) {
         />
         <TableBody>
           {
-            eventListData?.data?.map((n) => {
+            reportData?.data?.map((n) => {
               const isSelected = selected.indexOf(n.eventId) !== -1;
               return (
                 <TableRow
@@ -240,18 +283,18 @@ function Report2Table(props) {
                   style={{ cursor: 'default' }}
                 >
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.userName}
+                    {n.date}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.eventName}
+                    {n.timeSlot}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.eventDate}
+                    {n.modeOfTransport}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.fromCountry.split(':')[1]}
+                    {n.trainDetails}
                   </TableCell>
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                  {/* <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.fromState.split(':')[1]}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
@@ -259,7 +302,7 @@ function Report2Table(props) {
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.shivirAvailable ? 'Yes' : 'No'}
-                  </TableCell>
+                  </TableCell> */}
               
                 </TableRow>
               );
@@ -315,7 +358,7 @@ function Report2Table(props) {
             width: '93%', // Set width to 82% for screens up to 280px
           },
         }}>
-          <EventView handleViewClose={handleViewClose} registrationId={viewid} />
+          {/* <EventView handleViewClose={handleViewClose} registrationId={viewid} /> */}
         </Box>
       </Modal>
 
