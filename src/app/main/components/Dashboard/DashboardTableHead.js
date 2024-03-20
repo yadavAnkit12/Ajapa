@@ -53,10 +53,10 @@ function DashboardTableHead(props) {
       visibleIf: true
     },
     {
-      id: 'bookingstatus',
+      id: 'registrationstatus',
       align: 'center',
       disablePadding: false,
-      label: 'Booking Status',
+      label: 'Registration Status',
       sort: true,
       visibleIf: true
     },
