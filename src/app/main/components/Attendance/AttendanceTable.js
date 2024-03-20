@@ -5,7 +5,7 @@ import _ from '@lodash';
 import EditIcon from '@mui/icons-material/Edit';
 import PersonIcon from '@mui/icons-material/Person';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import { Modal, Table, TableBody, TableCell, TablePagination, TableRow, Typography, IconButton, Box, Button, MenuItem, Menu, Dialog, DialogTitle, DialogActions, Slide, Switch, FormControlLabel, Checkbox, TextField } from '@mui/material';
+import { Modal, Table, TableBody, TableCell, TablePagination, TableRow, Typography, IconButton, Box, Button, MenuItem, Menu, Dialog, DialogTitle, DialogActions, Slide, Switch, FormControlLabel, Checkbox, TextField, Tooltip } from '@mui/material';
 import axios from 'axios';
 import { color, motion } from 'framer-motion';
 import { useEffect, useState, useRef, forwardRef } from 'react';
@@ -41,7 +41,7 @@ const style = {
 
 
 function AttendanceTable(props) {
-  
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [eventListData, setEventListData] = useState([]);
@@ -65,8 +65,8 @@ function AttendanceTable(props) {
   const [loading, setLoading] = useState(true)
   const [pageData, setPageData] = useState('')
   //userList based on registrations
-  const [usersList,setUsers] = useState([])
-  const eventId = props.eventList?.find((event) => event.eventName === props.filterValue.eventName)?.eventId 
+  const [usersList, setUsers] = useState([])
+  const eventId = props.eventList?.find((event) => event.eventName === props.filterValue.eventName)?.eventId
 
   useEffect(() => {
     fetchData();
@@ -107,14 +107,14 @@ function AttendanceTable(props) {
       rowsPerPage: rowsPerPage, // Example data to pass in req.query
       eventId: props.eventList?.find((event) => event.eventName === props.filterValue.eventName)?.eventId || '',
     };
-    axios.get(`${eventAPIConfig.fetchRegisterUserByEvent}/${eventId}`, {params} , {
+    axios.get(`${eventAPIConfig.fetchRegisterUserByEvent}/${eventId}`, { params }, {
       headers: {
         'Content-type': 'multipart/form-data',
         Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
       },
     }).then((response) => {
       if (response.status === 200) {
-        
+
         setPageData(response?.data)
         setUsers(response?.data?.users)
         setLoading(false)
@@ -144,7 +144,7 @@ function AttendanceTable(props) {
     });
   }
 
-  
+
 
   function handleSelectAllClick(event) {
     if (event.target.checked) {
@@ -172,7 +172,7 @@ function AttendanceTable(props) {
   };
 
 
-  if (loading ) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center h-full">
         <FuseLoading />
@@ -196,81 +196,81 @@ function AttendanceTable(props) {
 
 
   //CheckBox click
-  const handleToggle = (userId,attendance) => {
+  const handleToggle = (userId, attendance) => {
     const updatedUserData = usersList.map((item) => {
-        if (item.user.id === userId) {
-            return { ...item, present: !attendance };
-        }
-        return item;
+      if (item.user.id === userId) {
+        return { ...item, present: !attendance };
+      }
+      return item;
     });
     setUsers(updatedUserData);
 
-   
-   const user = usersList.find((item) => item.user.id === userId);
-   const formData = new FormData();
-   formData.append('id', userId);
-   formData.append('eventId', eventId); 
-   formData.append('hallNo', user.hallNo);
-   formData.append('present', !attendance); 
 
-   axios.post(eventAPIConfig.saveOneAttendance, formData, {
-       headers: {
-           'Content-Type': 'multipart/form-data', 
-           'Authorization': `Bearer ${window.localStorage.getItem('jwt_access_token')}`
-       }
-   })
-   .then((response) => {
-       if(response.status === 200){
-        dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-       }else{
-        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
-       }
-   })
-   .catch((error) => {
-       console.error(error);
-   });
-};
+    const user = usersList.find((item) => item.user.id === userId);
+    const formData = new FormData();
+    formData.append('id', userId);
+    formData.append('eventId', eventId);
+    formData.append('hallNo', user.hallNo);
+    formData.append('present', !attendance);
+
+    axios.post(eventAPIConfig.saveOneAttendance, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${window.localStorage.getItem('jwt_access_token')}`
+      }
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+        } else {
+          dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   //Change in HallNo (textField)
   const handleHallNoChange = (event, userId) => {
     const { value } = event.target;
     const updatedUserData = usersList.map((item) => {
-        if (item.user.id === userId) {
-            return { ...item, hallNo: value };
-        }
-        return item;
+      if (item.user.id === userId) {
+        return { ...item, hallNo: value };
+      }
+      return item;
     });
     setUsers(updatedUserData);
-};
+  };
 
   //Click on bell icon !!
   const handleAttendance = (userid, hallNo, present) => {
     const user = usersList.find(item => item.user.id === userid);
-    
-    if (user) {
-        const formattedData = new FormData();
-        formattedData.append('id', userid);
-        formattedData.append('eventId', eventId);
-        formattedData.append('hallNo', hallNo);
-        formattedData.append('present', present);
 
-        axios.post(`${eventAPIConfig.sendRoomBookingStatus}`, formattedData, {
-            headers: {
-                'Content-type': 'multipart/form-data',
-                Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-            },
-        }).then((response) => {
-            if(response.status === 200){
-            dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-            }else{
-              dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
-            }
-        }).catch((error) => {
-            dispatch(showMessage({ message: "Something went wrong", variant: 'error' }));
-        });
-        
+    if (user) {
+      const formattedData = new FormData();
+      formattedData.append('id', userid);
+      formattedData.append('eventId', eventId);
+      formattedData.append('hallNo', hallNo);
+      formattedData.append('present', present);
+
+      axios.post(`${eventAPIConfig.sendRoomBookingStatus}`, formattedData, {
+        headers: {
+          'Content-type': 'multipart/form-data',
+          Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+        },
+      }).then((response) => {
+        if (response.status === 200) {
+          dispatch(showMessage({ message: `Jai Guru. Your room/hall number for ${props?.filterValue?.eventName} is ${hallNo}. Please visit reception desk once you reach Ashram.`, variant: 'success' }));
+        } else {
+          dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
+        }
+      }).catch((error) => {
+        dispatch(showMessage({ message: "Something went wrong", variant: 'error' }));
+      });
+
     }
-};
+  };
 
 
 
@@ -283,14 +283,14 @@ function AttendanceTable(props) {
           onSelectAllClick={handleSelectAllClick}
           onRequestSort={handleRequestSort}
           rowCount={props.usersList?.length}
-          // onMenuItemClick={handleDeselect}
+        // onMenuItemClick={handleDeselect}
         />
         <TableBody>
           {
             usersList.map((user) => {
-              
+
               const isSelected = selected.indexOf(user.user.eventId) !== -1;
-              
+
               return (
                 <TableRow
                   className="h-72 cursor-pointer "
@@ -303,7 +303,7 @@ function AttendanceTable(props) {
                   style={{
                     cursor: 'default',
                     backgroundColor: user.specificRequirements ? '#ffeeba' : 'inherit',
-                    
+
                   }}
                 >
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
@@ -312,21 +312,28 @@ function AttendanceTable(props) {
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {user?.user?.name}
                   </TableCell>
-               
+
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {user?.user?.gender}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {user?.user?.email === '' ? 'N/A' : user?.user?.email }
+                    {user?.user?.email === '' ? 'N/A' : user?.user?.email}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {user?.user?.dob}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {user?.user?.mobileNumber === '' ? 'N/A' : user?.user?.mobileNumber }
+                    {user?.user?.mobileNumber === '' ? 'N/A' : user?.user?.mobileNumber}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {user?.specificRequirements === '' ? 'N/A' : user?.specificRequirements }
+                    <Tooltip arrow placement="top" title={user?.specificRequirements || 'N/A'}>
+                      <span>
+                        {user?.specificRequirements && user?.specificRequirements.length > 30
+                          ? `${user?.specificRequirements.substring(0, 30)}...`
+                          : user?.specificRequirements || 'N/A'}
+                      </span>
+                    </Tooltip>
+                    {/* {user?.specificRequirements === '' ? 'N/A' : user?.specificRequirements} */}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" align="center">
                     {/* <Checkbox
@@ -334,22 +341,22 @@ function AttendanceTable(props) {
                        onChange={() => handleToggle(user.user.userId)}
                        inputProps={{ 'aria-labelledby': labelId }}
                       /> */}
-                      <Checkbox checked={user.present} onChange={() => handleToggle(user?.user?.id,user.present)} />
+                    <Checkbox checked={user.present} onChange={() => handleToggle(user?.user?.id, user.present)} />
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                  
+
                     <TextField
-                        defaultValue={user.hallNo}
-                        variant="outlined"
-                        fullWidth
-                        onChange={(event) => handleHallNoChange(event, user?.user?.id)}
+                      defaultValue={user.hallNo}
+                      variant="outlined"
+                      fullWidth
+                      onChange={(event) => handleHallNoChange(event, user?.user?.id)}
                     />
                   </TableCell>
-                  <TableCell className="p-4 md:p-16" style={{cursor:'pointer'}}
-                  component="th" scope="row" align='center'  onClick={() => handleAttendance(user.user.id, user.hallNo, user.present)}>
+                  <TableCell className="p-4 md:p-16" style={{ cursor: 'pointer' }}
+                    component="th" scope="row" align='center' onClick={() => handleAttendance(user.user.id, user.hallNo, user.present)}>
                     <NotificationsIcon />
                   </TableCell>
-            
+
                 </TableRow>
               );
 

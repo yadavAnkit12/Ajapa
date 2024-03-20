@@ -388,7 +388,7 @@ function DashboardHeader(props) {
               options={['On', 'Off']}
               sx={{ my: 1, minWidth: 140, mx: 1 }}
               onChange={(e, newValue) => setFilterData({ ...filterData, bookingStatus: newValue })}
-              renderInput={(params) => <TextField {...params} label="Booking Status" variant="standard" />}
+              renderInput={(params) => <TextField {...params} label="Registration Status" variant="standard" />}
             />
 
 

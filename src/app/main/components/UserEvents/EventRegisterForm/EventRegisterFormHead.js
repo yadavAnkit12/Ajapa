@@ -2,6 +2,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { motion } from 'framer-motion';
 import { useDispatch } from 'react-redux';
+import { showMessage } from 'app/store/fuse/messageSlice';
 import { forwardRef, useEffect, useState } from 'react';
 import { Dialog, DialogActions, DialogTitle, Slide } from '@mui/material';
 import axios from 'axios';
@@ -27,7 +28,6 @@ const fontSmall = {
     marginTop: '5px'
 }
 function EventRegisterFormHead(props) {
-    console.log(props)
     const dispatch = useDispatch()
     const [data, setData] = useState('')
     const [open, setOpen] = useState(false)
@@ -61,8 +61,8 @@ function EventRegisterFormHead(props) {
             if (response.status === 200) {
                 props.setLoading(false)
                 dispatch(showMessage({ message: `Jai Guru. Your registration for ${props.eventName} is delete successfull for all members`, variant: 'success' }));
-                props.setChange(!props.change)
                 setOpen(false)
+                props.setChange(!props.change)
             } else {
                 props.setLoading(false)
                 dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
