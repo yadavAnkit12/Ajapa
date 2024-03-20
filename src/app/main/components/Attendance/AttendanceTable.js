@@ -261,7 +261,7 @@ function AttendanceTable(props) {
         },
       }).then((response) => {
         if (response.status === 200) {
-          dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+          dispatch(showMessage({ message: `Jai Guru. Your room/hall number for ${props?.filterValue?.eventName} is ${hallNo}. Please visit reception desk once you reach Ashram.`, variant: 'success' }));
         } else {
           dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
         }
