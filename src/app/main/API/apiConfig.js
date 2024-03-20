@@ -36,7 +36,8 @@ export const eventAPIConfig = {
     sendRoomBookingStatus: key + '/bookingStatus/send' ,
     saveOneAttendance: key + '/attendance/save/one',
     eventReport:key + "/reportExcel/event/registration/list",
-    eventReportPdf:key + "/reportPDF/event/registration/list"
+    eventReportPdf:key + "/reportPDF/event/registration/list",
+    cancelAllRegistration:key + '/eventRegistrations/delete',
 }
 
 export const attendanceAPIConfig = {

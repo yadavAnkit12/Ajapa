@@ -75,7 +75,7 @@ function SignUpPage() {
   const [cityID, setCityID] = useState("");
   const [recaptcha, setRecaptcha] = useState(null);
   const [loading, setLoading] = useState(false)
-  const [stateName, setStateName]= useState('')  //for handling a state whic have no state
+  const [stateName, setStateName] = useState('')  //for handling a state whic have no state
   const initialValues = {
     name: "",
     email: "",
@@ -203,7 +203,6 @@ function SignUpPage() {
   }, [stateID]);
 
   const handleSubmit = (values) => {
-    // console.log("ghjk", formik);
     if (recaptcha === null) {
       return dispatch(
         showMessage({
@@ -221,8 +220,7 @@ function SignUpPage() {
       );
     }
 
-    if(formik.isValid)
-    {
+    if (formik.isValid) {
       setLoading(true)
       const formData = new FormData();
       formData.append("email", values.email);
@@ -249,7 +247,7 @@ function SignUpPage() {
         })
         .catch((error) => console.log(error));
     }
-    else{
+    else {
       return dispatch(
         showMessage({
           message: "Please fill all details",
@@ -469,7 +467,7 @@ function SignUpPage() {
                   },
                 }}
                 inputProps={{
-                  max: new Date().toISOString().split("T")[0], // Set max date to current date
+                  max: new Date().toISOString().split("T")[0],
                 }}
               />
 

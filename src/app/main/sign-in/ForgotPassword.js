@@ -9,7 +9,7 @@ import {
   Checkbox,
 } from "@mui/material";
 import React, { useEffect, useState, useRef } from "react";
-import { useFormik } from "formik";
+import { ErrorMessage, useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import jwtServiceConfig from "src/app/auth/services/jwtService/jwtServiceConfig";
@@ -19,10 +19,11 @@ import { useNavigate } from "react-router-dom";
 import { MuiOtpInput } from "mui-one-time-password-input";
 import JwtService from "src/app/auth/services/jwtService";
 
+
 const validationSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email address"),
-  countryCode: Yup.string(),
-  mobileNumber: Yup.string(),
+  // countryCode: Yup.string(),
+  mobileNumber: Yup.string().matches(/^[1-9]\d{9}$/, "Invalid mobile number"),
 });
 
 const phoneNumberCountryCodes = [
@@ -46,6 +47,8 @@ const ForgotPassword = (props) => {
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [verifyOtp, setVerifyOtp] = useState(false);
   const [otp, setOtp] = useState(""); //OTP states
+  const [text, setText] = useState("Reset Password");
+  const [hideCheckBox, setHideCheckBox] = useState(true);
 
   //Timer to resend the Otp
   const [secondsRemaining, setSecondsRemaining] = useState(INITIAL_COUNT);
@@ -56,16 +59,15 @@ const ForgotPassword = (props) => {
 
   const handleCheckboxChange = () => {
     setShowEmail((prevShowEmail) => !prevShowEmail);
+    formik.setFieldValue("countryCode", "+91");
+    formik.setFieldValue("email", "");
+    formik.setFieldValue("mobileNumber", "");
   };
-
-  useEffect(() => {
-    setStatus(STATUS.STARTED);
-}, []);
 
   const handleStart = () => {
     const formData = new FormData();
     formData.append("email", formik.values.email);
-    formData.append("countryCode", formik.values.countryCode.split(" ")[0]);
+    formData.append("countryCode", formik.values.countryCode);
     formData.append("mobileNumber", formik.values.mobileNumber);
     axios
       .post(`${jwtServiceConfig.sentOTPForLogin}`, formData, {
@@ -96,9 +98,8 @@ const ForgotPassword = (props) => {
           onClick={handleStart}
           className="text-danger"
           style={{
-            // marginLeft: "160px",
-            display:'flex',
-            justifyContent:'center',
+            display: "flex",
+            justifyContent: "center",
             cursor: "pointer",
             textDecoration: "underline",
             fontSize: "1.3rem",
@@ -145,7 +146,7 @@ const ForgotPassword = (props) => {
     if (otp !== "" && otp.length === 4) {
       const formData = new FormData();
       formData.append("email", formik.values.email);
-      formData.append("countryCode", formik.values.countryCode.split(" ")[0]);
+      formData.append("countryCode", formik.values.countryCode);
       formData.append("mobileNumber", formik.values.mobileNumber);
       formData.append("otp", otp);
 
@@ -180,18 +181,29 @@ const ForgotPassword = (props) => {
           dispatch(
             showMessage({ message: "Something went wrong", variant: "error" })
           );
-          console.log("ghnj", error);
         });
     } else {
-      dispatch(showMessage({ message: "Fill all the OTP" }));
+      dispatch(showMessage({ message: "Fill the OTP" }));
     }
   };
 
   const handleSubmit = (values) => {
+
+    if (showEmail && !values.email) {
+      dispatch(showMessage({ message: "Fill the email field", variant: "error" }));
+      return;
+    }
+    if (!showEmail && (!values.countryCode || !values.mobileNumber)) {
+      dispatch(showMessage({ message: "Fill the required details", variant: "error" }));
+      return;
+    }
+    
+   
+
     const formData = new FormData();
-    formData.append("email", formik.values.email);
-    formData.append("countryCode", formik.values.countryCode.split(" ")[0]);
-    formData.append("mobileNumber", formik.values.mobileNumber);
+    formData.append("email", values.email);
+    formData.append("countryCode", values.countryCode);
+    formData.append("mobileNumber", values.mobileNumber);
 
     axios
       .post(`${jwtServiceConfig.sentOTPForLogin}`, formData, {
@@ -202,6 +214,8 @@ const ForgotPassword = (props) => {
       .then((response) => {
         // console.log(response)
         if (response.status === 200) {
+          setText("Fill the OTP");
+          setHideCheckBox(false);
           setShowOtpInput(true); //Function for making otp field visible
           setVerifyOtp(true);
           // Start the timer
@@ -224,23 +238,22 @@ const ForgotPassword = (props) => {
       });
   };
 
- 
-
   const formik = useFormik({
     initialValues: {
       email: "",
-      countryCode: "",
+      countryCode: "+91",
       mobileNumber: "",
     },
     validationSchema: validationSchema,
     onSubmit: handleSubmit,
   });
 
+
   return (
     <Container>
       <React.Fragment>
         <form onSubmit={formik.handleSubmit}>
-          <h4>Reset Password</h4>
+          <h4>{text}</h4>
 
           {showOtpInput ? (
             <Stack spacing={2} sx={{ mt: 2, marginBottom: 2 }}>
@@ -264,7 +277,6 @@ const ForgotPassword = (props) => {
                   error={formik.touched.email && Boolean(formik.errors.email)}
                   helperText={formik.touched.email && formik.errors.email}
                   variant="outlined"
-                  required
                   fullWidth
                   sx={{
                     "& .MuiOutlinedInput-root": {
@@ -273,6 +285,7 @@ const ForgotPassword = (props) => {
                       },
                     },
                     width: "300px",
+                    mt: 1,
                   }}
                 />
               )}
@@ -291,7 +304,6 @@ const ForgotPassword = (props) => {
                         {...params}
                         label="Code"
                         variant="outlined"
-                        required
                         error={
                           formik.touched.countryCode &&
                           Boolean(formik.errors.countryCode)
@@ -307,6 +319,7 @@ const ForgotPassword = (props) => {
                             },
                           },
                           width: "100px",
+                          mt: 1,
                         }}
                       />
                     )}
@@ -314,22 +327,19 @@ const ForgotPassword = (props) => {
                   <TextField
                     name="mobileNumber"
                     label="Mobile Number"
-                    type="number"
+                    // type="number"
                     className="mb-20"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
                     onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
+                    onBlur={formik.handleBlur} 
                     error={
                       formik.touched.mobileNumber &&
                       Boolean(formik.errors.mobileNumber)
                     }
                     helperText={
                       formik.touched.mobileNumber && formik.errors.mobileNumber
+                      
                     }
                     variant="outlined"
-                    required
                     fullWidth
                     sx={{
                       "& .MuiOutlinedInput-root": {
@@ -338,6 +348,7 @@ const ForgotPassword = (props) => {
                         },
                       },
                       width: "200px",
+                      mt: 1,
                     }}
                   />
                 </div>
@@ -345,44 +356,53 @@ const ForgotPassword = (props) => {
             </React.Fragment>
           )}
           <br />
-          <div style={{display:'flex', flexDirection:'column'}}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={!showEmail}
-                onChange={handleCheckboxChange}
-                color="primary"
+
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            {hideCheckBox && (
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={!showEmail}
+                    onChange={handleCheckboxChange}
+                    color="primary"
+                    style={{
+                      "& .MuiSvgIcon-root": {
+                        fontSize: 18,
+                        border: "2px solid #000",
+                        borderRadius: 1,
+                      },
+                    }}
+                  />
+                }
+                label="Login Through Mobile"
                 style={{
-                  "& .MuiSvgIcon-root": {
-                    fontSize: 18, // Adjust the font size as needed
-                    border: "2px solid #000", // Set the border style
-                    borderRadius: 1, // Adjust the border radius as needed
-                  },
+                  fontWeight: 600,
+                  letterSpacing: "0px",
                 }}
               />
-            }
-            label="Login Through Mobile"
-            style={{
-              fontWeight: 600,
-              letterSpacing: "0px",
-            }}
-          />
-         
-          {showOtpInput && status === STATUS.STARTED ? (
-               <div style={{ display: 'flex', justifyContent: 'center' }}> <b className="text-success" style={{fontSize:'1.3rem'}}>Resend OTP </b>
-               <b className="ml-2 text-danger" style={{fontSize:'1.3rem'}}> {twoDigit(minutesToDisplay)}:
-                   {twoDigit(secondsToDisplay)}</b>
-               </div>
-            ) : (
-               status
             )}
-            </div>
+
+            {showOtpInput && status === STATUS.STARTED ? (
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                {" "}
+                <b className="text-success" style={{ fontSize: "1.3rem" }}>
+                  Resend OTP{" "}
+                </b>
+                <b className="ml-2 text-danger" style={{ fontSize: "1.3rem" }}>
+                  {" "}
+                  {twoDigit(minutesToDisplay)}:{twoDigit(secondsToDisplay)}
+                </b>
+              </div>
+            ) : (
+              status
+            )}
+          </div>
 
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
             <Button
               variant="outlined"
               style={{
-                marginRight: "20px",
+                marginRight: "1rem",
                 backgroundColor: "#792b00",
                 color: "white",
               }}
