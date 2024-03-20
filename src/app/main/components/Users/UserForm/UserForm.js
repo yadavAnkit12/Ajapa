@@ -65,6 +65,7 @@ function UserForm() {
   const [showCredentials, setShowCredentials] = useState(true);
   const [isChild, setIsChild] = useState(false);
   const [open,setOpen] = useState(false)
+  
 
   const validationSchema = yup.object().shape({
     name: yup
@@ -262,7 +263,7 @@ function UserForm() {
     }
    
     if (formik.isValid) {
-     
+     setLoading(true)
       const formattedData = new FormData();
       formattedData.append("id", values.id);
       formattedData.append("familyId", values.familyId);
@@ -302,6 +303,7 @@ function UserForm() {
           })
           .then((response) => {
             if (response.status === 200) {
+              setLoading(false)
               dispatch(
                 showMessage({
                   message: response.data.message,
@@ -438,6 +440,14 @@ function UserForm() {
     validationSchema: validationSchema,
     onSubmit: handleSubmit,
   });
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <FuseLoading />
+      </div>
+    );
+  }
 
   if (!formik.values.id) {
     return <FuseLoading />;

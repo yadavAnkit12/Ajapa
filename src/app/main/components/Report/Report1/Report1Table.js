@@ -99,21 +99,21 @@ function Report1Table(props) {
 
   const fetchData = () => {
     
-        
-
-    const eventId = props.eventList?.find((event) => event.eventName === props.filterValue.eventName)?.eventId || '';
-
-    if(eventId ==='')
+    if(props.filterValue.eventName ==='' ||props.filterValue.eventName === null)
     {
       dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
       return
     }
 
-    if(props.filterValue.selectDate === '')
+    if(props.filterValue.selectDate === '' || props.filterValue.selectDate === null)
     {
       dispatch(showMessage({ message: "Please select the Arrival/Departure mode", variant: 'error' }));
       return
-    }
+    }  
+
+    const eventId = props.eventList?.find((event) => event.eventName === props.filterValue.eventName)?.eventId || '';
+
+
 
     if(props.filterValue.selectDate !=='' && props.filterValue.selectDate === 'Arrival' )
     {
@@ -162,7 +162,7 @@ function Report1Table(props) {
       if( props.filterValue.attendingShivir === '' || props.filterValue.attendingShivir === 'All')
       {
         console.log("case 1")
-        axios.get(`${reportAPIConfig.report1departue}/${eventId}` ,{
+        axios.get(`${reportAPIConfig.report1departure}/${eventId}` ,{
           headers: {
             'Content-type': 'multipart/form-data',
             Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
@@ -182,7 +182,7 @@ function Report1Table(props) {
       {
         console.log("case 2")
         const attendingShivir =  props.filterValue.attendingShivir === "Yes" ? true : false; 
-        axios.get(`${reportAPIConfig.report1departue}/${eventId}/${attendingShivir}` ,{
+        axios.get(`${reportAPIConfig.report1departure}/${eventId}/${attendingShivir}` ,{
           headers: {
             'Content-type': 'multipart/form-data',
             Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
