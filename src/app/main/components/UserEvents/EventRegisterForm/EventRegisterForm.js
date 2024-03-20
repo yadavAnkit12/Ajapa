@@ -110,7 +110,7 @@ const EventRegisterForm = () => {
                 dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
             }
         });
-    }, [change,loading]);
+    }, [change]);
 
     if (loading) {
         return <FuseLoading />
