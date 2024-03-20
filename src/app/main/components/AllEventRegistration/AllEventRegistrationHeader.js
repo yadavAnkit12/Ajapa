@@ -51,7 +51,7 @@ function AllEventRegistrationHeader(props) {
     setFilterData({
       eventName: "",
     });
-    props.setFilterValue("");
+    props.setFilterValue('');
   };
 
   const handleClickOpen = () => {

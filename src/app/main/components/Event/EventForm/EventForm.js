@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { Box, lighten } from "@mui/system";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import EventFormHead from "./EventFormHead";
+import FuseLoading from '@fuse/core/FuseLoading';
 
 
 
@@ -42,7 +43,7 @@ const EventForm = () => {
     const dispatch = useDispatch();
     const [eventId, setEventId] = useState('')
     const [selectedFileName, setSelectedFileName] = useState('');
-
+    const [loading,setLoading]=useState(false)
     const [eventData, setEventData] = useState({
         eventName: '',
         eventType: '',
@@ -81,6 +82,7 @@ const EventForm = () => {
 
     useEffect(() => {
         if (eventId) {
+            setLoading(true)
             axios.get(`${eventAPIConfig.getById}/${eventId}`, {
                 headers: {
                     'Content-type': 'multipart/form-data',
@@ -88,11 +90,15 @@ const EventForm = () => {
                 },
             }).then((response) => {
                 if (response.status === 200) {
-                    console.log(response)
+                    setLoading(false)
                     setEventData(response.data.data)
                 } else {
-                    dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
+                    setLoading(false)
+                    dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
                 }
+            }).catch(()=>{
+                setLoading(false)
+                dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
             })
         }
     }, [eventId]);
@@ -177,7 +183,6 @@ const EventForm = () => {
 
 
     const handleSubmit = (values) => {
-        console.log("Formik",formik)
 
         if (new Date(values.eventDate) < new Date()) {
             return dispatch(showMessage({ message: "Event Date must be current or future date", variant: 'error' }));
@@ -194,6 +199,7 @@ const EventForm = () => {
             return;
         }
         if (formik.isValid) {
+            setLoading(true)
             const formData = new FormData()
             formData.append('eventName', values.eventName)
             formData.append('eventType', values.eventType)
@@ -224,12 +230,17 @@ const EventForm = () => {
                     },
                 }).then((response) => {
                     if (response.status === 200) {
+                        setLoading(false)
                         dispatch(showMessage({ message: response.data.message, variant: 'success' }));
                         formik.resetForm();
                         navigate('/app/event')
                     } else {
+                        setLoading(false)
                         dispatch(showMessage({ message: response.data.errormessage, variant: 'error' }));
                     }
+                }).catch(()=>{
+                    setLoading(false)
+                    dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
                 })
 
             } else {
@@ -245,13 +256,17 @@ const EventForm = () => {
                     },
                 }).then((response) => {
                     if (response.status === 200) {
+                        setLoading(false)
                         dispatch(showMessage({ message: response.data.message, variant: 'success' }));
                         formik.resetForm();
                         navigate('/app/event')
                     } else {
                         dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
                     }
-                }).catch((error) => console.log(error))
+                }).catch(()=>{
+                    setLoading(false)
+                    dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
+                })
             }
         } else {
             if (formik.errors.file) {
@@ -286,6 +301,10 @@ const EventForm = () => {
 
     function handleTabChange(event, value) {
         setTabValue(value);
+    }
+
+    if(loading){
+        return <FuseLoading/>
     }
 
 

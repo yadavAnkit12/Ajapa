@@ -69,14 +69,6 @@ function DashboardHeader(props) {
   };
 
 
-
-
-
-
-
-
-
-
   useEffect (() =>{
     axios.get(cardAPIConfig.carddetails, {
       headers: {

@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { showMessage } from "app/store/fuse/messageSlice";
 import { Message } from "@mui/icons-material";
 import { Box } from "@mui/system";
+import FuseLoading from "@fuse/core/FuseLoading";
 
 function SMS() {
   const dispatch = useDispatch();
@@ -17,6 +18,7 @@ function SMS() {
   const [selectedEventId, setSelectedEventId] = useState("");
   const [value, setValue] = useState("");
   const [smsTemplate, setSMSTemplate] = useState([])
+  const [loading,setLoading]=useState(false)
 
   const [sendMessageTo, setSendMessageTo] = useState([
     {
@@ -105,12 +107,12 @@ function SMS() {
   });
 
   const handleSubmit = (values) => {
-    console.log(values)
     if ((value !== 6 && value !== 7) && selectedEventId === "") {
       return dispatch(showMessage({ message: 'Please select an event', variant: "error" }))
     }
 
     let event = value === 6 || value === 7 ? 0 : selectedEventId
+    setLoading(true)
     axios.post(`${userAPIConfig.sendSMS}/${event}/${value}/${values.message}`,
       {
         headers: {
@@ -121,13 +123,19 @@ function SMS() {
     )
       .then((response) => {
         if (response.status === 200) {
-          console.log("Attendance", response);
+          formik.resetForm()
+          setLoading(false)
           dispatch(showMessage({ message: response.data.message, variant: "success" }));
           formik.resetForm()
         } else {
+          setLoading(false)
           dispatch(showMessage({ message: response.data.errorMessage, variant: "error" }));
         }
-      });
+      }).catch(()=>{
+        setLoading(false)
+        dispatch(showMessage({ message: 'Something went wrong', variant: "error" }));
+
+      })
   };
 
   const formik = useFormik({
@@ -135,6 +143,10 @@ function SMS() {
     validationSchema: validationSchema,
     onSubmit: handleSubmit,
   });
+
+  if(loading){
+    return <FuseLoading/>
+  }
 
   return (
     <Box sx={{ width: '100%', padding: 2 }}>

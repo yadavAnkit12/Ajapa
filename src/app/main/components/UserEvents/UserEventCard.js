@@ -37,7 +37,6 @@ const UserEventCard = () => {
             },
         }).then((response) => {
             if (response.status === 200) {
-                // console.log("hi-bye",response)
                 setAllEventsData(response.data)
             } else {
                 dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
@@ -46,19 +45,13 @@ const UserEventCard = () => {
     }, [])
 
 
-
-
     if (allEventsData.length === 0) {
         return <FuseLoading />
 
     }
 
-
-
     const handleEventRegister = async (id, eventDate, eventName) => {
         const userId = await getLoggedInPartnerId()
-        // console.log(userId)
-        // allEventsData={allEventsData}
         navigate(`/app/UserEventsRegisteration/${id}/${userId}/${eventDate}/${eventName}`)
     }
 

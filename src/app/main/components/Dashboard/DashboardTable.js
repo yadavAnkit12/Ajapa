@@ -89,7 +89,7 @@ function DashboardTable(props) {
 
   useEffect(() => {
     fetchData();
-  }, [props?.change, rowsPerPage, page, props?.filterValue,searchText]);
+  }, [props?.change, rowsPerPage, page, props?.filterValue, searchText]);
 
   useEffect(() => {
     if (page !== 0) {
@@ -121,6 +121,7 @@ function DashboardTable(props) {
 
 
   const fetchData = () => {
+    setLoading(true)
     const params = {
       page: page + 1,
       rowsPerPage: rowsPerPage, // Example data to pass in req.query
@@ -135,14 +136,16 @@ function DashboardTable(props) {
       },
     }).then((response) => {
       if (response.status === 200) {
-        console.log(response)
-        //
         setEventListData(response?.data);
         setLoading(false);
       } else {
-        dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
+        setLoading(false)
+        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
       }
-    });
+    }).catch((error) => {
+      setLoading(false)
+      dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
+    })
   };
 
 
@@ -173,36 +176,16 @@ function DashboardTable(props) {
     else if (selectedValue === 'edit') {
       navigate(`/app/eventRegisteration/${id}`)
     }
-    // else if (selectedValue === 'delete') {
-    //   setDeleteId(id)
-    //   setOpen(true)
-
-    // }
-
   }
 
   const handleClose = () => {
     setOpen(false)
   }
 
-  //deleting the event
-  // const deleteEvent = () => {
-  //   axios.post(`${eventAPIConfig.delete}/${deleteId}`, {
-  //     headers: {
-  //       'Content-type': 'multipart/form-data',
-  //       Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-  //     },
-  //   }).then((response) => {
-  //     if (response.status === 200) {
-  //       dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-  //     } else {
-  //       dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
-  //     }
-  //   }).catch((error) => console.log(error))
-  // }
 
   //chnaging the booking status
-  const handleChnangeBookingStatus=(id,status)=>{
+  const handleChnangeBookingStatus = (id, status) => {
+    setLoading(true)
     axios.post(`${eventAPIConfig.changeBookingStatus}/${id}/${!status}`, {
       headers: {
         'Content-type': 'multipart/form-data',
@@ -210,17 +193,23 @@ function DashboardTable(props) {
       },
     }).then((response) => {
       if (response.status === 200) {
-         fetchData()
+        fetchData()
+        setLoading(false)
         dispatch(showMessage({ message: response.data.message, variant: 'success' }));
 
       } else {
-        dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
+        setLoading(false)
+        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
       }
-    }).catch((error) => console.log(error))
+    }).catch((error) => {
+      setLoading(false)
+      dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }))
+    })
 
   }
   //chnaging the event status
-  const handleChangeEventStatus=(id,status)=>{
+  const handleChangeEventStatus = (id, status) => {
+    setLoading(true)
     axios.post(`${eventAPIConfig.changeEventStatus}/${id}/${!status}`, {
       headers: {
         'Content-type': 'multipart/form-data',
@@ -229,11 +218,16 @@ function DashboardTable(props) {
     }).then((response) => {
       if (response.status === 200) {
         fetchData()
+        setLoading(false)
         dispatch(showMessage({ message: response.data.message, variant: 'success' }));
       } else {
+        setLoading(false)
         dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
       }
-    }).catch((error) => console.log(error))
+    }).catch((error) => {
+      setLoading(false)
+      dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }))
+    })
 
   }
 
@@ -291,7 +285,7 @@ function DashboardTable(props) {
   }
 
   return (
-    <div className="w-full flex flex-col min-h-full" style={{overflow:'auto'}}>
+    <div className="w-full flex flex-col min-h-full" style={{ overflow: 'auto' }}>
       <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle" ref={tableRef}>
         <DashboardTableHead
           selectedProductIds={selected}
@@ -340,7 +334,7 @@ function DashboardTable(props) {
                       checked={n.eventStatus}
                       color="success"
                       inputProps={{ 'aria-label': 'toggle event status' }}
-                      onChange={()=>handleChangeEventStatus(n.eventId,n.eventStatus)}
+                      onChange={() => handleChangeEventStatus(n.eventId, n.eventStatus)}
                     />
                     {n.eventStatus ? 'On' : 'Off'}
                   </TableCell>
@@ -350,7 +344,7 @@ function DashboardTable(props) {
                       checked={n.bookingStatus}
                       color="success"
                       inputProps={{ 'aria-label': 'toggle booking status' }}
-                      onChange={()=>handleChnangeBookingStatus(n.eventId,n.bookingStatus)}
+                      onChange={() => handleChnangeBookingStatus(n.eventId, n.bookingStatus)}
                     />
                     {n.bookingStatus ? 'On' : 'Off'}
                   </TableCell>
@@ -367,7 +361,7 @@ function DashboardTable(props) {
                             {menuItemArray.map((value) => (
                               (value.loadIf) && <MenuItem
                                 onClick={() => {
-                                  getStatus(n.eventId, value.status,n.eventStatus);
+                                  getStatus(n.eventId, value.status, n.eventStatus);
                                   popupState.close();
                                 }}
                                 key={value.key}

@@ -134,7 +134,6 @@ function UserForm() {
           const userAge =
             today.getFullYear() -
             parseInt(response.data.user.dob?.split("-")[0]);
-          // console.log(userAge)
 
           if (userAge < 15) {
             if (
@@ -232,7 +231,6 @@ function UserForm() {
   }, [stateID]);
 
   const handleSubmit = (values) => {
-    // console.log(formik)
 
     if (showCredentials && !isChild) {
       if (
@@ -313,14 +311,13 @@ function UserForm() {
               // this is beacuse suppose if super admin update the profile of user
 
               if (getLoggedInPartnerId() == userID) {
-                console.log("if me");
                 navigate(`/apps/profile/${getLoggedInPartnerId()}`);
                 window.location.reload()
               } else {
-                console.log("elsemm");
                 navigate("/app/users/");
               }
             } else {
+              setLoading(false)
               dispatch(
                 showMessage({
                   message: response.data.errorMessage,
@@ -329,7 +326,9 @@ function UserForm() {
               );
             }
           })
-          .catch((error) => console.log(error));
+          .catch((error) =>{
+            setLoading(false)
+             console.log(error)});
       } else {
         formattedData.append("profileImage", values.pic);
 
@@ -344,6 +343,7 @@ function UserForm() {
           })
           .then((response) => {
             if (response.status === 200) {
+              setLoading(false)
               dispatch(
                 showMessage({
                   message: response.data.message,
@@ -358,6 +358,7 @@ function UserForm() {
                 navigate("/app/users/");
               }
             } else {
+              setLoading(false)
               dispatch(
                 showMessage({
                   message: response.data.errorMessage,
@@ -366,7 +367,9 @@ function UserForm() {
               );
             }
           })
-          .catch((error) => console.log(error));
+          .catch((error) => {
+            setLoading(false)
+            console.log(error)});
       }
     } else {
       dispatch(

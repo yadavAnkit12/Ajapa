@@ -61,7 +61,6 @@ const menuItemArray = [
 
 
 function EventTable(props) {
-  // console.log(props)
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [eventListData, setEventListData] = useState([]);
@@ -119,6 +118,7 @@ function EventTable(props) {
 
 
   const fetchData = () => {
+    setLoading(true)
     const params = {
       page: page + 1,
       rowsPerPage: rowsPerPage, // Example data to pass in req.query
@@ -133,14 +133,16 @@ function EventTable(props) {
       },
     }).then((response) => {
       if (response.status === 200) {
-        console.log(response)
-        //
         setEventListData(response?.data);
         setLoading(false);
       } else {
-        dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
+        setLoading(false)
+        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
       }
-    });
+    }).catch(()=>{
+      setLoading(false)
+      dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
+    })
   };
 
 
@@ -171,11 +173,6 @@ function EventTable(props) {
     else if (selectedValue === 'edit') {
       navigate(`/app/eventRegisteration/${id}`)
     }
-    // else if (selectedValue === 'delete') {
-    //   setDeleteId(id)
-    //   setOpen(true)
-
-    // }
 
   }
 
@@ -183,24 +180,9 @@ function EventTable(props) {
     setOpen(false)
   }
 
-  //deleting the event
-  // const deleteEvent = () => {
-  //   axios.post(`${eventAPIConfig.delete}/${deleteId}`, {
-  //     headers: {
-  //       'Content-type': 'multipart/form-data',
-  //       Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-  //     },
-  //   }).then((response) => {
-  //     if (response.status === 200) {
-  //       dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-  //     } else {
-  //       dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
-  //     }
-  //   }).catch((error) => console.log(error))
-  // }
-
   //chnaging the booking status
   const handleChnangeBookingStatus=(id,status)=>{
+    setLoading(true)
     axios.post(`${eventAPIConfig.changeBookingStatus}/${id}/${!status}`, {
       headers: {
         'Content-type': 'multipart/form-data',
@@ -209,12 +191,17 @@ function EventTable(props) {
     }).then((response) => {
       if (response.status === 200) {
          fetchData()
+         setLoading(false)
         dispatch(showMessage({ message: response.data.message, variant: 'success' }));
 
       } else {
+        setLoading(false)
         dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
       }
-    }).catch((error) => console.log(error))
+    }).catch(()=>{
+      setLoading(false)
+      dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
+    })
 
   }
   //chnaging the event status
@@ -227,11 +214,16 @@ function EventTable(props) {
     }).then((response) => {
       if (response.status === 200) {
         fetchData()
+        setLoading(false)
         dispatch(showMessage({ message: response.data.message, variant: 'success' }));
       } else {
+        setLoading(false)
         dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
       }
-    }).catch((error) => console.log(error))
+    }).catch(()=>{
+      setLoading(false)
+      dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
+    })
 
   }
 

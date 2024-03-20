@@ -168,6 +168,7 @@ function MyRegistrationTable(props) {
   }
 
   const handleDeleteRegistration = () => {
+    setLoading(true)
     const formData = new FormData()
     formData.append('registrationId', registrationId)
     axios.post(`${eventAPIConfig.registrationDelete}`, formData, {
@@ -177,13 +178,18 @@ function MyRegistrationTable(props) {
       },
     }).then((response) => {
       if (response.status === 200) {
-        dispatch(showMessage({ message: response.data.message, variant: 'success' }));
         fetchData()
+        setLoading(false)
+        dispatch(showMessage({ message: response.data.message, variant: 'success' }));
         setOpen(false)
       } else {
-        dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
+        setLoading(false)
+        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
       }
-    }).catch((error) => console.log(error))
+    }).catch((error) =>{
+      setLoading(false)
+      dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
+    })
   }
 
   const handleClose = () => {
