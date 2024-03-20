@@ -79,7 +79,7 @@ export default function EventView(props) {
                             <hr />
 
                             <div className="my-3 mx-4">
-                                <p className='font-bold inline'>Booking Status: </p>
+                                <p className='font-bold inline'>Registration Status: </p>
                                 <span className='font-semibold'>{data.bookingStatus===true?'Yes':'No'}</span>
                             </div>
                             <hr />

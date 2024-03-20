@@ -112,7 +112,7 @@ const UserEventCard = () => {
                                         lineHeight: '28px', letterSpacing: '0px',
                                         textAlign: 'center', fontWeight: 600,
                                         marginTop: '5px',
-                                    }}>Booking status: {data.bookingStatus ? 'On' : 'Off'}</span>
+                                    }}>Registration status: {data.bookingStatus ? 'On' : 'Off'}</span>
                             </div>
                             <Button className="my-4 text-white bg-gradient-to-r 
                 from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br 
