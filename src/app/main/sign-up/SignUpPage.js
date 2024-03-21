@@ -53,15 +53,14 @@ const fontStyles = {
     "'Hoefler Text', 'Baskerville Old Face','Garamond', 'Times new Roman' ,serif",
 };
 
-const phoneNumberCountryCodes = [
-  '+91',
-  '+1',
-  '+44',
-  '+33',
-  '+49',
-  '+81',
-  // Add more country codes as needed
-];
+// const phoneNumberCountryCodes = [
+//   '+91',
+//   '+1',
+//   '+44',
+//   '+33',
+//   '+49',
+//   '+81',
+// ];
 
 function SignUpPage() {
   const dispatch = useDispatch();
@@ -76,6 +75,7 @@ function SignUpPage() {
   const [recaptcha, setRecaptcha] = useState(null);
   const [loading, setLoading] = useState(false)
   const [stateName, setStateName] = useState('')  //for handling a state whic have no state
+  const [getcountryCode , setGetCountryCode] = useState([])
   const initialValues = {
     name: "",
     email: "",
@@ -165,6 +165,7 @@ function SignUpPage() {
       .then((response) => {
         if (response.status === 200) {
           setCountryList(response.data);
+          setGetCountryCode(response?.data)
         }
       });
   }, []);
@@ -204,6 +205,8 @@ function SignUpPage() {
         }
       });
   }, [stateID]);
+
+
 
   const handleSubmit = (values) => {
     if (recaptcha === null) {
@@ -397,7 +400,12 @@ function SignUpPage() {
 
               <div className="d-flex w-full lg:w-5/6 mx-auto">
                 <Autocomplete
-                  options={phoneNumberCountryCodes}
+                  // options={phoneNumberCountryCodes}
+                  options={
+                    getcountryCode.length > 0
+                      ? getcountryCode.map((country) => country.phonecode)
+                      : []
+                  }
                   value={formik.values.countryCode}
                   onChange={(event, newValue) => {
                     formik.setFieldValue("countryCode", newValue);

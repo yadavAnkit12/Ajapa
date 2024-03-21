@@ -25,15 +25,15 @@ import FuseLoading from "@fuse/core/FuseLoading";
 import AddMembersFormHead from "./AddMembersFormHead";
 
 
-const phoneNumberCountryCodes = [
-  '+91',
-  '+1',
-  '+44',
-  '+33',
-  '+49',
-  '+81',
-  // Add more country codes as needed
-];
+// const phoneNumberCountryCodes = [
+//   '+91',
+//   '+1',
+//   '+44',
+//   '+33',
+//   '+49',
+//   '+81',
+//   // Add more country codes as needed
+// ];
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -55,7 +55,7 @@ function AddMembersForm() {
   const [userID, setUserID] = useState("");
   const [showCredentials, setShowCredentials] = useState(true);
   const [loading, setLoading] = useState(false)
-
+  const [getcountryCode,setGetCountryCode] = useState([])
   const [isChild, setIsChild] = useState(false);
   const [sameAs, setSameAs] = useState([]);
   const [useMobileNumberForWhatsApp, setUseMobileNumberForWhatsApp] =
@@ -217,6 +217,7 @@ function AddMembersForm() {
       .then((response) => {
         if (response.status === 200) {
           setCountryList(response.data);
+          setGetCountryCode(response?.data)
         }
       });
   }, []);
@@ -636,7 +637,12 @@ function AddMembersForm() {
                   {showCredentials && (
                     <div className="d-flex max-w-md">
                       <Autocomplete
-                        options={phoneNumberCountryCodes}
+                        // options={phoneNumberCountryCodes}
+                        options={
+                          getcountryCode.length > 0
+                            ? getcountryCode.map((country) => country.phonecode)
+                            : []
+                        }
                         value={formik.values.countryCode}
                         onChange={(event, newValue) => {
                           formik.setFieldValue("countryCode", newValue);
