@@ -9,10 +9,15 @@ import { toggleNotificationPanel, selectNotificationPanelState } from './store/s
 import { useEffect, useState } from 'react';
 
 function NotificationPanelToggleButton(props) {
+  console.log("props",props)
   const notifications = useSelector(selectNotifications);
   const [notificationLength, setNotificationLength] = useState(0)
   const dispatch = useDispatch();
 
+
+  useEffect(() => {
+    fetchNotifications();
+  }, [notificationLength]); 
 
 
   // Using useSelector to get the notificationPanel state
@@ -22,6 +27,7 @@ function NotificationPanelToggleButton(props) {
   selectNotificationPanelState
   const fetchNotifications = async () => {
     const res = await dispatch(getNotifications());
+    console.log("hojaaBhai",res.payload.data.length)
     setNotificationLength(res.payload.data)
   };
   useEffect(() => {
