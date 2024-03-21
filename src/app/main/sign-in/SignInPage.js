@@ -54,15 +54,15 @@ const initialValues = {
   mobileNumber: '',
   password: '',
 };
-const phoneNumberCountryCodes = [
-  '+91',
-  '+1',
-  '+44',
-  '+33',
-  '+49',
-  '+81',
-  // Add more country codes as needed
-];
+// const phoneNumberCountryCodes = [
+//   '+91',
+//   '+1',
+//   '+44',
+//   '+33',
+//   '+49',
+//   '+81',
+//   // Add more country codes as needed
+// ];
 
 
 function SignInPage() {
@@ -77,6 +77,7 @@ function SignInPage() {
   const [OTPVerify, setOTPVerify] = useState(false)
   const [recaptcha, setRecaptcha] = useState(null)
   const [showRecaptcha, setShowRecaptcha] = useState(true);
+  const [getcountryCode , setGetCountryCode] = useState([])
 
   //for timmer
   const [secondsRemaining, setSecondsRemaining] = useState(INITIAL_COUNT);
@@ -180,6 +181,19 @@ function SignInPage() {
 
   }
 
+  useEffect(() => {
+    axios
+      .get(jwtServiceConfig.country, {
+        headers: {
+          "Content-type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          setGetCountryCode(response?.data)
+        }
+      });
+  }, []);
 
   // For Sending the Otp 
   const handleSendOtp = async (e) => {
@@ -317,7 +331,12 @@ function SignInPage() {
               <div className='d-flex'>
                 <div>
                   <Autocomplete
-                    options={phoneNumberCountryCodes}
+                    // options={phoneNumberCountryCodes}
+                    options={
+                      getcountryCode.length > 0
+                        ? getcountryCode.map((country) => country.phonecode)
+                        : []
+                    }
                     value={formik.values.countryCode}
                     className="mb-0"
                     onChange={(event, newValue) => {

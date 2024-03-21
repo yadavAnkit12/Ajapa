@@ -26,15 +26,15 @@ const validationSchema = Yup.object().shape({
   mobileNumber: Yup.string().matches(/^[1-9]\d{9}$/, "Invalid mobile number"),
 });
 
-const phoneNumberCountryCodes = [
-  "+91",
-  "+1",
-  "+44",
-  "+33",
-  "+49",
-  "+81",
-  // Add more country codes as needed
-];
+// const phoneNumberCountryCodes = [
+//   "+91",
+//   "+1",
+//   "+44",
+//   "+33",
+//   "+49",
+//   "+81",
+//   // Add more country codes as needed
+// ];
 
 const INITIAL_COUNT = 120;
 
@@ -49,6 +49,7 @@ const ForgotPassword = (props) => {
   const [otp, setOtp] = useState(""); //OTP states
   const [text, setText] = useState("Reset Password");
   const [hideCheckBox, setHideCheckBox] = useState(true);
+  const [getcountryCode,setGetCountryCode] = useState([])
 
   //Timer to resend the Otp
   const [secondsRemaining, setSecondsRemaining] = useState(INITIAL_COUNT);
@@ -56,6 +57,20 @@ const ForgotPassword = (props) => {
   const secondsToDisplay = secondsRemaining % 60;
   const minutesRemaining = (secondsRemaining - secondsToDisplay) / 60;
   const minutesToDisplay = minutesRemaining % 60;
+
+  useEffect(() => {
+    axios
+      .get(jwtServiceConfig.country, {
+        headers: {
+          "Content-type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          setGetCountryCode(response?.data)
+        }
+      });
+  }, []);
 
   const handleCheckboxChange = () => {
     setShowEmail((prevShowEmail) => !prevShowEmail);
@@ -293,7 +308,12 @@ const ForgotPassword = (props) => {
               {!showEmail && (
                 <div className="d-flex">
                   <Autocomplete
-                    options={phoneNumberCountryCodes}
+                    // options={phoneNumberCountryCodes}
+                    options={
+                      getcountryCode.length > 0
+                        ? getcountryCode.map((country) => country.phonecode)
+                        : []
+                    }
                     value={formik.values.countryCode}
                     className="mb-20"
                     onChange={(event, newValue) => {

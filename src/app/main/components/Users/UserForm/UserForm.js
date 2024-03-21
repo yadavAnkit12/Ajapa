@@ -33,15 +33,15 @@ const fontStyles = {
     "'Hoefler Text', 'Baskerville Old Face','Garamond', 'Times new Roman' ,serif",
 };
 
-const phoneNumberCountryCodes = [
-  "+91",
-  "+1",
-  "+44",
-  "+33",
-  "+49",
-  "+81",
-  // Add more country codes as needed
-];
+// const phoneNumberCountryCodes = [
+//   "+91",
+//   "+1",
+//   "+44",
+//   "+33",
+//   "+49",
+//   "+81",
+//   // Add more country codes as needed
+// ];
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -65,6 +65,7 @@ function UserForm() {
   const [showCredentials, setShowCredentials] = useState(true);
   const [isChild, setIsChild] = useState(false);
   const [open,setOpen] = useState(false)
+  const [getcountryCode , setGetCountryCode] = useState([])
   
 
   const validationSchema = yup.object().shape({
@@ -196,6 +197,7 @@ function UserForm() {
       .then((response) => {
         if (response.status === 200) {
           setCountryList(response.data);
+          setGetCountryCode(response?.data)
         }
       });
   }, []);
@@ -566,7 +568,12 @@ function UserForm() {
 
                       <div className="d-flex max-w-md">
                         <Autocomplete
-                          options={phoneNumberCountryCodes}
+                          // options={phoneNumberCountryCodes}
+                          options={
+                            getcountryCode.length > 0
+                              ? getcountryCode.map((country) => country.phonecode)
+                              : []
+                          }
                           value={formik.values.countryCode}
                           onChange={(event, newValue) => {
                             formik.setFieldValue("countryCode", newValue);
