@@ -15,11 +15,6 @@ function NotificationPanelToggleButton(props) {
   const dispatch = useDispatch();
 
 
-  useEffect(() => {
-    fetchNotifications();
-  }, [notificationLength]); 
-
-
   // Using useSelector to get the notificationPanel state
   const notificationPanelState = useSelector(getNotifications);
 
@@ -29,9 +24,12 @@ function NotificationPanelToggleButton(props) {
     const res = await dispatch(getNotifications());
     setNotificationLength(res.payload.data)
   };
+
   useEffect(() => {
     fetchNotifications()
   }, [])
+
+  
   return (     
     <IconButton
       className="w-40 h-40"
