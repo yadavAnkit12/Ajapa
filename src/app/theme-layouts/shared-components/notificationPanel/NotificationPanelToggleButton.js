@@ -17,7 +17,7 @@ function NotificationPanelToggleButton(props) {
 
   useEffect(() => {
     fetchNotifications();
-  }, [notificationLength]); 
+  }, []); 
 
 
   // Using useSelector to get the notificationPanel state
