@@ -74,7 +74,7 @@ function SignUpPage() {
   const [cityID, setCityID] = useState("");
   const [recaptcha, setRecaptcha] = useState(null);
   const [loading, setLoading] = useState(false)
-  const [stateName, setStateName] = useState('')  //for handling a state whic have no state
+  const [stateName, setStateName] = useState('')  //for handling a state which have no state
   const [getcountryCode , setGetCountryCode] = useState([])
   const initialValues = {
     name: "",

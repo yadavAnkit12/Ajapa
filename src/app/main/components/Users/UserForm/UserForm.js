@@ -66,6 +66,7 @@ function UserForm() {
   const [isChild, setIsChild] = useState(false);
   const [open,setOpen] = useState(false)
   const [getcountryCode , setGetCountryCode] = useState([])
+  const [stateName, setStateName] = useState('')  //for handling a state which have no state
   
 
   const validationSchema = yup.object().shape({
@@ -227,7 +228,13 @@ function UserForm() {
       })
       .then((response) => {
         if (response.status === 200) {
-          setCityList(response.data);
+          if (response.data.length === 0) {
+            // If no cities are available, set the city list to an array containing the state name
+            setCityList([{ id: stateID, name: stateName }]);
+          } else {
+            // If cities are available, set the city list to the response data
+            setCityList(response.data);
+          }
         }
       });
   }, [stateID]);
@@ -709,6 +716,10 @@ function UserForm() {
                       const selectedSate = stateList.find(
                         (state) => state.name === newValue
                       )?.id;
+                      const selectedStateName = stateList.find(
+                        (state) => state.name === newValue
+                      )?.name;
+                      setStateName(selectedStateName)
                       setStateID(selectedSate);
                       formik.setFieldValue("state", newValue);
                     }}
