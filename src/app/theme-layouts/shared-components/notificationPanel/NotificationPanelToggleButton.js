@@ -15,14 +15,6 @@ function NotificationPanelToggleButton(props) {
   const dispatch = useDispatch();
 
 
-<<<<<<< HEAD
-=======
-  useEffect(() => {
-    fetchNotifications();
-  }, []); 
-
-
->>>>>>> 276dad4400a9706821b30329b42b61d2a4d1d312
   // Using useSelector to get the notificationPanel state
   const notificationPanelState = useSelector(getNotifications);
 
