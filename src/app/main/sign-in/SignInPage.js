@@ -20,6 +20,7 @@ import { values } from 'lodash';
 import axios from 'axios';
 import jwtServiceConfig from 'src/app/auth/services/jwtService/jwtServiceConfig';
 import ReCAPTCHA from 'react-google-recaptcha';
+import FuseLoading from '@fuse/core/FuseLoading';
 
 const INITIAL_COUNT = 120
 
@@ -78,6 +79,7 @@ function SignInPage() {
   const [recaptcha, setRecaptcha] = useState(null)
   const [showRecaptcha, setShowRecaptcha] = useState(true);
   const [getcountryCode , setGetCountryCode] = useState([])
+  const [loading, setLoading] = useState(false);
 
   //for timmer
   const [secondsRemaining, setSecondsRemaining] = useState(INITIAL_COUNT);
@@ -201,6 +203,7 @@ function SignInPage() {
     const isRequired = Boolean((formik.values.email || (formik.values.countryCode && formik.values.mobileNumber)) && recaptcha)
     if (isRequired) {
       // setShowRecaptcha(false)
+        setLoading(true)
       const formData = new FormData()
       formData.append('email', formik.values.email)
       formData.append('countryCode', formik.values.countryCode)
@@ -213,6 +216,7 @@ function SignInPage() {
       }).then((response) => {
         console.log(response)
         if (response.status === 200) {
+          setLoading(false)
           setStatus(STATUS.STARTED)
           setSecondsRemaining(INITIAL_COUNT)
           dispatch(showMessage({ message: 'OTP has been sent to your mobile number and email.', variant: 'success' }));
@@ -220,9 +224,11 @@ function SignInPage() {
           setOTPVerify(true)
         }
         else {
+          setLoading(false)
           dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
         }
       }).catch((error) => {
+        setLoading(false)
         console.log(error)
       })
     }
@@ -242,13 +248,16 @@ function SignInPage() {
 
     if (isRequired) {
       // setShowRecaptcha(false)
+      setLoading(true)
       jwtService.signInWithEmailAndPassword(values.email, values.countryCode, values.mobileNumber, values.password)
         .then((user) => {
+          setLoading(false)
           if (user) {
             dispatch(showMessage({ message: 'Login successfully', variant: 'success' }));
           }
         })
         .catch((_errors) => {
+          setLoading(false)
           dispatch(showMessage({ message: _errors, variant: 'error' }));
         });
     }
@@ -263,6 +272,7 @@ function SignInPage() {
   }
   const handleOTPverification = () => {
     if (otp !== '' && otp.length === 4) {
+      setLoading(true)
       const formData = new FormData()
       formData.append('email', formik.values.email)
       formData.append('countryCode', formik.values.countryCode)
@@ -270,12 +280,14 @@ function SignInPage() {
       formData.append('otp', otp)
       jwtService.signInWithOTP(formik.values.email, formik.values.countryCode, formik.values.mobileNumber, otp)
         .then((user) => {
+          setLoading(false)
           if (user) {
             dispatch(showMessage({ message: 'Login successfully', variant: 'success' }));
 
           }
         })
         .catch((_errors) => {
+          setLoading(false)
           console.log(_errors)
         });
     } else {
@@ -288,6 +300,11 @@ function SignInPage() {
     validationSchema: validationSchema,
     onSubmit: handleSubmit,
   });
+
+  if(loading)
+  {
+    return <FuseLoading />
+  }
 
 
 

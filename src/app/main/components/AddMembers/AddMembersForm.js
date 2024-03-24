@@ -61,6 +61,7 @@ function AddMembersForm() {
   const [useMobileNumberForWhatsApp, setUseMobileNumberForWhatsApp] =
     useState(false);
   const [open, setOpen] = useState(false)
+  const [stateName, setStateName] = useState('')  //for handling a state which have no state
 
   // Event handler for radio button or checkbox change
   const handleWhatsAppOptionChange = (event) => {
@@ -247,7 +248,13 @@ function AddMembersForm() {
       })
       .then((response) => {
         if (response.status === 200) {
-          setCityList(response.data);
+          if (response.data.length === 0) {
+            // If no cities are available, set the city list to an array containing the state name
+            setCityList([{ id: stateID, name: stateName }]);
+          } else {
+            // If cities are available, set the city list to the response data
+            setCityList(response.data);
+          }
         }
       });
   }, [stateID]);
@@ -829,6 +836,10 @@ function AddMembersForm() {
                       const selectedSate = stateList.find(
                         (state) => state.name === newValue
                       )?.id;
+                      const selectedStateName = stateList.find(
+                        (state) => state.name === newValue
+                      )?.name;
+                      setStateName(selectedStateName)
                       setStateID(selectedSate);
                       formik.setFieldValue("state", newValue);
                     }}
