@@ -113,6 +113,7 @@ function AllEventRegistrationTable(props) {
       },
     }).then((response) => {
       if (response.status === 200) {
+          // console.log("aj", response?.data)
         setEventListData(response?.data);
         setLoading(false);
       } else {
@@ -256,7 +257,7 @@ function AllEventRegistrationTable(props) {
                     {n.fromCity.split(':')[1]}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.shivirAvailable ? 'Yes' : 'No'}
+                    {n.attendingShivir ? 'Yes' : 'No'}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     <PopupState variant="popover" popupId="demo-popup-menu">
