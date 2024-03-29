@@ -14,7 +14,7 @@ export const getNotifications = createAsyncThunk('notificationPanel/getData', as
   }
   const response = await axios.get(userAPIConfig.list,{params});
   const data = await response.data;
-  console.log("Hhhh",data)
+  // console.log("Hhhh",data)
   return data;
 });
 
