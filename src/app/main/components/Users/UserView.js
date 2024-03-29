@@ -33,7 +33,7 @@ export default function UserView(props) {
         if (response.status === 200) {
             setIsLoading(false);
             setUserData(response.data.user)
-            dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+            // dispatch(showMessage({ message: response.data.message, variant: 'success' }));
         }
     })
 },[])

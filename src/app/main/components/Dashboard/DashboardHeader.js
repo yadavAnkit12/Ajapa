@@ -9,6 +9,7 @@ import { showMessage } from 'app/store/fuse/messageSlice';
 import clsx from 'clsx';
 import axios from 'axios';
 import { cardAPIConfig, eventAPIConfig, userAPIConfig } from '../../API/apiConfig';
+import { useNavigate } from 'react-router-dom';
 
 
 const style = {
@@ -25,7 +26,9 @@ const style = {
   overflow: 'auto'
 };
 function DashboardHeader(props) {
-  console.log(props)
+  const navigate = useNavigate();
+
+  // console.log(props)
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [filterData, setFilterData] = useState({
@@ -35,13 +38,13 @@ function DashboardHeader(props) {
     eventStatus: 'On'
   });
 
-  const [ families, setFamilies] = useState(0)
-  const [ disciples, setDisciples] = useState(0)
-  const [ nonDisciples, setNonDisciples] = useState(0)
-  const [ events, setEvents] = useState(0)
-  const [ activeEvent, setActiveEvent]= useState(0)
-  const [ pendingUsers, setPendingUsers] = useState(0)
-  const [ rejectedUsers, setRejectedUsers] = useState(0)
+  const [families, setFamilies] = useState(0)
+  const [disciples, setDisciples] = useState(0)
+  const [nonDisciples, setNonDisciples] = useState(0)
+  const [events, setEvents] = useState(0)
+  const [activeEvent, setActiveEvent] = useState(0)
+  const [pendingUsers, setPendingUsers] = useState(0)
+  const [rejectedUsers, setRejectedUsers] = useState(0)
   const [approvedUsers, setApprovedUsers] = useState(0)
 
 
@@ -69,7 +72,7 @@ function DashboardHeader(props) {
   };
 
 
-  useEffect (() =>{
+  useEffect(() => {
     axios.get(cardAPIConfig.carddetails, {
       headers: {
         'Content-type': 'multipart/form-data',
@@ -77,23 +80,23 @@ function DashboardHeader(props) {
       },
     }).then((response) => {
       if (response.status === 200) {
-        
-          console.log("response 34", response.data)
-          setFamilies(response.data.familyCount)
-          setDisciples(response.data.discipleCount)
-          setNonDisciples(response.data.nonDiscipleCount)
-          setEvents(response.data.totalEvents)
-          setActiveEvent(response.data.countActiveEvents)
-          setPendingUsers(response.data.countPendingUsers)
-          setRejectedUsers(response.data.countRejectedUsers)
-          setApprovedUsers(response.data.countApprovedUsers)
 
-      
+        console.log("response 34", response.data)
+        setFamilies(response.data.familyCount)
+        setDisciples(response.data.discipleCount)
+        setNonDisciples(response.data.nonDiscipleCount)
+        setEvents(response.data.totalEvents)
+        setActiveEvent(response.data.countActiveEvents)
+        setPendingUsers(response.data.countPendingUsers)
+        setRejectedUsers(response.data.countRejectedUsers)
+        setApprovedUsers(response.data.countApprovedUsers)
+
+
       } else {
         dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
       }
     });
-  },[])
+  }, [])
 
 
 
@@ -118,17 +121,17 @@ function DashboardHeader(props) {
           // role={item.link && 'button'}
 
           >
-        
-        <Box
-          sx={{ backgroundColor: 'background.default' }}
-          className="flex shrink-0 items-center justify-center w-32 h-32 mr-12 rounded-full"
-        >
-          <Avatar className="opacity-75" color="inherit" src="assets/images/avatars/family.jpg">
 
-          </Avatar>
-        </Box>
+            <Box
+              sx={{ backgroundColor: 'background.default' }}
+              className="flex shrink-0 items-center justify-center w-32 h-32 mr-12 rounded-full"
+            >
+              <Avatar className="opacity-75" color="inherit" src="assets/images/avatars/family.jpg">
 
-{/* 
+              </Avatar>
+            </Box>
+
+            {/* 
             <img
               className="shrink-0 w-32 h-32 mr-12 rounded-full overflow-hidden object-cover object-center"
               src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSIyr_FwMIcppToiOqzBPOSE4P5N_PuM67WaoJN31twHQ&s'
@@ -171,16 +174,18 @@ function DashboardHeader(props) {
             )}
 
             elevation={0}
+            onClick={()=>navigate("/app/users/disciple/all")}
+
           >
 
-<Box
-          sx={{ backgroundColor: 'background.default' }}
-          className="flex shrink-0 items-center justify-center w-32 h-32 mr-12 rounded-full"
-        >
-          <Avatar className="opacity-75" color="inherit" src="assets/images/avatars/disciple.png">
+            <Box
+              sx={{ backgroundColor: 'background.default' }}
+              className="flex shrink-0 items-center justify-center w-32 h-32 mr-12 rounded-full"
+            >
+              <Avatar className="opacity-75" color="inherit" src="assets/images/avatars/disciple.png">
 
-          </Avatar>
-        </Box>
+              </Avatar>
+            </Box>
 
             <div className="flex flex-col flex-auto">
               <Typography className="font-semibold line-clamp-1">Disciples</Typography>
@@ -195,15 +200,16 @@ function DashboardHeader(props) {
             )}
 
             elevation={0}
+            onClick={()=>navigate("/app/users/nondisciple/all")}
           >
-                    <Box
-          sx={{ backgroundColor: 'background.default' }}
-          className="flex shrink-0 items-center justify-center w-32 h-32 mr-12 rounded-full"
-        >
-          <Avatar className="opacity-75" color="inherit" src="assets/images/avatars/non_desciple.png">
+            <Box
+              sx={{ backgroundColor: 'background.default' }}
+              className="flex shrink-0 items-center justify-center w-32 h-32 mr-12 rounded-full"
+            >
+              <Avatar className="opacity-75" color="inherit" src="assets/images/avatars/non_desciple.png">
 
-          </Avatar>
-        </Box>
+              </Avatar>
+            </Box>
 
             <div className="flex flex-col flex-auto">
               <Typography className="font-semibold line-clamp-1">Non Disciples</Typography>
@@ -220,14 +226,14 @@ function DashboardHeader(props) {
 
             elevation={0}
           >
-                    <Box
-          sx={{ backgroundColor: 'background.default' }}
-          className="flex shrink-0 items-center justify-center w-32 h-32 mr-12 rounded-full"
-        >
-          <Avatar className="opacity-75" color="inherit" src="assets/images/avatars/event.jpeg">
+            <Box
+              sx={{ backgroundColor: 'background.default' }}
+              className="flex shrink-0 items-center justify-center w-32 h-32 mr-12 rounded-full"
+            >
+              <Avatar className="opacity-75" color="inherit" src="assets/images/avatars/event.jpeg">
 
-          </Avatar>
-        </Box>
+              </Avatar>
+            </Box>
 
             <div className="flex flex-col flex-auto">
               <Typography className="font-semibold line-clamp-1">Events</Typography>
@@ -235,80 +241,11 @@ function DashboardHeader(props) {
             <Typography className="font-semibold line-clamp-1">{events}</Typography>
           </Card>
 
-        
+
         </div>
 
 
         <div className="flex flex-col sm:flex-row space-y-16 sm:space-y-0 flex-1 w-full items-center justify-between pb-32 px-10">
-        <Card
-            className={clsx(
-              'flex items-center relative w-full rounded-16 p-20 min-h-64 shadow space-x-8 m-2',
-
-            )}
-
-            elevation={0}
-          >
-                    <Box
-          sx={{ backgroundColor: 'background.default' }}
-          className="flex shrink-0 items-center justify-center w-32 h-32 mr-12 rounded-full"
-        >
-          <Avatar className="opacity-75" color="inherit" src="assets/images/avatars/active_event.jpeg">
-
-          </Avatar>
-        </Box>
-
-            <div className="flex flex-col flex-auto">
-              <Typography className="font-semibold line-clamp-1">Active Events</Typography>
-            </div>
-            <Typography className="font-semibold line-clamp-1">{activeEvent}</Typography>
-          </Card>
-
-                    <Card
-            className={clsx(
-              'flex items-center relative w-full rounded-16 p-20 min-h-64 shadow space-x-8 m-2',
-
-            )}
-
-            elevation={0}
-          >
-                    <Box
-          sx={{ backgroundColor: 'background.default' }}
-          className="flex shrink-0 items-center justify-center w-32 h-32 mr-12 rounded-full"
-        >
-          <Avatar className="opacity-75" color="inherit" src="assets/images/avatars/pendingUser.png">
-
-          </Avatar>
-        </Box>
-
-            <div className="flex flex-col flex-auto">
-              <Typography className="font-semibold line-clamp-1">Pending Users</Typography>
-            </div>
-            <Typography className="font-semibold line-clamp-1">{pendingUsers}</Typography>
-          </Card>
-
-                    <Card
-            className={clsx(
-              'flex items-center relative w-full rounded-16 p-20 min-h-64 shadow space-x-8 m-2',
-
-            )}
-
-            elevation={0}
-          >
-                    <Box
-          sx={{ backgroundColor: 'background.default' }}
-          className="flex shrink-0 items-center justify-center w-32 h-32 mr-12 rounded-full"
-        >
-          <Avatar className="opacity-75" color="inherit" src="assets/images/avatars/rejectedUser.jpg">
-
-          </Avatar>
-        </Box>
-
-            <div className="flex flex-col flex-auto">
-              <Typography className="font-semibold line-clamp-1">Rejected Users</Typography>
-            </div>
-            <Typography className="font-semibold line-clamp-1">{rejectedUsers}</Typography>
-          </Card>
-          
           <Card
             className={clsx(
               'flex items-center relative w-full rounded-16 p-20 min-h-64 shadow space-x-8 m-2',
@@ -317,25 +254,94 @@ function DashboardHeader(props) {
 
             elevation={0}
           >
-                    <Box
-          sx={{ backgroundColor: 'background.default' }}
-          className="flex shrink-0 items-center justify-center w-32 h-32 mr-12 rounded-full"
-        >
-          <Avatar className="opacity-75" color="inherit" src="assets/images/avatars/approvedUser.jpeg">
+            <Box
+              sx={{ backgroundColor: 'background.default' }}
+              className="flex shrink-0 items-center justify-center w-32 h-32 mr-12 rounded-full"
+            >
+              <Avatar className="opacity-75" color="inherit" src="assets/images/avatars/active_event.jpeg">
 
-          </Avatar>
-        </Box>
+              </Avatar>
+            </Box>
+
+            <div className="flex flex-col flex-auto">
+              <Typography className="font-semibold line-clamp-1">Active Events</Typography>
+            </div>
+            <Typography className="font-semibold line-clamp-1">{activeEvent}</Typography>
+          </Card>
+
+          <Card
+            className={clsx(
+              'flex items-center relative w-full rounded-16 p-20 min-h-64 shadow space-x-8 m-2',
+
+            )}
+
+            elevation={0}
+          >
+            <Box
+              sx={{ backgroundColor: 'background.default' }}
+              className="flex shrink-0 items-center justify-center w-32 h-32 mr-12 rounded-full"
+            >
+              <Avatar className="opacity-75" color="inherit" src="assets/images/avatars/pendingUser.png">
+
+              </Avatar>
+            </Box>
+
+            <div className="flex flex-col flex-auto">
+              <Typography className="font-semibold line-clamp-1">Pending Users</Typography>
+            </div>
+            <Typography className="font-semibold line-clamp-1">{pendingUsers}</Typography>
+          </Card>
+
+          <Card
+            className={clsx(
+              'flex items-center relative w-full rounded-16 p-20 min-h-64 shadow space-x-8 m-2',
+
+            )}
+
+            elevation={0}
+          >
+            <Box
+              sx={{ backgroundColor: 'background.default' }}
+              className="flex shrink-0 items-center justify-center w-32 h-32 mr-12 rounded-full"
+            >
+              <Avatar className="opacity-75" color="inherit" src="assets/images/avatars/rejectedUser.jpg">
+
+              </Avatar>
+            </Box>
+
+            <div className="flex flex-col flex-auto">
+              <Typography className="font-semibold line-clamp-1">Rejected Users</Typography>
+            </div>
+            <Typography className="font-semibold line-clamp-1">{rejectedUsers}</Typography>
+          </Card>
+
+          <Card
+            className={clsx(
+              'flex items-center relative w-full rounded-16 p-20 min-h-64 shadow space-x-8 m-2',
+
+            )}
+
+            elevation={0}
+          >
+            <Box
+              sx={{ backgroundColor: 'background.default' }}
+              className="flex shrink-0 items-center justify-center w-32 h-32 mr-12 rounded-full"
+            >
+              <Avatar className="opacity-75" color="inherit" src="assets/images/avatars/approvedUser.jpeg">
+
+              </Avatar>
+            </Box>
 
             <div className="flex flex-col flex-auto">
               <Typography className="font-semibold line-clamp-1">Approved Users</Typography>
             </div>
             <Typography className="font-semibold line-clamp-1">{approvedUsers}</Typography>
           </Card>
-        
+
         </div>
 
 
-        
+
         <div className='flex sm:flex-row flex-wrap flex-col justify-between mx-10  mb-10 shadow-1 rounded-16'>
           <div className="flex sm:flex-row flex-wrap flex-col justify-start">
             {/* <TextField

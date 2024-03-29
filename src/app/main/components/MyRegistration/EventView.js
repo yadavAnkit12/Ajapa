@@ -29,7 +29,7 @@ export default function EventView(props) {
                     // console.log("hi")
                     // console.log(response.data.eventRegistration)
                     setData(response.data.eventRegistration)
-                    dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+                    // dispatch(showMessage({ message: response.data.message, variant: 'success' }));
                 } else {
                     dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
                 }

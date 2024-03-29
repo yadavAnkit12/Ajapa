@@ -27,7 +27,7 @@ export default function EventView(props) {
             }).then((response) => {
                 if (response.status === 200) {
                     setData(response.data.data)
-                    dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+                    // dispatch(showMessage({ message: response.data.message, variant: 'success' }));
                 } else {
                     dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
                 }
