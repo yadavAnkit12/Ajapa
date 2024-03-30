@@ -14,6 +14,7 @@ import { userAPIConfig } from '../../API/apiConfig';
 import { useNavigate } from 'react-router-dom';
 // import VehicleRegisterForm from './VehicleRegisterForm';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+import { useParams } from 'react-router-dom';
 
 
 const style = {
@@ -30,6 +31,7 @@ const style = {
     overflow: 'auto'
 };
 function UsersHeader(props) {
+    const routeParams = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate()
     const [open, setOpen] = useState(false);
@@ -37,7 +39,9 @@ function UsersHeader(props) {
         status: 'Approved',
         country: 'All',
         state: 'All',
-        city: 'All'
+        city: 'All',
+        head: 'Head',
+        disp: 'Disciple'
     });
 
     const [countryList, setCountryList] = useState([])
@@ -88,6 +92,18 @@ function UsersHeader(props) {
     }, [stateID])
 
 
+    useEffect(()=>{
+         const { disp, status } = routeParams
+         console.log("disp", disp, status)
+         if(disp != 'all' || status != 'all')
+         {
+            console.log("Kuch")
+            setFilterData({ ...filterData, head: status , disp: disp})
+            
+         }
+         console.log("Filter Data", filterData)
+    },[routeParams])
+
     const filterPartnerData = () => {
         console.log(countryID)
         props.setFilterValue({
@@ -104,7 +120,9 @@ function UsersHeader(props) {
             status: 'Approved',
             country: 'All',
             state: 'All',
-            city: 'All'
+            city: 'All',
+            head: 'Head',
+            disp: 'Disciple'
 
         });
         setCountryID('');
@@ -140,7 +158,7 @@ function UsersHeader(props) {
                 const urlParts = response.data.fileName.split('/');
                 const fileName = urlParts[urlParts.length - 1];
 
-                const baseUrl = 'http://18.212.201.202:8080/ajapa_yog-0.0.1-SNAPSHOT/reports/';
+                const baseUrl = 'http://34.203.29.229:8080/ajapa_yog-0.0.1-SNAPSHOT/reports/';
                 const fullUrl = baseUrl + fileName;
                 const link = document.createElement('a');
                 link.href = fullUrl;
@@ -181,7 +199,7 @@ function UsersHeader(props) {
                 // Extract filename from the URL
                 const urlParts = response.data.fileName.split('/');
                 const fileName = urlParts[urlParts.length - 1];
-                const baseUrl = 'http://18.212.201.202:8080/ajapa_yog-0.0.1-SNAPSHOT/reports/';
+                const baseUrl = 'http://34.203.29.229:8080/ajapa_yog-0.0.1-SNAPSHOT/reports/';
                 const fullUrl = baseUrl + fileName;
 
                  // Create a new tab and open the link in it
@@ -294,6 +312,26 @@ function UsersHeader(props) {
                                 setFilterData({ ...filterData, city: newValue })
                             }}
                             renderInput={(params) => <TextField {...params} label="City" variant="standard" />}
+                        />
+
+<Autocomplete
+                            disablePortal
+                            value={filterData.head}
+                            id="status"
+                            options={['Head']}
+                            sx={{ my: 1, minWidth: 140, mx: 1 }}
+                            onChange={(e, newValue) => setFilterData({ ...filterData, head: newValue })}
+                            renderInput={(params) => <TextField {...params} label="Head" variant="standard" />}
+                        />
+
+<Autocomplete
+                            disablePortal
+                            value={filterData.disp}
+                            id="status"
+                            options={['Disciple', 'Non Desciple']}
+                            sx={{ my: 1, minWidth: 140, mx: 1 }}
+                            onChange={(e, newValue) => setFilterData({ ...filterData, disp: newValue })}
+                            renderInput={(params) => <TextField {...params} label="Disciple/NonDisciple" variant="standard" />}
                         />
                         <Button
                             // component={Link}

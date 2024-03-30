@@ -34,7 +34,7 @@ export default function MemberView(props) {
         if (response.status === 200) {
             setIsLoading(false);
             setUserData(response.data.user)
-            dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+            // dispatch(showMessage({ message: response.data.message, variant: 'success' }));
         }
         else{
             dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));

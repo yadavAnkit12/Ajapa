@@ -39,7 +39,7 @@ const navigationConfig = [
     translate: "Users",
     type: 'item',
     icon: 'heroicons-outline:users',
-    url: 'app/users/',
+    url: 'app/users/all/all',
     auth: ["Super"]
   },
   {
