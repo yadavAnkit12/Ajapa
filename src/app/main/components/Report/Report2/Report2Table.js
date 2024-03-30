@@ -126,11 +126,12 @@ function Report2Table(props) {
       },
     }).then((response) => {
       if (response.status === 200) {
-        console.log("report", response?.data)
         setReportData(response?.data);
         setLoading(false);
       } else {
         dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
+        setReportData([]);
+        setLoading(false);
       }
     });
     }
@@ -149,6 +150,8 @@ function Report2Table(props) {
         setLoading(false);
       } else {
         dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
+        setReportData([]);
+        setLoading(false);
       }
     });
     }
