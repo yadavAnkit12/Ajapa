@@ -295,7 +295,7 @@ function Report2Table(props) {
                     {n.modeOfTransport}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.trainDetails}
+                    {n.trainDetails === '' ? 'N/A': n.trainDetails}
                   </TableCell>
                   {/* <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.fromState.split(':')[1]}

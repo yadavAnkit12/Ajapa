@@ -271,7 +271,7 @@ function Report3Table(props) {
                     {n.memberName}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.mobileNumber}
+                    { n.mobileNumber === '' ? 'N/A' : n.mobileNumber}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.arrivalDateTime}
@@ -280,7 +280,7 @@ function Report3Table(props) {
                     {n.departureDateTime}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.specialRequirements}
+                    {n.specialRequirements === '' ? 'N/A' :n.specialRequirements}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     <PopupState variant="popover" popupId="demo-popup-menu">
