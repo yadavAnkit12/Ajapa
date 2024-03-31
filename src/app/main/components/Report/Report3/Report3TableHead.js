@@ -28,14 +28,14 @@ function Report3TableHead(props) {
       sort: true,
       visibleIf: true
     },
-    {
-      id: 'comingFrom',
-      align: 'center',
-      disablePadding: false,
-      label: 'Coming From',
-      sort: true,
-      visibleIf: true
-    },
+    // {
+    //   id: 'comingFrom',
+    //   align: 'center',
+    //   disablePadding: false,
+    //   label: 'Coming From',
+    //   sort: true,
+    //   visibleIf: true
+    // },
     {
       id: 'arrivalDateTime',
       align: 'center',
@@ -45,22 +45,22 @@ function Report3TableHead(props) {
       visibleIf: true
     },
   
-    {
-      id: 'arrivalMode',
-      align: 'center',
-      disablePadding: false,
-      label: 'Arrival Mode',
-      sort: true,
-      visibleIf: true
-    },
-    {
-      id: 'arrivalTrainDetails',
-      align: 'center',
-      disablePadding: false,
-      label: 'Arrival Train Details',
-      sort: true,
-      visibleIf: true
-    },
+    // {
+    //   id: 'arrivalMode',
+    //   align: 'center',
+    //   disablePadding: false,
+    //   label: 'Arrival Mode',
+    //   sort: true,
+    //   visibleIf: true
+    // },
+    // {
+    //   id: 'arrivalTrainDetails',
+    //   align: 'center',
+    //   disablePadding: false,
+    //   label: 'Arrival Train Details',
+    //   sort: true,
+    //   visibleIf: true
+    // },
     {
       id: 'departureDateTime',
       align: 'center',
@@ -69,22 +69,22 @@ function Report3TableHead(props) {
       sort: true,
       visibleIf: true
     },
-    {
-      id: 'departureMode',
-      align: 'center',
-      disablePadding: false,
-      label: 'Departure Mode',
-      sort: true,
-      visibleIf: true
-    },
-    {
-      id: 'departureTrainDetails',
-      align: 'center',
-      disablePadding: false,
-      label: 'Departure Train Details',
-      sort: true,
-      visibleIf: true
-    },
+    // {
+    //   id: 'departureMode',
+    //   align: 'center',
+    //   disablePadding: false,
+    //   label: 'Departure Mode',
+    //   sort: true,
+    //   visibleIf: true
+    // },
+    // {
+    //   id: 'departureTrainDetails',
+    //   align: 'center',
+    //   disablePadding: false,
+    //   label: 'Departure Train Details',
+    //   sort: true,
+    //   visibleIf: true
+    // },
     {
       id: 'specialReq',
       align: 'center',
@@ -93,6 +93,14 @@ function Report3TableHead(props) {
       sort: true,
       visibleIf: true
     },
+    {
+      id: 'action',
+      align: 'center',
+      disablePadding: false,
+      label: 'Action',
+      sort: true,
+      visibleIf: true
+    }
   ];
   
 

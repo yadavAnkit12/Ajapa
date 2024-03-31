@@ -59,7 +59,7 @@ function NotificationPanel(props) {
 
     const fetchNotifications = async () => {
       const res = await dispatch(getNotifications())
-      console.log("kkk",res.payload.data.length)
+      // console.log("kkk",res.payload.data.length) 
       setNotifications(res.payload.data)
     };
     fetchNotifications()

@@ -203,7 +203,7 @@ function SignInPage() {
     const isRequired = Boolean((formik.values.email || (formik.values.countryCode && formik.values.mobileNumber)) && recaptcha)
     if (isRequired) {
       // setShowRecaptcha(false)
-        setLoading(true)
+        // setLoading(true)
       const formData = new FormData()
       formData.append('email', formik.values.email)
       formData.append('countryCode', formik.values.countryCode)

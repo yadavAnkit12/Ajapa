@@ -155,14 +155,26 @@ function Report3Header(props) {
             Report 3
           </Typography>
           <div className="flex flex-col w-full sm:w-auto sm:flex-row space-y-16 sm:space-y-0 flex-1 items-center justify-end space-x-8">
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0, transition: { delay: 0.2 } }}
-              className="ml-lg-5 mr-lg-5 ml-sm-2 mr-sm-2"
-            > 
-          
-            </motion.div>
-          </div>
+          <Paper
+                            component={motion.div}
+                            initial={{ y: -20, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1, transition: { delay: 0.2 } }}
+                            className="flex items-center w-full my-4 sm:max-w-256 space-x-8 px-16 ml-5 mr-5 rounded-full border-1 shadow-0"
+                        >
+                            <FuseSvgIcon color="disabled">heroicons-solid:search</FuseSvgIcon>
+                            <Input
+                                placeholder="Search Text"
+                                className="flex flex-1"
+                                disableUnderline
+                                fullWidth
+                                value={props?.searchText}
+                                inputProps={{
+                                    'aria-label': 'Search',
+                                }}
+                                onChange={(ev) => props?.setSearchText(ev.target.value)}
+                            />
+                        </Paper>
+                    </div>
         </div>
         <div className='flex sm:flex-row flex-wrap flex-col justify-between mx-10  mb-10 shadow-1 rounded-16'>
           <div className="flex sm:flex-row flex-wrap flex-col justify-start">
@@ -177,6 +189,8 @@ function Report3Header(props) {
               onChange={(e, newValue) => setFilterData({ ...filterData, eventName: newValue })}
               renderInput={(params) => <TextField {...params} label="Select Event" variant="standard" />}
             />
+
+
             <Button
               // component={Link}
             //   onClick={() => handleCreateReport()}
