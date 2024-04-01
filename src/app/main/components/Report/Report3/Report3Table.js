@@ -11,9 +11,12 @@ import { useEffect, useState, useRef, forwardRef } from 'react';
 import { showMessage } from 'app/store/fuse/messageSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from "react-router-dom";
-import { eventAPIConfig } from 'src/app/main/API/apiConfig';
+import { eventAPIConfig, reportAPIConfig } from 'src/app/main/API/apiConfig';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
-import Report2TableHead from './Report3TableHead';
+import Report3TableHead from './Report3TableHead';
+import EventView from '../../MyRegistration/EventView';
+
+
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -32,6 +35,16 @@ const style = {
   maxHeight: '650px',
   overflow: 'auto',
 };
+
+const menuItemArray = [
+  {
+    key: 1,
+    label: 'View',
+    status: 'view',
+    // visibleIf: ['complete', 'active', 'inactive'],
+    loadIf: true
+  },
+]
 
 
 
@@ -62,7 +75,7 @@ function Report3Table(props) {
 
   useEffect(() => {
     fetchData();
-  }, [props?.change, rowsPerPage, page, props?.filterValue, searchText]);
+  }, [props?.change, rowsPerPage, page, props?.filterValue, props?.searchText]);
 
   useEffect(() => {
     if (page !== 0) {
@@ -94,27 +107,39 @@ function Report3Table(props) {
 
 
   const fetchData = () => {
+
+    if(props.filterValue.eventName === '' || props.filterValue.eventName === null)
+    {
+      dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
+      return
+    }
+
+    const eventId = props.eventList?.find((event) => event.eventName === props.filterValue.eventName)?.eventId || '';
+    // console.log("Event Id",eventId)
+    // console.log("searchText", props?.searchText)
     
     const params = {
       page: page + 1,
-      rowsPerPage: rowsPerPage, // Example data to pass in req.query
-      eventId: props.eventList?.find((event) => event.eventName === props.filterValue.eventName)?.eventId || '',
-      //   eventStatus: (_.get(props, 'filterValue.eventStatus') === 'Active' || _.get(props, 'filterValue') === '') ? true : false,
-      //   bookingStatus: (_.get(props, 'filterValue.bookingStatus') === 'On' || _.get(props, 'filterValue') === '') ? true : false,
+      rowsPerPage: rowsPerPage,
+      eventId: eventId,
+      searchText:props?.searchText
+
     };
-    axios.get(eventAPIConfig.allEventRegistrationList, { params }, {
+    axios.get(reportAPIConfig.report3, { params }, {
       headers: {
         'Content-type': 'multipart/form-data',
         Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
       },
     }).then((response) => {
       if (response.status === 200) {
-        console.log(response)
+        console.log("report3", response)
         //
-        setEventListData(response?.data);
+         setEventListData(response?.data);
         setLoading(false);
       } else {
         dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
+        setEventListData([]);
+        setLoading(false);
       }
     });
   };
@@ -207,7 +232,7 @@ function Report3Table(props) {
         className="flex flex-1 items-center justify-center h-full"
       >
         <Typography color="text.secondary" variant="h5">
-          There are no Registrations!
+          There is no data!
         </Typography>
       </motion.div>
     );
@@ -216,7 +241,7 @@ function Report3Table(props) {
   return (
     <div className="w-full flex flex-col min-h-full" style={{ overflow: 'auto' }}>
       <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle" ref={tableRef}>
-        <Report2TableHead
+        <Report3TableHead
           selectedProductIds={selected}
           order={order}
           onSelectAllClick={handleSelectAllClick}
@@ -240,25 +265,49 @@ function Report3Table(props) {
                   style={{ cursor: 'default' }}
                 >
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.userName}
+                    {n.headName}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.eventName}
+                    {n.memberName}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.eventDate}
+                    { n.mobileNumber === '' ? 'N/A' : n.mobileNumber}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.fromCountry.split(':')[1]}
+                    {n.arrivalDateTime}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.fromState.split(':')[1]}
+                    {n.departureDateTime}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.fromCity.split(':')[1]}
+                    {n.specialRequirements === '' ? 'N/A' :n.specialRequirements}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.shivirAvailable ? 'Yes' : 'No'}
+                    <PopupState variant="popover" popupId="demo-popup-menu">
+                      {(popupState) => (
+                        <>
+                          <Button variant="contained" style={{ borderRadius: 0 }}{...bindTrigger(popupState)}>
+                            Action
+                          </Button>
+                          <Menu {...bindMenu(popupState)}>
+
+                            {menuItemArray.map((value) => (
+                              (value.loadIf) && <MenuItem
+                                onClick={() => {
+                                  getStatus(n.registrationId, value.status);
+                                  popupState.close();
+                                }}
+                                key={value.key}
+                              >
+                                {value.label}
+                              </MenuItem>
+                            )
+                            )}
+                          </Menu>
+
+                        </>
+                      )}
+                    </PopupState>
                   </TableCell>
               
                 </TableRow>

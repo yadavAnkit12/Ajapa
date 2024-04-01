@@ -17,7 +17,7 @@ function Report3() {
   const [change, setChange] = useState(false);
   const [filterValue, setFilterValue] = useState('');
   const [eventList,setEventList]=useState([])
-
+  const [searchText, setSearchText] = useState('')
 
   
   useEffect(()=>{
@@ -38,8 +38,8 @@ function Report3() {
 
   return (
     <FusePageCarded
-      header={<Report3Header setFilterValue={setFilterValue} eventList={eventList}/>}
-      content={<Report3Table filterValue={filterValue} eventList={eventList}/>}
+      header={<Report3Header setFilterValue={setFilterValue} eventList={eventList} searchText={searchText} setSearchText={setSearchText}/>}
+      content={<Report3Table filterValue={filterValue} eventList={eventList} searchText={searchText}/>}
       scroll={isMobile ? 'normal' : 'content'}
     />
   );

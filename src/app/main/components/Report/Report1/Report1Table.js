@@ -132,6 +132,8 @@ function Report1Table(props) {
             setLoading(false);
           } else {
             dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
+            setReportData([]);
+            setLoading(false);
           }
         });
       }
@@ -151,6 +153,8 @@ function Report1Table(props) {
             setLoading(false);
           } else {
             dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
+            setReportData([]);
+            setLoading(false);
           }
         });
 
@@ -174,6 +178,8 @@ function Report1Table(props) {
             setLoading(false);
           } else {
             dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
+            setReportData([]);
+            setLoading(false);
           }
         });
       }
@@ -194,6 +200,8 @@ function Report1Table(props) {
             setLoading(false);
           } else {
             dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
+            setReportData([]);
+            setLoading(false);
           }
         });
 
