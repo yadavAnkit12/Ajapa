@@ -437,6 +437,7 @@ function SignUpPage() {
                   name="mobileNumber"
                   label="Mobile Number"
                   type="text"
+                  value={formik.values.mobileNumber}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   error={
@@ -463,6 +464,7 @@ function SignUpPage() {
                 name="dob"
                 label="Date of Birth"
                 type="date"
+                value={formik.values.dob}
                 InputLabelProps={{ shrink: true }}
                 className="w-full lg:w-5/6 mx-auto"
                 onChange={formik.handleChange}
@@ -487,6 +489,7 @@ function SignUpPage() {
               <TextField
                 name="password"
                 label="Password"
+                value={formik.values.password}
                 className="w-full lg:w-5/6 mx-auto"
                 type={showPassword ? "text" : "password"}
                 onChange={formik.handleChange}
@@ -530,6 +533,7 @@ function SignUpPage() {
                 className="w-full lg:w-5/6 mx-auto"
                 name="passwordConfirm"
                 label="Confirm Password"
+                value={formik.values.passwordConfirm}
                 type={showPassword ? "text" : "password"}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
