@@ -10,7 +10,7 @@ const EventConfig = {
   },
   routes: [
     {
-      path: 'app/event/',
+      path: 'app/event/:eventStatus/:bookingStatus/*',
       element: <Event />,
       auth: ["Super"]
     },

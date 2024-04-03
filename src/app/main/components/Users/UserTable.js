@@ -130,7 +130,9 @@ function UserTable(props) {
   const [changeStatus, setChangeStatus] = useState('')
 
   useEffect(() => {
-    fetchData();
+    if (props.filterValue !== '') {
+      fetchData();
+    }
   }, [props?.change, rowsPerPage, page, props?.filterValue, searchText]);
 
   useEffect(() => {
@@ -163,15 +165,18 @@ function UserTable(props) {
 
 
   const fetchData = () => {
+    console.log('filter', props.filterValue)
     setLoading(true)
     const params = {
       page: page + 1,
-      rowsPerPage: rowsPerPage, // Example data to pass in req.query
+      rowsPerPage: rowsPerPage,
       searchText: searchText,
-      status: _.get(props, 'filterValue') === '' ? 'Approved' : _.get(props, 'filterValue.status') === '' ? 'Approved' : _.get(props, 'filterValue.status') === null ? 'Approved' : _.get(props, 'filterValue.status'),
-      country: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.country') === '' ? 'All' : _.get(props, 'filterValue.country'),
-      state: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.state') === '' ? 'All' : _.get(props, 'filterValue.state'),
-      city: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.city') === '' ? 'All' : _.get(props, 'filterValue.city'),
+      ...(props.filterValue.status !== 'All' && ({ status: _.get(props, 'filterValue.status') })),
+      ...(props.filterValue.country !== 'All' && ({ country: _.get(props, 'filterValue.country') })),
+      ...(props.filterValue.state !== 'All' && ({ state: _.get(props, 'filterValue.state') })),
+      ...(props.filterValue.city !== 'All' && ({ city: _.get(props, 'filterValue.city') })),
+      ...(props.filterValue.isHead !== 'All' && ({ role: 'User' })),
+      ...(props.filterValue.isDisciple !== 'All' && ({ isDisciple: _.get(props, 'filterValue.isDisciple')==='Disciple'?'Yes':'No' })),
     };
     console.log('params', params)
     axios.get(userAPIConfig.list, { params }, {

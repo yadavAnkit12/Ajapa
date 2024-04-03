@@ -11,7 +11,7 @@ const UserConfig = {
   },
   routes: [
     {
-      path: 'app/users/:disp/:status/*',
+      path: 'app/users/:status/:isHead/:isDisciple/*',
       element: <Users />,
       auth: ["Super"]
     },

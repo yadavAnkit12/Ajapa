@@ -14,29 +14,20 @@ function NotificationPanelToggleButton(props) {
   const [notificationLength, setNotificationLength] = useState(0)
   const dispatch = useDispatch();
 
+  useEffect(()=>{
+    if(props?.notificationList){
+      setNotificationLength(props?.notificationList?.totalElement)
+    }
+  },[props?.notificationList])
 
-  // Using useSelector to get the notificationPanel state
-  const notificationPanelState = useSelector(getNotifications);
 
-  
-  selectNotificationPanelState
-  const fetchNotifications = async () => {
-    const res = await dispatch(getNotifications());
-    setNotificationLength(res.payload.data)
-  };
-
-  useEffect(() => {
-    fetchNotifications()
-  }, [])
-
-  
   return (     
     <IconButton
       className="w-40 h-40"
       onClick={(ev) => dispatch(toggleNotificationPanel())}
       size="large"
     >
-      <Badge color="secondary" badgeContent={notificationLength?.length} max={9} showZero>
+      <Badge color="secondary" badgeContent={notificationLength} showZero>
         {props.children}
       </Badge>
     </IconButton>

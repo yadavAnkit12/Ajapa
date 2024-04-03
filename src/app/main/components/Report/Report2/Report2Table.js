@@ -38,7 +38,7 @@ const style = {
 function Report2Table(props) {
   // console.log(props)
 
-  const[reportData, setReportData] = useState([])
+  const [reportData, setReportData] = useState([])
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [eventListData, setEventListData] = useState([]);
@@ -98,71 +98,57 @@ function Report2Table(props) {
   const fetchData = () => {
 
 
-    if(props.filterValue.eventName === '' || props.filterValue.eventName === null)
-    {
+    if (props.filterValue.eventName === '' || props.filterValue.eventName === null || props.filterValue === '') {
       dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
       return
     }
 
-    if(props.filterValue.selectDate === '' || props.filterValue.selectDate === null)
-    {
+    if (props.filterValue.selectDate === '' || props.filterValue.selectDate === null) {
       dispatch(showMessage({ message: "Please select the Arrival/Departure mode", variant: 'error' }));
       return
     }
 
-    console.log("Event Name",props.filterValue.eventName )
-    console.log("Event Name",props.filterValue.selectDate )
+    console.log("Event Name", props.filterValue.eventName)
+    console.log("Event Name", props.filterValue.selectDate)
 
     const eventId = props.eventList?.find((event) => event.eventName === props.filterValue.eventName)?.eventId || '';
-    console.log("Event Id",eventId)
 
-
-    if(props.filterValue.selectDate === 'Arrival')
-    {
-           axios.get(`${reportAPIConfig.report2arrival}/${eventId}` ,{
-      headers: {
-        'Content-type': 'multipart/form-data',
-        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-      },
-    }).then((response) => {
-      if (response.status === 200) {
-        setReportData(response?.data);
-        setLoading(false);
-      } else {
-        dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
-        setReportData([]);
-        setLoading(false);
-      }
-    });
+    if (props.filterValue.selectDate === 'Arrival') {
+      axios.get(`${reportAPIConfig.report2arrival}/${eventId}`, {
+        headers: {
+          'Content-type': 'multipart/form-data',
+          Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+        },
+      }).then((response) => {
+        if (response.status === 200) {
+          setReportData(response?.data);
+          setLoading(false);
+        } else {
+          dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
+          setReportData([]);
+          setLoading(false);
+        }
+      });
     }
 
-    else if(props.filterValue.selectDate === 'Departure')
-    {
-    axios.get(`${reportAPIConfig.report2departure}/${eventId}` ,{
-      headers: {
-        'Content-type': 'multipart/form-data',
-        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-      },
-    }).then((response) => {
-      if (response.status === 200) {
-        console.log("report", response?.data)
-        setReportData(response?.data);
-        setLoading(false);
-      } else {
-        dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
-        setReportData([]);
-        setLoading(false);
-      }
-    });
+    else if (props.filterValue.selectDate === 'Departure') {
+      axios.get(`${reportAPIConfig.report2departure}/${eventId}`, {
+        headers: {
+          'Content-type': 'multipart/form-data',
+          Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+        },
+      }).then((response) => {
+        if (response.status === 200) {
+          console.log("report", response?.data)
+          setReportData(response?.data);
+          setLoading(false);
+        } else {
+          dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
+          setReportData([]);
+          setLoading(false);
+        }
+      });
     }
-
-
-
-    
-
-
-
-
   };
 
 
@@ -295,7 +281,7 @@ function Report2Table(props) {
                     {n.modeOfTransport}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.trainDetails === '' ? 'N/A': n.trainDetails}
+                    {n.trainDetails === '' ? 'N/A' : n.trainDetails}
                   </TableCell>
                   {/* <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.fromState.split(':')[1]}
@@ -306,7 +292,7 @@ function Report2Table(props) {
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.shivirAvailable ? 'Yes' : 'No'}
                   </TableCell> */}
-              
+
                 </TableRow>
               );
 

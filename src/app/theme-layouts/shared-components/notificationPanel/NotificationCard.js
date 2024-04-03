@@ -27,8 +27,7 @@ const style = {
   width: 'auto',
 };
 function NotificationCard(props) {
-
-  const { item, className,setNotifUpdate } = props;
+  const { item, className } = props;
   const variant = item?.variant || '';
   const [openModal, setOpenModal] = useState(false)
 
@@ -117,7 +116,7 @@ function NotificationCard(props) {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <UserView data={item} handleEditClose={handleEditClose} setNotifUpdate={setNotifUpdate}/>
+          <UserView data={item} handleEditClose={handleEditClose}/>
         </Box>
       </Modal>
       </>

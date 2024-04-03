@@ -54,23 +54,11 @@ function DashboardHeader(props) {
 
   const clearFilters = () => {
     setFilterData({
-      // fromDate: '',
-      // toDate: '',
-      // status: null,
       bookingStatus: 'On',
       eventStatus: 'On'
     });
     props.setFilterValue('');
   }
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
 
   useEffect(() => {
     axios.get(cardAPIConfig.carddetails, {
@@ -80,8 +68,6 @@ function DashboardHeader(props) {
       },
     }).then((response) => {
       if (response.status === 200) {
-
-        console.log("response 34", response.data)
         setFamilies(response.data.familyCount)
         setDisciples(response.data.discipleCount)
         setNonDisciples(response.data.nonDiscipleCount)
@@ -90,8 +76,6 @@ function DashboardHeader(props) {
         setPendingUsers(response.data.countPendingUsers)
         setRejectedUsers(response.data.countRejectedUsers)
         setApprovedUsers(response.data.countApprovedUsers)
-
-
       } else {
         dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
       }
@@ -116,9 +100,10 @@ function DashboardHeader(props) {
             )}
             // onClick={() => handleView(item)}
             elevation={0}
-          // component={item.useRouter ? NavLinkAdapter : 'div'}
-          // to={item.link || ''}
-          // role={item.link && 'button'}
+            // component={item.useRouter ? NavLinkAdapter : 'div'}
+            // to={item.link || ''}
+            // role={item.link && 'button'}
+            onClick={() => navigate("/app/users/Approved/Head/All")}
 
           >
 
@@ -170,11 +155,10 @@ function DashboardHeader(props) {
           <Card
             className={clsx(
               'flex items-center relative w-full rounded-16 p-20 min-h-64 shadow space-x-8 m-2',
-
             )}
 
             elevation={0}
-            onClick={()=>navigate("/app/users/disciple/all")}
+            onClick={() => navigate("/app/users/Approved/All/Disciple")}
 
           >
 
@@ -200,7 +184,7 @@ function DashboardHeader(props) {
             )}
 
             elevation={0}
-            onClick={()=>navigate("/app/users/nondisciple/all")}
+            onClick={() => navigate("/app/users/Approved/All/Non Disciples")}
           >
             <Box
               sx={{ backgroundColor: 'background.default' }}
@@ -223,7 +207,7 @@ function DashboardHeader(props) {
               'flex items-center relative w-full rounded-16 p-20 min-h-64 shadow space-x-8 m-2',
 
             )}
-
+            onClick={() => navigate('/app/event/All/All')}
             elevation={0}
           >
             <Box
@@ -251,7 +235,7 @@ function DashboardHeader(props) {
               'flex items-center relative w-full rounded-16 p-20 min-h-64 shadow space-x-8 m-2',
 
             )}
-
+            onClick={() => navigate('/app/event/On/On')}
             elevation={0}
           >
             <Box
@@ -276,6 +260,7 @@ function DashboardHeader(props) {
             )}
 
             elevation={0}
+            onClick={() => navigate("/app/users/Pending/All/All")}
           >
             <Box
               sx={{ backgroundColor: 'background.default' }}
@@ -299,6 +284,7 @@ function DashboardHeader(props) {
             )}
 
             elevation={0}
+            onClick={() => navigate("/app/users/Rejected/All/All")}
           >
             <Box
               sx={{ backgroundColor: 'background.default' }}
@@ -322,6 +308,7 @@ function DashboardHeader(props) {
             )}
 
             elevation={0}
+            onClick={() => navigate("/app/users/Approved/All/All")}
           >
             <Box
               sx={{ backgroundColor: 'background.default' }}
@@ -344,36 +331,11 @@ function DashboardHeader(props) {
 
         <div className='flex sm:flex-row flex-wrap flex-col justify-between mx-10  mb-10 shadow-1 rounded-16'>
           <div className="flex sm:flex-row flex-wrap flex-col justify-start">
-            {/* <TextField
-              id="fromDate"
-              label="From Date"
-              variant="standard"
-              type='date'
-              value={filterData.fromDate}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              sx={{ my: 1, minWidth: 140, mx: 1 }}
-              onChange={e => setFilterData({ ...filterData, fromDate: e.target.value })}
-            /> */}
-            {/* <TextField
-              id="toDate"
-              label="To Date"
-              variant="standard"
-              type='date'
-              value={filterData.toDate}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              sx={{ my: 1, minWidth: 140, mx: 1 }}
-              onChange={e => setFilterData({ ...filterData, toDate: e.target.value })}
-            /> */}
-
             <Autocomplete
               disablePortal
               value={filterData.eventStatus}
               id="eventStatus"
-              options={['On', 'Off']}
+              options={['On', 'Off', 'All']}
               sx={{ my: 1, minWidth: 140, mx: 1 }}
               onChange={(e, newValue) => setFilterData({ ...filterData, eventStatus: newValue })}
               renderInput={(params) => <TextField {...params} label="Event Status" variant="standard" />}
@@ -383,24 +345,11 @@ function DashboardHeader(props) {
               disablePortal
               value={filterData.bookingStatus}
               id="bookingStatus"
-              options={['On', 'Off']}
+              options={['On', 'Off', 'All']}
               sx={{ my: 1, minWidth: 140, mx: 1 }}
               onChange={(e, newValue) => setFilterData({ ...filterData, bookingStatus: newValue })}
               renderInput={(params) => <TextField {...params} label="Registration Status" variant="standard" />}
             />
-
-
-
-            {/* {_.size(PATIENTSTATUS) > 0 && <Autocomplete
-              disablePortal
-              value={filterData.status}
-              id="status"
-              options={PATIENTSTATUS}
-              getOptionLabel={option => option.name}
-              sx={{ my: 1, minWidth: 140, mx: 1 }}
-              onChange={(e, newValue) => setFilterData({ ...filterData, status: newValue })}
-              renderInput={(params) => <TextField {...params} label="Status" variant="standard" />}
-            />}  */}
           </div>
           <div className="flex flex-row justify-end">
             <Button
@@ -428,20 +377,6 @@ function DashboardHeader(props) {
           </div>
         </div>
       </div>
-
-
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-
-        <Box sx={style}>
-
-          {/* <VehicleRegisterForm setChange={props.setChange} change={props.change} setOpen={setOpen} /> */}
-        </Box>
-      </Modal>
     </>
   );
 }
