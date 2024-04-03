@@ -57,7 +57,7 @@ function Layout1(props) {
         dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
       }
     });
-  },[])
+  })
   return (
     <Root id="fuse-layout" config={config} className="w-full flex">
       {config.leftSidePanel.display && <LeftSideLayout1 />}
