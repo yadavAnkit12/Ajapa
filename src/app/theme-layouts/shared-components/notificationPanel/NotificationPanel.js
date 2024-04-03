@@ -46,39 +46,12 @@ function NotificationPanel(props) {
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-  useEffect(() => {
-    // const params = {
-    //   page: 1,
-    //   rowsPerPage: 200,
-    //   searchText: '',
-    //   status: 'Pending',
-    //   country: 'All',
-    //   state: 'All',
-    //   city: 'All'
-    // }
+  useEffect(()=>{
+    if(props.notificationList){
+      setNotifications(props.notificationList.data)
+    }
 
-    const fetchNotifications = async () => {
-      const res = await dispatch(getNotifications())
-      // console.log("kkk",res.payload.data.length) 
-      setNotifications(res.payload.data)
-    };
-    fetchNotifications()
-    // axios.get(userAPIConfig.list, { params }, {
-    //   headers: {
-    //     'Content-type': 'multipart/form-data',
-    //     Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-    //   },
-    // }).then((response) => {
-    //   if (response.status === 200) {
-    //     setNotifications(response.data.data)
-    //     console.log(response)
-
-    //   } else {
-    //     dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
-    //   }
-    // });
-
-  }, [notifUpdate]);
+  },[props.notificationList])
 
   //closingNotificationPanel
   useEffect(() => {
@@ -91,30 +64,6 @@ function NotificationPanel(props) {
   function handleClose() {
     dispatch(closeNotificationPanel());
   }
-
-  // function handleDismiss(id) {
-  //    dispatch(dismissItem(id));
-  //   axios.put(`${NotificationAPIConfig.dismiss}/${id}`, {
-  //     headers: {
-  //       'Content-type': 'multipart/form-data',
-  //       authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-  //     },
-  //   }).then((response) => {
-  //     if (response.status === 200) {
-  //       setNotifUpdate(response)
-
-  //     } else {
-  //       dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
-  //     }
-  //   });
-  // }
-
-  // function handleDismissAll() {
-  //   dispatch(dismissAll());
-  //   notifications.forEach(element => {
-  //     handleDismiss(element._id)
-  //   });
-  // }
 
   function demoNotification() {
     const item = NotificationModel({ title: 'Great Job! this is awesome.' });
@@ -166,7 +115,7 @@ function NotificationPanel(props) {
                 className="mb-16"
                 item={item}
                 // onClose={handleDismiss}
-                setNotifUpdate={setNotifUpdate}
+                // setNotifUpdate={setNotifUpdate}
               />
             ))}
           </div>

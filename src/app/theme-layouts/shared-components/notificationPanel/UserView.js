@@ -53,7 +53,7 @@ export default function UserView(props) {
         }).then((response) => {
             if (response.status === 200) {
                 dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-                props.setNotifUpdate(response)
+                // props.setNotifUpdate(response)
                 props.handleEditClose()
             }
             else {

@@ -1,40 +1,24 @@
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import Autocomplete from '@mui/material/Autocomplete';
-import { Input, Paper, Typography, Modal, Box, Button, TextField } from '@mui/material';
+import { Input, Paper, Typography, Button, TextField } from '@mui/material';
 import { motion } from 'framer-motion';
-import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { showMessage } from 'app/store/fuse/messageSlice';
+import { useParams } from 'react-router-dom';
 
-// import VehicleRegisterForm from './VehicleRegisterForm';
 
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  bgcolor: 'background.paper',
-  boxShadow: 24,
-  p: 4,
-  borderRadius: '20px',
-  maxWidth: '1200px',
-  maxHeight: '650px',
-  overflow: 'auto'
-};
 function EventHeader(props) {
-  console.log(props)
-  const dispatch = useDispatch();
-  const [open, setOpen] = useState(false);
+  const routeParams = useParams()
   const [filterData, setFilterData] = useState({
-    // fromDate: '',
-    // toDate: '',
     bookingStatus: 'On',
     eventStatus: 'On'
   });
 
-  const id='new';
-
+  useEffect(() => {
+    const { eventStatus, bookingStatus } = routeParams
+    setFilterData({ eventStatus: eventStatus, bookingStatus: bookingStatus })
+    props.setFilterValue({ eventStatus: eventStatus, bookingStatus: bookingStatus })
+  }, [])
 
   const filterPartnerData = () => {
     props.setFilterValue(filterData);
@@ -42,22 +26,13 @@ function EventHeader(props) {
 
   const clearFilters = () => {
     setFilterData({
-      // fromDate: '',
-      // toDate: '',
-      // status: null,
       bookingStatus: 'On',
       eventStatus: 'On'
     });
     props.setFilterValue('');
   }
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   return (
     <>
@@ -113,38 +88,11 @@ function EventHeader(props) {
         </div>
         <div className='flex sm:flex-row flex-wrap flex-col justify-between mx-10  mb-10 shadow-1 rounded-16'>
           <div className="flex sm:flex-row flex-wrap flex-col justify-start">
-            {/* <TextField
-              id="fromDate"
-              label="From Date"
-              variant="standard"
-              type='date'
-              value={filterData.fromDate}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              sx={{ my: 1, minWidth: 140, mx: 1 }}
-              onChange={e => setFilterData({ ...filterData, fromDate: e.target.value })}
-            /> */}
-            {/* <TextField
-              id="toDate"
-              label="To Date"
-              variant="standard"
-              type='date'
-              value={filterData.toDate}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              sx={{ my: 1, minWidth: 140, mx: 1 }}
-              onChange={e => setFilterData({ ...filterData, toDate: e.target.value })}
-            /> */}
-
-
-
             <Autocomplete
               disablePortal
               value={filterData.eventStatus}
               id="eventStatus"
-              options={['On', 'Off']}
+              options={['On', 'Off', "All"]}
               sx={{ my: 1, minWidth: 140, mx: 1 }}
               onChange={(e, newValue) => setFilterData({ ...filterData, eventStatus: newValue })}
               renderInput={(params) => <TextField {...params} label="Event Status" variant="standard" />}
@@ -154,22 +102,11 @@ function EventHeader(props) {
               disablePortal
               value={filterData.bookingStatus}
               id="bookingStatus"
-              options={['On', 'Off']}
+              options={['On', 'Off', "All"]}
               sx={{ my: 1, minWidth: 140, mx: 1 }}
               onChange={(e, newValue) => setFilterData({ ...filterData, bookingStatus: newValue })}
               renderInput={(params) => <TextField {...params} label="Registration Status" variant="standard" />}
             />
-
-            {/* {_.size(PATIENTSTATUS) > 0 && <Autocomplete
-              disablePortal
-              value={filterData.status}
-              id="status"
-              options={PATIENTSTATUS}
-              getOptionLabel={option => option.name}
-              sx={{ my: 1, minWidth: 140, mx: 1 }}
-              onChange={(e, newValue) => setFilterData({ ...filterData, status: newValue })}
-              renderInput={(params) => <TextField {...params} label="Status" variant="standard" />}
-            />}  */}
           </div>
           <div className="flex flex-row justify-end">
             <Button
@@ -197,20 +134,6 @@ function EventHeader(props) {
           </div>
         </div>
       </div>
-
-
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-
-        <Box sx={style}>
-
-          {/* <VehicleRegisterForm setChange={props.setChange} change={props.change} setOpen={setOpen} /> */}
-        </Box>
-      </Modal>
     </>
   );
 }

@@ -1,47 +1,28 @@
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 const key = process.env.REACT_APP_URL;
-
 import Autocomplete from '@mui/material/Autocomplete';
 import { Input, Paper, Typography, Modal, Box, Button, TextField } from '@mui/material';
 import { motion } from 'framer-motion';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { showMessage } from 'app/store/fuse/messageSlice';
 import jwtServiceConfig from 'src/app/auth/services/jwtService/jwtServiceConfig';
 import axios from 'axios';
 import { userAPIConfig } from '../../API/apiConfig';
-import { useNavigate } from 'react-router-dom';
-// import VehicleRegisterForm from './VehicleRegisterForm';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import { useParams } from 'react-router-dom';
 
-
-const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    bgcolor: 'background.paper',
-    boxShadow: 24,
-    p: 4,
-    borderRadius: '20px',
-    maxWidth: '1200px',
-    maxHeight: '650px',
-    overflow: 'auto'
-};
 function UsersHeader(props) {
     const routeParams = useParams();
     const dispatch = useDispatch();
-    const navigate = useNavigate()
-    const [open, setOpen] = useState(false);
     const [filterData, setFilterData] = useState({
         status: 'Approved',
         country: 'All',
         state: 'All',
         city: 'All',
-        head: 'Head',
-        disp: 'Disciple'
+        isHead: 'All',
+        isDisciple: 'All'
     });
 
     const [countryList, setCountryList] = useState([])
@@ -50,6 +31,12 @@ function UsersHeader(props) {
     const [stateID, setStateID] = useState('')
     const [cityList, setCityList] = useState([])
     const [cityID, setCityID] = useState('')
+
+    useEffect(() => {
+        const { status, isHead, isDisciple } = routeParams
+        setFilterData({ ...filterData, status: status, isHead: isHead, isDisciple: isDisciple })
+        props.setFilterValue({ ...filterData, status: status, isHead: isHead, isDisciple: isDisciple })
+    }, [])
 
 
     //fetching the country list
@@ -92,25 +79,14 @@ function UsersHeader(props) {
     }, [stateID])
 
 
-    useEffect(()=>{
-         const { disp, status } = routeParams
-         console.log("disp", disp, status)
-         if(disp != 'all' || status != 'all')
-         {
-            console.log("Kuch")
-            setFilterData({ ...filterData, head: status , disp: disp})
-            
-         }
-         console.log("Filter Data", filterData)
-    },[routeParams])
-
     const filterPartnerData = () => {
-        console.log(countryID)
         props.setFilterValue({
             status: filterData.status,
-            country:(countryID !== '' && countryID !==undefined) ? `${countryID}:${filterData.country}` : '',
-            state: (stateID !== '' && stateID !==undefined) ? `${stateID}:${filterData.state}` : '',
-            city: (cityID !== '' && cityID !==undefined) ? `${cityID}:${filterData.city}` : '',
+            country: (countryID !== '' && countryID !== undefined) ? `${countryID}:${filterData.country}` : 'All',
+            state: (stateID !== '' && stateID !== undefined) ? `${stateID}:${filterData.state}` : 'All',
+            city: (cityID !== '' && cityID !== undefined) ? `${cityID}:${filterData.city}` : 'All',
+            isHead: filterData.isHead,
+            isDisciple: filterData.isDisciple
         });
     };
 
@@ -121,29 +97,22 @@ function UsersHeader(props) {
             country: 'All',
             state: 'All',
             city: 'All',
-            head: 'Head',
-            disp: 'Disciple'
-
+            isHead: 'All',
+            isDisciple: 'All'
         });
         setCountryID('');
-        props.setFilterValue('');
+        props.setFilterValue(filterData);
     }
-
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
 
     const handleCreateReport = () => {
         const params = {
             searchText: props.searchText,
             status: filterData.status,
-            country:(countryID !== '' && countryID !==undefined) ? `${countryID}:${filterData.country}` : 'All',
-            state: (stateID !== '' && stateID !==undefined) ? `${stateID}:${filterData.state}` : 'All',
-            city: (cityID !== '' && cityID !==undefined) ? `${cityID}:${filterData.city}` : 'All'
+            ...(countryID !== '' && countryID !== undefined && ({ country: `${countryID}:${filterData.country}` })),
+            ...(stateID !== '' && stateID !== undefined && ({ state: `${stateID}:${filterData.state}` })),
+            ...(cityID !== '' && cityID !== undefined && ({ city: `${cityID}:${filterData.city}` })),
+            ...(filterData.isHead !== 'All' && ({ role: 'User' })),
+            ...(filterData.isDisciple !== 'All' && ({ role: filterData.isDisciple === 'Disciple' ? 'Yes' : 'No' })),
         };
 
         axios.get(userAPIConfig.userReport, { params }, {
@@ -168,12 +137,11 @@ function UsersHeader(props) {
                 // Trigger the download
                 link.click();
 
-                // Remove the link from the DOM after the download
                 document.body.removeChild(link);
 
             } else {
                 // Handling error
-                dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
+                dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
             }
         });
 
@@ -183,9 +151,11 @@ function UsersHeader(props) {
         const params = {
             searchText: props.searchText,
             status: filterData.status,
-            country:(countryID !== '' && countryID !==undefined) ? `${countryID}:${filterData.country}` : 'All',
-            state: (stateID !== '' && stateID !==undefined) ? `${stateID}:${filterData.state}` : 'All',
-            city: (cityID !== '' && cityID !==undefined) ? `${cityID}:${filterData.city}` : 'All'
+            ...(countryID !== '' && countryID !== undefined && ({ country: `${countryID}:${filterData.country}` })),
+            ...(stateID !== '' && stateID !== undefined && ({ state: `${stateID}:${filterData.state}` })),
+            ...(cityID !== '' && cityID !== undefined && ({ city: `${cityID}:${filterData.city}` })),
+            ...(filterData.isHead !== 'All' && ({ role: 'User' })),
+            ...(filterData.isDisciple !== 'All' && ({ role: filterData.isDisciple === 'Disciple' ? 'Yes' : 'No' })),
         };
 
         axios.get(userAPIConfig.userReportPDF, { params }, {
@@ -194,7 +164,6 @@ function UsersHeader(props) {
                 Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
             },
         }).then((response) => {
-            console.log(response);
             if (response.status === 200) {
                 // Extract filename from the URL
                 const urlParts = response.data.fileName.split('/');
@@ -202,23 +171,11 @@ function UsersHeader(props) {
                 const baseUrl = 'http://34.203.29.229:8080/ajapa_yog-0.0.1-SNAPSHOT/reports/';
                 const fullUrl = baseUrl + fileName;
 
-                 // Create a new tab and open the link in it
+                // Create a new tab and open the link in it
                 const newTab = window.open(fullUrl, '_blank');
-                
-                // Create a download link
-                // const link = document.createElement('a');
-                // link.href = fullUrl;
-                // link.setAttribute('download', fileName);
-                // document.body.appendChild(link);
-                
-                // // Trigger the download
-                // link.click();
-                
-                // // Remove the link from the DOM after the download
-                // document.body.removeChild(link);
-                
+
             } else {
-                dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
+                dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
             }
         });
     }
@@ -264,9 +221,9 @@ function UsersHeader(props) {
                             disablePortal
                             value={filterData.status}
                             id="status"
-                            options={['Approved', 'Pending', 'Rejected']}
+                            options={['Approved', 'Pending', 'Rejected', 'All']}
                             sx={{ my: 1, minWidth: 140, mx: 1 }}
-                            onChange={(e, newValue) => setFilterData({ ...filterData, status: newValue })}
+                            onChange={(e, newValue) => setFilterData({ ...filterData, status: newValue || 'All' })}
                             renderInput={(params) => <TextField {...params} label="Status" variant="standard" />}
                         />
 
@@ -314,27 +271,26 @@ function UsersHeader(props) {
                             renderInput={(params) => <TextField {...params} label="City" variant="standard" />}
                         />
 
-<Autocomplete
+                        <Autocomplete
                             disablePortal
-                            value={filterData.head}
+                            value={filterData.isHead}
                             id="status"
-                            options={['Head']}
+                            options={['Head', 'All']}
                             sx={{ my: 1, minWidth: 140, mx: 1 }}
-                            onChange={(e, newValue) => setFilterData({ ...filterData, head: newValue })}
-                            renderInput={(params) => <TextField {...params} label="Head" variant="standard" />}
+                            onChange={(e, newValue) => setFilterData({ ...filterData, isHead: newValue || 'All' })}
+                            renderInput={(params) => <TextField {...params} label="Is head" variant="standard" />}
                         />
 
-<Autocomplete
+                        <Autocomplete
                             disablePortal
-                            value={filterData.disp}
+                            value={filterData.isDisciple}
                             id="status"
-                            options={['Disciple', 'Non Desciple']}
+                            options={['Disciples', 'Non Disciples', 'All']}
                             sx={{ my: 1, minWidth: 140, mx: 1 }}
-                            onChange={(e, newValue) => setFilterData({ ...filterData, disp: newValue })}
-                            renderInput={(params) => <TextField {...params} label="Disciple/NonDisciple" variant="standard" />}
+                            onChange={(e, newValue) => setFilterData({ ...filterData, isDisciple: newValue || 'All' })}
+                            renderInput={(params) => <TextField {...params} label="Is disciple" variant="standard" />}
                         />
                         <Button
-                            // component={Link}
                             onClick={() => handleCreateReport()}
                             variant="outlined"
                             color="secondary"
@@ -380,20 +336,6 @@ function UsersHeader(props) {
                     </div>
                 </div>
             </div>
-
-
-            <Modal
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-            >
-
-                <Box sx={style}>
-
-                    {/* <VehicleRegisterForm setChange={props.setChange} change={props.change} setOpen={setOpen} /> */}
-                </Box>
-            </Modal>
         </>
     );
 }

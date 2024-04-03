@@ -63,7 +63,7 @@ function ToolbarLayout1(props) {
           </div>
 
           <div className="flex items-center px-8 h-full overflow-x-auto">
-            {getUserRoles()==='Super' && <NotificationPanelToggleButton />}
+            {getUserRoles()==='Super' && <NotificationPanelToggleButton notificationList={props.notificationList}/>}
 
             <UserMenu />
           </div>

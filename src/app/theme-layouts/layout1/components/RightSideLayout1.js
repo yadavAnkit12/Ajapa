@@ -7,7 +7,7 @@ function RightSideLayout1(props) {
     <>
       <QuickPanel />
 
-      <NotificationPanel />
+      <NotificationPanel notificationList={props.notificationList}/>
     </>
   );
 }

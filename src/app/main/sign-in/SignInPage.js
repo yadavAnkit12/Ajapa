@@ -55,16 +55,6 @@ const initialValues = {
   mobileNumber: '',
   password: '',
 };
-// const phoneNumberCountryCodes = [
-//   '+91',
-//   '+1',
-//   '+44',
-//   '+33',
-//   '+49',
-//   '+81',
-//   // Add more country codes as needed
-// ];
-
 
 function SignInPage() {
 
@@ -78,8 +68,9 @@ function SignInPage() {
   const [OTPVerify, setOTPVerify] = useState(false)
   const [recaptcha, setRecaptcha] = useState(null)
   const [showRecaptcha, setShowRecaptcha] = useState(true);
-  const [getcountryCode , setGetCountryCode] = useState([])
+  const [getcountryCode, setGetCountryCode] = useState([])
   const [loading, setLoading] = useState(false);
+  const [showCheck, setShowCheck] = useState(true)
 
   //for timmer
   const [secondsRemaining, setSecondsRemaining] = useState(INITIAL_COUNT);
@@ -199,11 +190,11 @@ function SignInPage() {
 
   // For Sending the Otp 
   const handleSendOtp = async (e) => {
- 
+
     const isRequired = Boolean((formik.values.email || (formik.values.countryCode && formik.values.mobileNumber)) && recaptcha)
     if (isRequired) {
       // setShowRecaptcha(false)
-        // setLoading(true)
+      setLoading(true)
       const formData = new FormData()
       formData.append('email', formik.values.email)
       formData.append('countryCode', formik.values.countryCode)
@@ -214,7 +205,6 @@ function SignInPage() {
           'Content-type': 'multipart/form-data',
         },
       }).then((response) => {
-        console.log(response)
         if (response.status === 200) {
           setLoading(false)
           setStatus(STATUS.STARTED)
@@ -222,6 +212,8 @@ function SignInPage() {
           dispatch(showMessage({ message: 'OTP has been sent to your mobile number and email.', variant: 'success' }));
           setShowOtpInput(true);
           setOTPVerify(true)
+          setShowRecaptcha(false)
+          setShowCheck(false)
         }
         else {
           setLoading(false)
@@ -247,7 +239,7 @@ function SignInPage() {
     const isRequired = Boolean((values.email || (values.countryCode && values.mobileNumber)) && values.password && recaptcha)
 
     if (isRequired) {
-      // setShowRecaptcha(false)
+      setShowRecaptcha(false)
       setLoading(true)
       jwtService.signInWithEmailAndPassword(values.email, values.countryCode, values.mobileNumber, values.password)
         .then((user) => {
@@ -288,7 +280,7 @@ function SignInPage() {
         })
         .catch((_errors) => {
           setLoading(false)
-          console.log(_errors)
+          dispatch(showMessage({ message: _errors, variant: 'error' }));
         });
     } else {
       dispatch(showMessage({ message: "Fill all the OTP" }));
@@ -301,8 +293,7 @@ function SignInPage() {
     onSubmit: handleSubmit,
   });
 
-  if(loading)
-  {
+  if (loading) {
     return <FuseLoading />
   }
 
@@ -328,6 +319,7 @@ function SignInPage() {
                 label="Email"
                 autoFocus
                 type="text"
+                value={formik.values.email}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={formik.touched.email && Boolean(formik.errors.email)}
@@ -388,6 +380,7 @@ function SignInPage() {
                   name="mobileNumber"
                   label="Mobile Number"
                   type="number"
+                  value={formik.values.mobileNumber}
                   className="mb-24"
                   InputLabelProps={{
                     shrink: true,
@@ -409,7 +402,7 @@ function SignInPage() {
                 />
               </div>
             )}
-            <FormControlLabel
+            {showCheck && <FormControlLabel
               control={
                 <Checkbox
                   checked={!showEmail}
@@ -417,9 +410,9 @@ function SignInPage() {
                   color="primary"
                   style={{
                     '& .MuiSvgIcon-root': {
-                      fontSize: 18, // Adjust the font size as needed
-                      border: '2px solid #000', // Set the border style
-                      borderRadius: 1, // Adjust the border radius as needed
+                      fontSize: 18,
+                      border: '2px solid #000',
+                      borderRadius: 1,
                     },
                   }}
                 />
@@ -429,7 +422,7 @@ function SignInPage() {
                 fontWeight: 600,
                 letterSpacing: '0px',
               }}
-            />
+            />}
             {password ? (
 
               null
@@ -441,6 +434,7 @@ function SignInPage() {
                 className="mb-24"
                 label="Password"
                 type={showPassword ? 'text' : 'password'}
+                value={formik.values.password}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={formik.touched.password && Boolean(formik.errors.password)}

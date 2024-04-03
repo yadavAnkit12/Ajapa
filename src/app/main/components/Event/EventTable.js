@@ -86,7 +86,7 @@ function EventTable(props) {
 
   useEffect(() => {
     fetchData();
-  }, [props?.change, rowsPerPage, page, props?.filterValue,searchText]);
+  }, [props?.change, rowsPerPage, page, props?.filterValue, searchText]);
 
   useEffect(() => {
     if (page !== 0) {
@@ -118,6 +118,7 @@ function EventTable(props) {
 
 
   const fetchData = () => {
+    console.log(props)
     setLoading(true)
     const params = {
       page: page + 1,
@@ -126,7 +127,9 @@ function EventTable(props) {
       eventStatus: (_.get(props, 'filterValue.eventStatus') === 'On' || _.get(props, 'filterValue') === '' || _.get(props, 'filterValue.eventStatus') === null) ? true : false,
       bookingStatus: (_.get(props, 'filterValue.bookingStatus') === 'On' || _.get(props, 'filterValue') === '' || _.get(props, 'filterValue.bookingStatus') === null) ? true : false,
     };
-    axios.get(eventAPIConfig.list, { params }, {
+    const flag1 = props.filterValue === '' || props.filterValue.eventStatus === null ? 'On' : props.filterValue.eventStatus
+    const flag2 = props.filterValue === '' || props.filterValue.bookingStatus === null ? 'On' : props.filterValue.bookingStatus
+    axios.get(`${eventAPIConfig.list}/${flag1}/${flag2}`, { params }, {
       headers: {
         'Content-type': 'multipart/form-data',
         authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
@@ -139,7 +142,7 @@ function EventTable(props) {
         setLoading(false)
         dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
       }
-    }).catch(()=>{
+    }).catch(() => {
       setLoading(false)
       dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
     })
@@ -181,7 +184,7 @@ function EventTable(props) {
   }
 
   //chnaging the booking status
-  const handleChnangeBookingStatus=(id,status)=>{
+  const handleChnangeBookingStatus = (id, status) => {
     setLoading(true)
     axios.post(`${eventAPIConfig.changeBookingStatus}/${id}/${!status}`, {
       headers: {
@@ -190,22 +193,22 @@ function EventTable(props) {
       },
     }).then((response) => {
       if (response.status === 200) {
-         fetchData()
-         setLoading(false)
+        fetchData()
+        setLoading(false)
         dispatch(showMessage({ message: response.data.message, variant: 'success' }));
 
       } else {
         setLoading(false)
         dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
       }
-    }).catch(()=>{
+    }).catch(() => {
       setLoading(false)
       dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
     })
 
   }
   //chnaging the event status
-  const handleChangeEventStatus=(id,status)=>{
+  const handleChangeEventStatus = (id, status) => {
     axios.post(`${eventAPIConfig.changeEventStatus}/${id}/${!status}`, {
       headers: {
         'Content-type': 'multipart/form-data',
@@ -220,7 +223,7 @@ function EventTable(props) {
         setLoading(false)
         dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
       }
-    }).catch(()=>{
+    }).catch(() => {
       setLoading(false)
       dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
     })
@@ -281,7 +284,7 @@ function EventTable(props) {
   }
 
   return (
-    <div className="w-full flex flex-col min-h-full" style={{overflow:'auto'}}>
+    <div className="w-full flex flex-col min-h-full" style={{ overflow: 'auto' }}>
       <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle" ref={tableRef}>
         <EventTableHead
           selectedProductIds={selected}
@@ -330,7 +333,7 @@ function EventTable(props) {
                       checked={n.eventStatus}
                       color="success"
                       inputProps={{ 'aria-label': 'toggle event status' }}
-                      onChange={()=>handleChangeEventStatus(n.eventId,n.eventStatus)}
+                      onChange={() => handleChangeEventStatus(n.eventId, n.eventStatus)}
                     />
                     {n.eventStatus ? 'On' : 'Off'}
                   </TableCell>
@@ -340,7 +343,7 @@ function EventTable(props) {
                       checked={n.bookingStatus}
                       color="success"
                       inputProps={{ 'aria-label': 'toggle booking status' }}
-                      onChange={()=>handleChnangeBookingStatus(n.eventId,n.bookingStatus)}
+                      onChange={() => handleChnangeBookingStatus(n.eventId, n.bookingStatus)}
                     />
                     {n.bookingStatus ? 'On' : 'Off'}
                   </TableCell>
@@ -357,7 +360,7 @@ function EventTable(props) {
                             {menuItemArray.map((value) => (
                               (value.loadIf) && <MenuItem
                                 onClick={() => {
-                                  getStatus(n.eventId, value.status,n.eventStatus);
+                                  getStatus(n.eventId, value.status, n.eventStatus);
                                   popupState.close();
                                 }}
                                 key={value.key}
@@ -417,15 +420,15 @@ function EventTable(props) {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-      <Box  sx={{
+        <Box sx={{
           ...style,
           '@media (max-width: 600px)': { // Apply media query for mobile devices
-          width: '70%', // Set width to 100% for smaller screens
-      },
-        '@media (max-width: 280px)': { // Additional media query for smaller screens
-         width: '93%', // Set width to 82% for screens up to 280px
-      },
-    }}>
+            width: '70%', // Set width to 100% for smaller screens
+          },
+          '@media (max-width: 280px)': { // Additional media query for smaller screens
+            width: '93%', // Set width to 82% for screens up to 280px
+          },
+        }}>
           <EventView handleViewClose={handleViewClose} viewid={viewid} />
         </Box>
       </Modal>

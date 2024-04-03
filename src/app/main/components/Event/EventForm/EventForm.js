@@ -233,7 +233,8 @@ const EventForm = () => {
                         setLoading(false)
                         dispatch(showMessage({ message: response.data.message, variant: 'success' }));
                         formik.resetForm();
-                        navigate('/app/event')
+                        // navigate('/app/event')
+                        history.back()
                     } else {
                         setLoading(false)
                         dispatch(showMessage({ message: response.data.errormessage, variant: 'error' }));
@@ -259,7 +260,8 @@ const EventForm = () => {
                         setLoading(false)
                         dispatch(showMessage({ message: response.data.message, variant: 'success' }));
                         formik.resetForm();
-                        navigate('/app/event')
+                        // navigate('/app/event')
+                        history.back()
                     } else {
                         dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
                     }

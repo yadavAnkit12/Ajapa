@@ -129,7 +129,9 @@ function DashboardTable(props) {
       eventStatus: (_.get(props, 'filterValue.eventStatus') === 'On' || _.get(props, 'filterValue') === '' || _.get(props, 'filterValue.eventStatus') === null) ? true : false,
       bookingStatus: (_.get(props, 'filterValue.bookingStatus') === 'On' || _.get(props, 'filterValue') === '' || _.get(props, 'filterValue.bookingStatus') === null) ? true : false,
     };
-    axios.get(eventAPIConfig.list, { params }, {
+    const flag1=props.filterValue==='' || props.filterValue.eventStatus===null ?'On':props.filterValue.eventStatus
+    const flag2=props.filterValue==='' || props.filterValue.bookingStatus===null ?'On':props.filterValue.bookingStatus
+    axios.get(`${eventAPIConfig.list}/${flag1}/${flag2}`, { params }, {
       headers: {
         'Content-type': 'multipart/form-data',
         authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,

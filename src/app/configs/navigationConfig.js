@@ -39,7 +39,7 @@ const navigationConfig = [
     translate: "Users",
     type: 'item',
     icon: 'heroicons-outline:users',
-    url: 'app/users/all/all',
+    url: 'app/users/Approved/All/All',
     auth: ["Super"]
   },
   {
@@ -57,7 +57,7 @@ const navigationConfig = [
     translate: "Events",
     type: 'item',
     icon: 'heroicons-outline:calendar',
-    url: 'app/event/',
+    url: 'app/event/On/On',
     auth: ["Super"]
   },
   {

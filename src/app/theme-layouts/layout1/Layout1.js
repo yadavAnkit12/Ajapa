@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles';
 import FuseMessage from '@fuse/core/FuseMessage';
 import FuseSuspense from '@fuse/core/FuseSuspense';
 import AppContext from 'app/AppContext';
-import { memo, useContext } from 'react';
+import { memo, useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useRoutes } from 'react-router-dom';
 import { selectFuseCurrentLayoutConfig } from 'app/store/fuse/settingsSlice';
@@ -12,6 +12,8 @@ import LeftSideLayout1 from './components/LeftSideLayout1';
 import NavbarWrapperLayout1 from './components/NavbarWrapperLayout1';
 import RightSideLayout1 from './components/RightSideLayout1';
 import ToolbarLayout1 from './components/ToolbarLayout1';
+import { userAPIConfig } from 'src/app/main/API/apiConfig';
+import axios from 'axios';
 
 const Root = styled('div')(({ theme, config }) => ({
   ...(config.mode === 'boxed' && {
@@ -33,7 +35,29 @@ function Layout1(props) {
   const config = useSelector(selectFuseCurrentLayoutConfig);
   const appContext = useContext(AppContext);
   const { routes } = appContext;
+  const [notificationList, setNotificationList] = useState('')
 
+
+  useEffect(() => {
+    const params = {
+      page: 1,
+      rowsPerPage: 1000,
+      searchText: '',
+      status: 'Pending',
+    }
+    axios.get(userAPIConfig.list, { params }, {
+      headers: {
+        'Content-type': 'multipart/form-data',
+        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+      },
+    }).then((response) => {
+      if (response.status === 200) {
+        setNotificationList(response.data)
+      } else {
+        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
+      }
+    });
+  },[])
   return (
     <Root id="fuse-layout" config={config} className="w-full flex">
       {config.leftSidePanel.display && <LeftSideLayout1 />}
@@ -44,7 +68,7 @@ function Layout1(props) {
         <main id="fuse-main" className="flex flex-col flex-auto min-h-full min-w-0 relative z-10">
 
           {config.toolbar.display && (
-            <ToolbarLayout1 className={config.toolbar.style === 'fixed' && 'sticky top-0'} />
+            <ToolbarLayout1 className={config.toolbar.style === 'fixed' && 'sticky top-0'} notificationList={notificationList} />
           )}
 
           <div className="flex flex-col flex-auto min-h-0 relative z-10">
@@ -61,7 +85,7 @@ function Layout1(props) {
         {config.navbar.display && config.navbar.position === 'right' && <NavbarWrapperLayout1 />}
       </div>
 
-      {config.rightSidePanel.display && <RightSideLayout1 />}
+      {config.rightSidePanel.display && <RightSideLayout1 notificationList={notificationList} />}
 
       <FuseMessage />
     </Root>

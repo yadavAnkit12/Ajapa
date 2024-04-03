@@ -108,8 +108,7 @@ function Report3Table(props) {
 
   const fetchData = () => {
 
-    if(props.filterValue.eventName === '' || props.filterValue.eventName === null)
-    {
+    if (props.filterValue.eventName === '' || props.filterValue.eventName === null) {
       dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
       return
     }
@@ -117,14 +116,15 @@ function Report3Table(props) {
     const eventId = props.eventList?.find((event) => event.eventName === props.filterValue.eventName)?.eventId || '';
     // console.log("Event Id",eventId)
     // console.log("searchText", props?.searchText)
-    
+
     const params = {
       page: page + 1,
       rowsPerPage: rowsPerPage,
       eventId: eventId,
-      searchText:props?.searchText
+      searchText: props?.searchText
 
     };
+    setLoading(true)
     axios.get(reportAPIConfig.report3, { params }, {
       headers: {
         'Content-type': 'multipart/form-data',
@@ -132,16 +132,18 @@ function Report3Table(props) {
       },
     }).then((response) => {
       if (response.status === 200) {
-        console.log("report3", response)
-        //
-         setEventListData(response?.data);
+        setEventListData(response?.data);
         setLoading(false);
       } else {
         dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
         setEventListData([]);
         setLoading(false);
       }
-    });
+    }).catch(() => {
+      setLoading(false)
+      dispatch(showMessage({ message: "Something went wrong", variant: 'error' }));
+
+    })
   };
 
 
@@ -271,7 +273,7 @@ function Report3Table(props) {
                     {n.memberName}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    { n.mobileNumber === '' ? 'N/A' : n.mobileNumber}
+                    {n.mobileNumber === '' ? 'N/A' : n.mobileNumber}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.arrivalDateTime}
@@ -280,7 +282,7 @@ function Report3Table(props) {
                     {n.departureDateTime}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.specialRequirements === '' ? 'N/A' :n.specialRequirements}
+                    {n.specialRequirements === '' ? 'N/A' : n.specialRequirements}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     <PopupState variant="popover" popupId="demo-popup-menu">
@@ -309,7 +311,7 @@ function Report3Table(props) {
                       )}
                     </PopupState>
                   </TableCell>
-              
+
                 </TableRow>
               );
 

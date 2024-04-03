@@ -99,7 +99,8 @@ function Report1Table(props) {
 
   const fetchData = () => {
     
-    if(props.filterValue.eventName ==='' ||props.filterValue.eventName === null)
+    
+    if(props.filterValue.eventName ==='' ||props.filterValue.eventName === null || props.filterValue==='')
     {
       dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
       return
@@ -113,8 +114,6 @@ function Report1Table(props) {
 
     const eventId = props.eventList?.find((event) => event.eventName === props.filterValue.eventName)?.eventId || '';
 
-
-
     if(props.filterValue.selectDate !=='' && props.filterValue.selectDate === 'Arrival' )
     {
       if( props.filterValue.attendingShivir === '' || props.filterValue.attendingShivir === 'All')
@@ -127,7 +126,6 @@ function Report1Table(props) {
           },
         }).then((response) => {
           if (response.status === 200) {
-            console.log("report", response)
             setReportData(response?.data);
             setLoading(false);
           } else {
