@@ -101,16 +101,23 @@ function UsersHeader(props) {
             isDisciple: 'All'
         });
         setCountryID('');
-        props.setFilterValue(filterData);
+        props.setFilterValue({
+            status: 'Approved',
+            country: 'All',
+            state: 'All',
+            city: 'All',
+            isHead: 'All',
+            isDisciple: 'All'
+        });
     }
 
     const handleCreateReport = () => {
         const params = {
             searchText: props.searchText,
             status: filterData.status,
-            ...(countryID !== '' && countryID !== undefined && ({ country: `${countryID}:${filterData.country}` })),
-            ...(stateID !== '' && stateID !== undefined && ({ state: `${stateID}:${filterData.state}` })),
-            ...(cityID !== '' && cityID !== undefined && ({ city: `${cityID}:${filterData.city}` })),
+            ...(countryID !== '' && countryID !== undefined && filterData.country !== 'All' && ({ country: `${countryID}:${filterData.country}` })),
+            ...(stateID !== '' && stateID !== undefined && filterData.state !== 'All' && ({ state: `${stateID}:${filterData.state}` })),
+            ...(cityID !== '' && cityID !== undefined && filterData.city !== 'All' && ({ city: `${cityID}:${filterData.city}` })),
             ...(filterData.isHead !== 'All' && ({ role: 'User' })),
             ...(filterData.isDisciple !== 'All' && ({ role: filterData.isDisciple === 'Disciple' ? 'Yes' : 'No' })),
         };
@@ -151,9 +158,9 @@ function UsersHeader(props) {
         const params = {
             searchText: props.searchText,
             status: filterData.status,
-            ...(countryID !== '' && countryID !== undefined && ({ country: `${countryID}:${filterData.country}` })),
-            ...(stateID !== '' && stateID !== undefined && ({ state: `${stateID}:${filterData.state}` })),
-            ...(cityID !== '' && cityID !== undefined && ({ city: `${cityID}:${filterData.city}` })),
+            ...(countryID !== '' && countryID !== undefined && filterData.country !== 'All' && ({ country: `${countryID}:${filterData.country}` })),
+            ...(stateID !== '' && stateID !== undefined && filterData.state !== 'All' && ({ state: `${stateID}:${filterData.state}` })),
+            ...(cityID !== '' && cityID !== undefined && filterData.city !== 'All' && ({ city: `${cityID}:${filterData.city}` })),
             ...(filterData.isHead !== 'All' && ({ role: 'User' })),
             ...(filterData.isDisciple !== 'All' && ({ role: filterData.isDisciple === 'Disciple' ? 'Yes' : 'No' })),
         };
@@ -234,7 +241,7 @@ function UsersHeader(props) {
                             options={countryList.length > 0 ? countryList.map(country => country.name) : []}
                             sx={{ my: 1, minWidth: 140, mx: 1 }}
                             onChange={(e, newValue) => {
-                                setFilterData({ ...filterData, country: newValue })
+                                setFilterData({ ...filterData, country: newValue || 'All' })
                                 const selectedCountry = countryList.find(country => country.name === newValue)?.id;
                                 setCountryID(selectedCountry)
 
@@ -249,7 +256,7 @@ function UsersHeader(props) {
                             options={stateList.length > 0 ? stateList.map(state => state.name) : []}
                             sx={{ my: 1, minWidth: 140, mx: 1 }}
                             onChange={(e, newValue) => {
-                                setFilterData({ ...filterData, state: newValue })
+                                setFilterData({ ...filterData, state: newValue || 'All' })
                                 const selectedSate = stateList.find(state => state.name === newValue)?.id;
                                 setStateID(selectedSate)
                             }}
@@ -266,7 +273,7 @@ function UsersHeader(props) {
                             onChange={(e, newValue) => {
                                 const selectedCity = cityList.find(city => city.name === newValue)?.id;
                                 setCityID(selectedCity)
-                                setFilterData({ ...filterData, city: newValue })
+                                setFilterData({ ...filterData, city: newValue || 'All' })
                             }}
                             renderInput={(params) => <TextField {...params} label="City" variant="standard" />}
                         />
