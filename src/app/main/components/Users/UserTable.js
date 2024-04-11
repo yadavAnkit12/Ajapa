@@ -165,20 +165,18 @@ function UserTable(props) {
 
 
   const fetchData = () => {
-    console.log('filter', props.filterValue)
     setLoading(true)
     const params = {
       page: page + 1,
       rowsPerPage: rowsPerPage,
       searchText: searchText,
       ...(props.filterValue.status !== 'All' && ({ status: _.get(props, 'filterValue.status') })),
-      ...(props.filterValue.country !== 'All' && ({ country: _.get(props, 'filterValue.country') })),
-      ...(props.filterValue.state !== 'All' && ({ state: _.get(props, 'filterValue.state') })),
-      ...(props.filterValue.city !== 'All' && ({ city: _.get(props, 'filterValue.city') })),
+      ...(props.filterValue.country !== 'All' && props.filterValue.country !== null  && ({ country: _.get(props, 'filterValue.country') })),
+      ...(props.filterValue.state !== 'All'&& props.filterValue.state !== null && ({ state: _.get(props, 'filterValue.state') })),
+      ...(props.filterValue.city !== 'All'&& props.filterValue.city !== null && ({ city: _.get(props, 'filterValue.city') })),
       ...(props.filterValue.isHead !== 'All' && ({ role: 'User' })),
       ...(props.filterValue.isDisciple !== 'All' && ({ isDisciple: _.get(props, 'filterValue.isDisciple')==='Disciple'?'Yes':'No' })),
     };
-    console.log('params', params)
     axios.get(userAPIConfig.list, { params }, {
       headers: {
         'Content-type': 'multipart/form-data',
