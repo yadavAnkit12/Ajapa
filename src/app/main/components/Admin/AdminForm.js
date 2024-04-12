@@ -75,20 +75,21 @@ const AdminForm = () => {
 
       const formData = new FormData();
       formData.append("email", values.email);
+      formData.append("countryCode", values.countryCode.split(" ")[0]);
       formData.append("mobileNumber", values.mobileNumber);
       formData.append("password", values.password);
       formData.append("dob", '1983-11-16');
       formData.append("role", "Admin");
 
-      console.log(formData)
-
       axios.post(`${jwtServiceConfig.signUp}` , formData , {
         headers: {
           "Content-type": "multipart/form-data",
-          Authorization: `Bearer ${window.localStorage.getItem("jwt_access_token")}`,
         },
-      }).then((response => console.log("dd",response)))
-      .catch((error) => console.log(error))
+      })
+      .then((response) => { console.log("dd",response)
+      })
+      .catch((error) => { console.log(error)
+      })
     }
     else{
       dispatch(showMessage({message: "Something went wrong!",variant: "error",}));
