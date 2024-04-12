@@ -69,7 +69,30 @@ const AdminForm = () => {
   }, []);
 
   const handleSubmit = (values) => {
-    console.log(values)
+    
+    if(formik.isValid){
+      setLoading(true)
+
+      const formData = new FormData();
+      formData.append("email", values.email);
+      formData.append("mobileNumber", values.mobileNumber);
+      formData.append("password", values.password);
+      formData.append("dob", '1983-11-16');
+      formData.append("role", "Admin");
+
+      console.log(formData)
+
+      axios.post(`${jwtServiceConfig.signUp}` , formData , {
+        headers: {
+          "Content-type": "multipart/form-data",
+          Authorization: `Bearer ${window.localStorage.getItem("jwt_access_token")}`,
+        },
+      }).then((response => console.log("dd",response)))
+      .catch((error) => console.log(error))
+    }
+    else{
+      dispatch(showMessage({message: "Something went wrong!",variant: "error",}));
+    }
   }
 
   const formik = useFormik({
@@ -77,6 +100,10 @@ const AdminForm = () => {
     validationSchema: validationSchema,
     onSubmit: handleSubmit,
   });
+
+  if (loading) {
+    return <FuseLoading />
+  }
 
   return (
     <>
