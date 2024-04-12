@@ -223,19 +223,20 @@ const AdminForm = () => {
               ),
             }}
           />
-        </form>
+       
         <Button
           variant="contained"
           color="secondary"
           className="w-1/2 lg:w-1/4 mt-10"
           aria-label="save"
-          // type="submit"
-          onClick={formik.handleSubmit}
+          type="submit"
+          // onClick={formik.handleSubmit}
           size="large"
           style={{ margin: "0 auto" }}
         >
           Save
         </Button>
+        </form>
       </Container>
     </>
   )
