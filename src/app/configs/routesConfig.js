@@ -28,9 +28,10 @@ import FoodDetailsConfig from '../main/components/FoodDetails/FoodDetailsConfig'
 import Report1Config from '../main/components/Report/Report1/Report1Config';
 import Repor2Config from '../main/components/Report/Report2/Report2Config';
 import Report3Config from '../main/components/Report/Report3/Report3Config';
+import AdminConfig from '../main/components/Admin/AdminConfig';
 
 
-const routeConfigs = [SignOutConfig, SignInConfig,MyRegisterationConfig, AllEventRegistrationConfig, SignUpConfig, Error404PageConfig, Report1Config,Repor2Config,Report3Config,AttendanceConfig,DashboardConfig,UserConfig,EventConfig, AddMembersConfig,UserEventConfig,ManageFamilyConfig,FoodConfig,FoodDetailsConfig,SMSConfig, HomeConfig];
+const routeConfigs = [SignOutConfig, SignInConfig,MyRegisterationConfig, AllEventRegistrationConfig, SignUpConfig, Error404PageConfig,AdminConfig, Report1Config,Repor2Config,Report3Config,AttendanceConfig,DashboardConfig,UserConfig,EventConfig, AddMembersConfig,UserEventConfig,ManageFamilyConfig,FoodConfig,FoodDetailsConfig,SMSConfig, HomeConfig];
 
 
 const routes = [

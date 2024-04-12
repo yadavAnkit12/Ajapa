@@ -170,6 +170,15 @@ const navigationConfig = [
     auth: ["Super"]
   },
   {
+    id: 'admin-component',
+    title: "Admin",
+    translate: "Admin",
+    type: 'item',
+    icon: 'heroicons-outline:clipboard-check',
+    url: 'app/admin',
+    auth: ["Super"]
+  },
+  {
     id: 'myprofile-component',
     title: "My Profile",
     translate: "My Profile",
