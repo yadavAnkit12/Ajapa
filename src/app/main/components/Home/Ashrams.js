@@ -53,7 +53,12 @@ function Ashrams() {
   return (
     <div>
 
-        Ashrams Page
+<div className='flex flex-col my-5 py-4 items-center justify-center'>
+       <Typography  style={{ fontStyle: 'normal', fontSize: '24px', lineHeight: '28px', letterSpacing: '0px', textAlign: 'center', fontWeight: 'bold' }}>
+        Ashram Page
+      </Typography>
+
+    </div>
     </div>
   )
 }

@@ -87,10 +87,10 @@ function Home() {
 
       <Card sx={{ maxWidth: 345 }} className='mx-auto'  onClick={() => navigate("/ashrams")}>
       <CardActionArea>
-        <CardMedia
+        <CardMedia className='h-256'
           component="img"
           height="140"
-          image="https://img.freepik.com/premium-photo/man-sits-lotus-pose-person-practices-yoga-meditation-radiating-energy-generative-ai_788189-3992.jpg"
+          image="assets/images/cards/ashram1.jpg"
           alt="green iguana"
         />
         <CardContent>
@@ -98,8 +98,7 @@ function Home() {
             Ashrams
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Lizards are a widespread group of squamate reptiles, with over 6,000
-            species, ranging across all continents except Antarctica
+          Discover serene retreats at our ashrams. Immerse yourself in yogic teachings and tranquil surroundings.
           </Typography>
         </CardContent>
       </CardActionArea>
@@ -107,10 +106,10 @@ function Home() {
 
     <Card sx={{ maxWidth: 345 }} className='mx-auto' onClick={() => navigate("/gurus")}>
       <CardActionArea>
-        <CardMedia
+        <CardMedia className='h-256'
           component="img"
           height="140"
-          image="https://img.freepik.com/premium-photo/man-sits-lotus-pose-person-practices-yoga-meditation-radiating-energy-generative-ai_788189-3992.jpg"
+          image="assets/images/cards/guruji.jpg"
           alt="green iguana"
         />
         <CardContent>
@@ -118,8 +117,7 @@ function Home() {
             Gurus
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Lizards are a widespread group of squamate reptiles, with over 6,000
-            species, ranging across all continents except Antarctica
+          Meet our experienced and dedicated yoga gurus. Learn from the best to enhance your practice and well-being.
           </Typography>
         </CardContent>
       </CardActionArea>
@@ -127,10 +125,10 @@ function Home() {
 
     <Card sx={{ maxWidth: 345 }} className='mx-auto' onClick={() => navigate("/utsavs")}>
       <CardActionArea>
-        <CardMedia
+        <CardMedia className='h-256'
           component="img"
           height="140"
-          image="https://img.freepik.com/premium-photo/man-sits-lotus-pose-person-practices-yoga-meditation-radiating-energy-generative-ai_788189-3992.jpg"
+          image="assets/images/cards/utsav.jpg"
           alt="green iguana"
         />
         <CardContent>
@@ -138,8 +136,7 @@ function Home() {
             Utsavs
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Lizards are a widespread group of squamate reptiles, with over 6,000
-            species, ranging across all continents except Antarctica
+          Utsav is organised by the foundation for all Ajapa followers to celebrate the existence of Ajapa Yog and honor our Gurus.
           </Typography>
         </CardContent>
       </CardActionArea>
@@ -147,10 +144,10 @@ function Home() {
 
     <Card sx={{ maxWidth: 345 }} className='mx-auto' onClick={() => navigate("/contactus")}>
       <CardActionArea>
-        <CardMedia
+        <CardMedia className='h-256'
           component="img"
           height="140"
-          image="https://img.freepik.com/premium-photo/man-sits-lotus-pose-person-practices-yoga-meditation-radiating-energy-generative-ai_788189-3992.jpg"
+          image="assets/images/cards/contactus.jpg"
           alt="green iguana"
         />
         <CardContent>
@@ -158,8 +155,7 @@ function Home() {
             Contact Us
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Lizards are a widespread group of squamate reptiles, with over 6,000
-            species, ranging across all continents except Antarctica
+          Reach out to us for all your yoga inquiries and queries. We're here to support your wellness journey.
           </Typography>
         </CardContent>
       </CardActionArea>
