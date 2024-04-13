@@ -170,6 +170,43 @@ const navigationConfig = [
     auth: ["Super"]
   },
   {
+    id: 'admin-component',
+    title: "Admin",
+    translate: "Admin",
+    type: 'item',
+    icon: 'heroicons-outline:clipboard-check',
+    url: 'app/admin',
+    auth: ["Super"]
+  },
+  {
+    id: 'app-permissions',
+    title: "Permission",
+    translate: "Permission",
+    type: 'collapse',
+    icon: 'heroicons-outline:clipboard-check',
+    auth: ["Super"],
+    children: [
+
+      {
+        id: 'app-rootLevel-component',
+        title: "Root Level",
+        translate: "Root Level",
+        type: 'item',
+        url: 'app/rootLevelPermission/',
+        auth: ["Super"],
+      },
+      {
+        id: 'app-eventLevel-component',
+        title: "Event Level",
+        translate: "Event Level",
+        url: 'app/eventLevelPermission/',
+        type: 'item',
+        auth: ["Super"],
+      },
+
+    ],
+  },
+  {
     id: 'myprofile-component',
     title: "My Profile",
     translate: "My Profile",
