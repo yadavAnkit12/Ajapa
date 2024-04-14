@@ -29,9 +29,11 @@ import Report1Config from '../main/components/Report/Report1/Report1Config';
 import Repor2Config from '../main/components/Report/Report2/Report2Config';
 import Report3Config from '../main/components/Report/Report3/Report3Config';
 import AdminConfig from '../main/components/Admin/AdminConfig';
+import RootLevelConfig from '../main/components/Permissions/RootLevelPermission/RootLevelConfig';
+import EventLevelPermissionConfig from '../main/components/Permissions/EventLevelPermission/EventLevelPermissionConfig';
 
 
-const routeConfigs = [SignOutConfig, SignInConfig,MyRegisterationConfig, AllEventRegistrationConfig, SignUpConfig, Error404PageConfig,AdminConfig, Report1Config,Repor2Config,Report3Config,AttendanceConfig,DashboardConfig,UserConfig,EventConfig, AddMembersConfig,UserEventConfig,ManageFamilyConfig,FoodConfig,FoodDetailsConfig,SMSConfig, HomeConfig];
+const routeConfigs = [SignOutConfig, SignInConfig,MyRegisterationConfig, AllEventRegistrationConfig, SignUpConfig, Error404PageConfig,RootLevelConfig,EventLevelPermissionConfig,AdminConfig, Report1Config,Repor2Config,Report3Config,AttendanceConfig,DashboardConfig,UserConfig,EventConfig, AddMembersConfig,UserEventConfig,ManageFamilyConfig,FoodConfig,FoodDetailsConfig,SMSConfig, HomeConfig];
 
 
 const routes = [
