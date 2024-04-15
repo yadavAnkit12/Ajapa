@@ -58,7 +58,8 @@ const EventRegisterForm = () => {
             } else {
                 dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
             }
-        }).catch(()=>{
+        }).catch(() => {
+            console.log('head')
             setLoading(false)
             dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
 
@@ -76,12 +77,9 @@ const EventRegisterForm = () => {
             },
         }).then((response) => {
             if (response.status === 200) {
-
-                if (response.data.data.length > 0) {
+                if (response.data.data?.length > 0) {
                     setRegisterList(response.data.data)
-
-                    if (userListData.users.length > 0) {
-
+                    if (userListData.users?.length > 0) {
                         const arr = userListData.users.map((user) => {
                             const matchingEventRegister = response.data.data.find((eventRegister) => eventRegister.userId === user.id);
                             return matchingEventRegister ? user.id : '';
@@ -96,7 +94,7 @@ const EventRegisterForm = () => {
             } else {
                 dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
             }
-        }).catch(()=>{
+        }).catch((error) => {
             setLoading(false)
             dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
 
@@ -120,7 +118,7 @@ const EventRegisterForm = () => {
                 setLoading(false)
                 dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
             }
-        }).catch(()=>{
+        }).catch(() => {
             setLoading(false)
             dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
 

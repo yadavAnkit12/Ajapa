@@ -54,7 +54,7 @@ function Layout1(props) {
       if (response.status === 200) {
         setNotificationList(response.data)
       } else {
-        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
+        // dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
       }
     });
   },[])

@@ -39,9 +39,9 @@ function UserMenu(props) {
           <Typography component="span" className="font-semibold flex">
             {user.data.name}
           </Typography>
-          <Typography className="text-11 font-medium capitalize" color="text.secondary">
+          {/* <Typography className="text-11 font-medium capitalize" color="text.secondary">
             {user.role}
-          </Typography>
+          </Typography> */}
         </div>
 
         {/* {user.data.photoURL ? ( */}

@@ -17,6 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import { eventAPIConfig, userAPIConfig } from "src/app/main/API/apiConfig";
 import { values } from 'lodash';
 import FuseLoading from '@fuse/core/FuseLoading';
+import Swal from 'sweetalert2';
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -215,7 +216,12 @@ const EventForm = (props) => {
                 if (response.status === 200) {
                     props.setLoading(false)
                     formik.resetForm()
-                    dispatch(showMessage({ message: `Jai Guru. Your registration for ${props.eventName} is updated successful`, variant: 'success' }));
+                    // dispatch(showMessage({ message: `Jai Guru. Your registration for ${props.eventName} is updated successful`, variant: 'success' }));
+                    Swal.fire({
+                        title: "Registration successfull",
+                        text: `Jai Guru. Your registration for ${props.eventName} is updated successful`,
+                        icon: "success"
+                      });
                     props.setChange(!props.change)
                     props.setEventFormOpen(false)
 
@@ -245,7 +251,12 @@ const EventForm = (props) => {
                 if (response.status === 200) {
                     props.setLoading(false)
                     formik.resetForm()
-                    dispatch(showMessage({ message: `Jai Guru. Your registration for ${props.eventName} is successfull`, variant: 'success' }));
+                    // dispatch(showMessage({ message: `Jai Guru. Your registration for ${props.eventName} is successfull`, variant: 'success' }));
+                    Swal.fire({
+                        title: "Registration successfull",
+                        text: `Jai Guru. Your registration for ${props.eventName} is successful`,
+                        icon: "success"
+                      });
                     props.setChange(!props.change)
                     props.setEventFormOpen(false)
                 } else {
@@ -543,7 +554,6 @@ const EventForm = (props) => {
                                             sx={{ mb: 2, mt: 2, width: '100%' }}
                                             className="max-w-md"
                                             type="text"
-                                            required
                                             value={formik.values.arrivalTrainNumber}
                                             onChange={formik.handleChange}
                                             onBlur={formik.handleBlur}
@@ -643,7 +653,6 @@ const EventForm = (props) => {
                                             sx={{ mb: 2, mt: 2, width: '100%' }}
                                             className="max-w-md"
                                             type="text"
-                                            required
                                             value={formik.values.departureTrainNumber}
                                             onChange={formik.handleChange}
                                             onBlur={formik.handleBlur}
