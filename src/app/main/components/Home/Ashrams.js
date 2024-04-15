@@ -29,26 +29,7 @@ function Ashrams() {
 
 
 
-  useEffect(() => {
-    const userData = sessionStorage.getItem('user_data');
-    if (userData) {
-      const user = JSON.parse(userData);
-      delete user.password // beacuse we recive passowrd as empty
-      const status = Object.keys(user).some(key => user[key] === '' || user[key] === undefined || user[key] === 'undefined' || user[key] === 'null' || user[key] === null);
-      if (status) {
-        setUserId(user.id)
-        setOpen(true)
-      }
-    }
-  }, []);
 
-  const handleClose = () => {
-    setOpen(false)
-  }
-
-  const handleComplete = () => {
-    navigate(`/app/useredit/${userId}`)
-  }
 
   return (
     <div>

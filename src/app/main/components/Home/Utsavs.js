@@ -29,26 +29,7 @@ function Utsav() {
 
 
 
-  useEffect(() => {
-    const userData = sessionStorage.getItem('user_data');
-    if (userData) {
-      const user = JSON.parse(userData);
-      delete user.password // beacuse we recive passowrd as empty
-      const status = Object.keys(user).some(key => user[key] === '' || user[key] === undefined || user[key] === 'undefined' || user[key] === 'null' || user[key] === null);
-      if (status) {
-        setUserId(user.id)
-        setOpen(true)
-      }
-    }
-  }, []);
 
-  const handleClose = () => {
-    setOpen(false)
-  }
-
-  const handleComplete = () => {
-    navigate(`/app/useredit/${userId}`)
-  }
 
   return (
     <div>
@@ -70,16 +51,58 @@ function Utsav() {
 
           <div className='col-span-12  text-justify'>
             <Typography variant="body2" color="text.primary" className='font-bold my-4' >
-              SHRI SWAMI GURU PRASAD PARAMHANS (1966)
+            6th January
             </Typography>
 
             <Typography variant="body2" color="text.secondary" >
-              Swami Guru Prasad Paramhans is the living master of Ajapa Yog - A Science, which traces its origin to Adi Guru Lord Shiva in ancient times. On Jan 6, 1966 following the prophecy and his mystical experience, Swami Janardan found a majestic newborn child on the banks of the river Ganga. He knew at once that this boy would be his successor and named the newborn ‘Guru Prasad – a gift from god’. A self-realized child since birth, Swami Guru Prasad was raised in the ashram under the guidance of Swami Janardan Paramhans, who trained him in the science of Ajapa Yog. Before leaving this material world, Swami Janardan Paramhans named Guru Prasad his successor. At the young age of 14 Swami Guru Prasad took over the reins of the ashram.
+            Birthday of Shri Swami Guru Prasad Ji Paramhans.
+
+            </Typography>
+
+          </div>
+
+        </div>
+
+        <div className='flex flex-col items-center justify-center my-8 pb-8'>
+          <img src="assets/images/cards/hr-design-1.png" alt="" />
+        </div>
+
+        <div className='grid grid-cols-12 gap-4 my-4 '>
+
+
+          <div className='col-span-12  text-justify'>
+            <Typography variant="body2" color="text.primary" className='font-bold my-4' >
+            28th April
+            </Typography>
+
+            <Typography variant="body2" color="text.secondary" >
+            Samadhi Diwas of Shri Swami Janardan Paramhans.
+
+            </Typography>
+
+          </div>
+
+        </div>
+
+        <div className='flex flex-col items-center justify-center my-8 pb-8'>
+          <img src="assets/images/cards/hr-design-1.png" alt="" />
+        </div>
+
+        <div className='grid grid-cols-12 gap-4 my-4 '>
+
+
+          <div className='col-span-12  text-justify'>
+            <Typography variant="body2" color="text.primary" className='font-bold my-4' >
+            Guru Purnima (June July)
+            </Typography>
+
+            <Typography variant="body2" color="text.secondary" >
+            Guru Purnima is observed during Ashadha in the Hindu calendar, which falls either in June or July in the Gregorian calendar.
 
             </Typography>
             <Typography variant="body2" color="text.secondary">
 
-              Thus began a new age of spirituality in the contemporary world. Swami Guru Prasad grew to be a powerful and graceful saint ready to help all who came to him seeking solace and true knowledge. Under his guidance, the number of people seeking self-realization increased manifold globally. His ashrams in India and abroad are helping people to raise their lives to higher states of knowledge and blissful existence. According to Swami Guru Prasad, Ajapa Yog is the greatest science on this Earth, and he wants to spread this knowledge around the world for the welfare of mankind. Today there are five ashrams and several Ajapa centers, which are being maintained under his guidance. Swami Guru Prasad organizes Seminars and meditation camps on Ajapa Yog in India and abroad.
+            The Yogic tradition says that on this day, Lord Shiva shared his wisdom with people and became the first known guru. The other popular story is the above mentioned birth of Ved Vyasa, who shared the knowledge of the vedas with his four disciples.
             </Typography>
           </div>
 
@@ -94,17 +117,13 @@ function Utsav() {
 
           <div className='col-span-12  text-justify'>
             <Typography variant="body2" color="text.primary" className='font-bold my-4' >
-              SHRI SWAMI GURU PRASAD PARAMHANS (1966)
+            14th September
             </Typography>
 
             <Typography variant="body2" color="text.secondary" >
-              Swami Guru Prasad Paramhans is the living master of Ajapa Yog - A Science, which traces its origin to Adi Guru Lord Shiva in ancient times. On Jan 6, 1966 following the prophecy and his mystical experience, Swami Janardan found a majestic newborn child on the banks of the river Ganga. He knew at once that this boy would be his successor and named the newborn ‘Guru Prasad – a gift from god’. A self-realized child since birth, Swami Guru Prasad was raised in the ashram under the guidance of Swami Janardan Paramhans, who trained him in the science of Ajapa Yog. Before leaving this material world, Swami Janardan Paramhans named Guru Prasad his successor. At the young age of 14 Swami Guru Prasad took over the reins of the ashram.
-
+            Birthday of Shri Swami Purnananda Ji Paramhans.
             </Typography>
-            <Typography variant="body2" color="text.secondary">
 
-              Thus began a new age of spirituality in the contemporary world. Swami Guru Prasad grew to be a powerful and graceful saint ready to help all who came to him seeking solace and true knowledge. Under his guidance, the number of people seeking self-realization increased manifold globally. His ashrams in India and abroad are helping people to raise their lives to higher states of knowledge and blissful existence. According to Swami Guru Prasad, Ajapa Yog is the greatest science on this Earth, and he wants to spread this knowledge around the world for the welfare of mankind. Today there are five ashrams and several Ajapa centers, which are being maintained under his guidance. Swami Guru Prasad organizes Seminars and meditation camps on Ajapa Yog in India and abroad.
-            </Typography>
           </div>
 
         </div>
@@ -118,17 +137,13 @@ function Utsav() {
 
           <div className='col-span-12  text-justify'>
             <Typography variant="body2" color="text.primary" className='font-bold my-4' >
-              SHRI SWAMI GURU PRASAD PARAMHANS (1966)
+            2nd December
             </Typography>
 
             <Typography variant="body2" color="text.secondary" >
-              Swami Guru Prasad Paramhans is the living master of Ajapa Yog - A Science, which traces its origin to Adi Guru Lord Shiva in ancient times. On Jan 6, 1966 following the prophecy and his mystical experience, Swami Janardan found a majestic newborn child on the banks of the river Ganga. He knew at once that this boy would be his successor and named the newborn ‘Guru Prasad – a gift from god’. A self-realized child since birth, Swami Guru Prasad was raised in the ashram under the guidance of Swami Janardan Paramhans, who trained him in the science of Ajapa Yog. Before leaving this material world, Swami Janardan Paramhans named Guru Prasad his successor. At the young age of 14 Swami Guru Prasad took over the reins of the ashram.
-
+            Birthday of Shri Swami Janardan Ji Paramhans.
             </Typography>
-            <Typography variant="body2" color="text.secondary">
 
-              Thus began a new age of spirituality in the contemporary world. Swami Guru Prasad grew to be a powerful and graceful saint ready to help all who came to him seeking solace and true knowledge. Under his guidance, the number of people seeking self-realization increased manifold globally. His ashrams in India and abroad are helping people to raise their lives to higher states of knowledge and blissful existence. According to Swami Guru Prasad, Ajapa Yog is the greatest science on this Earth, and he wants to spread this knowledge around the world for the welfare of mankind. Today there are five ashrams and several Ajapa centers, which are being maintained under his guidance. Swami Guru Prasad organizes Seminars and meditation camps on Ajapa Yog in India and abroad.
-            </Typography>
           </div>
 
         </div>
@@ -142,17 +157,13 @@ function Utsav() {
 
           <div className='col-span-12  text-justify'>
             <Typography variant="body2" color="text.primary" className='font-bold my-4' >
-              SHRI SWAMI GURU PRASAD PARAMHANS (1966)
+            24th December
             </Typography>
 
             <Typography variant="body2" color="text.secondary" >
-              Swami Guru Prasad Paramhans is the living master of Ajapa Yog - A Science, which traces its origin to Adi Guru Lord Shiva in ancient times. On Jan 6, 1966 following the prophecy and his mystical experience, Swami Janardan found a majestic newborn child on the banks of the river Ganga. He knew at once that this boy would be his successor and named the newborn ‘Guru Prasad – a gift from god’. A self-realized child since birth, Swami Guru Prasad was raised in the ashram under the guidance of Swami Janardan Paramhans, who trained him in the science of Ajapa Yog. Before leaving this material world, Swami Janardan Paramhans named Guru Prasad his successor. At the young age of 14 Swami Guru Prasad took over the reins of the ashram.
-
+            Birthday of Shri Swami Bhoomanand Ji Paramhans.
             </Typography>
-            <Typography variant="body2" color="text.secondary">
 
-              Thus began a new age of spirituality in the contemporary world. Swami Guru Prasad grew to be a powerful and graceful saint ready to help all who came to him seeking solace and true knowledge. Under his guidance, the number of people seeking self-realization increased manifold globally. His ashrams in India and abroad are helping people to raise their lives to higher states of knowledge and blissful existence. According to Swami Guru Prasad, Ajapa Yog is the greatest science on this Earth, and he wants to spread this knowledge around the world for the welfare of mankind. Today there are five ashrams and several Ajapa centers, which are being maintained under his guidance. Swami Guru Prasad organizes Seminars and meditation camps on Ajapa Yog in India and abroad.
-            </Typography>
           </div>
 
         </div>
