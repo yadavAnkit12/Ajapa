@@ -69,7 +69,7 @@ function UserMenu(props) {
       >
 
         <>
-          <MenuItem component={Link} to= {`/apps/profile/${sessionStorage.getItem('id')}`}
+          <MenuItem component={Link} to= {`/apps/profile/S9fJd8GcN2rP6vW3xZ5mQ1lO7tA4hE0bXuYiK`}
           onClick={userMenuClose} role="button">
           <ListItemIcon className="min-w-40">
             <FuseSvgIcon>heroicons-outline:user-circle</FuseSvgIcon>
