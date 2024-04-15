@@ -71,6 +71,7 @@ function SignInPage() {
   const [getcountryCode, setGetCountryCode] = useState([])
   const [loading, setLoading] = useState(false);
   const [showCheck, setShowCheck] = useState(true)
+  const [disable,setDisable]=useState(false)
 
   //for timmer
   const [secondsRemaining, setSecondsRemaining] = useState(INITIAL_COUNT);
@@ -214,6 +215,7 @@ function SignInPage() {
           setOTPVerify(true)
           setShowRecaptcha(false)
           setShowCheck(false)
+          setDisable(true)
         }
         else {
           setLoading(false)
@@ -325,6 +327,7 @@ function SignInPage() {
                 error={formik.touched.email && Boolean(formik.errors.email)}
                 helperText={formik.touched.email && formik.errors.email}
                 variant="outlined"
+                disabled={disable}
                 fullWidth
                 sx={{
                   '& .MuiOutlinedInput-root': {
@@ -356,6 +359,7 @@ function SignInPage() {
                         formik.setFieldValue('countryCode', '');
                       }
                     }}
+                    disabled={disable}
                     onBlur={formik.handleBlur}
                     renderInput={(params) => (
                       <TextField
@@ -385,6 +389,7 @@ function SignInPage() {
                   InputLabelProps={{
                     shrink: true,
                   }}
+                  disabled={disable}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   error={formik.touched.mobileNumber && Boolean(formik.errors.mobileNumber)}

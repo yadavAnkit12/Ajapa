@@ -10,7 +10,8 @@ const AdminConfig = {
         {
             path: 'app/profile/:userId',
             element: <AdminProfile />,
-            auth: ["admin"]
+            auth: ["Super",'User','Member','Admin']
+
         }
     ],
 };

@@ -212,7 +212,7 @@ const navigationConfig = [
     translate: "My Profile",
     type: 'item',
     icon: 'heroicons-outline:user-circle',
-    url: `apps/profile/${sessionStorage.getItem('id')}`,
+    url: `apps/profile/S9fJd8GcN2rP6vW3xZ5mQ1lO7tA4hE0bXuYiK`,
     auth: ["Super", "User", "Member"]
   },
 
