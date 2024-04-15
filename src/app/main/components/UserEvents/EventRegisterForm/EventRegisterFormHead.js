@@ -7,6 +7,7 @@ import { forwardRef, useEffect, useState } from 'react';
 import { Dialog, DialogActions, DialogTitle, Slide } from '@mui/material';
 import axios from 'axios';
 import { eventAPIConfig } from 'src/app/main/API/apiConfig';
+import Swal from 'sweetalert2';
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -47,7 +48,6 @@ function EventRegisterFormHead(props) {
 
     useEffect(() => {
         if (props?.eventData) {
-            console.log("Data", props.eventData.data)
             setData(props.eventData.data)
         }
     }, [props?.eventData])
@@ -73,7 +73,12 @@ function EventRegisterFormHead(props) {
         }).then((response) => {
             if (response.status === 200) {
                 props.setLoading(false)
-                dispatch(showMessage({ message: `Jai Guru. Your registration for ${data.eventName} is deleted successfully for all members`, variant: 'success' }));
+                // dispatch(showMessage({ message: `Jai Guru. Your registration for ${data.eventName} is deleted successfully for all members`, variant: 'success' }));
+                Swal.fire({
+                    title: "Registration cancelled",
+                    text: `Jai Guru. Your registration for ${data.eventName} is deleted successfully for all members`,
+                    icon: "error"
+                  });
                 setOpen(false)
                 props.setChange(!props.change)
             } else {
