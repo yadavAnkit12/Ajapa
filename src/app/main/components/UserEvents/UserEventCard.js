@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { getLoggedInPartnerId } from "src/app/auth/services/utils/common";
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import NotificationsOffIcon from '@mui/icons-material/NotificationsOff';
+import { formatDiagnosticsWithColorAndContext } from "typescript";
 
 
 const UserEventCard = () => {
@@ -55,6 +56,14 @@ const UserEventCard = () => {
         navigate(`/app/UserEventsRegisteration/${id}/${userId}/${eventDate}/${eventName}`)
     }
 
+    // function to convert date from yyyy-mm-dd format to dd-mm-yyyy
+    function formatDate(inputDate) {
+        const parts = inputDate.split('-');
+        const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+    
+        return formattedDate;
+    }
+
     return (
         <>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
@@ -71,11 +80,11 @@ const UserEventCard = () => {
                             <div className="flex items-center gap-2 mb-2 my-3">
                                 <EventIcon />
                                 <span className="text-lg text-center" style={{
-                                    fontStyle: 'normal', fontSize: '16px',
+                                    fontStyle: 'normal', fontSize: '12px',
                                     lineHeight: '28px', letterSpacing: '0px',
                                     textAlign: 'center', fontWeight: 600,
                                     marginTop: '3px'
-                                }}>Event Date: {data.eventDate}</span>
+                                }}>Event Date: {formatDate(data.eventDate)}</span>
                             </div>
                             <div className="flex items-center gap-2 mb-2">
                                 <EventIcon />
@@ -84,14 +93,14 @@ const UserEventCard = () => {
                                     lineHeight: '28px', letterSpacing: '0px',
                                     textAlign: 'center', fontWeight: 600,
                                     marginTop: '3px'
-                                }}>Shivir Dates: {data.shivirStartDate === "" ? "N/A" : `${data.shivirStartDate} - ${data.shivirEndDate}`}</span>
+                                }}>Shivir Dates: {data.shivirStartDate === "" ? "N/A" : `${formatDate(data.shivirStartDate)} - ${formatDate(data.shivirEndDate)}`}</span>
                             </div>
 
                             <div className="flex items-center gap-2 mb-2" >
                                 <LocationOnIcon />
                                 <span className="text-lg 
                   "style={{
-                                        fontStyle: 'normal', fontSize: '16px',
+                                        fontStyle: 'normal', fontSize: '12px',
                                         lineHeight: '28px', letterSpacing: '0px',
                                         textAlign: 'center', fontWeight: 600,
                                         marginTop: '5px'
@@ -101,7 +110,7 @@ const UserEventCard = () => {
                                {data.bookingStatus? <NotificationsActiveIcon/>:<NotificationsOffIcon/>}
                                 <span className="text-lg 
                   "style={{
-                                        fontStyle: 'normal', fontSize: '16px',
+                                        fontStyle: 'normal', fontSize: '12px',
                                         lineHeight: '28px', letterSpacing: '0px',
                                         textAlign: 'center', fontWeight: 600,
                                         marginTop: '5px',

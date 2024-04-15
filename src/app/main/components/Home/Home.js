@@ -1,5 +1,5 @@
 import {Grid , Button, Modal, Typography } from '@mui/material'
-import { Box } from '@mui/system';
+import { Box, Container } from '@mui/system';
 import { motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
@@ -7,6 +7,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import { CardActionArea } from '@mui/material';
+import { useMediaQuery } from '@mui/material';
 
 const style = {
   position: 'absolute',
@@ -24,6 +25,8 @@ const style = {
 
 function Home() {
   const navigate = useNavigate()
+  const isDesktop = useMediaQuery('(min-width:768px)');
+
   const [open, setOpen] = useState(false)
   const [userId, setUserId] = useState('')
 
@@ -83,7 +86,7 @@ function Home() {
         Home page is under construction!
       </Typography> */}
 
-      <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4'>
+      <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4 '>
 
       <Card sx={{ maxWidth: 345 }} className='mx-auto'  onClick={() => navigate("/ashrams")}>
       <CardActionArea>
@@ -109,7 +112,7 @@ function Home() {
         <CardMedia className='h-256'
           component="img"
           height="140"
-          image="assets/images/cards/guruji.jpg"
+          image="assets/images/cards/guru-1.jpg"
           alt="green iguana"
         />
         <CardContent>
@@ -147,7 +150,7 @@ function Home() {
         <CardMedia className='h-256'
           component="img"
           height="140"
-          image="assets/images/cards/contactus.jpg"
+          image="assets/images/cards/contact-us.jpg"
           alt="green iguana"
         />
         <CardContent>
@@ -161,6 +164,13 @@ function Home() {
       </CardActionArea>
     </Card>
  </div>
+
+ <div style={{ 
+      paddingLeft: isDesktop ? '4rem' : '10px',
+      paddingRight: isDesktop ? '4rem' : '10px'
+    }} className='mt-4'>
+      <hr></hr>
+    </div>
 
 
 <div className='flex flex-col my-5 py-4 items-center justify-center'>
@@ -176,7 +186,7 @@ function Home() {
 
       </div>
 
-      <div >
+      <div className='p-4' >
       <Grid container spacing={2}>
       {feedData.map((item) => (
         <Grid item xs={12} sm={6} md={4} lg={3} key={item.id}>
