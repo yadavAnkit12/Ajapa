@@ -215,9 +215,15 @@ const EventForm = (props) => {
                 if (response.status === 200) {
                     props.setLoading(false)
                     formik.resetForm()
-                    dispatch(showMessage({ message: `Jai Guru. Your registration for ${props.eventName} is updated successfull`, variant: 'success' }));
+                    dispatch(showMessage({ message: `Jai Guru. Your registration for ${props.eventName} is updated successful`, variant: 'success' }));
                     props.setChange(!props.change)
                     props.setEventFormOpen(false)
+
+                    setTimeout(() => {
+                        dispatch({
+                            type: 'HIDE_MESSAGE'
+                        });
+                    }, 10000);
                 } else {
                     props.setLoading(false)
                     dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
