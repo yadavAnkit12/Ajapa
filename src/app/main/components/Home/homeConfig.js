@@ -19,22 +19,22 @@ const HomeConfig = {
     {
       path: '/gurus',
       element: <Gurus />,
-      auth: ["Super"]
+      auth: ["Super", "User","Member"]
     },
     {
       path: '/ashrams',
       element: <Ashrams />,
-      auth: ["Super"]
+      auth: ["Super", "User","Member"]
     },
     {
       path: '/utsavs',
       element: <Utsavs />,
-      auth: ["Super"]
+      auth: ["Super", "User","Member"]
     },
     {
       path: '/contactus',
       element: <ContactUs />,
-      auth: ["Super"]
+      auth: ["Super", "User","Member"]
     }
   ],
 };

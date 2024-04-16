@@ -285,7 +285,7 @@ function SignInPage() {
           dispatch(showMessage({ message: _errors, variant: 'error' }));
         });
     } else {
-      dispatch(showMessage({ message: "Fill all the OTP" }));
+      dispatch(showMessage({ message: "Please verify OTP" }));
     }
   }
 

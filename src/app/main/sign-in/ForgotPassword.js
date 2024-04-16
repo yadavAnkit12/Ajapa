@@ -198,7 +198,7 @@ const ForgotPassword = (props) => {
           );
         });
     } else {
-      dispatch(showMessage({ message: "Fill the OTP" }));
+      dispatch(showMessage({ message: "Please verify OTP" }));
     }
   };
 
