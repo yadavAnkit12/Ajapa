@@ -46,110 +46,101 @@ function Ashrams() {
 
     <Container  >
 
-    <div className='grid grid-cols-12 gap-4 my-4 '>
+ <div className='grid grid-cols-12 gap-4 my-4 '>
+<div className='col-span-12  text-justify'>
+    {/* <Typography variant="body2" color="text.primary" className='font-bold my-4' >
+        SHRI SWAMI GURU PRASAD PARAMHANS (1966)
+    </Typography> */}
 
-<div className='col-span-12 sm:col-span-4 flex flex-col justify-center sm:items-start  items-center'>
-  
-    <img className='h-256 ' src="assets/images/cards/guruji.jpg" alt="" />
+    <Typography variant="body2" color="text.secondary" >
+        When Swami Purnanand returned from Siddhashram, he meditated on the Nilachal hills located near Kamakhya station in Guwahati, Asssam. Little did anyone know that the land he did rigorous meditation on would soon be the second Ajapa Yog Ashram.    
+    </Typography>
 
 </div>
+</div>
 
-<div className='col-span-12 sm:col-span-8 text-justify'>
-    <Typography variant="body2" color="text.primary" className='font-bold my-4' >
+<div className='flex flex-col items-center justify-center my-8 pb-8'>
+         <img src ="assets/images/cards/hr-design-1.png" alt=""/>
+      </div>
+
+      <div className='grid grid-cols-12 gap-4 my-4 '>
+<div className='col-span-12  text-justify'>
+    {/* <Typography variant="body2" color="text.primary" className='font-bold my-4' >
         SHRI SWAMI GURU PRASAD PARAMHANS (1966)
+    </Typography> */}
+
+    <Typography variant="body2" color="text.secondary" >
+    In 1966, Swami Janardan Paramhans found and adopted a baby boy from the banks of River Ganga near Laxman Jhula Ashram in Rishikesh, India. This baby boy is Ajapa Yog's present Guru Swami Guru Prasad Paramhans.    
+    </Typography>
+
+        <Typography variant="body2" color="text.secondary" >
+    Laxman Jhula Ashram, Rishikesh is the first Ajapa Yog Ashram established by Swami Janardan Paramhans    
+    </Typography>
+
+</div>
+</div>
+
+<div className='flex flex-col items-center justify-center my-8 pb-8'>
+         <img src ="assets/images/cards/hr-design-1.png" alt=""/>
+      </div>
+
+      <div className='grid grid-cols-12 gap-4 my-4 '>
+<div className='col-span-12  text-justify'>
+    {/* <Typography variant="body2" color="text.primary" className='font-bold my-4' >
+        SHRI SWAMI GURU PRASAD PARAMHANS (1966)
+    </Typography> */}
+        <Typography variant="body2" color="text.secondary" >
+    The Ajapa Yog Ashram in Jamshedpur, India, has a Nine Rishi (sage) Temple built in the shape of an Inverted Lotus (like the Meru Parvat at the centre of Earth) guarded with Avatar on top, symbolizing the Golden Era of Truth and Enlightenment.   
     </Typography>
 
     <Typography variant="body2" color="text.secondary" >
-        Swami Guru Prasad Paramhans is the living master of Ajapa Yog - A Science, which traces its origin to Adi Guru Lord Shiva in ancient times. On Jan 6, 1966 following the prophecy and his mystical experience, Swami Janardan found a majestic newborn child on the banks of the river Ganga. He knew at once that this boy would be his successor and named the newborn ‘Guru Prasad – a gift from god’. A self-realized child since birth, Swami Guru Prasad was raised in the ashram under the guidance of Swami Janardan Paramhans, who trained him in the science of Ajapa Yog. Before leaving this material world, Swami Janardan Paramhans named Guru Prasad his successor. At the young age of 14 Swami Guru Prasad took over the reins of the ashram. 
-        
+    This is the Ashram where Swami Janardan Paramhans left his material body, and a Samadhi (shrine) was built in one of the temples here.   
     </Typography>
-    <Typography variant="body2" color="text.secondary">
-        
-        Thus began a new age of spirituality in the contemporary world. Swami Guru Prasad grew to be a powerful and graceful saint ready to help all who came to him seeking solace and true knowledge. Under his guidance, the number of people seeking self-realization increased manifold globally. His ashrams in India and abroad are helping people to raise their lives to higher states of knowledge and blissful existence. According to Swami Guru Prasad, Ajapa Yog is the greatest science on this Earth, and he wants to spread this knowledge around the world for the welfare of mankind. Today there are five ashrams and several Ajapa centers, which are being maintained under his guidance. Swami Guru Prasad organizes Seminars and meditation camps on Ajapa Yog in India and abroad.
-    </Typography>
-</div>
 
+</div>
 </div>
 
 <div className='flex flex-col items-center justify-center my-8 pb-8'>
          <img src ="assets/images/cards/hr-design-1.png" alt=""/>
       </div>
 
-<div className='grid grid-cols-12 gap-4 my-4 '>
+      <div className='grid grid-cols-12 gap-4 my-4 '>
+<div className='col-span-12 text-justify'>
+    {/* <Typography variant="body2" color="text.primary" className='font-bold my-4' >
+        SHRI SWAMI GURU PRASAD PARAMHANS (1966)
+    </Typography> */}
 
-<div className='col-span-12 sm:col-span-8 text-justify'>
-    <Typography variant="body2" color="text.primary" className='font-bold my-4' >
-    SHRI SWAMI PURNANAND PARAMHANS (1834-1928)
+  <Typography variant="body2" color="text.secondary" >
+        Present Ajapa Master Swami Guruprasad Paramhans laid the foundation stone for Kanpur Ashram's renovation in 2018. The final renovation was completed & inaugurated in 2021, amid a heavenly Utsav filled with Art, Meditation, Blessings & Happiness all around    
     </Typography>
 
-    <Typography variant="body2" color="text.secondary">
-    The method of Ajapa Sadhana was carefully guarded through the ages at ‘Siddhashram’- a hidden monastery in the Himalayas. In modern times, Shri Swami Purnanand Paramhans – the greatest guru of our times, brought Ajapa Sadhana to us from Siddhashram. In 1860’s Shri Swami Purnanand Paramhans made the arduous journey to Siddhashram. He stayed in Siddhashram for five years, and mastered the ancient Science of Ajapa Yog and attained Brahm Gyan. After returning to India, Swami Purnanand Paramhans established two ashrams, one in Bangladesh and other in Guwahati (Assam). He taught this Science of Ajapa when India was under British rule and became a beacon of light to millions suffering in pain and subjugation. In 1928 after Shri Purnanand Paramhans left his material body, his mission was taken over by his disciple Shri Swami Bhumanand Paramhans. 
+    <Typography variant="body2" color="text.secondary" >
+        Spread across a massive area of 30,000 square feet, the Kanpur ashram resembles an ark (as it will save humanity through the practice of Ajapa). It houses a temple, a gaushala (cowshed), a garden & a large meditation hall where meditation camps are organised every week.    
     </Typography>
 
 </div>
-
-<div className='col-span-12 sm:col-span-4 flex flex-col justify-center sm:items-end items-center'>
-  
-    <img className='h-256' src="assets/images/cards/guru2.jpg" alt="" />
-
-</div>
-
 </div>
 
 <div className='flex flex-col items-center justify-center my-8 pb-8'>
          <img src ="assets/images/cards/hr-design-1.png" alt=""/>
       </div>
 
-<div className='grid grid-cols-12 gap-4 my-4'>
-
-<div className='col-span-12 sm:col-span-4 flex flex-col justify-center sm:items-start  items-center'>
-  
-  <img className='h-256' src="assets/images/cards/guru3.jpg" alt="" />
-
-</div>
-
-<div className='col-span-12 sm:col-span-8 text-justify'>
+      <div className='grid grid-cols-12 gap-4 my-4 '>
+<div className='col-span-12  text-justify'>
     <Typography variant="body2" color="text.primary" className='font-bold my-4' >
-    SHRI SWAMI BHUMANAND PARAMHANS (1873-1958)
+        CALIFORNIA ASHRAM
     </Typography>
 
-    <Typography variant="body2" color="text.secondary">
-    Swami Bhumanand was born as Panchanan Gangopadhyay on Dec. 24, 1873, to devout parents in the state of Bengal. He worked as an accountant for many years. He was a great scholar, but despite reading the Hindu Scriptures over and over, he felt something was amiss, making him restless and tormented. One day Swami Purnanand came to Raj Shahi to visit a disciple there. Panchanan came to meet him, and after a long talk with Swami Purnanand, he realized that at last he had met a Guru who had realized the essence of the Scriptures. He had to wait for two more years, after which finally he got initiation from Shri Swami Purnanand Paramhans.
-After receiving initiation Swami Bhumanand practiced Kriya with great devotion and achieved extraordinary results in a short period of time. When Swami Purnanand became advanced in age and began the final purification process before leaving the material body, the disciples wondered who would be his successor, but were afraid to ask. Swami Purnanand looked at them and said, “Bhumanand”. On April 29, 1928, Swami Purnananda left the body. Shri Swami Bhumanand continued the Ajapa lineage from Kalipur Ashram (Guwahati) in Assam Province. Before Shri Swami Bhumanand left his material body in 1958 he gave Swami Janardan Paramhans the power to initiate others into Ajapa Yog.
+    <Typography variant="body2" color="text.secondary" >
+        When it was time to find a location for American Ashram, one American disciple brought some real estate pamphlets to India for Gurudev to look at.He picked one from the pile and said, "look here", and the Ashram was founded in the same city in California as the pamphlet Swami Janardan picked!    
     </Typography>
-
-</div>
-
-</div>
-
-<div className='flex flex-col items-center justify-center my-8 pb-8'>
-         <img src ="assets/images/cards/hr-design-1.png" alt=""/>
-      </div>
-
-<div className='grid grid-cols-12 gap-4 my-4 '>
-
-
-<div className='col-span-12 sm:col-span-8 text-justify'>
-    <Typography variant="body2" color="text.primary" className='font-bold my-4' >
-    SHRI SWAMI JANARDAN PARAMHANS (1888-1980)
-    </Typography>
-
-    <Typography variant="body2" color="text.secondary">
-    Shri Swami Janardan Paramhans was born in the province of East Bengal, India, on December 2, 1888. When he was 12 years old his father died, young Janardan ran away from home, seeking to understand the meaning of Life and Death. He wandered all over India, covering the length and breadth of the country more than seven times on foot. Swami Janardan was also a part of India’s non-violent Freedom struggle. After years of searching, he met Shri Swami Bhumanand, who initiated him into Ajapa Yog. Swami Janardan practiced this Yog with an attitude of “Do or Die” and eventually achieved complete Self-knowledge. When Swami Bhumanand left his material body in 1958, Swami Janardan carried on the lineage of teaching Ajapa to the world. Shri Swami Janardan Paramhans travelled around the world and introduced the science of Ajapa Yog to the western world. He was invited to Germany, Prague, Canada and United States to deliver a series of lectures on Ajapa. He made many disciples there and established an Ashram at California USA. He set up three ashrams in India at Rishikesh, Kanpur and Jamshedpur, one ashram in Poland and one in California USA.
+            <Typography variant="body2" color="text.secondary" >
+        Swami Janardan Paramhans never travelled personally to the Ashram in Placerville, California. However, Swami Guru Prasad first visited at the age of 15 after assuming the mantle of Guru, the worldwide Ajapa Master!    
     </Typography>
 
 </div>
-
-
-<div className='col-span-12 sm:col-span-4 flex flex-col justify-center  items-center sm:items-end '>
-  
-  <img className='h-256' src="assets/images/cards/guru4.jpg" alt="" />
-
 </div>
 
-</div>
-
-    
     </Container>
     </div>
   )
