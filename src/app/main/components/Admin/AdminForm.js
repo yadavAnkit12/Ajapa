@@ -81,9 +81,10 @@ const AdminForm = () => {
       formData.append("dob", '1983-11-16');
       formData.append("role", "Admin");
 
-      axios.post(`${jwtServiceConfig.signUp}` , formData , {
+      axios.post(`${jwtServiceConfig.addAdmin}` , formData , {
         headers: {
           "Content-type": "multipart/form-data",
+          Authorization: `Bearer ${window.localStorage.getItem("jwt_access_token")}`,
         },
       })
       .then((response) => { console.log("dd",response)
