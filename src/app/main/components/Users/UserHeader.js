@@ -12,6 +12,8 @@ import axios from 'axios';
 import { userAPIConfig } from '../../API/apiConfig';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import { useParams } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import './user.css'
 
 function UsersHeader(props) {
     const routeParams = useParams();
@@ -187,6 +189,24 @@ function UsersHeader(props) {
         });
     }
 
+    const handleCheckExcelPDF = () => {
+        Swal.fire({
+            title: "Do you want PDF or Excel?",
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: "PDF",
+            denyButtonText: `Excel`,
+            customClass: 'custom-modal-height'
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) { // PDF
+                handleCreateReportPDF()
+            } else if (result.isDenied) { // excel
+                handleCreateReport()
+            }
+        });
+    }
+
     return (
         <>
             <div className="w-full flex flex-col min-h-full">
@@ -298,15 +318,15 @@ function UsersHeader(props) {
                             renderInput={(params) => <TextField {...params} label="Is disciple" variant="standard" />}
                         />
                         <Button
-                            onClick={() => handleCreateReport()}
+                            onClick={() => handleCheckExcelPDF()}
                             variant="outlined"
                             color="secondary"
                             startIcon={<FileDownloadOutlinedIcon />}
                             sx={{ my: 2, mx: 1 }}
                         >
-                            Export Excel
+                            Export
                         </Button>
-                        <Button
+                        {/* <Button
                             // component={Link}
                             onClick={() => handleCreateReportPDF()}
                             variant="outlined"
@@ -315,7 +335,7 @@ function UsersHeader(props) {
                             sx={{ my: 2, mx: 1 }}
                         >
                             Export PDF
-                        </Button>
+                        </Button> */}
                     </div>
                     <div className="flex flex-row justify-end">
                         <Button
