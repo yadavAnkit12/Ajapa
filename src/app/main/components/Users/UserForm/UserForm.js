@@ -323,7 +323,8 @@ function UserForm() {
                 navigate(`/apps/profile/${getLoggedInPartnerId()}`);
                 window.location.reload()
               } else {
-                navigate("/app/users/");
+                // navigate("/app/users/");
+                history.back()
               }
             } else {
               setLoading(false)
@@ -364,7 +365,8 @@ function UserForm() {
                 navigate(`/apps/profile/${getLoggedInPartnerId()}`);
                 window.location.reload()
               } else {
-                navigate("/app/users/");
+                // navigate("/app/users/");
+                history.back()
               }
             } else {
               setLoading(false)

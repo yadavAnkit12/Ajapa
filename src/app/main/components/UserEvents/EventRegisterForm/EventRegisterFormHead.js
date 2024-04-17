@@ -7,6 +7,7 @@ import { forwardRef, useEffect, useState } from 'react';
 import { Dialog, DialogActions, DialogTitle, Slide } from '@mui/material';
 import axios from 'axios';
 import { eventAPIConfig } from 'src/app/main/API/apiConfig';
+import Swal from 'sweetalert2';
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -31,6 +32,18 @@ function EventRegisterFormHead(props) {
     const dispatch = useDispatch()
     const [data, setData] = useState('')
     const [open, setOpen] = useState(false)
+
+            // function to convert date from yyyy-mm-dd format to dd-mm-yyyy
+            function formatDate(inputDate) {
+                
+                if(inputDate == undefined)
+                  return inputDate
+
+                const parts = inputDate.split('-');
+                const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+            
+                return formattedDate;
+            }
 
 
     useEffect(() => {
@@ -60,7 +73,12 @@ function EventRegisterFormHead(props) {
         }).then((response) => {
             if (response.status === 200) {
                 props.setLoading(false)
-                dispatch(showMessage({ message: `Jai Guru. Your registration for ${data.eventName} is delete successfull for all members`, variant: 'success' }));
+                // dispatch(showMessage({ message: `Jai Guru. Your registration for ${data.eventName} is deleted successfully for all members`, variant: 'success' }));
+                Swal.fire({
+                    title: "Registration cancelled",
+                    text: `Jai Guru. Your registration for ${data.eventName} is deleted successfully for all members`,
+                    icon: "error"
+                  });
                 setOpen(false)
                 props.setChange(!props.change)
             } else {
@@ -74,6 +92,8 @@ function EventRegisterFormHead(props) {
         })
 
     }
+
+
 
 
     return <>
@@ -110,8 +130,8 @@ function EventRegisterFormHead(props) {
                     </motion.div>
                 </div>
             </div>
-            <div className="flex flex-col sm:flex-row space-y-16 sm:space-y-0 flex-1 w-full items-center justify-between py-16 px-10 shadow-1 rounded-16">
-                <div>
+            <div className="flex flex-col sm:flex-row space-y-16 sm:space-y-0 flex-1 w-full items-center  py-16 px-10 shadow-1 rounded-16">
+                <div className='mx-4'>
                     <Typography
                         component={motion.span}
                         initial={{ x: -20 }}
@@ -126,12 +146,12 @@ function EventRegisterFormHead(props) {
                         initial={{ x: -20 }}
                         animate={{ x: 0, transition: { delay: 0.2 } }}
                         delay={300}
-                        style={{ ...fontSmall, color: '#C4A484', fontSize: '14px' }}
+                        style={{ ...fontSmall, color: '#792b00', fontSize: '14px' }}
                     >
                         {data.eventName}
                     </Typography>
                 </div>
-                <div>
+                <div className='mx-4'>
                     <Typography
                         component={motion.span}
                         initial={{ x: -20 }}
@@ -146,14 +166,14 @@ function EventRegisterFormHead(props) {
                         initial={{ x: -20 }}
                         animate={{ x: 0, transition: { delay: 0.2 } }}
                         delay={300}
-                        style={{ ...fontSmall, color: '#C4A484', fontSize: '14px' }}
+                        style={{ ...fontSmall, color: '#792b00', fontSize: '14px' }}
                     >
-                        {data.eventDate}
+                        {formatDate(data.eventDate)}
                     </Typography>
                 </div>
 
 
-                <div>
+                {/* <div>
                     <Typography
                         component={motion.span}
                         initial={{ x: -20 }}
@@ -172,8 +192,8 @@ function EventRegisterFormHead(props) {
                     >
                         {data.eventLocation}
                     </Typography>
-                </div>
-                <div>
+                </div> */}
+                {/* <div>
                     <Typography
                         component={motion.span}
                         initial={{ x: -20 }}
@@ -192,8 +212,11 @@ function EventRegisterFormHead(props) {
                     >
                         {data.eventType}
                     </Typography>
-                </div>
-                <div>
+                </div> */}
+
+                {
+                    data.shivirStartDate &&
+                    <div className='mx-4'>
                     <Typography
                         component={motion.span}
                         initial={{ x: -20 }}
@@ -201,19 +224,21 @@ function EventRegisterFormHead(props) {
                         delay={300}
                         style={fontSmall}
                     >
-                        Shivir available :
+                        Shivir Data :
                     </Typography>
                     <Typography
                         component={motion.span}
                         initial={{ x: -20 }}
                         animate={{ x: 0, transition: { delay: 0.2 } }}
                         delay={300}
-                        style={{ ...fontSmall, color: '#C4A484', fontSize: '14px' }}
+                        style={{ ...fontSmall, color: '#792b00', fontSize: '14px' }}
                     >
-                        {data.shivirAvailable ? 'Yes' : 'No'}
+                        {formatDate(data.shivirStartDate)} - {formatDate(data.shivirEndDate)}
                     </Typography>
-                </div>
-                <div>
+                </div> 
+                }
+
+                {/* <div>
                     <Typography
                         component={motion.span}
                         initial={{ x: -20 }}
@@ -232,7 +257,7 @@ function EventRegisterFormHead(props) {
                     >
                         {data.bookingStatus ? 'On' : 'Off'}
                     </Typography>
-                </div>
+                </div> */}
             </div>
             <Dialog
                 open={open}

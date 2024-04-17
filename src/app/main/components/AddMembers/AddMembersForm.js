@@ -261,16 +261,7 @@ function AddMembersForm() {
 
 
   const handleSubmit = (values) => {
-    if (userID === "" && values.profilePicture === null) {
-      dispatch(
-        showMessage({
-          message: "Profile picture is required",
-          variant: "error",
-        })
-      );
 
-      return;
-    }
 
     if (showCredentials && !isChild) {
       if (
@@ -288,6 +279,17 @@ function AddMembersForm() {
         );
         return;
       }
+    }
+
+    if (userID === "" && values.profilePicture === null) {
+      dispatch(
+        showMessage({
+          message: "Profile picture is required",
+          variant: "error",
+        })
+      );
+
+      return;
     }
 
 
@@ -557,10 +559,10 @@ function AddMembersForm() {
               scrollButtons="auto"
               classes={{ root: "w-full h-64 border-b-1" }}
             >
-              <Tab className="h-64" label="Phase I" />
-              <Tab className="h-64" label="Phase II" />
-              <Tab className="h-64" label="Phase III" />
-              <Tab className="h-64" label="Phase IV" />
+              <Tab className="h-64" label="Basic Information" />
+              <Tab className="h-64" label="Address" />
+              <Tab className="h-64" label="Password & Photo" />
+              <Tab className="h-64" label="Additional Information" />
             </Tabs>
             <div className="p-16 sm:p-24 w-full">
               <form onSubmit={formik.handleSubmit}>

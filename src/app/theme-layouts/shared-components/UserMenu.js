@@ -39,9 +39,9 @@ function UserMenu(props) {
           <Typography component="span" className="font-semibold flex">
             {user.data.name}
           </Typography>
-          <Typography className="text-11 font-medium capitalize" color="text.secondary">
+          {/* <Typography className="text-11 font-medium capitalize" color="text.secondary">
             {user.role}
-          </Typography>
+          </Typography> */}
         </div>
 
         {/* {user.data.photoURL ? ( */}
@@ -69,7 +69,7 @@ function UserMenu(props) {
       >
 
         <>
-          <MenuItem component={Link} to= {`/apps/profile/${sessionStorage.getItem('id')}`}
+          <MenuItem component={Link} to= {`/apps/profile/S9fJd8GcN2rP6vW3xZ5mQ1lO7tA4hE0bXuYiK`}
           onClick={userMenuClose} role="button">
           <ListItemIcon className="min-w-40">
             <FuseSvgIcon>heroicons-outline:user-circle</FuseSvgIcon>
