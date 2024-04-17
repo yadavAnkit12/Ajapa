@@ -41,6 +41,7 @@ const EventForm = (props) => {
     const [arrModeOfTransport, setArrModeOfTransport] = useState(false)
     const [depModeOfTransport, setDepModeOfTransport] = useState(false)
     const [open, setOpen] = useState(false)
+    const [stateName, setStateName] = useState('')  //for handling a state which have no state
 
 
     useEffect(() => {
@@ -156,7 +157,13 @@ const EventForm = (props) => {
             },
         }).then((response) => {
             if (response.status === 200) {
-                setCityList(response.data)
+                if (response.data.length === 0) {
+                    // If no cities are available, set the city list to an array containing the state name
+                    setCityList([{ id: stateID, name: stateName }]);
+                } else {
+                    // If cities are available, set the city list to the response data
+                    setCityList(response.data);
+                }
             }
         })
     }, [stateID])
@@ -221,7 +228,7 @@ const EventForm = (props) => {
                         title: "Registration successfull",
                         text: `Jai Guru. Your registration for ${props.eventName} is updated successful`,
                         icon: "success"
-                      });
+                    });
                     props.setChange(!props.change)
                     props.setEventFormOpen(false)
 
@@ -256,7 +263,7 @@ const EventForm = (props) => {
                         title: "Registration successfull",
                         text: `Jai Guru. Your registration for ${props.eventName} is successful`,
                         icon: "success"
-                      });
+                    });
                     props.setChange(!props.change)
                     props.setEventFormOpen(false)
                 } else {
@@ -431,6 +438,8 @@ const EventForm = (props) => {
                                     value={formik.values.fromState}
                                     onChange={(event, newValue) => {
                                         const selectedSate = stateList.find(state => state.name === newValue)?.id;
+                                        const selectedStateName = stateList.find((state) => state.name === newValue)?.name;
+                                        setStateName(selectedStateName)
                                         setStateID(selectedSate)
                                         formik.setFieldValue('fromState', newValue);
                                     }}
@@ -495,7 +504,7 @@ const EventForm = (props) => {
                                     }
                                     helperText={
                                         formik.touched.arrivalDate && (formik.errors.arrivalDate ||
-                                            (formik.values.arrivalDate < (lockarrivaldate || eventDate) || formik.values.arrivalDate > eventDate) ? lockarrivaldate ? `Date must be ${lockarrivaldate} - ${eventDate} `:`Date must be ${eventDate}` : "")
+                                            (formik.values.arrivalDate < (lockarrivaldate || eventDate) || formik.values.arrivalDate > eventDate) ? lockarrivaldate ? `Date must be ${lockarrivaldate} - ${eventDate} ` : `Date must be ${eventDate}` : "")
                                     }
                                     inputProps={{ min: lockarrivaldate || eventDate, max: eventDate }}
                                 />
@@ -594,7 +603,7 @@ const EventForm = (props) => {
                                     }
                                     helperText={
                                         formik.touched.departureDate && (formik.errors.departureDate ||
-                                            (formik.values.departureDate < eventDate || formik.values.departureDate > (lockdeparturedetail || eventDate)) ? lockdeparturedetail ? `Date must be ${lockdeparturedetail} - ${eventDate} `:`Date must be ${eventDate}` : "")
+                                            (formik.values.departureDate < eventDate || formik.values.departureDate > (lockdeparturedetail || eventDate)) ? lockdeparturedetail ? `Date must be ${lockdeparturedetail} - ${eventDate} ` : `Date must be ${eventDate}` : "")
                                     }
                                     inputProps={{ min: eventDate, max: lockdeparturedetail || eventDate }}
                                 />
