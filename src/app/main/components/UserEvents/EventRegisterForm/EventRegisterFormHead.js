@@ -130,7 +130,7 @@ function EventRegisterFormHead(props) {
                     </motion.div>
                 </div>
             </div>
-            <div className="flex flex-col sm:flex-row space-y-16 sm:space-y-0 flex-1 w-full items-center  py-16 px-10 shadow-1 rounded-16">
+            <div className="flex flex-col sm:flex-row space-y-16 sm:space-y-0 flex-1 w-full items-start py-16 px-10 shadow-1 rounded-16">
                 <div className='mx-4'>
                     <Typography
                         component={motion.span}
@@ -139,7 +139,7 @@ function EventRegisterFormHead(props) {
                         delay={300}
                         style={fontSmall}
                     >
-                        Event name :
+                        Event Name :
                     </Typography>
                     <Typography
                         component={motion.span}
@@ -159,7 +159,7 @@ function EventRegisterFormHead(props) {
                         delay={300}
                         style={fontSmall}
                     >
-                        Event date :
+                        Event Date :
                     </Typography>
                     <Typography
                         component={motion.span}
@@ -224,7 +224,7 @@ function EventRegisterFormHead(props) {
                         delay={300}
                         style={fontSmall}
                     >
-                        Shivir Data :
+                        Shivir Date :
                     </Typography>
                     <Typography
                         component={motion.span}
