@@ -93,7 +93,17 @@ const UserEventCard = () => {
                                     lineHeight: '28px', letterSpacing: '0px',
                                     textAlign: 'center', fontWeight: 600,
                                     marginTop: '3px'
-                                }}>Shivir Dates: {data.shivirStartDate === "" ? "N/A" : `${formatDate(data.shivirStartDate)} - ${formatDate(data.shivirEndDate)}`}</span>
+                                }}>Shivir Start Date: {data.shivirStartDate === "" ? "N/A" : `${formatDate(data.shivirStartDate)}`}</span>
+                            </div>
+
+                            <div className="flex items-center gap-2 mb-2">
+                                <EventIcon />
+                                <span className="text-lg" style={{
+                                    fontStyle: 'normal', fontSize: '12px',
+                                    lineHeight: '28px', letterSpacing: '0px',
+                                    textAlign: 'center', fontWeight: 600,
+                                    marginTop: '3px'
+                                }}>Shivir End Date: {data.shivirStartDate === "" ? "N/A" : `${formatDate(data.shivirEndDate)}`}</span>
                             </div>
 
                             <div className="flex items-center gap-2 mb-2" >
