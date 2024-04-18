@@ -2,7 +2,7 @@ import { Grid, Button, Modal, Typography } from '@mui/material'
 import { Box, Container } from '@mui/system';
 import { motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
@@ -50,10 +50,14 @@ function Home() {
     { id: 8, type: 'text', content: 'Sed vehicula ipsum sit amet ligula pellentesque lacinia. Integer tincidunt neque eu risus dictum, id hendrerit metus vehicula.' },
     { id: 9, type: 'image', image: 'https://cdn.pixabay.com/photo/2016/07/07/16/46/dice-1502706_640.jpg', alt: 'Image 2' },
     { id: 10, type: 'text', content: 'Praesent eget libero quis ex suscipit lacinia sit amet nec mi. Ut in felis a nibh volutpat scelerisque.' },
-
-
-
   ];
+
+  
+  const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]); 
 
   useEffect(() => {
     const userData = sessionStorage.getItem('user_data');
