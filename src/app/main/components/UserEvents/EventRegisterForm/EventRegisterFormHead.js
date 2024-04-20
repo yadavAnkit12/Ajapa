@@ -74,11 +74,12 @@ function EventRegisterFormHead(props) {
             if (response.status === 200) {
                 props.setLoading(false)
                 // dispatch(showMessage({ message: `Jai Guru. Your registration for ${data.eventName} is deleted successfully for all members`, variant: 'success' }));
-                Swal.fire({
-                    title: "Registration cancelled",
-                    text: `Jai Guru. Your registration for ${data.eventName} is deleted successfully for all members`,
-                    icon: "error"
-                  });
+                  Swal.fire({
+                    title: "<span style='font-weight: bold; font-size: 20px;'>Registration cancelled</span>",
+                    html: `<span style="font-weight: bold; font-size: 16px;">Jai Guru. Your registration for ${data.eventName} is deleted successfully for all members</span>`,
+                    icon: "error",
+                    confirmButtonText: "<span style='font-weight: bold; font-size: 16px;'>OK</span>"
+                }); 
                 setOpen(false)
                 props.setChange(!props.change)
             } else {

@@ -39,6 +39,14 @@ export default function EventView(props) {
         return <FuseLoading/>
     }
 
+       // function to convert date from yyyy-mm-dd format to dd-mm-yyyy
+       function formatDate(inputDate) {
+        const parts = inputDate.split('-');
+        const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+    
+        return formattedDate;
+    }
+
     return (
         <Card sx={{ maxWidth: 345 }}>
             <CardActionArea>
@@ -74,7 +82,7 @@ export default function EventView(props) {
 
                             <div className="my-3 mx-4">
                                 <p className='font-bold inline'>Event Date: </p>
-                                <span className='font-semibold'>{data.eventDate}</span>
+                                <span className='font-semibold'>{formatDate(data.eventDate)}</span>
                             </div>
                             <hr />
 
@@ -93,7 +101,7 @@ export default function EventView(props) {
 
                             <div className="my-3 mx-4">
                                 <p className='font-bold inline'>Lock Date: </p>
-                                <span className='font-semibold'>{data.lockArrivalDate} - {data.lockDepartureDate}</span>
+                                <span className='font-semibold'>{formatDate(data.lockArrivalDate)} - {formatDate(data.lockDepartureDate)}</span>
                             </div>
                             <hr />
 

@@ -227,10 +227,11 @@ const EventForm = (props) => {
                         formik.resetForm()
                         // dispatch(showMessage({ message: `Jai Guru. Your registration for ${props.eventName} is updated successful`, variant: 'success' }));
                         Swal.fire({
-                            title: "Registration successfull",
-                            text: `Jai Guru. Your registration for ${props.eventName} is updated successful`,
-                            icon: "success"
-                        });
+                            title: "<span style='font-weight: bold; font-size: 20px;'>Registration successful</span>",
+                            html: `<span style="font-weight: bold; font-size: 16px;">Jai Guru. Your registration for ${props.eventName} is updated successfully</span>`,
+                            icon: "success",
+                            confirmButtonText: "<span style='font-weight: bold; font-size: 16px;'>OK</span>"
+                        }); 
                         props.setChange(!props.change)
                         props.setEventFormOpen(false)
 
@@ -262,10 +263,11 @@ const EventForm = (props) => {
                         formik.resetForm()
                         // dispatch(showMessage({ message: `Jai Guru. Your registration for ${props.eventName} is successfull`, variant: 'success' }));
                         Swal.fire({
-                            title: "Registration successfull",
-                            text: `Jai Guru. Your registration for ${props.eventName} is successful`,
-                            icon: "success"
-                        });
+                            title: "<span style='font-weight: bold; font-size: 20px;'>Registration successful</span>",
+                            html: `<span style="font-weight: bold; font-size: 16px;">Jai Guru. Your registration for ${props.eventName} is successful</span>`,
+                            icon: "success",
+                            confirmButtonText: "<span style='font-weight: bold; font-size: 16px;'>OK</span>"
+                        });                        
                         props.setChange(!props.change)
                         props.setEventFormOpen(false)
                     } else {

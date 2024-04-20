@@ -76,8 +76,8 @@ const FoodForm = (props) => {
 
     const handleSetDate = (value) => {
         const event = props.eventList.find((event) => event.eventName === value)
-        setLowerLimit(event.lockArrivalDate ? event.lockArrivalDate : event.eventDate)
-        setUpperLimit(event.lockDepartureDate ? event.lockDepartureDate : event.eventDate)
+        setLowerLimit(event?.lockArrivalDate ? event?.lockArrivalDate : event?.eventDate)
+        setUpperLimit(event?.lockDepartureDate ? event?.lockDepartureDate : event?.eventDate)
 
     }
 

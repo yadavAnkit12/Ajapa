@@ -52,6 +52,14 @@ function AdminProfile() {
         return <FuseLoading />
     }
 
+       // function to convert date from yyyy-mm-dd format to dd-mm-yyyy
+       function formatDate(inputDate) {
+        const parts = inputDate.split('-');
+        const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+    
+        return formattedDate;
+    }
+
     return (
         <div>
             <div className="container">
@@ -132,13 +140,13 @@ function AdminProfile() {
                                         <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 mb-4">
                                             <div className="form-group">
                                                 <label htmlFor="dikshaDate" className='labelFont'>Diksha Date</label>
-                                                <input type="text" className="form-control" style={{ fontSize: '14px' }} defaultValue={data.dikshaDate} id="dikshaDate" />
+                                                <input type="text" className="form-control" style={{ fontSize: '14px' }} defaultValue={data.dikshaDate === '' ? '' : `${formatDate(data.dikshaDate)}`} id="dikshaDate" />
                                             </div>
                                         </div>
                                         <div className="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 mb-4">
                                             <div className="form-group">
                                                 <label html-for="Street" className='labelFont'>DOB</label>
-                                                <input type="dob" className="form-control" style={{ fontSize: '14px' }} defaultValue={data.dob} id="dob" />
+                                                <input type="dob" className="form-control" style={{ fontSize: '14px' }} defaultValue={formatDate(data.dob)} id="dob" />
                                             </div>
                                         </div>
 
