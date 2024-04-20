@@ -105,6 +105,7 @@ const menuItemArray = (status) => {
 
 
 function UserTable(props) {
+  console.log('table')
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [userListData, setUserListData] = useState([]);
