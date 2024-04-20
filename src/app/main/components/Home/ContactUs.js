@@ -66,7 +66,7 @@ export default function ContactUs() {
             <div className="flex flex-col items-center justify-center ">
               <form className="p-4" onSubmit={handleSubmit}>
 
-                <TextField
+                {/* <TextField
                   fullWidth
                   name="name"
                   label="Name"
@@ -104,7 +104,7 @@ export default function ContactUs() {
                   required
                   sx={{ mb: 2 }}
                   className="max-w-md"
-                />
+                /> */}
 
                 <TextField
                   label="Write Your Message Here"
@@ -112,7 +112,7 @@ export default function ContactUs() {
                   InputLabelProps={{ shrink: true }}
                   placeholder='Max 160 Characters'
                   variant="outlined"
-                  sx={{ mb: 2, mt: 2, width: '100%' }}
+                  sx={{ mb: 2, mt: 2, width: '100%',minWidth:'240px' }}
                   className="max-w-md"
                   type="text"
                   value={formik.values.message}

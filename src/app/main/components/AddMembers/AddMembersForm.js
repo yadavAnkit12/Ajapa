@@ -209,6 +209,7 @@ function AddMembersForm() {
                 variant: "error",
               })
             );
+            navigate('/404')
           }
           // setLoading(false)
         });

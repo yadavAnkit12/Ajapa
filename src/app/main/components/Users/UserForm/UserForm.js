@@ -26,6 +26,7 @@ import { userAPIConfig } from 'src/app/main/API/apiConfig';
 import FuseLoading from '@fuse/core/FuseLoading';
 import { getLoggedInPartnerId } from 'src/app/auth/services/utils/common';
 import { forwardRef } from 'react';
+import Error404Page from 'src/app/main/404/Error404Page';
 
 
 const fontStyles = {
@@ -64,10 +65,10 @@ function UserForm() {
   const [userID, setUserID] = useState("");
   const [showCredentials, setShowCredentials] = useState(true);
   const [isChild, setIsChild] = useState(false);
-  const [open,setOpen] = useState(false)
-  const [getcountryCode , setGetCountryCode] = useState([])
+  const [open, setOpen] = useState(false)
+  const [getcountryCode, setGetCountryCode] = useState([])
   const [stateName, setStateName] = useState('')  //for handling a state which have no state
-  
+
 
   const validationSchema = yup.object().shape({
     name: yup
@@ -129,9 +130,9 @@ function UserForm() {
       })
       .then((response) => {
         if (response.status === 200) {
-          
+
           setUserID(response.data.user.id);
-         
+
           const today = new Date();
           const userAge =
             today.getFullYear() -
@@ -156,8 +157,8 @@ function UserForm() {
             familyId: response.data.user.familyId,
             name: response.data.user.name || "",
             email: response.data.user.email || "",
-            password: response.data.user.password  || "",
-            passwordConfirm: response.data.user.password  || "",
+            password: response.data.user.password || "",
+            passwordConfirm: response.data.user.password || "",
             gender: response.data.user.gender || "",
             dob: response.data.user.dob || "",
             role: response.data.user.role || "",
@@ -183,6 +184,15 @@ function UserForm() {
           setStateID(response.data.user.state?.split(":")[0]);
           setCityID(response.data.user.city?.split(":")[0]);
           setLoading(false);
+        } else {
+          dispatch(
+            showMessage({
+              message: response.data.errorMessage,
+              variant: "error",
+            })
+          );
+          navigate('/404')
+          setLoading(false)
         }
       });
   }, [routeParams]);
@@ -258,7 +268,7 @@ function UserForm() {
       }
     }
 
-    
+
     if (formik.values.isDisciple === "") {
       return dispatch(
         showMessage({
@@ -267,15 +277,15 @@ function UserForm() {
         })
       );
     }
-   
+
     if (formik.isValid) {
-     setLoading(true)
+      setLoading(true)
       const formattedData = new FormData();
       formattedData.append("id", values.id);
       formattedData.append("familyId", values.familyId);
       formattedData.append("name", values.name);
       formattedData.append("email", values.email);
-      formattedData.append("password",  values.password);
+      formattedData.append("password", values.password);
       formattedData.append("gender", values.gender);
       formattedData.append("countryCode", values.countryCode?.split(" ")[0]);
       formattedData.append("dob", values.dob);
@@ -335,9 +345,10 @@ function UserForm() {
               );
             }
           })
-          .catch((error) =>{
+          .catch((error) => {
             setLoading(false)
-             console.log(error)});
+            navigate('/404')
+          });
       } else {
         formattedData.append("profileImage", values.pic);
 
@@ -379,7 +390,8 @@ function UserForm() {
           })
           .catch((error) => {
             setLoading(false)
-            console.log(error)});
+            navigate('/404')
+          });
       }
     } else {
       dispatch(
@@ -394,29 +406,29 @@ function UserForm() {
   //Showing fields in case of child
   const handleCheckBoxChange = () => {
     setShowCredentials(!showCredentials);
-    if(showCredentials){
+    if (showCredentials) {
       setShowCredentials(true)
       setOpen(true)
     }
-   
+
   };
 
-  const clearFieldsForChild=()=>{
-        setShowCredentials(false)
-        formik.setValues({
-          ...formik.values,
-          email: "",
-          password: "",
-          passwordConfirm: "",
-          mobileNumber: "",
-          countryCode: "",
-          whatsAppNumber: "",
-        }); 
-        setOpen(false)
+  const clearFieldsForChild = () => {
+    setShowCredentials(false)
+    formik.setValues({
+      ...formik.values,
+      email: "",
+      password: "",
+      passwordConfirm: "",
+      mobileNumber: "",
+      countryCode: "",
+      whatsAppNumber: "",
+    });
+    setOpen(false)
 
-  } 
+  }
 
-  const handleClose=()=>{
+  const handleClose = () => {
     setShowCredentials(true)
     setOpen(false)
   }
@@ -424,7 +436,7 @@ function UserForm() {
   const formik = useFormik({
     initialValues: {
       id: "",
-      familyId : "",
+      familyId: "",
       name: "",
       email: "",
       password: "",
@@ -441,7 +453,7 @@ function UserForm() {
       city: "",
       profilePicture: null,
       // isDisciple: "No",
-      isDisciple:"",
+      isDisciple: "",
       addressLine: "",
       bloodGroup: "",
       dikshaDate: "",
@@ -852,7 +864,7 @@ function UserForm() {
                   )}
 
                   {/* <div style={{ marginBottom: "16px" }}> */}
-                    {/* <FormControlLabel
+                  {/* <FormControlLabel
                       control={
                         <Checkbox
                           checked={formik.values.isDisciple === "Yes"}
@@ -868,38 +880,38 @@ function UserForm() {
                       label="Are you an Ajapa Disciple ?"
                     />
                   </div> */}
-                  
-              <div>
-                <FormControl component="fieldset" required>
-                  <FormLabel component="legend" className="text-black">
-                    Are you an Ajapa Disciple ?
-                  </FormLabel>
-                  <FormGroup className="flex flex-row">
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={formik.values.isDisciple === true}
-                          onChange={() =>
-                            formik.setFieldValue("isDisciple", true)
+
+                  <div>
+                    <FormControl component="fieldset" required>
+                      <FormLabel component="legend" className="text-black">
+                        Are you an Ajapa Disciple ?
+                      </FormLabel>
+                      <FormGroup className="flex flex-row">
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={formik.values.isDisciple === true}
+                              onChange={() =>
+                                formik.setFieldValue("isDisciple", true)
+                              }
+                            />
                           }
+                          label="Yes"
                         />
-                      }
-                      label="Yes"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={formik.values.isDisciple === false}
-                          onChange={() =>
-                            formik.setFieldValue("isDisciple", false)
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={formik.values.isDisciple === false}
+                              onChange={() =>
+                                formik.setFieldValue("isDisciple", false)
+                              }
+                            />
                           }
+                          label="No"
                         />
-                      }
-                      label="No"
-                    />
-                  </FormGroup>
-                </FormControl>
-              </div>
+                      </FormGroup>
+                    </FormControl>
+                  </div>
 
 
 
@@ -1084,7 +1096,7 @@ function UserForm() {
 
                 <DialogActions>
                   <Button onClick={() => handleClose()}>No</Button>
-                  <Button onClick={()=>clearFieldsForChild()} autoFocus>
+                  <Button onClick={() => clearFieldsForChild()} autoFocus>
                     Yes
                   </Button>
                 </DialogActions>
