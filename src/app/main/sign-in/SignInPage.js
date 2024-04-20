@@ -71,7 +71,7 @@ function SignInPage() {
   const [getcountryCode, setGetCountryCode] = useState([])
   const [loading, setLoading] = useState(false);
   const [showCheck, setShowCheck] = useState(true)
-  const [disable,setDisable]=useState(false)
+  const [disable, setDisable] = useState(false)
 
   //for timmer
   const [secondsRemaining, setSecondsRemaining] = useState(INITIAL_COUNT);

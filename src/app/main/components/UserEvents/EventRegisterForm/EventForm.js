@@ -15,7 +15,6 @@ import jwtServiceConfig from 'src/app/auth/services/jwtService/jwtServiceConfig'
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { eventAPIConfig, userAPIConfig } from "src/app/main/API/apiConfig";
-import { values } from 'lodash';
 import FuseLoading from '@fuse/core/FuseLoading';
 import Swal from 'sweetalert2';
 
@@ -43,12 +42,9 @@ const EventForm = (props) => {
     const [open, setOpen] = useState(false)
     const [stateName, setStateName] = useState('')  //for handling a state which have no state
 
-
     useEffect(() => {
         formik.resetForm()
     }, [props.person.id])
-
-
 
     useEffect(() => {
         if (shivirHai === true) {
@@ -171,114 +167,123 @@ const EventForm = (props) => {
 
 
     const handleSubmit = (values) => {
+        console.log(values)
+        if (formik.isValid) {
 
-        if (shivirCheckBox && formik.values.attendingShivir === undefined) {
-            return dispatch(showMessage({ message: 'Please tell whether you are attending the shivir or not', variant: 'error' }));
-        }
+            if (shivirCheckBox && formik.values.attendingShivir === undefined) {
+                return dispatch(showMessage({ message: 'Please tell whether you are attending the shivir or not', variant: 'error' }));
+            }
 
-        props.setLoading(true)
-        const formData = new FormData()
-        formData.append('eventId', props.eventId)
-        formData.append('userId', props.selectedUserId)
-        formData.append('userName', props.person.name)
-        formData.append('eventDate', props.eventDate)
-        formData.append('eventName', props.eventName)
-        formData.append('familyId', sessionStorage.getItem('familyId'))
-        formData.append('fromCountry', `${countryID}:${formik.values.fromCountry}`)
-        formData.append('fromState', `${stateID}:${formik.values.fromState}`)
-        formData.append('fromCity', `${cityID}:${formik.values.fromCity}`)
-        formData.append('arrivalDate', formik.values.arrivalDate)
-        formData.append('arrivalTime', formik.values.arrivalTime)
-        formData.append('arrivalModeOfTransport', formik.values.arrivalModeOfTransport)
-        if (formik.values.arrivalModeOfTransport !== 'Train') {
-            formData.append('arrivalTrainNumber', '');
-        } else {
-            formData.append('arrivalTrainNumber', formik.values.arrivalTrainNumber);
-        }
-        formData.append('departureDate', formik.values.departureDate)
-        formData.append('departureTime', formik.values.departureTime)
-        formData.append('departureModeOfTransport', formik.values.departureModeOfTransport)
-        if (formik.values.departureModeOfTransport !== 'Train') {
-            formData.append('departureTrainNumber', '');
-        } else {
-            formData.append('departureTrainNumber', formik.values.departureTrainNumber);
-        }
-        formData.append('specificRequirements', formik.values.specificRequirements || '')
+            else if (values.arrivalModeOfTransport === 'Train' && (values.arrivalTrainNumber === '')) {
+                return dispatch(showMessage({ message: 'Train number required when you are travelling from train', variant: 'error' }))
+            }
 
-        if (shivirCheckBox) {
-            formData.append('attendingShivir', formik.values.attendingShivir)
-        } else {
-            formData.append('attendingShivir', false)
-        }
+            props.setLoading(true)
+            const formData = new FormData()
+            formData.append('eventId', props.eventId)
+            formData.append('userId', props.selectedUserId)
+            formData.append('userName', props.person.name)
+            formData.append('eventDate', props.eventDate)
+            formData.append('eventName', props.eventName)
+            formData.append('familyId', sessionStorage.getItem('familyId'))
+            formData.append('fromCountry', `${countryID}:${formik.values.fromCountry}`)
+            formData.append('fromState', `${stateID}:${formik.values.fromState}`)
+            formData.append('fromCity', `${cityID}:${formik.values.fromCity}`)
+            formData.append('arrivalDate', formik.values.arrivalDate)
+            formData.append('arrivalTime', formik.values.arrivalTime)
+            formData.append('arrivalModeOfTransport', formik.values.arrivalModeOfTransport)
+            if (formik.values.arrivalModeOfTransport !== 'Train') {
+                formData.append('arrivalTrainNumber', '');
+            } else {
+                formData.append('arrivalTrainNumber', formik.values.arrivalTrainNumber);
+            }
+            formData.append('departureDate', formik.values.departureDate)
+            formData.append('departureTime', formik.values.departureTime)
+            formData.append('departureModeOfTransport', formik.values.departureModeOfTransport)
+            if (formik.values.departureModeOfTransport !== 'Train') {
+                formData.append('departureTrainNumber', '');
+            } else {
+                formData.append('departureTrainNumber', formik.values.departureTrainNumber);
+            }
+            formData.append('specificRequirements', formik.values.specificRequirements || '')
+
+            if (shivirCheckBox) {
+                formData.append('attendingShivir', formik.values.attendingShivir)
+            } else {
+                formData.append('attendingShivir', false)
+            }
 
 
-        if (props.registerUser) {
-            formData.append('registrationId', values.registrationId)
-            axios.post(`${eventAPIConfig.userEventRegistration}`, formData, {
-                headers: {
-                    'Content-type': 'multipart/form-data',
-                    Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-                },
-            }).then((response) => {
-                if (response.status === 200) {
-                    props.setLoading(false)
-                    formik.resetForm()
-                    // dispatch(showMessage({ message: `Jai Guru. Your registration for ${props.eventName} is updated successful`, variant: 'success' }));
-                    Swal.fire({
-                        title: "Registration successfull",
-                        text: `Jai Guru. Your registration for ${props.eventName} is updated successful`,
-                        icon: "success"
-                    });
-                    props.setChange(!props.change)
-                    props.setEventFormOpen(false)
-
-                    setTimeout(() => {
-                        dispatch({
-                            type: 'HIDE_MESSAGE'
+            if (props.registerUser) {
+                formData.append('registrationId', values.registrationId)
+                axios.post(`${eventAPIConfig.userEventRegistration}`, formData, {
+                    headers: {
+                        'Content-type': 'multipart/form-data',
+                        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+                    },
+                }).then((response) => {
+                    if (response.status === 200) {
+                        props.setLoading(false)
+                        formik.resetForm()
+                        // dispatch(showMessage({ message: `Jai Guru. Your registration for ${props.eventName} is updated successful`, variant: 'success' }));
+                        Swal.fire({
+                            title: "Registration successfull",
+                            text: `Jai Guru. Your registration for ${props.eventName} is updated successful`,
+                            icon: "success"
                         });
-                    }, 10000);
-                } else {
-                    props.setLoading(false)
-                    dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
-                }
-            }).catch((error) => {
-                props.setLoading(false)
-                dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
+                        props.setChange(!props.change)
+                        props.setEventFormOpen(false)
 
-            })
+                        setTimeout(() => {
+                            dispatch({
+                                type: 'HIDE_MESSAGE'
+                            });
+                        }, 10000);
+                    } else {
+                        props.setLoading(false)
+                        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
+                    }
+                }).catch((error) => {
+                    props.setLoading(false)
+                    dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
+
+                })
+
+            } else {
+
+                axios.post(`${eventAPIConfig.userEventRegistration}`, formData, {
+                    headers: {
+                        'Content-type': 'multipart/form-data',
+                        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+                    },
+                }).then((response) => {
+                    if (response.status === 200) {
+                        props.setLoading(false)
+                        formik.resetForm()
+                        // dispatch(showMessage({ message: `Jai Guru. Your registration for ${props.eventName} is successfull`, variant: 'success' }));
+                        Swal.fire({
+                            title: "Registration successfull",
+                            text: `Jai Guru. Your registration for ${props.eventName} is successful`,
+                            icon: "success"
+                        });
+                        props.setChange(!props.change)
+                        props.setEventFormOpen(false)
+                    } else {
+                        props.setLoading(false)
+                        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
+                    }
+                }).catch((error) => {
+                    props.setLoading(false)
+                    dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
+
+                })
+            }
 
         } else {
+            dispatch(showMessage({ message: 'Please fill the required details correctly', variant: 'error' }))
 
-            axios.post(`${eventAPIConfig.userEventRegistration}`, formData, {
-                headers: {
-                    'Content-type': 'multipart/form-data',
-                    Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-                },
-            }).then((response) => {
-                if (response.status === 200) {
-                    props.setLoading(false)
-                    formik.resetForm()
-                    // dispatch(showMessage({ message: `Jai Guru. Your registration for ${props.eventName} is successfull`, variant: 'success' }));
-                    Swal.fire({
-                        title: "Registration successfull",
-                        text: `Jai Guru. Your registration for ${props.eventName} is successful`,
-                        icon: "success"
-                    });
-                    props.setChange(!props.change)
-                    props.setEventFormOpen(false)
-                } else {
-                    props.setLoading(false)
-                    dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
-                }
-            }).catch((error) => {
-                props.setLoading(false)
-                dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
-
-            })
         }
-
     }
-
 
 
     const formik = useFormik({
@@ -376,7 +381,15 @@ const EventForm = (props) => {
 
     const filteredOptions = props.sameAsDD.filter(option => option.userId !== props.selectedUserId);
 
-
+    const getDate = (date) => {
+        if (date) {
+            const formatDate = date.split('-')
+            return `${formatDate[2]}-${formatDate[1]}-${formatDate[0]}`
+        } else {
+            return ''
+        }
+    }
+    console.log(formik.values.arrivalDate === formik.values.departureDate)
     return (
         <Card style={{ marginTop: '10px' }} className='shadow-5'>
             <div style={{ display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
@@ -504,7 +517,7 @@ const EventForm = (props) => {
                                     }
                                     helperText={
                                         formik.touched.arrivalDate && (formik.errors.arrivalDate ||
-                                            (formik.values.arrivalDate < (lockarrivaldate || eventDate) || formik.values.arrivalDate > eventDate) ? lockarrivaldate ? `Date must be ${lockarrivaldate} - ${eventDate} ` : `Date must be ${eventDate}` : "")
+                                            (formik.values.arrivalDate < (lockarrivaldate || eventDate) || formik.values.arrivalDate > eventDate) ? lockarrivaldate ? `Date must be ${getDate(lockarrivaldate)} - ${getDate(eventDate)} ` : `Date must be ${getDate(eventDate)}` : "")
                                     }
                                     inputProps={{ min: lockarrivaldate || eventDate, max: eventDate }}
                                 />
@@ -566,9 +579,16 @@ const EventForm = (props) => {
                                             value={formik.values.arrivalTrainNumber}
                                             onChange={formik.handleChange}
                                             onBlur={formik.handleBlur}
-                                            error={formik.touched.arrivalTrainNumber && Boolean(formik.errors.arrivalTrainNumber)}
-                                            helperText={formik.touched.arrivalTrainNumber && formik.errors.arrivalTrainNumber}
+                                            error={
+                                                (formik.touched.arrivalTrainNumber && Boolean(formik.errors.arrivalTrainNumber)) ||
+                                                (formik.values.arrivalModeOfTransport === 'Train' && !formik.values.arrivalTrainNumber)
+                                            }
+                                            helperText={
+                                                (formik.touched.arrivalTrainNumber && formik.errors.arrivalTrainNumber) ||
+                                                ((formik.values.arrivalModeOfTransport === 'Train' && !formik.values.arrivalTrainNumber) && 'Train number required')
+                                            }
                                         />
+
                                     </div>
                                 )}
                         </div>
@@ -599,13 +619,13 @@ const EventForm = (props) => {
                                     onBlur={formik.handleBlur}
                                     error={
                                         (formik.touched.departureDate && Boolean(formik.errors.departureDate)) ||
-                                        (formik.values.departureDate < eventDate || formik.values.departureDate > (lockdeparturedetail || eventDate))
+                                        (formik.values.departureDate<formik.values.arrivalDate)
                                     }
                                     helperText={
                                         formik.touched.departureDate && (formik.errors.departureDate ||
-                                            (formik.values.departureDate < eventDate || formik.values.departureDate > (lockdeparturedetail || eventDate)) ? lockdeparturedetail ? `Date must be ${lockdeparturedetail} - ${eventDate} ` : `Date must be ${eventDate}` : "")
+                                            (formik.values.departureDate < formik.values.arrivalDate) ? lockdeparturedetail ? `Date must be ${getDate(formik.values.arrivalDate)} - ${getDate(lockdeparturedetail)} ` : `Date must be ${getDate(eventDate)}` : "")
                                     }
-                                    inputProps={{ min: eventDate, max: lockdeparturedetail || eventDate }}
+                                    inputProps={{ min: lockarrivaldate || eventDate, max: lockdeparturedetail || eventDate }}
                                 />
 
                             </div>
@@ -622,9 +642,22 @@ const EventForm = (props) => {
                                     value={formik.values.departureTime}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
-                                    error={formik.touched.departureTime && Boolean(formik.errors.departureTime)}
-                                    helperText={formik.touched.departureTime && formik.errors.departureTime}
+                                    error={
+                                        formik.touched.departureTime && (
+                                            Boolean(formik.errors.departureTime) ||
+                                            (formik.values.arrivalDate === formik.values.departureDate && formik.values.departureTime && formik.values.arrivalTime && formik.values.departureTime < formik.values.arrivalTime)
+                                        )
+                                    }
+                                    helperText={
+                                        formik.touched.departureTime &&
+                                        (formik.errors.departureTime ||
+                                            ((formik.values.arrivalDate === formik.values.departureDate && formik.values.departureTime && formik.values.arrivalTime && formik.values.departureTime < formik.values.arrivalTime) ?
+                                                'Departure time must be greater than arrival time' :
+                                                '')
+                                        )
+                                    }
                                 />
+
                             </div>
                             <div>
 
@@ -665,8 +698,14 @@ const EventForm = (props) => {
                                             value={formik.values.departureTrainNumber}
                                             onChange={formik.handleChange}
                                             onBlur={formik.handleBlur}
-                                            error={formik.touched.departureTrainNumber && Boolean(formik.errors.departureTrainNumber)}
-                                            helperText={formik.touched.departureTrainNumber && formik.errors.departureTrainNumber}
+                                            error={
+                                                (formik.touched.departureTrainNumber && Boolean(formik.errors.departureTrainNumber)) ||
+                                                (formik.values.departureModeOfTransport === 'Train' && !formik.values.departureTrainNumber)
+                                            }
+                                            helperText={
+                                                (formik.touched.departureTrainNumber && formik.errors.departureTrainNumber) ||
+                                                ((formik.values.departureModeOfTransport === 'Train' && !formik.values.departureTrainNumber) && 'Train number required')
+                                            }
                                         />
                                     </div>
                                 )

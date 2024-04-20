@@ -24,14 +24,7 @@ const UserEventCard = () => {
 
 
     useEffect(() => {
-        const params = {
-            page: 1,
-            rowsPerPage: 200,
-            eventName: '',
-            eventStatus: true,
-            bookingStatus: true
-        };
-        axios.get(eventAPIConfig.allEventList, { params }, {
+        axios.get(eventAPIConfig.allEventList, {
             headers: {
                 'Content-type': 'multipart/form-data',
                 Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
