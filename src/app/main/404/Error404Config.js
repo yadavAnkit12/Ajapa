@@ -11,6 +11,7 @@ const Error404PageConfig = {
     {
       path: '404',
       element: <Error404Page />,
+      auth: ["Super", "User"]
     },
   ],
 };

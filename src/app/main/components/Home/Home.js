@@ -192,7 +192,7 @@ function Home() {
           </CardActionArea>
         </Card>
       </div>
-
+{/* 
       <div className='flex flex-col py-4 items-center justify-center' style={{ marginTop: '4rem' }} >
         <Typography style={{ fontStyle: 'normal', fontSize: '24px', lineHeight: '28px', letterSpacing: '0px', textAlign: 'center', fontWeight: 'bold' }}>
           New Feed
@@ -228,7 +228,7 @@ function Home() {
             </Grid>
           ))}
         </Grid>
-      </div>
+      </div> */}
 
 
 
