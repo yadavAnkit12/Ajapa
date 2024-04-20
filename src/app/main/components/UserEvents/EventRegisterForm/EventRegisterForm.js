@@ -21,7 +21,6 @@ const EventRegisterForm = () => {
 
     const routeParams = useParams();
     const { eventId, userId, eventDate, eventName } = routeParams
-
     const [isEventFormOpen, setEventFormOpen] = useState(false);
     const [selectedUserId, setSelectedUserId] = useState(null);
     const [userListData, setUserListData] = useState([]);
