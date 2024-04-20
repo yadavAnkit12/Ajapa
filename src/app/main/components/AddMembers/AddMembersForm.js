@@ -202,10 +202,18 @@ function AddMembersForm() {
             setStateID(response.data.user.state.split(":")[0]);
             setCityID(response.data.user.city.split(":")[0]);
           }
-          setLoading(false)
+          else {
+            dispatch(
+              showMessage({
+                message: response.data.errorMessage,
+                variant: "error",
+              })
+            );
+          }
+          // setLoading(false)
         });
     }
-  }, []);
+  }, [routeParams]);
 
   //fetching the country list
   useEffect(() => {
