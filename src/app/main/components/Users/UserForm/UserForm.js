@@ -116,7 +116,7 @@ function UserForm() {
 
   useEffect(() => {
     formik.resetForm();
-  }, [routeParams]);
+  }, []);
 
   useEffect(() => {
     const { id } = routeParams;
@@ -185,8 +185,7 @@ function UserForm() {
           setLoading(false);
         }
       });
-  }, []);
-
+  }, [routeParams]);
   //fetching the country list
   useEffect(() => {
     axios
@@ -463,13 +462,12 @@ function UserForm() {
     );
   }
 
-  if (!formik.values.id) {
-    return <FuseLoading />;
-  }
+  // if (!formik.values.id) {
+  //   return <FuseLoading />;
+  // }
   function handleTabChange(event, value) {
     setTabValue(value);
   }
- console.log(formik)
   return (
     <FormProvider>
       <FusePageCarded

@@ -399,6 +399,7 @@ const ForgotPassword = (props) => {
                   fontWeight: 600,
                   letterSpacing: "0px",
                 }}
+                className="mb-24"
               />
             )}
 

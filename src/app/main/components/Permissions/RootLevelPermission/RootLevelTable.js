@@ -4,21 +4,17 @@ import _ from '@lodash';
 import EditIcon from '@mui/icons-material/Edit';
 import PersonIcon from '@mui/icons-material/Person';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import {
-  Modal, Table, TableBody, TableCell, TablePagination, TableRow, Typography, IconButton, Box,
-  Button, MenuItem, Menu, Dialog, DialogTitle, DialogActions, Slide
-} from '@mui/material';
+import { Modal, Table, TableBody, TableCell, TablePagination, TableRow, Typography, IconButton, Box, Button, MenuItem, Menu, Dialog, DialogTitle, DialogActions, Slide, Switch } from '@mui/material';
 import axios from 'axios';
-import { motion } from 'framer-motion';
+import { color, motion } from 'framer-motion';
 import { useEffect, useState, useRef, forwardRef } from 'react';
 import { showMessage } from 'app/store/fuse/messageSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from "react-router-dom";
-import { eventAPIConfig, userAPIConfig } from '../../API/apiConfig';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
-import UserTableHead from './UserTableHead';
-import UserView from './UserView';
-// import EventView from './EventView';
+import { tuple } from 'yup';
+import RootLevelTableHead from './RootLevelTableHead';
+import { eventAPIConfig } from 'src/app/main/API/apiConfig';
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -38,77 +34,35 @@ const style = {
   overflow: 'auto',
 };
 
-const menuItemArray = (status) => {
-  if (status === 'Approved') {
-    return [
-      {
-        key: 1,
-        label: 'View',
-        status: 'View',
-      },
-      {
-        key: 2,
-        label: 'Edit',
-        status: 'Edit',
-      },
-      {
-        key: 3,
-        label: 'Reject', // Show "Unblock" when isBlocked is true
-        status: 'Rejected', // You can define the status value here
-      },
-    ];
-  } else if (status === 'Rejected') {
-    return [
-      {
-        key: 4,
-        label: 'View',
-        status: 'View',
-      },
-      {
-        key: 5,
-        label: 'Edit',
-        status: 'Edit',
-      },
-      {
-        key: 6,
-        label: 'Approve',
-        status: 'Approved',
-      }
-    ];
-  }
-  else {
-    return [
-      {
-        key: 7,
-        label: 'View',
-        status: 'View',
-      },
-      {
-        key: 8,
-        label: 'Edit',
-        status: 'Edit',
-      },
-      {
-        key: 9,
-        label: 'Approve',
-        status: 'Approved',
-      },
-      {
-        key: 10,
-        label: 'Reject', // Show "Unblock" when isBlocked is true
-        status: 'Rejected', // You can define the status value here
-      },
-
-    ];
-  }
-};
+const menuItemArray = [
+  // {
+  //   key: 1,
+  //   label: 'View',
+  //   status: 'view',
+  //   // visibleIf: ['complete', 'active', 'inactive'],
+  //   loadIf: true
+  // },
+  {
+    key: 1,
+    label: 'Edit',
+    status: 'edit',
+    // visibleIf: ['complete', 'active', 'inactive'],
+    loadIf: true
+  },
+  // {
+  //   key: 1,
+  //   label: 'Delete',
+  //   status: 'delete',
+  //   // visibleIf: ['complete', 'active', 'inactive'],
+  //   loadIf: true
+  // },
+]
 
 
-function UserTable(props) {
-  console.log('table')
+function RootLevelTable(props) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [userListData, setUserListData] = useState([]);
+  const [eventListData, setEventListData] = useState([]);
   const searchText = props.searchText;
 
   const [loading, setLoading] = useState(true);
@@ -128,12 +82,9 @@ function UserTable(props) {
   const [change, setChange] = useState(false);
   const [open, setOpen] = useState(false)
   const [deleteId, setDeleteId] = useState('')
-  const [changeStatus, setChangeStatus] = useState('')
 
   useEffect(() => {
-    if (props.filterValue !== '') {
-      fetchData();
-    }
+    fetchData();
   }, [props?.change, rowsPerPage, page, props?.filterValue, searchText]);
 
   useEffect(() => {
@@ -169,31 +120,29 @@ function UserTable(props) {
     setLoading(true)
     const params = {
       page: page + 1,
-      rowsPerPage: rowsPerPage,
-      searchText: searchText,
-      ...(props.filterValue.status !== 'All' && ({ status: _.get(props, 'filterValue.status') })),
-      ...(props.filterValue.country !== 'All' && props.filterValue.country !== null  && ({ country: _.get(props, 'filterValue.country') })),
-      ...(props.filterValue.state !== 'All'&& props.filterValue.state !== null && ({ state: _.get(props, 'filterValue.state') })),
-      ...(props.filterValue.city !== 'All'&& props.filterValue.city !== null && ({ city: _.get(props, 'filterValue.city') })),
-      ...(props.filterValue.isHead !== 'All' && ({ role: 'User' })),
-      ...(props.filterValue.isDisciple !== 'All' && ({ isDisciple: _.get(props, 'filterValue.isDisciple')==='Disciple'?'Yes':'No' })),
+      rowsPerPage: rowsPerPage, // Example data to pass in req.query
+      eventName: searchText,
+      eventStatus: (_.get(props, 'filterValue.eventStatus') === 'On' || _.get(props, 'filterValue') === '' || _.get(props, 'filterValue.eventStatus') === null) ? true : false,
+      bookingStatus: (_.get(props, 'filterValue.bookingStatus') === 'On' || _.get(props, 'filterValue') === '' || _.get(props, 'filterValue.bookingStatus') === null) ? true : false,
     };
-    axios.get(userAPIConfig.list, { params }, {
+    const flag1 = props.filterValue === '' || props.filterValue.eventStatus === null ? 'On' : props.filterValue.eventStatus
+    const flag2 = props.filterValue === '' || props.filterValue.bookingStatus === null ? 'On' : props.filterValue.bookingStatus
+    axios.get(`${eventAPIConfig.list}/${flag1}/${flag2}`, { params }, {
       headers: {
         'Content-type': 'multipart/form-data',
-        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+        authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
       },
     }).then((response) => {
       if (response.status === 200) {
-        setUserListData(response?.data);
+        setEventListData(response?.data);
         setLoading(false);
       } else {
         setLoading(false)
         dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
       }
-    }).catch((error) => {
+    }).catch(() => {
       setLoading(false)
-      dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
+      dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
     })
   };
 
@@ -217,33 +166,14 @@ function UserTable(props) {
   }
 
   function getStatus(id, selectedValue) {
-    if (selectedValue === 'View') {
+
+    if (selectedValue === 'edit') {
       setOpenView(true)
       setViewId(id)
-
     }
-    else if (selectedValue === 'Edit') {
-      navigate(`/app/useredit/${id}`)
-    }
-
-    else if (selectedValue === 'Approved') {
-      setChangeStatus('Approve')
-      setViewId(id)
-      setOpen(true)
-
-    }
-    else if (selectedValue === 'Pending') {
-      setChangeStatus('Pending')
-      setViewId(id)
-      setOpen(true)
-
-    }
-    else if (selectedValue === 'Rejected') {
-      setChangeStatus('Reject')
-      setViewId(id)
-      setOpen(true)
-
-    }
+    // else if (selectedValue === 'edit') {
+    //   navigate(`/app/eventRegisteration/${id}`)
+    // }
 
   }
 
@@ -251,42 +181,57 @@ function UserTable(props) {
     setOpen(false)
   }
 
-  const handleChangeStatus = () => {
-    const formData = new FormData()
-    if (changeStatus === 'Approve') {
+  //chnaging the booking status
+//   const handleChnangeBookingStatus = (id, status) => {
+//     setLoading(true)
+//     axios.post(`${eventAPIConfig.changeBookingStatus}/${id}/${!status}`, {
+//       headers: {
+//         'Content-type': 'multipart/form-data',
+//         Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+//       },
+//     }).then((response) => {
+//       if (response.status === 200) {
+//         fetchData()
+//         setLoading(false)
+//         dispatch(showMessage({ message: response.data.message, variant: 'success' }));
 
-      formData.append('status', 'Approved')
-    }
-    else if (changeStatus === 'Reject') {
-      formData.append('status', 'Rejected')
-    }
-    else {
-      formData.append('status', 'Pending')
-    }
-    formData.append('id', viewid)
-    axios.post(userAPIConfig.changeStatus, formData, {
-      headers: {
-        'Content-type': 'multipart/form-data',
-        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`
-      },
-    }).then((response) => {
-      if (response.status === 200) {
-        dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-        handleClose()
-        fetchData()
+//       } else {
+//         setLoading(false)
+//         dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
+//       }
+//     }).catch(() => {
+//       setLoading(false)
+//       dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
+//     })
 
-      }
-      else {
-        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
+//   }
+  //chnaging the event status
+//   const handleChangeEventStatus = (id, status) => {
+//     axios.post(`${eventAPIConfig.changeEventStatus}/${id}/${!status}`, {
+//       headers: {
+//         'Content-type': 'multipart/form-data',
+//         Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+//       },
+//     }).then((response) => {
+//       if (response.status === 200) {
+//         fetchData()
+//         setLoading(false)
+//         dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+//       } else {
+//         setLoading(false)
+//         dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
+//       }
+//     }).catch(() => {
+//       setLoading(false)
+//       dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
+//     })
 
-      }
-    })
-  }
+//   }
 
   function handleSelectAllClick(event) {
     if (event.target.checked) {
-      setSelected(_.size(_.get(userListData, 'data')) > 0 ?
-        _.get(userListData, 'data').map((n) => n.userId) :
+      setSelected(_.size(_.get(eventListData, 'data')) > 0 ?
+        _.get(eventListData, 'data').map((n) => n.eventId) :
         {}
       );
       return;
@@ -312,18 +257,7 @@ function UserTable(props) {
     tableRef.current && tableRef.current.scrollIntoView();
 
   };
-  const getStatusColor = (status) => {
-    switch (status.toLowerCase()) {
-      case 'approved':
-        return 'green';
-      case 'pending':
-        return '#FFC72C';
-      case 'rejected':
-        return 'red';
-      default:
-        return 'inherit'; // or any other default color
-    }
-  };
+
 
   if (loading) {
     return (
@@ -333,7 +267,7 @@ function UserTable(props) {
     );
   }
 
-  if (!_.size(_.get(userListData, 'data'))) {
+  if (!_.size(_.get(eventListData, 'data'))) {
     return (
       <motion.div
         initial={{ opacity: 0 }}
@@ -341,7 +275,7 @@ function UserTable(props) {
         className="flex flex-1 items-center justify-center h-full"
       >
         <Typography color="text.secondary" variant="h5">
-          There are no User!
+          There are no Events!
         </Typography>
       </motion.div>
     );
@@ -350,17 +284,17 @@ function UserTable(props) {
   return (
     <div className="w-full flex flex-col min-h-full" style={{ overflow: 'auto' }}>
       <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle" ref={tableRef}>
-        <UserTableHead
+        <RootLevelTableHead
           selectedProductIds={selected}
           order={order}
           onSelectAllClick={handleSelectAllClick}
           onRequestSort={handleRequestSort}
-          rowCount={userListData?.data?.length}
+          rowCount={eventListData?.length}
           onMenuItemClick={handleDeselect}
         />
         <TableBody>
           {
-            userListData?.data?.map((n) => {
+            eventListData?.data?.map((n) => {
               const isSelected = selected.indexOf(n.eventId) !== -1;
               return (
                 <TableRow
@@ -374,43 +308,44 @@ function UserTable(props) {
                   style={{ cursor: 'default' }}
                 >
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.familyId}
-                  </TableCell>
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.name}
-                    {n.role === 'User' ? <span style={{ color: 'red', fontSize: '1.8rem' }}>*</span> : ""}
-                  </TableCell>
-
-                  <TableCell className="p-4 md:p-16" component="th" scope="row">
-                    {n.email === '' ? 'N/A' : n.email}
-                  </TableCell>
-
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" >
-                    {n.mobileNumber === '' ? 'N/A' : n.mobileNumber}
-
-                  </TableCell>
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.country.split(':')[1]}
-                  </TableCell>
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.state.split(':')[1]}
-                  </TableCell>
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.city.split(':')[1]}
+                    {n.eventName}
                   </TableCell>
 
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.dob}
+                    {n.eventType}
                   </TableCell>
-                  {/* <TableCell
-                    className="p-4 md:p-16"
-                    component="th"
-                    scope="row"
-                    align="center"
-                    style={{ fontWeight: 'bold', color: getStatusColor(n.status) }}
-                  >
-                    {n.status}
+
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                    {n.eventLocation}
+
+                  </TableCell>
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                    {n.eventDate}
+                  </TableCell> 
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                    {n.shivirAvailable ? 'Yes' : 'No'}
+                  </TableCell>
+
+                 {/*  <TableCell className="p-4 md:p-16" component="th" scope="row" align="center">
+                    <Switch
+                      checked={n.eventStatus}
+                      color="success"
+                      inputProps={{ 'aria-label': 'toggle event status' }}
+                      onChange={() => handleChangeEventStatus(n.eventId, n.eventStatus)}
+                    />
+                    {n.eventStatus ? 'On' : 'Off'}
+                  </TableCell>
+
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align="center">
+                    <Switch
+                      checked={n.bookingStatus}
+                      color="success"
+                      inputProps={{ 'aria-label': 'toggle booking status' }}
+                      onChange={() => handleChnangeBookingStatus(n.eventId, n.bookingStatus)}
+                    />
+                    {n.bookingStatus ? 'On' : 'Off'}
                   </TableCell> */}
+
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     <PopupState variant="popover" popupId="demo-popup-menu">
                       {(popupState) => (
@@ -420,11 +355,10 @@ function UserTable(props) {
                           </Button>
                           <Menu {...bindMenu(popupState)}>
 
-                            {menuItemArray(n.status).map((value) => (
-                              <MenuItem
+                            {menuItemArray.map((value) => (
+                              (value.loadIf) && <MenuItem
                                 onClick={() => {
-                                  getStatus(n.id, value.status);
-
+                                  getStatus(n.eventId, value.status, n.eventStatus);
                                   popupState.close();
                                 }}
                                 key={value.key}
@@ -450,9 +384,9 @@ function UserTable(props) {
       <TablePagination
         className="shrink-0 border-t-1"
         component="div"
-        count={userListData.totalElement}
-        rowsPerPage={userListData.rowPerPage}
-        page={userListData.pageNumber - 1}
+        count={eventListData.totalElement}
+        rowsPerPage={eventListData.rowPerPage}
+        page={eventListData.pageNumber - 1}
         backIconButtonProps={{
           'aria-label': 'Previous Page',
         }}
@@ -462,26 +396,26 @@ function UserTable(props) {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      <Dialog
+      {/* <Dialog
         open={open}
         TransitionComponent={Transition}
         keepMounted
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>{`Do you want to ${changeStatus} this User?`}</DialogTitle>
+        <DialogTitle>{"Do you want to delete this Event?"}</DialogTitle>
 
         <DialogActions>
           <Button onClick={handleClose}>No</Button>
-          <Button onClick={handleChangeStatus} autoFocus>
+          <Button onClick={deleteEvent} autoFocus>
             Yes
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
       <Modal
         open={openView}
         onClose={handleViewClose}
-        aria-labelledby="modal-modaltitle-"
+        aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
         <Box sx={{
@@ -493,16 +427,12 @@ function UserTable(props) {
             width: '93%', // Set width to 82% for screens up to 280px
           },
         }}>
-          <UserView data={viewid} handleViewClose={handleViewClose} />
+          {/* <AdminForm handleViewClose={handleViewClose} viewid={viewid} /> */}
         </Box>
       </Modal>
-
-
-
-
 
     </div>
   );
 }
 
-export default withRouter(UserTable);
+export default withRouter(RootLevelTable);
