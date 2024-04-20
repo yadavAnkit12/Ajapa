@@ -121,7 +121,7 @@ function Home() {
             <CardMedia className='h-256'
               component="img"
               height="140"
-              image="assets/images/cards/ashram1.jpg"
+              image="assets/images/cards/Ashrams.jpg"
               alt="green iguana"
             />
             <CardContent>
@@ -140,7 +140,7 @@ function Home() {
             <CardMedia className='h-256'
               component="img"
               height="140"
-              image="assets/images/cards/guru-1.jpg"
+              image="assets/images/cards/Gurus.jpg"
               alt="green iguana"
             />
             <CardContent>
@@ -178,7 +178,7 @@ function Home() {
             <CardMedia className='h-256'
               component="img"
               height="140"
-              image="assets/images/cards/contact-us.jpg"
+              image="assets/images/cards/Contact us.jpg"
               alt="green iguana"
             />
             <CardContent>
