@@ -45,6 +45,11 @@ function Gurus() {
           </div>
 
           <div className='grid grid-cols-12 gap-4 my-4 '>
+            <div className='col-span-12 sm:col-span-4 flex flex-col justify-center sm:items-start  items-center'>
+
+              <img className='h-256' src="assets/images/cards/guru2.jpg" alt="" />
+
+            </div>
 
             <div className='col-span-12 sm:col-span-8 text-justify'>
               <Typography variant="body2" color="text.primary" className='font-bold my-4' >
@@ -57,11 +62,7 @@ function Gurus() {
 
             </div>
 
-            <div className='col-span-12 sm:col-span-4 flex flex-col justify-center sm:items-end items-center'>
 
-              <img className='h-256' src="assets/images/cards/guru2.jpg" alt="" />
-
-            </div>
 
           </div>
 
@@ -96,6 +97,11 @@ function Gurus() {
           </div>
 
           <div className='grid grid-cols-12 gap-4 my-4 '>
+            <div className='col-span-12 sm:col-span-4 flex flex-col justify-center sm:items-start  items-center'>
+
+              <img className='h-256' src="assets/images/cards/guru4.jpg" alt="" />
+
+            </div>
 
 
             <div className='col-span-12 sm:col-span-8 text-justify'>
@@ -110,11 +116,7 @@ function Gurus() {
             </div>
 
 
-            <div className='col-span-12 sm:col-span-4 flex flex-col justify-center  items-center sm:items-end '>
 
-              <img className='h-256' src="assets/images/cards/guru4.jpg" alt="" />
-
-            </div>
 
           </div>
 
@@ -153,6 +155,11 @@ function Gurus() {
           </div>
 
           <div className='grid grid-cols-12 gap-4 my-4 '>
+            <div className='col-span-12 sm:col-span-4 flex flex-col justify-center sm:items-start  items-center'>
+
+              <img className='h-256' src="assets/images/cards/sikshaguru.jpg" alt="" />
+
+            </div>
 
 
             <div className='col-span-12 sm:col-span-8 text-justify'>
@@ -162,17 +169,13 @@ function Gurus() {
 
               <Typography variant="body2" color="text.primary">
 
-                Shri Neeraj Goswami is an internationally acclaimed artist and a former Honorary Professor at the Delhi College of Art in New Delhi. His paintings portray a unique movement in Indian art in which art becomes a manifestation of spiritual experiences and transcendence. He is also a highly advanced practitioner of Ajapa Yog. In 2018 Shri Swami Guru Prasad Paramhans anointed him as Shiksha Guru (master of Ajapa) of Ajapa Yog Sansthan. He carries an immense responsibility of spreading the knowledge of Ajapa Yog in India and around the world. Shri Neeraj Goswami conducts intense meditation workshops at Gyan Ganj Jamshedpur and other Ajapa ashrams to teach the technique of Ajapa Yog. He also conducts Ajapa Confluences along with Guru Swami Guru Prasad Paramhans to introduce the science of Ajapa Yog in India and around the world.
+                Shri Neeraj Goswami is an internationally acclaimed artist and a former Honorary Professor at the Delhi College of Art in New Delhi. His paintings portray a unique movement in Indian art in which art becomes a manifestation of spiritual experiences and transcendence. He is also a highly advanced practitioner of Ajapa Yog. In 2018 Shri Swami Guru Prasad Paramhans appointed him as Shiksha Guru (master of Ajapa) of Ajapa Yog Sansthan. He carries an immense responsibility of spreading the knowledge of Ajapa Yog in India and around the world. Shri Neeraj Goswami conducts intense meditation workshops at Gyan Ganj Jamshedpur and other Ajapa ashrams to teach the technique of Ajapa Yog. He also conducts Ajapa Confluences along with Guru Swami Guru Prasad Paramhans to introduce the science of Ajapa Yog in India and around the world.
               </Typography>
 
             </div>
 
 
-            <div className='col-span-12 sm:col-span-4 flex flex-col justify-center  items-center sm:items-end '>
 
-              <img className='h-256' src="assets/images/cards/sikshaguru.jpg" alt="" />
-
-            </div>
 
           </div>
 
