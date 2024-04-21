@@ -757,10 +757,10 @@ const EventForm = (props) => {
                     </div>
                 </div>
 
-                <div style={{ float: 'right', padding: '10px' }}>
+                <div style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
 
-                    <Button variant="outlined" onClick={openDialog}>Close</Button>
-                    <Button variant="outlined" type='submit'>Save</Button>
+                    <Button variant="outlined" onClick={openDialog} className='mx-2'>Close</Button>
+                    <Button variant="outlined" type='submit' className='mx-2'>Save</Button>
                 </div>
                 <Dialog
                     open={open}

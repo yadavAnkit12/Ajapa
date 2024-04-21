@@ -336,7 +336,7 @@ function EventTable(props) {
                     {n.shivirAvailable ? 'Yes' : 'No'}
                   </TableCell>
 
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align="center">
+                  <TableCell className="p-4 md:p-16 " component="th" scope="row" align="center">
                     <Switch
                       checked={n.eventStatus}
                       color="success"
