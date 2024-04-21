@@ -240,6 +240,24 @@ function Report3Table(props) {
     );
   }
 
+ // Function to format the date part of a datetime string from yyyy-mm-dd to dd-mm-yyyy
+function formatDate(inputDateTime) {
+  // Split the datetime string into date and time parts
+  const [datePart, timePart] = inputDateTime.split('|');
+
+  // Split the date part into year, month, and day
+  const [year, month, day] = datePart.split('-');
+
+  // Format the date part as dd-mm-yyyy
+  const formattedDate = `${day}-${month}-${year}`;
+
+  // Concatenate the formatted date with the time part
+  const formattedDateTime = `${formattedDate}|${timePart}`;
+
+  return formattedDateTime;
+}
+
+
   return (
     <div className="w-full flex flex-col min-h-full" style={{ overflow: 'auto' }}>
       <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle" ref={tableRef}>
@@ -276,10 +294,10 @@ function Report3Table(props) {
                     {n.mobileNumber === '' ? 'N/A' : n.mobileNumber}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.arrivalDateTime}
+                    {formatDate(n.arrivalDateTime)}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.departureDateTime}
+                    {formatDate(n.departureDateTime)}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.specialRequirements === '' ? 'N/A' : n.specialRequirements}

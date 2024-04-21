@@ -347,6 +347,14 @@ function UserTable(props) {
     );
   }
 
+     // function to convert date from yyyy-mm-dd format to dd-mm-yyyy
+     function formatDate(inputDate) {
+      const parts = inputDate.split('-');
+      const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+  
+      return formattedDate;
+  }
+
   return (
     <div className="w-full flex flex-col min-h-full" style={{ overflow: 'auto' }}>
       <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle" ref={tableRef}>
@@ -400,7 +408,7 @@ function UserTable(props) {
                   </TableCell>
 
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.dob}
+                    {formatDate(n.dob)}
                   </TableCell>
                   {/* <TableCell
                     className="p-4 md:p-16"

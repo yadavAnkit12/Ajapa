@@ -289,7 +289,13 @@ function AttendanceTable(props) {
     }
   };
 
-
+     // function to convert date from yyyy-mm-dd format to dd-mm-yyyy
+     function formatDate(inputDate) {
+      const parts = inputDate.split('-');
+      const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+  
+      return formattedDate;
+  }
 
   return (
     <div className="w-full flex flex-col min-h-full" style={{ overflow: 'auto' }}>
@@ -337,7 +343,7 @@ function AttendanceTable(props) {
                     {user?.user?.email === '' ? 'N/A' : user?.user?.email}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {user?.user?.dob}
+                    {formatDate(user?.user?.dob)}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {user?.user?.mobileNumber === '' ? 'N/A' : user?.user?.mobileNumber}
