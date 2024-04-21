@@ -207,6 +207,31 @@ function Ashrams() {
 
                     </div>
 
+                    <div className='flex flex-col items-center justify-center my-8 pb-8'>
+                        <img src="assets/images/cards/hr-design-1.png" alt="" />
+                    </div>
+
+                    <div className='grid grid-cols-12 gap-4 my-4 '>
+
+                        <div className='col-span-12 sm:col-span-4 flex flex-col justify-center sm:items-start  items-center'>
+
+                            <img className='h-256' src="assets/images/cards/jagatpur-ashram.jpg" alt="" />
+
+                        </div>
+                        <div className='col-span-12 sm:col-span-8  text-justify'>
+                            <Typography variant="body2" color="text.primary" className='font-bold my-4' >
+                            Shri Purnanand Ajapa Yoga Sansthan (Jagatpur Ashram) P.O B.I.T, Upa-Jila: Raozan Chittagong
+                            </Typography>
+
+                            <Typography variant="body2" color="text.primary" >
+                            This is the first Ajapa ashram and was established by Shri Swami Purnanand Paramhans in the year 1899.
+                            </Typography>
+
+                        </div>
+
+
+                    </div>
+
                 </Container>
             </div>
         </div>
