@@ -21,6 +21,7 @@ import axios from 'axios';
 import jwtServiceConfig from 'src/app/auth/services/jwtService/jwtServiceConfig';
 import ReCAPTCHA from 'react-google-recaptcha';
 import FuseLoading from '@fuse/core/FuseLoading';
+import Swal from 'sweetalert2';
 
 const INITIAL_COUNT = 120
 
@@ -89,6 +90,14 @@ function SignInPage() {
     setOpenModal(false);
   };
 
+  useEffect(() => {
+    Swal.fire({
+      title: "<span style='font-weight: bold; font-size: 20px;'>Welcome to Ajapa</span>",
+      html: `<span style="font-weight: bold; font-size: 16px;">If you are visiting first time then please login using OTP and then update your password</span>`,
+      icon: "info",
+      confirmButtonText: "<span style='font-weight: bold; font-size: 16px;'>OK</span>"
+  }); 
+  }, [])
   const handleCheckboxChange = () => {
     setShowEmail(!showEmail);
     formik.setFieldValue('mobileNumber', '')
