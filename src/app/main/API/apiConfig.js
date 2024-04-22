@@ -2,42 +2,43 @@ const key = process.env.REACT_APP_URL;
 
 export const userAPIConfig = {
     getPermissions: key + '/api/role/list/permission',
-    profileUpdate: key +'/api/user/edit',
-    list:key+'/user/list',
-    changeStatus:key+'/changeStatus',
-    getUserById:key+'/getUser',
-    updateUser:key + '/updateUser',
+    profileUpdate: key + '/api/user/edit',
+    list: key + '/user/list',
+    changeStatus: key + '/changeStatus',
+    getUserById: key + '/getUser',
+    updateUser: key + '/updateUser',
     updateUserWithImage: key + '/updateUserWithImage',
-    userReport:key + "/report/user/list",
+    userReport: key + "/report/user/list",
     userReportPDF: key + "/reportPdf/user/list",
     // getUserByFamily: key + '/getUsersByFamilyId',
-    changeHead:key + '/changeHead',
+    changeHead: key + '/changeHead',
     getUserByFamily: key + '/getApprovedUsersByFamilyId',
     myRegistration: key + '/event/registration/family/list',
-    sendSMS: key +'/sendCusmtomSMS',
+    sendSMS: key + '/sendCusmtomSMS',
     smsTemplate: key + '/groupSMS/list'
 }
 export const eventAPIConfig = {
     create: key + '/saveEvent',
-    createWithImage:key + "/saveEventWithImage",
-    list:key + '/event/list',
-    getById:key +'/event',
-    delete:key+ '/event/status',
-    view:key + '/event',
-    changeBookingStatus:key +'/event/booking',
-    changeEventStatus:key+'/event/status',
-    userEventRegistration:key+'/event/registration/save',
+    createWithImage: key + "/saveEventWithImage",
+    list: key + '/event/list',
+    getById: key + '/event',
+    delete: key + '/event/status',
+    view: key + '/event',
+    changeBookingStatus: key + '/event/booking',
+    changeEventStatus: key + '/event/status',
+    userEventRegistration: key + '/event/registration/save',
     allEventRegistrationList: key + '/event/registration/list',
-    allEventList:key + '/event/all/list',
+    allEventList: key + '/event/all/list',
     checkEventRegistration: key + '/event/registration/family/event/list',
-    myRegistration:key+'/event/registration',
-    registrationDelete: key +'/event/registration/delete',
+    myRegistration: key + '/event/registration',
+    registrationDelete: key + '/event/registration/delete',
     fetchRegisterUserByEvent: key + '/event/registrations',
-    sendRoomBookingStatus: key + '/bookingStatus/send' ,
+    sendRoomBookingStatus: key + '/bookingStatus/send',
     saveOneAttendance: key + '/attendance/save/one',
-    eventReport:key + "/reportExcel/event/registration/list",
-    eventReportPdf:key + "/reportPDF/event/registration/list",
-    cancelAllRegistration:key + '/eventRegistrations/delete',
+    eventReport: key + "/reportExcel/event/registration/list",
+    eventReportPdf: key + "/reportPDF/event/registration/list",
+    cancelAllRegistration: key + '/eventRegistrations/delete',
+    checkUserRegisterForAllEvents: key + '/event/registration/user/check'
 }
 
 export const attendanceAPIConfig = {
@@ -47,22 +48,22 @@ export const attendanceAPIConfig = {
 
 export const foodAPIConfig = {
     saveFood: key + '/saveFoodDetails',
-    getFoodCheck : key + '/getFoodDetail',
+    getFoodCheck: key + '/getFoodDetail',
     getFoodDetails: key + '/getFoodDetails'
 }
 
 export const reportAPIConfig = {
-   report1arrival: key + '/report1/arrival/event/registrations',
-   report1departure : key +'/report1/departure/event/registrations',
-   report2arrival : key +'/report2/arrival/event/registrations',
-   report2departure : key +'/report2/departure/event/registrations',
-   report3 : key +'/report3/event/registrations'
+    report1arrival: key + '/report1/arrival/event/registrations',
+    report1departure: key + '/report1/departure/event/registrations',
+    report2arrival: key + '/report2/arrival/event/registrations',
+    report2departure: key + '/report2/departure/event/registrations',
+    report3: key + '/report3/event/registrations'
 }
 
 
 export const cardAPIConfig = {
     carddetails: key + '/getCardsDetails'
- }
+}
 
 
 
@@ -81,17 +82,17 @@ export const doctorAPIConfig = {
     doctorAppointment: key + '/api/doctor/appointment',
     doctorEarning: key + '/api/doctor/earning/list',
     fetchLanguages: key + '/api/util/languages',
-    block:key+'/api/doctor/BlockDoctor'
+    block: key + '/api/doctor/BlockDoctor'
 
 };
 
 export const caseAPIConfig = {
-   list:key+'/api/case/ListCases',
-   register:key+'/api/case/RegisterCase',
-   edit:key+'/api/case/EditRegisteredCase',
-   getCaseByID:key+'/api/case/GetSingleCase',
-   delete:key+'/api/case/DeleteSingleCase',
-   fileUpload:key+'/api/user/UploadSingleFile'
+    list: key + '/api/case/ListCases',
+    register: key + '/api/case/RegisterCase',
+    edit: key + '/api/case/EditRegisteredCase',
+    getCaseByID: key + '/api/case/GetSingleCase',
+    delete: key + '/api/case/DeleteSingleCase',
+    fileUpload: key + '/api/user/UploadSingleFile'
 }
 
 export const employeeAPIConfig = {
@@ -102,15 +103,15 @@ export const employeeAPIConfig = {
     changeStatus: key + '/api/user/changeStatus',
     list: key + '/api/user/ListEmployees',
     delete: key + '/api/user/DeleteEmployee',
-    block:key+'/api/user/BlockUser'
+    block: key + '/api/user/BlockUser'
 };
 
 export const attachmentAPIConfig = {
-    list:key+'/api/attachment/attachmentList',
-    edit:key+'/api/attachment/editAttachment',
-    delete:key+'/api/attachment/deleteAttachment',
-    getById:key+'/api/attachment/getAttachmentByCaseType',
-    
+    list: key + '/api/attachment/attachmentList',
+    edit: key + '/api/attachment/editAttachment',
+    delete: key + '/api/attachment/deleteAttachment',
+    getById: key + '/api/attachment/getAttachmentByCaseType',
+
 };
 
 export const patientAPIConfig = {
@@ -129,18 +130,18 @@ export const patientAPIConfig = {
     getAccount: key + '/api/wallet/web/get/account',
     fetchTransaction: key + '/api/wallet/fetch/transaction',
     walletPonit: key + '/api/wallet/web/point',
-    checkPatient:key +'/api/patient/fetchByMobile',
-    patientListForClinic:key+'/api/patient/PatientListForClinic'
+    checkPatient: key + '/api/patient/fetchByMobile',
+    patientListForClinic: key + '/api/patient/PatientListForClinic'
 
 };
 export const clinicAPIConfig = {
-    list:key + '/api/clinic/ListClinics',
-    register:key + '/api/clinic/RegisterClinic',
-    getById:key+'/api/clinic/GetClinicDetails',
-    delete:key+'/api/clinic/DeleteClinic',
-    update:key+'/api/clinic/EditClinic',
-    block:key+'/api/clinic/BlockClinic'
-    
+    list: key + '/api/clinic/ListClinics',
+    register: key + '/api/clinic/RegisterClinic',
+    getById: key + '/api/clinic/GetClinicDetails',
+    delete: key + '/api/clinic/DeleteClinic',
+    update: key + '/api/clinic/EditClinic',
+    block: key + '/api/clinic/BlockClinic'
+
 };
 
 export const partnerAPIConfig = {

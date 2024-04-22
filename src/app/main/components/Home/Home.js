@@ -90,7 +90,14 @@ function Home() {
   }
 
   const checkActiveEvents = () => {
-    axios.get(eventAPIConfig.allEventList, {
+    const params = {
+      page: 1,
+      rowsPerPage: 1000, // Example data to pass in req.query
+      eventName: '',
+      eventStatus: true,
+      bookingStatus: true,
+    };
+    axios.get(`${eventAPIConfig.list}/true/true`, { params }, {
       headers: {
         'Content-type': 'multipart/form-data',
         Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
@@ -98,12 +105,30 @@ function Home() {
     }).then((response) => {
       if (response.status === 200) {
         if (response.data.data.length > 0) {
-          setOpenEvents(true)
+          axios.get(eventAPIConfig.checkUserRegisterForAllEvents, {
+            headers: {
+              Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+            },
+          }).then((response) => {
+            if (response.status === 200) {
+              console.log(response)
+              if (response.data.result) { // this return true then user not register for all events
+                setOpenEvents(true)
+              } else {
+                setOpenEvents(false)
+              }
+            }
+          }).catch(() => {
+            dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
+          })
+
         } else {
           setOpenEvents(false)
         }
       }
-    });
+    }).catch(() => {
+      dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
+    })
   }
 
 
@@ -192,7 +217,7 @@ function Home() {
           </CardActionArea>
         </Card>
       </div>
-{/* 
+      {/* 
       <div className='flex flex-col py-4 items-center justify-center' style={{ marginTop: '4rem' }} >
         <Typography style={{ fontStyle: 'normal', fontSize: '24px', lineHeight: '28px', letterSpacing: '0px', textAlign: 'center', fontWeight: 'bold' }}>
           New Feed

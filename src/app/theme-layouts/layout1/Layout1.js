@@ -56,7 +56,10 @@ function Layout1(props) {
       } else {
         // dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
       }
-    });
+    }).catch(() => {
+      dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
+
+    })
   },[])
   return (
     <Root id="fuse-layout" config={config} className="w-full flex">
