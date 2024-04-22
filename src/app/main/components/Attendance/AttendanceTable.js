@@ -339,9 +339,9 @@ function AttendanceTable(props) {
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {user?.user?.gender}
                   </TableCell>
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                  {/* <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {user?.user?.email === '' ? 'N/A' : user?.user?.email}
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {formatDate(user?.user?.dob)}
                   </TableCell>

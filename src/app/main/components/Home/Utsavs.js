@@ -49,9 +49,14 @@ function Utsav() {
           </div>
 
           <div className='grid grid-cols-12 gap-4 my-4 '>
+            <div className='col-span-12 sm:col-span-4 flex flex-col justify-center sm:items-start  items-center'>
+
+              <img className='h-256 ' src="assets/images/cards/guruji.jpg" alt="" />
+
+            </div>
 
 
-            <div className='col-span-12  text-justify'>
+            <div className='col-span-12 sm:col-span-8 text-justify'>
               <Typography variant="body2" color="text.primary" className='font-bold my-4' >
                 6th January
               </Typography>
@@ -70,9 +75,14 @@ function Utsav() {
           </div>
 
           <div className='grid grid-cols-12 gap-4 my-4 '>
+            <div className='col-span-12 sm:col-span-4 flex flex-col justify-center sm:items-start  items-center'>
+
+              <img className='h-256' src="assets/images/cards/guru4.jpg" alt="" />
+
+            </div>
 
 
-            <div className='col-span-12  text-justify'>
+            <div className='col-span-12 sm:col-span-8 text-justify'>
               <Typography variant="body2" color="text.primary" className='font-bold my-4' >
                 28th April
               </Typography>
@@ -92,8 +102,14 @@ function Utsav() {
 
           <div className='grid grid-cols-12 gap-4 my-4 '>
 
+            <div className='col-span-12 sm:col-span-4 flex flex-col justify-center sm:items-start  items-center'>
 
-            <div className='col-span-12  text-justify'>
+              <img className='h-256' src="assets/images/cards/guru.jpg" alt="" />
+
+            </div>
+
+
+            <div className='col-span-12 sm:col-span-8 text-justify'>
               <Typography variant="body2" color="text.primary" className='font-bold my-4' >
                 Guru Purnima (June July)
               </Typography>
@@ -116,8 +132,14 @@ function Utsav() {
 
           <div className='grid grid-cols-12 gap-4 my-4 '>
 
+            <div className='col-span-12 sm:col-span-4 flex flex-col justify-center sm:items-start  items-center'>
 
-            <div className='col-span-12  text-justify'>
+              <img className='h-256' src="assets/images/cards/guru2.jpg" alt="" />
+
+            </div>
+
+
+            <div className='col-span-12 sm:col-span-8 text-justify'>
               <Typography variant="body2" color="text.primary" className='font-bold my-4' >
                 14th September
               </Typography>
@@ -135,9 +157,14 @@ function Utsav() {
           </div>
 
           <div className='grid grid-cols-12 gap-4 my-4 '>
+            <div className='col-span-12 sm:col-span-4 flex flex-col justify-center sm:items-start  items-center'>
+
+              <img className='h-256' src="assets/images/cards/guru4.jpg" alt="" />
+
+            </div>
 
 
-            <div className='col-span-12  text-justify'>
+            <div className='col-span-12 sm:col-span-8 text-justify'>
               <Typography variant="body2" color="text.primary" className='font-bold my-4' >
                 2nd December
               </Typography>
@@ -156,8 +183,14 @@ function Utsav() {
 
           <div className='grid grid-cols-12 gap-4 my-4 '>
 
+            <div className='col-span-12 sm:col-span-4 flex flex-col justify-center sm:items-start  items-center'>
 
-            <div className='col-span-12  text-justify'>
+              <img className='h-256' src="assets/images/cards/guru3.jpg" alt="" />
+
+            </div>
+
+
+            <div className='col-span-12 sm:col-span-8 text-justify'>
               <Typography variant="body2" color="text.primary" className='font-bold my-4' >
                 24th December
               </Typography>

@@ -154,7 +154,7 @@ function Home() {
                 Ashrams
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Discover serene retreats at our ashrams. Immerse yourself in yogic teachings and tranquil surroundings.
+              Visit Ashram to dive deep into timeless wisdom, unlock your true potential, and embark on a transformative journey of self-realisation.
               </Typography>
             </CardContent>
           </CardActionArea>
@@ -173,7 +173,7 @@ function Home() {
                 Gurus
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Meet our experienced and dedicated yoga gurus. Learn from the best to enhance your practice and well-being.
+              Guru is the revered Ajapa master, the self realized spiritual guide, embodying deep wisdom and compassion. The ancient Ajapa meditation technique is imparted by him to aid seekers on their journey of self realisation.
               </Typography>
             </CardContent>
           </CardActionArea>
@@ -210,8 +210,8 @@ function Home() {
               <Typography gutterBottom variant="h5" component="div">
                 Contact Us
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Reach out to us for all your yoga inquiries and queries. We're here to support your wellness journey.
+              <Typography variant="body2" color="text.secondary"  >
+              Have questions or seeking guidance on your spiritual journey? Reach out to us for personalized support and assistance. Our team at Ajapa Yog Sansthan is here to help you embark on a path of inner growth and self-discovery.
               </Typography>
             </CardContent>
           </CardActionArea>

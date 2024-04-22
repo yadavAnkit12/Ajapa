@@ -52,9 +52,16 @@ function Ashrams() {
 
 
                     <div className='grid grid-cols-12 gap-4 my-4 '>
+
+
+                        <div className='col-span-12 sm:col-span-4 flex flex-col justify-center sm:items-start  items-center'>
+
+                            <img className='h-256' src="assets/images/cards/Rishikesh-ashram-1.jpg" alt="" />
+
+                        </div>
                         <div className='col-span-12 sm:col-span-8  text-justify'>
                             <Typography variant="body2" color="text.primary" className='font-bold my-4' >
-                                Shri Purnanda Yogashram, Lakshman Jhula, Pauri Garwhal – 249 302, (Uttaranchal)
+                            Shri Purnananda Yogashram, Laxman Jhula, Pauri Garhwal – 249 302, (Uttarakhand)
                             </Typography>
 
                             <Typography variant="body2" color="text.primary" >
@@ -67,11 +74,6 @@ function Ashrams() {
 
                         </div>
 
-                        <div className='col-span-12 sm:col-span-4 flex flex-col justify-center  items-center sm:items-end '>
-
-                            <img className='h-256' src="assets/images/cards/Rishikesh-ashram-1.jpg" alt="" />
-
-                        </div>
                     </div>
 
                     <div className='flex flex-col items-center justify-center my-8 pb-8'>
@@ -81,7 +83,7 @@ function Ashrams() {
                     <div className='grid grid-cols-12 gap-4 my-4 '>
 
 
-                        <div className='col-span-12 sm:col-span-4 flex flex-col justify-center  items-center sm:items-end '>
+                        <div className='col-span-12 sm:col-span-4 flex flex-col justify-center sm:items-start  items-center'>
 
                             <img className='h-256' src="assets/images/cards/ashram1.jpg" alt="" />
 
@@ -106,6 +108,11 @@ function Ashrams() {
                     </div>
 
                     <div className='grid grid-cols-12 gap-4 my-4 '>
+                        <div className='col-span-12 sm:col-span-4 flex flex-col justify-center sm:items-start  items-center'>
+
+                            <img className='h-256' src="assets/images/cards/kanpur-ashram.jpg" alt="" />
+
+                        </div>
                         <div className='col-span-12 sm:col-span-8 text-justify'>
                             <Typography variant="body2" color="text.primary" className='font-bold my-4' >
                                 Shri Purnananda Ajapa Yog Sansthan Kanpur, Uttar Pradesh India
@@ -120,11 +127,7 @@ function Ashrams() {
                             </Typography>
 
                         </div>
-                        <div className='col-span-12 sm:col-span-4 flex flex-col justify-center  items-center sm:items-end '>
 
-                            <img className='h-256' src="assets/images/cards/kanpur-ashram.jpg" alt="" />
-
-                        </div>
                     </div>
 
                     <div className='flex flex-col items-center justify-center my-8 pb-8'>
@@ -134,7 +137,7 @@ function Ashrams() {
                     <div className='grid grid-cols-12 gap-4 my-4 '>
 
 
-                        <div className='col-span-12 sm:col-span-4 flex flex-col justify-center  items-center sm:items-end '>
+                        <div className='col-span-12 sm:col-span-4 flex flex-col justify-center sm:items-start  items-center'>
 
                             <img className='h-256' src="assets/images/cards/california-ashram.jpg" alt="" />
 
@@ -159,6 +162,12 @@ function Ashrams() {
                     </div>
 
                     <div className='grid grid-cols-12 gap-4 my-4 '>
+
+                        <div className='col-span-12 sm:col-span-4 flex flex-col justify-center sm:items-start  items-center'>
+
+                            <img className='h-256' src="assets/images/cards/guwahati-ashram.jpg" alt="" />
+
+                        </div>
                         <div className='col-span-12 sm:col-span-8  text-justify'>
                             <Typography variant="body2" color="text.primary" className='font-bold my-4' >
                                 Shri Purnanand Ajapa Yoga Sansthan, Kalipur Ashram, Nilachal Hill, Kamakhya, Guwahati, Kamrup(M)-781010
@@ -169,11 +178,57 @@ function Ashrams() {
                             </Typography>
 
                         </div>
-                        <div className='col-span-12 sm:col-span-4 flex flex-col justify-center  items-center sm:items-end '>
 
-                            <img className='h-256' src="assets/images/cards/guwahati-ashram.jpg" alt="" />
+
+                    </div>
+
+                    <div className='flex flex-col items-center justify-center my-8 pb-8'>
+                        <img src="assets/images/cards/hr-design-1.png" alt="" />
+                    </div>
+
+                    <div className='grid grid-cols-12 gap-4 my-4 '>
+
+                        <div className='col-span-12 sm:col-span-4 flex flex-col justify-center sm:items-start  items-center'>
+
+                            <img className='h-256' src="assets/images/cards/poland-ashram.jpg" alt="" />
 
                         </div>
+                        <div className='col-span-12 sm:col-span-8  text-justify'>
+                            <Typography variant="body2" color="text.primary" className='font-bold my-4' >
+                            Ajapa Yog Centre Lugi, Lodz Province Poland - Shri Janardan Ajapa Yogashram
+                            </Typography>
+
+                            <Typography variant="body2" color="text.primary" >
+                            The construction of the Ashram building in Poland began in 1997 and was opened for disciples in 2000 . In 2001 Swami Guru Prasad Paramhans visited the Ashram for the first time . Since then Guruji has been visiting the ashram regularly .
+                            </Typography>
+
+                        </div>
+
+
+                    </div>
+
+                    <div className='flex flex-col items-center justify-center my-8 pb-8'>
+                        <img src="assets/images/cards/hr-design-1.png" alt="" />
+                    </div>
+
+                    <div className='grid grid-cols-12 gap-4 my-4 '>
+
+                        <div className='col-span-12 sm:col-span-4 flex flex-col justify-center sm:items-start  items-center'>
+
+                            <img className='h-256' src="assets/images/cards/jagatpur-ashram.jpg" alt="" />
+
+                        </div>
+                        <div className='col-span-12 sm:col-span-8  text-justify'>
+                            <Typography variant="body2" color="text.primary" className='font-bold my-4' >
+                            Shri Purnanand Ajapa Yoga Sansthan (Jagatpur Ashram) P.O B.I.T, Upa-Jila: Raozan Chittagong
+                            </Typography>
+
+                            <Typography variant="body2" color="text.primary" >
+                            This is the first Ajapa ashram and was established by Shri Swami Purnanand Paramhans in the year 1899.
+                            </Typography>
+
+                        </div>
+
 
                     </div>
 

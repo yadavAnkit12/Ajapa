@@ -26,8 +26,8 @@ export default function EventView(props) {
                 },
             }).then((response) => {
                 if (response.status === 200) {
-                    // console.log("hi")
-                    // console.log(response.data.eventRegistration)
+                    console.log("hi")
+                    console.log(response.data.eventRegistration)
                     setData(response.data.eventRegistration)
                     // dispatch(showMessage({ message: response.data.message, variant: 'success' }));
                 } else {
@@ -53,7 +53,7 @@ export default function EventView(props) {
         <Card sx={{ maxWidth: 345 }}>
             <CardActionArea>
                 <div className='text-2xl text-center'>
-                  Event Details
+                  Registration Details
                 </div>
                 <CardContent style={{fontSize:'16px'}}>
                 <div className="my-3 mx-4">
@@ -101,6 +101,11 @@ export default function EventView(props) {
                             <div className="my-3 mx-4">
                                 <p className='font-bold inline'>Departure Time : </p>
                                 <span className='font-semibold'>{data.departureTime}</span>
+                            </div>
+                            <hr />
+                            <div className="my-3 mx-4">
+                                <p className='font-bold inline'>Specific Requirments : </p>
+                                <span className='font-semibold'>{data.specificRequirements === '' ? "N/A": data.specificRequirements}</span>
                             </div>
                             <hr />
 
