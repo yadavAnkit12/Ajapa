@@ -29,14 +29,14 @@ function AttendanceTableHead(props) {
       sort: true,
       visibleIf: true
     },
-    {
-      id: 'email',
-      align: 'center',
-      disablePadding: false,
-      label: 'Email',
-      sort: true,
-      visibleIf: true
-    },
+    // {
+    //   id: 'email',
+    //   align: 'center',
+    //   disablePadding: false,
+    //   label: 'Email',
+    //   sort: true,
+    //   visibleIf: true
+    // },
     {
       id: 'dob',
       align: 'center',
