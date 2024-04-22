@@ -2,8 +2,16 @@ import { TableCell, TableRow, TableSortLabel, Tooltip, TableHead } from '@mui/ma
 import { lighten } from '@mui/material/styles';
 
 function AllEventRegistrationTableHead(props) {
-  
+
   const rows = [
+    {
+      id: 'familyId',
+      align: 'center',
+      disablePadding: false,
+      label: 'Family Id',
+      sort: true,
+      visibleIf: true
+    },
     {
       id: 'userName',
       align: 'center',
@@ -44,7 +52,7 @@ function AllEventRegistrationTableHead(props) {
       sort: true,
       visibleIf: true
     },
-  
+
     {
       id: 'fromCity',
       align: 'center',
@@ -70,7 +78,7 @@ function AllEventRegistrationTableHead(props) {
       visibleIf: true
     }
   ];
-  
+
 
   const createSortHandler = (property) => (event) => {
     props.onRequestSort(event, property);

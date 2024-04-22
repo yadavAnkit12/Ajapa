@@ -31,7 +31,7 @@ function MyRegistrationTableHead(props) {
           id: 'arival_date',
           align: 'center',
           disablePadding: false,
-          label: 'Arival Date',
+          label: 'Arrival Date',
           sort: true,
           visibleIf: true
         },
@@ -79,7 +79,7 @@ function MyRegistrationTableHead(props) {
           id: 'action',
           align: 'center',
           disablePadding: false,
-          label: 'Action',
+          label: 'Actions',
           sort: true,
           visibleIf: true
         },

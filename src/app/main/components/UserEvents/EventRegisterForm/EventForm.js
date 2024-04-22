@@ -391,7 +391,6 @@ const EventForm = (props) => {
             return ''
         }
     }
-    console.log(formik.values.arrivalDate === formik.values.departureDate)
     return (
         <Card style={{ marginTop: '10px' }} className='shadow-5'>
             <div style={{ display: 'flex', justifyContent: 'center', alignContent: 'center' }}>

@@ -103,7 +103,7 @@ function AllEventRegistrationTable(props) {
     setLoading(true)
     const params = {
       page: page + 1,
-      rowsPerPage: rowsPerPage, 
+      rowsPerPage: rowsPerPage,
       eventId: props.eventList?.find((event) => event.eventName === props.filterValue.eventName)?.eventId || '',
     };
     axios.get(eventAPIConfig.allEventRegistrationList, { params }, {
@@ -113,7 +113,7 @@ function AllEventRegistrationTable(props) {
       },
     }).then((response) => {
       if (response.status === 200) {
-          // console.log("aj", response?.data)
+        // console.log("aj", response?.data)
         setEventListData(response?.data);
         setLoading(false);
       } else {
@@ -121,7 +121,7 @@ function AllEventRegistrationTable(props) {
         setLoading(false)
         dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
       }
-    }).catch(()=>{
+    }).catch(() => {
       setLoading(false)
       dispatch(showMessage({ message: "Something went wrong", variant: 'error' }));
 
@@ -212,12 +212,12 @@ function AllEventRegistrationTable(props) {
     );
   }
 
-     // function to convert date from yyyy-mm-dd format to dd-mm-yyyy
-     function formatDate(inputDate) {
-      const parts = inputDate.split('-');
-      const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
-  
-      return formattedDate;
+  // function to convert date from yyyy-mm-dd format to dd-mm-yyyy
+  function formatDate(inputDate) {
+    const parts = inputDate.split('-');
+    const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+
+    return formattedDate;
   }
 
   return (
@@ -246,6 +246,9 @@ function AllEventRegistrationTable(props) {
                   selected={isSelected}
                   style={{ cursor: 'default' }}
                 >
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                    {n.familyId}
+                  </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.userName}
                   </TableCell>
@@ -317,7 +320,7 @@ function AllEventRegistrationTable(props) {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-    
+
       <Modal
         open={openView}
         onClose={handleViewClose}

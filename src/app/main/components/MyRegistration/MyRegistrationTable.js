@@ -73,6 +73,42 @@ function MyRegistrationTable(props) {
   const [open, setOpen] = useState(false)
   const [myRegistartion, setMyRegistartion] = useState([])
 
+  const menuItemArray = (eventDate) => {
+    const currentDate = new Date();
+    const todayYear = currentDate.getFullYear();
+    const todayMonth = currentDate.getMonth();
+    const todayDay = currentDate.getDate();
+
+    const [day, month, year] = eventDate.split('-').map(Number);
+
+    const eventDateObj = new Date(year, month - 1, day); // Months are zero-indexed in Date object
+
+    if (eventDateObj < currentDate) {
+      return [
+        {
+          key: 1,
+          label: 'View',
+          status: 'View',
+        },
+      ];
+    } else {
+      return [
+        {
+          key: 1,
+          label: 'View',
+          status: 'View',
+        },
+        {
+          key: 3,
+          label: 'Cancel',
+          status: 'Delete',
+        }
+      ];
+    }
+};
+
+
+
   useEffect(() => {
     fetchData();
   }, [props?.change, rowsPerPage, page, props?.filterValue, searchText]);
@@ -110,13 +146,7 @@ function MyRegistrationTable(props) {
     const params = {
       page: page + 1,
       rowsPerPage: rowsPerPage, // Example data to pass in req.query
-      // searchText: searchText,
-      // status: _.get(props, 'filterValue') === '' ? 'Approved' : _.get(props, 'filterValue.status'),
-      // country: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.country') === '' ? 'All' : _.get(props, 'filterValue.country'),
-      // state: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.state') === '' ? 'All' : _.get(props, 'filterValue.state'),
-      // city: _.get(props, 'filterValue') === '' ? 'All' : _.get(props, 'filterValue.city') === '' ? 'All' : _.get(props, 'filterValue.city'),
     };
-    console.log('params', params)
     axios.get(userAPIConfig.myRegistration, { params }, {
       headers: {
         'Content-type': 'multipart/form-data',
@@ -124,7 +154,6 @@ function MyRegistrationTable(props) {
       },
     }).then((response) => {
       if (response.status === 200) {
-        console.log(response)
         // setUserListData(response?.data);
         setMyRegistartion(response?.data)
         setLoading(false);
@@ -156,7 +185,6 @@ function MyRegistrationTable(props) {
 
   function getStatus(id, selectedValue) {
     if (selectedValue === 'View') {
-      // console.log(id)
       setOpenView(true)
       setRegistrationId(id)
 
@@ -326,7 +354,7 @@ function MyRegistrationTable(props) {
                           </Button>
                           <Menu {...bindMenu(popupState)}>
 
-                            {menuItemArray.map((value) => (
+                            {menuItemArray(formatDate(n.eventDate)).map((value) => (
                               <MenuItem
                                 onClick={() => {
                                   getStatus(n.registrationId, value.status);
