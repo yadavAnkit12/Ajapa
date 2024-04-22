@@ -66,6 +66,13 @@ export default function UserView(props) {
         return <FuseLoading />
     }
 
+       // function to convert date from yyyy-mm-dd format to dd-mm-yyyy
+   function formatDate(inputDate) {
+    const parts = inputDate.split('-');
+    const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+
+    return formattedDate;
+}
 
     return (
         <div>
@@ -108,7 +115,7 @@ export default function UserView(props) {
 
                         <div className="my-3 mx-4">
                             <p className='font-bold inline'>DOB: </p>
-                            <span className='font-semibold'>{props.data.dob}</span>
+                            <span className='font-semibold'>{formatDate(props.data.dob)}</span>
                         </div>
                         <hr />
 
@@ -124,11 +131,11 @@ export default function UserView(props) {
                         </div>
                         <hr />
 
-                        <div className="my-3 mx-4">
+                        {/* <div className="my-3 mx-4">
                             <p className='font-bold inline'>Role: </p>
                             <span className='font-semibold'>{props.data.role}</span>
                         </div>
-                        <hr />
+                        <hr /> */}
 
                         <div className="my-3 mx-4">
                             <p className='font-bold inline'>Is Disciple: </p>
