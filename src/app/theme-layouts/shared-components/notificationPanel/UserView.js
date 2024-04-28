@@ -18,11 +18,11 @@ const Transition = forwardRef(function Transition(props, ref) {
 
 
 export default function UserView(props) {
-    console.log(props.handleEditClose)
     const dispatch = useDispatch()
     const [userId, setUserId] = React.useState('')
     const [check, setCheck] = React.useState('')
     const [open, setOpen] = React.useState(false)
+    const [loading, setLoading] = React.useState(false)
 
     const handleDialogOpen = (id, check) => {
         setUserId(id)
@@ -45,6 +45,7 @@ export default function UserView(props) {
             formData.append('status', 'Rejected')
         }
         formData.append('id', userId)
+        setLoading(true)
         axios.post(userAPIConfig.changeStatus, formData, {
             headers: {
                 'Content-type': 'multipart/form-data',
@@ -52,27 +53,31 @@ export default function UserView(props) {
             },
         }).then((response) => {
             if (response.status === 200) {
+                setLoading(false)
                 dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-                // props.setNotifUpdate(response)
+                props.setChange(!props.change)
                 props.handleEditClose()
             }
             else {
+                setLoading(false)
                 dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
-
             }
+        }).catch(() => {
+            setLoading(false)
+            dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
         })
     }
-    if (props.data === '') {
+    if (props.data === '' || loading) {
         return <FuseLoading />
     }
 
-       // function to convert date from yyyy-mm-dd format to dd-mm-yyyy
-   function formatDate(inputDate) {
-    const parts = inputDate.split('-');
-    const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+    // function to convert date from yyyy-mm-dd format to dd-mm-yyyy
+    function formatDate(inputDate) {
+        const parts = inputDate.split('-');
+        const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
 
-    return formattedDate;
-}
+        return formattedDate;
+    }
 
     return (
         <div>
@@ -139,7 +144,7 @@ export default function UserView(props) {
 
                         <div className="my-3 mx-4">
                             <p className='font-bold inline'>Is Disciple: </p>
-                            <span className='font-semibold'>{props.data.isDisciple=== true ? 'Yes':'No'}</span>
+                            <span className='font-semibold'>{props.data.isDisciple === true ? 'Yes' : 'No'}</span>
                         </div>
                         <hr />
 

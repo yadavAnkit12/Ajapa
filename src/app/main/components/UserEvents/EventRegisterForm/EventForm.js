@@ -231,7 +231,7 @@ const EventForm = (props) => {
                             html: `<span style="font-weight: bold; font-size: 16px;">Jai Guru. Your registration for ${props.eventName} is updated successfully</span>`,
                             icon: "success",
                             confirmButtonText: "<span style='font-weight: bold; font-size: 16px;'>OK</span>"
-                        }); 
+                        });
                         props.setChange(!props.change)
                         props.setEventFormOpen(false)
 
@@ -267,7 +267,7 @@ const EventForm = (props) => {
                             html: `<span style="font-weight: bold; font-size: 16px;">Jai Guru. Your registration for ${props.eventName} is successful</span>`,
                             icon: "success",
                             confirmButtonText: "<span style='font-weight: bold; font-size: 16px;'>OK</span>"
-                        });                        
+                        });
                         props.setChange(!props.change)
                         props.setEventFormOpen(false)
                     } else {
@@ -620,11 +620,11 @@ const EventForm = (props) => {
                                     onBlur={formik.handleBlur}
                                     error={
                                         (formik.touched.departureDate && Boolean(formik.errors.departureDate)) ||
-                                        (formik.values.departureDate<formik.values.arrivalDate)
+                                        (formik.values.departureDate < formik.values.arrivalDate || (lockdeparturedetail ? formik.values.departureDate > lockdeparturedetail : formik.values.departureDate > eventDate))
                                     }
                                     helperText={
                                         formik.touched.departureDate && (formik.errors.departureDate ||
-                                            (formik.values.departureDate < formik.values.arrivalDate) ? lockdeparturedetail ? `Date must be ${getDate(formik.values.arrivalDate)} - ${getDate(lockdeparturedetail)} ` : `Date must be ${getDate(eventDate)}` : "")
+                                            (formik.values.departureDate < formik.values.arrivalDate || (lockdeparturedetail ? formik.values.departureDate > lockdeparturedetail : formik.values.departureDate > eventDate)) ? lockdeparturedetail ? `Date must be ${getDate(formik.values.arrivalDate)} - ${getDate(lockdeparturedetail)} ` : `Date must be ${getDate(eventDate)}` : "")
                                     }
                                     inputProps={{ min: lockarrivaldate || eventDate, max: lockdeparturedetail || eventDate }}
                                 />
@@ -758,8 +758,8 @@ const EventForm = (props) => {
 
                 <div style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
 
-                    <Button variant="outlined" onClick={openDialog} className='mx-2 text-white bg-[#792b00]'>Close</Button>
-                    <Button variant="outlined" type='submit' className='mx-2 text-white bg-[#792b00]'>Save</Button>
+                    <Button variant="contained" onClick={openDialog} color='inherit' className='mx-2'>Close</Button>
+                    <Button variant="contained" type='submit' color='secondary' className='mx-2'>Save</Button>
                 </div>
                 <Dialog
                     open={open}
