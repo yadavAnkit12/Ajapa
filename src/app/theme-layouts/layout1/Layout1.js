@@ -36,15 +36,32 @@ function Layout1(props) {
   const appContext = useContext(AppContext);
   const { routes } = appContext;
   const [notificationList, setNotificationList] = useState('')
+  const [change, setChange] = useState(false)
 
 
   useEffect(() => {
+    if (sessionStorage.getItem('userRole') == 'Super' || sessionStorage.getItem('userRole') == 'Admin') {
+      const timer = setInterval(() => {
+        fetchData();
+      }, 60000);
+
+      return () => clearInterval(timer);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (sessionStorage.getItem('userRole') == 'Super' || sessionStorage.getItem('userRole') == 'Admin') {
+      fetchData()
+    }
+  }, [change])
+  const fetchData = () => {
     const params = {
       page: 1,
       rowsPerPage: 1000,
       searchText: '',
       status: 'Pending',
-    }
+    };
+
     axios.get(userAPIConfig.list, { params }, {
       headers: {
         'Content-type': 'multipart/form-data',
@@ -52,15 +69,12 @@ function Layout1(props) {
       },
     }).then((response) => {
       if (response.status === 200) {
-        setNotificationList(response.data)
-      } else {
-        // dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
+        setNotificationList(response.data);
       }
     }).catch(() => {
       dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
-
-    })
-  },[])
+    });
+  };
   return (
     <Root id="fuse-layout" config={config} className="w-full flex">
       {config.leftSidePanel.display && <LeftSideLayout1 />}
@@ -88,7 +102,7 @@ function Layout1(props) {
         {config.navbar.display && config.navbar.position === 'right' && <NavbarWrapperLayout1 />}
       </div>
 
-      {config.rightSidePanel.display && <RightSideLayout1 notificationList={notificationList} />}
+      {config.rightSidePanel.display && <RightSideLayout1 notificationList={notificationList} change={change} setChange={setChange} />}
 
       <FuseMessage />
     </Root>

@@ -116,6 +116,7 @@ function NotificationPanel(props) {
                 item={item}
                 // onClose={handleDismiss}
                 // setNotifUpdate={setNotifUpdate}
+                change={props.change} setChange={props.setChange}
               />
             ))}
           </div>
