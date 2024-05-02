@@ -51,6 +51,8 @@ function UsersHeader(props) {
             if (response.status === 200) {
                 setCountryList(response.data)
             }
+        }).catch((error) => {
+            dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
         })
     }, [])
 
@@ -64,6 +66,8 @@ function UsersHeader(props) {
             if (response.status === 200) {
                 setStateList(response.data)
             }
+        }).catch((error) => {
+            dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
         })
     }, [countryID])
 
@@ -77,6 +81,8 @@ function UsersHeader(props) {
             if (response.status === 200) {
                 setCityList(response.data)
             }
+        }).catch((error) => {
+            dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
         })
     }, [stateID])
 
@@ -152,6 +158,8 @@ function UsersHeader(props) {
                 // Handling error
                 dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
             }
+        }).catch((error) => {
+            dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
         });
 
 
@@ -186,6 +194,8 @@ function UsersHeader(props) {
             } else {
                 dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
             }
+        }).catch((error) => {
+            dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
         });
     }
 

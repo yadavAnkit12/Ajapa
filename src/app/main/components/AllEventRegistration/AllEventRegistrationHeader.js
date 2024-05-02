@@ -109,7 +109,9 @@ function AllEventRegistrationHeader(props) {
             })
           );
         }
-      });
+      }).catch((error) => {
+        dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
+    });
   };
 
   const handleCreateReportPDF = () => {
@@ -160,7 +162,9 @@ function AllEventRegistrationHeader(props) {
             })
           );
         }
-      })
+      }).catch((error) => {
+        dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
+    })
   };
 
   return (

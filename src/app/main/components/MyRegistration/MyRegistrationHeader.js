@@ -58,6 +58,8 @@ function MyRegistrationHeader(props) {
             if (response.status === 200) {
                 setCountryList(response.data)
             }
+        }).catch((error) => {
+            dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
         })
     }, [])
 
@@ -71,6 +73,8 @@ function MyRegistrationHeader(props) {
             if (response.status === 200) {
                 setStateList(response.data)
             }
+        }).catch((error) => {
+            dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
         })
     }, [countryID])
 
@@ -84,6 +88,8 @@ function MyRegistrationHeader(props) {
             if (response.status === 200) {
                 setCityList(response.data)
             }
+        }).catch((error) => {
+            dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
         })
     }, [stateID])
 
@@ -156,6 +162,8 @@ function MyRegistrationHeader(props) {
                 // Handling error
                 dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
             }
+        }).catch((error) => {
+            dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
         });
 
 
@@ -201,6 +209,8 @@ function MyRegistrationHeader(props) {
             } else {
                 dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
             }
+        }).catch((error) => {
+            dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
         });
     }
 

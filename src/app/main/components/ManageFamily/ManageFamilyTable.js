@@ -180,7 +180,6 @@ function ManageFamilyTable(props) {
       })
       .then((response) => {
         if (response.status === 200) {
-          //  console.log("AJ",response)
           setUserListData(response?.data);
           setLoading(false);
         } else {
@@ -191,7 +190,10 @@ function ManageFamilyTable(props) {
             })
           );
         }
-      });
+      }).catch((error) => {
+        setLoading(false)
+        dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
+    });
   };
 
   const handleViewClose = () => {
@@ -260,7 +262,10 @@ function ManageFamilyTable(props) {
             })
           );
         }
-      });
+      }).catch((error) => {
+        setLoading(false)
+        dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
+    });
   };
 
   const handleChangeHead = () => {
@@ -290,7 +295,10 @@ function ManageFamilyTable(props) {
             })
           );
         }
-      });
+      }).catch((error) => {
+        setLoading(false)
+        dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
+    });
   };
 
   function handleSelectAllClick(event) {

@@ -58,6 +58,8 @@ function ManageFamilyHeader(props) {
             if (response.status === 200) {
                 setCountryList(response.data)
             }
+        }).catch((error) => {
+            dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
         })
     }, [])
 
@@ -71,6 +73,8 @@ function ManageFamilyHeader(props) {
             if (response.status === 200) {
                 setStateList(response.data)
             }
+        }).catch((error) => {
+            dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
         })
     }, [countryID])
 
@@ -84,6 +88,8 @@ function ManageFamilyHeader(props) {
             if (response.status === 200) {
                 setCityList(response.data)
             }
+        }).catch((error) => {
+            dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
         })
     }, [stateID])
 
@@ -133,7 +139,6 @@ function ManageFamilyHeader(props) {
                 Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
             },
         }).then((response) => {
-            console.log(response);
             if (response.status === 200) {
                 // Extract filename from the URL
                 const urlParts = response.data.fileName.split('/');
@@ -156,6 +161,8 @@ function ManageFamilyHeader(props) {
                 // Handling error
                 dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
             }
+        }).catch((error) => {
+            dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
         });
 
 
@@ -175,7 +182,6 @@ function ManageFamilyHeader(props) {
                 Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
             },
         }).then((response) => {
-            console.log(response);
             if (response.status === 200) {
                 // Extract filename from the URL
                 const urlParts = response.data.fileName.split('/');
@@ -201,6 +207,8 @@ function ManageFamilyHeader(props) {
             } else {
                 dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
             }
+        }).catch((error) => {
+            dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
         });
     }
 

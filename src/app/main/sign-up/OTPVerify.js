@@ -45,6 +45,8 @@ const OTPVerify = ({ data, handleEditClose, countryID, stateID, cityID }) => {
             } else {
                 dispatch(showMessage({ message: response.data.erroMessage, variant: 'error' }));
             }
+        }).catch((error) => {
+            dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
         });
     };
     const STATUS = {
@@ -98,11 +100,15 @@ const OTPVerify = ({ data, handleEditClose, countryID, stateID, cityID }) => {
                         handleEditClose()
                         navigate('/confirmation')
                     }
+                }).catch((error) => {
+                    dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
                 })
 
             } else {
                 dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
             }
+        }).catch((error) => {
+            dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
         });
     };
 

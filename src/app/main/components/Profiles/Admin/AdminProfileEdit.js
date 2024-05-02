@@ -61,6 +61,8 @@ function AdminProfileEdit(props) {
                     } else {
                         dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
                     }
+                }).catch((error) => {
+                    dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
                 });
         }
     }, []);

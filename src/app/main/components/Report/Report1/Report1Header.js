@@ -38,7 +38,6 @@ function Report1Header(props) {
     attendingShivir: ''
   });
 
-  console.log("s", filterData)
 
 
 

@@ -35,6 +35,8 @@ export default function UserView(props) {
             setUserData(response.data.user)
             // dispatch(showMessage({ message: response.data.message, variant: 'success' }));
         }
+    }).catch((error) => {
+        dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
     })
 },[])
     

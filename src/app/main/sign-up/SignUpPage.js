@@ -75,7 +75,7 @@ function SignUpPage() {
   const [recaptcha, setRecaptcha] = useState(null);
   const [loading, setLoading] = useState(false)
   const [stateName, setStateName] = useState('')  //for handling a state which have no state
-  const [getcountryCode , setGetCountryCode] = useState([])
+  const [getcountryCode, setGetCountryCode] = useState([])
   const initialValues = {
     name: "",
     email: "",
@@ -93,9 +93,9 @@ function SignUpPage() {
     isDisciple: "",
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     formik.resetForm()
-  },[])
+  }, [])
   const validationSchema = yup.object().shape({
     name: yup
       .string()
@@ -167,6 +167,8 @@ function SignUpPage() {
           setCountryList(response.data);
           setGetCountryCode(response?.data)
         }
+      }).catch((error) => {
+        dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
       });
   }, []);
 
@@ -182,6 +184,8 @@ function SignUpPage() {
         if (response.status === 200) {
           setStateList(response.data);
         }
+      }).catch((error) => {
+        dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
       });
   }, [countryID]);
 
@@ -203,6 +207,8 @@ function SignUpPage() {
             setCityList(response.data);
           }
         }
+      }).catch((error) => {
+        dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
       });
   }, [stateID]);
 
@@ -254,7 +260,7 @@ function SignUpPage() {
         })
         .catch((error) => {
           setLoading(false)
-          console.log(error)
+          dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
         });
     }
     else {
@@ -279,7 +285,7 @@ function SignUpPage() {
 
   if (loading) {
     return (
-        <FuseLoading />
+      <FuseLoading />
     );
   }
 

@@ -31,7 +31,9 @@ export default function EventView(props) {
                 } else {
                     dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
                 }
-            }).catch((error) => console.log(error))
+            }).catch((error) => {
+                dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
+            })
         }
     }, [])
 

@@ -70,7 +70,9 @@ function AttendanceHeader(props) {
             // Handling error
             dispatch(showMessage({ message: "Failed to fetch Excel. Please try again later.", variant: 'error' }));
         }
-    });
+    }).catch((error) => {
+      dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
+  });
 
 
 }
@@ -116,7 +118,9 @@ const handleCreateReportPDF = () => {
           })
         );
       }
-    })
+    }).catch((error) => {
+      dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
+  })
 };
 
   const id = 'new';

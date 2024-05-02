@@ -129,6 +129,8 @@ const EventForm = (props) => {
             if (response.status === 200) {
                 setCountryList(response.data)
             }
+        }).catch((error) => {
+            dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
         })
     }, [])
 
@@ -142,6 +144,8 @@ const EventForm = (props) => {
             if (response.status === 200) {
                 setStateList(response.data)
             }
+        }).catch((error) => {
+            dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
         })
     }, [countryID])
 
@@ -161,6 +165,8 @@ const EventForm = (props) => {
                     setCityList(response.data);
                 }
             }
+        }).catch((error) => {
+            dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
         })
     }, [stateID])
 
