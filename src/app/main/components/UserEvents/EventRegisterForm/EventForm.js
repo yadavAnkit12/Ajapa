@@ -758,8 +758,9 @@ const EventForm = (props) => {
 
                 <div style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
 
-                    <Button variant="outlined" onClick={openDialog} className='mx-2 text-white bg-[#792b00]'>Close</Button>
-                    <Button variant="outlined" type='submit' className='mx-2 text-white bg-[#792b00]'>Save</Button>
+                    <Button variant="outlined" 
+                    onClick={openDialog} className='mx-2 text-white' style={{backgroundColor:'#792b00'}}>Close</Button>
+                    <Button variant="outlined" type='submit' className='mx-2 text-white' style={{backgroundColor:'#792b00'}}>Save</Button>
                 </div>
                 <Dialog
                     open={open}

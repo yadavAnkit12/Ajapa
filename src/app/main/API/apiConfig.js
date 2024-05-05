@@ -65,6 +65,11 @@ export const cardAPIConfig = {
     carddetails: key + '/getCardsDetails'
 }
 
+export const adminAPIConfig = {
+    addAdmin: key + '/save/admin',
+    adminList: key + '/admin/list'
+}
+
 
 
 
