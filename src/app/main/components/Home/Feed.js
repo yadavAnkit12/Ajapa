@@ -10,6 +10,18 @@ import CardMedia from '@mui/material/CardMedia';
 import { useMediaQuery } from '@mui/material';
 import axios from 'axios';
 import { blogAPIConfig } from '../../API/apiConfig';
+import { styled } from '@mui/material/styles';
+import CardHeader from '@mui/material/CardHeader';
+import CardActions from '@mui/material/CardActions';
+import Collapse from '@mui/material/Collapse';
+import Avatar from '@mui/material/Avatar';
+import IconButton from '@mui/material/IconButton';
+import { red } from '@mui/material/colors';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import ShareIcon from '@mui/icons-material/Share';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const style = {
     position: 'absolute',
@@ -25,14 +37,32 @@ const style = {
     overflow: 'auto',
 };
 
+const ExpandMore = styled((props) => {
+  const { expand, ...other } = props;
+  return <IconButton {...other} />;
+})(({ theme, expand }) => ({
+//   transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
+  marginLeft: 'auto',
+  transition: theme.transitions.create('transform', {
+    duration: theme.transitions.duration.shortest,
+  }),
+}));
+
 function Feed() {
+
     const navigate = useNavigate()
     const isDesktop = useMediaQuery('(min-width:768px)');
+        // const maxWidth = isDesktop ? 445 : 345;
 
     const [userId, setUserId] = useState('')
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [feedData, setFeedData] = useState([])
+    const [expandedId, setExpandedId] = useState(null);
+
+    const handleExpandClick = (id) => {
+        setExpandedId((prevId) => (prevId === id ? null : id));
+    };
 
 
     const location = useLocation();
@@ -108,10 +138,10 @@ function Feed() {
             </div> */}
             <div className='p-4' >
                 <Grid container spacing={2}>
-                    {feedData.map((item) => (
-                        <Grid item xs={12} sm={6} md={4} lg={3} key={item.id}>
-                            <Card className="flex flex-col h-full  sm:m-0">
-                                {/* <CardContent>
+                    {feedData.map((item, idx) => (
+                        <Grid item xs={12} sm={6} md={4} lg={3} key={item.id}>  
+                            {/* <Card className="flex flex-col h-full  sm:m-0">
+                                <CardContent>
                   <Typography variant="body1" component="div" style={{
                     fontStyle: 'normal', fontSize: '16px',
                     lineHeight: '28px', letterSpacing: '0px',
@@ -120,7 +150,7 @@ function Feed() {
                   }} >
                     {formatDateString(item.dop)}
                   </Typography>
-                </CardContent> */}
+                </CardContent>
                                 {item.imageName !== null && (
                                     <div className='h-full w-full'>
                                         <CardMedia
@@ -143,6 +173,71 @@ function Feed() {
                                 </CardContent>
 
 
+                            </Card> */}
+
+                            <Card sx={{ maxWidth: 345 , minHeight:445}} key={item.id}>
+                                <CardHeader
+                                    // avatar={
+                                    //     <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+                                    //         R
+                                    //     </Avatar>
+                                    // }
+                                    action={
+                                        <IconButton aria-label="settings">
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    }
+                                    // title="Shrimp and Chorizo Paella"
+                                         sx={{ color: 'rgba(0, 0, 0, 0.87)' }} 
+                                    subheader={
+                                            <Typography variant="body2" sx={{ color: 'rgba(0, 0, 0, 0.87)' }}>
+            {formatDateString(item.dop)}
+        </Typography>
+                                    }
+                                  
+                                    
+                                />
+                                {item.imageName !== null && (
+                                    <div className='h-full w-full'>
+                                        <CardMedia
+                                            component="img"
+                                            className='h-full w-full object-cover'
+                                            style={{ objectFit: 'cover' }}
+                                            image={`${key}/posts/${item.imageName}`}
+                                            alt="image"
+                                        />
+                                    </div>
+                                )}
+                                <CardContent>
+                                    <Typography variant="body2" color="text.secondary">
+                                        {item.message}
+                                    </Typography>
+                                </CardContent>
+                                <CardActions disableSpacing>
+                                    {/* <IconButton aria-label="add to favorites">
+                                        <FavoriteIcon />
+                                    </IconButton>
+                                    <IconButton aria-label="share">
+                                        <ShareIcon />
+                                    </IconButton> */}
+                                    <ExpandMore
+                                        expand={expandedId === item.id}
+                                        onClick={() => handleExpandClick(item.id)}
+                                        aria-expanded={expandedId === item.id}
+                                        aria-label="show more"
+                                    >
+                                  <Typography variant="body2" color="text.primary">
+                                        Read More
+                                    </Typography>
+                                    </ExpandMore>
+                                </CardActions>
+                                <Collapse in={expandedId === item.id} timeout="auto" unmountOnExit>
+                                    <CardContent>
+                                        <Typography paragraph>
+                                            {item.message}
+                                        </Typography>
+                                    </CardContent>
+                                </Collapse>
                             </Card>
                         </Grid>
                     ))}
