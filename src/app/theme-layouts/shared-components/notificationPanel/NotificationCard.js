@@ -116,7 +116,7 @@ function NotificationCard(props) {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <UserView data={item} handleEditClose={handleEditClose}/>
+          <UserView data={item} handleEditClose={handleEditClose} change={props.change} setChange={props.setChange}/>
         </Box>
       </Modal>
       </>
