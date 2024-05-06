@@ -1,3 +1,4 @@
+const key = process.env.REACT_APP_URL;
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import Autocomplete from '@mui/material/Autocomplete';
 import { Input, Paper, Typography, Modal, Box, Button, TextField } from '@mui/material';
@@ -10,6 +11,7 @@ import axios from 'axios';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import FuseLoading from '@fuse/core/FuseLoading';
 import { reportAPIConfig } from 'src/app/main/API/apiConfig';
+
 
 
 
@@ -56,7 +58,7 @@ function Report3Header(props) {
             const urlParts = response.data.fileName.split('/');
             const fileName = urlParts[urlParts.length - 1];
 
-            const baseUrl = 'http://65.2.121.254:8080/ajapa_yog-0.0.1-SNAPSHOT/reports/';
+            const baseUrl = `${key}/reports/`;
             const fullUrl = baseUrl + fileName;
             const link = document.createElement('a');
             link.href = fullUrl;
