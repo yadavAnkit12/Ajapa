@@ -20,14 +20,14 @@ function AdminTableHead(props) {
       sort: true,
       visibleIf: true
     },
-    {
-      id: 'role',
-      align: 'center',
-      disablePadding: false,
-      label: 'Role',
-      sort: true,
-      visibleIf: true
-    },
+    // {
+    //   id: 'role',
+    //   align: 'center',
+    //   disablePadding: false,
+    //   label: 'Role',
+    //   sort: true,
+    //   visibleIf: true
+    // },
     // {
     //   id: 'eventDate',
     //   align: 'center',

@@ -71,7 +71,7 @@ function EventPermissionHeader(props) {
             delay={300}
             style={{ fontStyle: 'normal', fontSize: '24px', lineHeight: '28px', letterSpacing: '0px', textAlign: 'center', fontWeight: 'bold' }}
           >
-            Admin
+            Event Level Permission
           </Typography>
           <div className="flex flex-col w-full sm:w-auto sm:flex-row space-y-16 sm:space-y-0 flex-1 items-center justify-end space-x-8">
             {/* <Paper

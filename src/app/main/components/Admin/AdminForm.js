@@ -16,6 +16,7 @@ import { showMessage } from "app/store/fuse/messageSlice";
 import axios from "axios";
 import jwtServiceConfig from "src/app/auth/services/jwtService/jwtServiceConfig";
 import FuseLoading from "@fuse/core/FuseLoading";
+import { adminAPIConfig } from '../../API/apiConfig';
 
 
 const validationSchema = yup.object().shape({
@@ -47,7 +48,7 @@ const initialValues = {
 };
 
 
-const AdminForm = () => {
+const AdminForm = ({ setOpen, setChange, change }) => {
   const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [getcountryCode, setGetCountryCode] = useState([])
@@ -68,9 +69,14 @@ const AdminForm = () => {
       });
   }, []);
 
+
+  const handleModalClose = () => {
+    setOpen(false)
+  }
+
   const handleSubmit = (values) => {
-    
-    if(formik.isValid){
+
+    if (formik.isValid) {
       setLoading(true)
 
       const formData = new FormData();
@@ -79,21 +85,31 @@ const AdminForm = () => {
       formData.append("mobileNumber", values.mobileNumber);
       formData.append("password", values.password);
       formData.append("dob", '1983-11-16');
+      formData.append("dikshaDate", '1983-11-16');
       formData.append("role", "Admin");
 
-      axios.post(`${jwtServiceConfig.addAdmin}` , formData , {
+      axios.post(`${adminAPIConfig.addAdmin}`, formData, {
         headers: {
           "Content-type": "multipart/form-data",
           Authorization: `Bearer ${window.localStorage.getItem("jwt_access_token")}`,
         },
       })
-      .then((response) => { console.log("dd",response)
-      })
-      .catch((error) => { console.log(error)
-      })
-    }
-    else{
-      dispatch(showMessage({message: "Something went wrong!",variant: "error",}));
+        .then((response) => {
+          if (response.status === 200) {
+            setLoading(false)
+            setChange(!change)
+            handleModalClose()
+            formik.resetForm()
+            dispatch(showMessage({ message: response.data.message, variant: "success", }));
+          }
+          else {
+            setLoading(false)
+            dispatch(showMessage({ message:  response.data.errorMessage, variant: "error", }));
+          }
+        })
+        .catch(() => {
+          dispatch(showMessage({ message: "Something went wrong", variant: 'error' }));
+        })
     }
   }
 
@@ -107,15 +123,19 @@ const AdminForm = () => {
     return <FuseLoading />
   }
 
+
+
   return (
     <>
       <Container>
-        <Typography textAlign='center'>
+        <Typography textAlign='center'
+          style={{ fontStyle: 'normal', fontSize: '24px', lineHeight: '28px', letterSpacing: '0px', textAlign: 'center', fontWeight: 'bold' }}
+        >
           Create Admin
         </Typography>
         <form
           onSubmit={formik.handleSubmit}
-          style={{marginTop:'1rem'}}
+          style={{ marginTop: '1rem' }}
         >
           <TextField
             sx={{ mb: 2 }}
@@ -224,19 +244,34 @@ const AdminForm = () => {
               ),
             }}
           />
-       
-        <Button
-          variant="contained"
-          color="secondary"
-          className="w-1/2 lg:w-1/4 mt-10"
-          aria-label="save"
-          type="submit"
-          // onClick={formik.handleSubmit}
-          size="large"
-          style={{ margin: "0 auto" }}
-        >
-          Save
-        </Button>
+
+          <div style={{ display: "flex", justifyContent: "flex-end" }}  >
+            <>
+              <Button
+                variant="contained"
+                color="secondary"
+                className="w-1/2 lg:w-1/4 mt-10"
+                aria-label="cancel"
+                onClick={handleModalClose}
+                size="large"
+                style={{ marginRight: '1rem' }}
+              >
+                Close
+              </Button>
+
+              <Button
+                variant="contained"
+                color="secondary"
+                className="w-1/2 lg:w-1/4 mt-10"
+                aria-label="save"
+                type="submit"
+                size="large"
+              >
+                Save
+              </Button>
+            </>
+          </div>
+
         </form>
       </Container>
     </>
