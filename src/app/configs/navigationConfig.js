@@ -106,6 +106,7 @@ const navigationConfig = [
     url: 'app/myregistration',
     auth: ["User", "Member"]
   },
+
   {
     id: 'food-component',
     title: "Food",
@@ -167,6 +168,15 @@ const navigationConfig = [
     type: 'item',
     icon: 'heroicons-outline:clipboard-check',
     url: '/sms',
+    auth: ["Super"]
+  },
+  {
+    id: 'blog-component',
+    title: "Blog",
+    translate: "Blog",
+    type: 'item',
+    icon: 'heroicons-outline:clipboard-check',
+    url: 'app/blog',
     auth: ["Super"]
   },
   {

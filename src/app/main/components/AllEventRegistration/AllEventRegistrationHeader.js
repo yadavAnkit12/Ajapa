@@ -89,7 +89,7 @@ function AllEventRegistrationHeader(props) {
           const fileName = urlParts[urlParts.length - 1];
 
           const baseUrl =
-            "http://34.203.29.229:8080/ajapa_yog-0.0.1-SNAPSHOT/reports/";
+            "http://65.2.121.254:8080/ajapa_yog-0.0.1-SNAPSHOT/reports/";
           const fullUrl = baseUrl + fileName;
           const link = document.createElement("a");
           link.href = fullUrl;
@@ -109,7 +109,9 @@ function AllEventRegistrationHeader(props) {
             })
           );
         }
-      });
+      }).catch((error) => {
+        dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
+    });
   };
 
   const handleCreateReportPDF = () => {
@@ -138,7 +140,7 @@ function AllEventRegistrationHeader(props) {
           const urlParts = response.data.fileName.split("/");
           const fileName = urlParts[urlParts.length - 1];
           const baseUrl =
-            "http://34.203.29.229:8080/ajapa_yog-0.0.1-SNAPSHOT/reports/";
+            "http://65.2.121.254:8080/ajapa_yog-0.0.1-SNAPSHOT/reports/";
           const fullUrl = baseUrl + fileName;
 
           // Create a new tab and open the link in it
@@ -160,7 +162,9 @@ function AllEventRegistrationHeader(props) {
             })
           );
         }
-      })
+      }).catch((error) => {
+        dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
+    })
   };
 
   return (

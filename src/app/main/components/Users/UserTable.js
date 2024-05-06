@@ -279,7 +279,10 @@ function UserTable(props) {
         dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
 
       }
-    })
+    }).catch((error) => {
+      setLoading(false)
+      dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
+  })
   }
 
   function handleSelectAllClick(event) {

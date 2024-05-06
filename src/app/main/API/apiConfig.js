@@ -66,6 +66,13 @@ export const cardAPIConfig = {
 }
 
 
+export const blogAPIConfig ={
+    savePostWithImage: key + '/savePostWithImage',
+    savePost: key + '/savePost',
+    getAllPosts : key + '/post/list',
+}
+
+
 
 
 export const doctorAPIConfig = {

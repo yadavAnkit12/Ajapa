@@ -30,7 +30,9 @@ useEffect(()=>{
         } else {
           dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
         }
-      });
+      }).catch((error) => {
+        dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
+    });
 },[])
 
   return (

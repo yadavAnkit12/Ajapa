@@ -116,7 +116,6 @@ function AddMembersForm() {
       })
       .then((response) => {
         if (response.status === 200) {
-          // console.log("AJ", response?.data?.users);
           setSameAs(response?.data?.users);
         } else {
           dispatch(
@@ -126,7 +125,10 @@ function AddMembersForm() {
             })
           );
         }
-      });
+      }).catch((error) => {
+        setLoading(false)
+        dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
+    });
   }, []);
 
   useEffect(() => {
@@ -211,8 +213,10 @@ function AddMembersForm() {
             );
             navigate('/404')
           }
-          // setLoading(false)
-        });
+        }).catch((error) => {
+          setLoading(false)
+          dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
+      });
     }
   }, [routeParams]);
 
@@ -229,7 +233,10 @@ function AddMembersForm() {
           setCountryList(response.data);
           setGetCountryCode(response?.data)
         }
-      });
+      }).catch((error) => {
+        setLoading(false)
+        dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
+    });
   }, []);
 
   //fetch the state on the behalf of country
@@ -244,7 +251,10 @@ function AddMembersForm() {
         if (response.status === 200) {
           setStateList(response.data);
         }
-      });
+      }).catch((error) => {
+        setLoading(false)
+        dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
+    });
   }, [countryID]);
 
   //fetch the city on the behalf of state
@@ -265,7 +275,10 @@ function AddMembersForm() {
             setCityList(response.data);
           }
         }
-      });
+      }).catch((error) => {
+        setLoading(false)
+        dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
+    });
   }, [stateID]);
 
 
@@ -371,7 +384,7 @@ function AddMembersForm() {
           })
           .catch((error) => {
             setLoading(false)
-            console.log(error)
+            dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
           });
       } else {
         // for update the existing member
@@ -411,7 +424,7 @@ function AddMembersForm() {
             })
             .catch((error) => {
               setLoading(false)
-              console.log(error)
+              dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
             });
         } else {
           formattedData.append("profileImage", values.profileImage);
@@ -446,7 +459,7 @@ function AddMembersForm() {
             })
             .catch((error) => {
               setLoading(false)
-              console.log(error)
+              dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
             });
         }
       }

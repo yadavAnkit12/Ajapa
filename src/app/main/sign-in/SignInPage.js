@@ -130,7 +130,9 @@ function SignInPage() {
       } else {
         dispatch(showMessage({ message: response.data.erroMessage, variant: 'error' }));
       }
-    });
+    }).catch((error) => {
+      dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
+  });
   };
   const STATUS = {
     STOPPED: <b>
@@ -195,6 +197,8 @@ function SignInPage() {
         if (response.status === 200) {
           setGetCountryCode(response?.data)
         }
+      }).catch((error) => {
+          dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
       });
   }, []);
 
@@ -231,8 +235,8 @@ function SignInPage() {
           dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
         }
       }).catch((error) => {
-        setLoading(false)
-        console.log(error)
+          setLoading(false)
+          dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
       })
     }
     else {

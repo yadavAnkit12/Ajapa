@@ -58,7 +58,6 @@ const EventRegisterForm = () => {
                 dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
             }
         }).catch(() => {
-            console.log('head')
             setLoading(false)
             dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
 

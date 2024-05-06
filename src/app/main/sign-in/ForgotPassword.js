@@ -69,7 +69,9 @@ const ForgotPassword = (props) => {
         if (response.status === 200) {
           setGetCountryCode(response?.data)
         }
-      });
+      }).catch((error) => {
+        dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
+    });
   }, []);
 
   const handleCheckboxChange = () => {
@@ -102,7 +104,9 @@ const ForgotPassword = (props) => {
             })
           );
         }
-      });
+      }).catch((error) => {
+        dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
+    });
   };
 
   const STATUS = {
@@ -172,7 +176,6 @@ const ForgotPassword = (props) => {
           },
         })
         .then((response) => {
-          console.log(response);
           if (response.status === 200) {
             localStorage.setItem("token", response.data.token);
 
@@ -248,8 +251,8 @@ const ForgotPassword = (props) => {
           );
         }
       })
-      .catch((error) => {
-        console.log(error);
+.catch((error) => {
+          dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
       });
   };
 

@@ -69,7 +69,10 @@ function SMS() {
         } else {
           dispatch(showMessage({ message: response.data.errorMessage, variant: "error", }));
         }
-      });
+      }).catch((error) => {
+        setLoading(false)
+        dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
+    });
   }, []);
 
 
@@ -87,7 +90,10 @@ function SMS() {
         } else {
           dispatch(showMessage({ message: response.data.errorMessage, variant: "error", }));
         }
-      });
+      }).catch((error) => {
+        setLoading(false)
+        dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
+    });
   }, []);
 
   const initialValues = {
