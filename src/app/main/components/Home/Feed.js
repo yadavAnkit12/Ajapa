@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-
+import { motion } from 'framer-motion';
 import { useMediaQuery } from '@mui/material';
 import axios from 'axios';
 import { blogAPIConfig } from '../../API/apiConfig';
@@ -116,20 +116,24 @@ function Feed() {
         return formattedDate;
     }
 
+    if (feedData.length == 0) {
+        return (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { delay: 0.1 } }}
+            className="flex flex-1 items-center justify-center h-full"
+          >
+            <Typography color="text.secondary" variant="h5">
+              There is no feed!
+            </Typography>
+          </motion.div>
+        );
+      }
+
 
     return (
         <div>
-            <div className='flex flex-col py-4 items-center justify-center' style={{ marginTop: '4rem' }} >
-                <Typography style={{ fontStyle: 'normal', fontSize: '24px', lineHeight: '28px', letterSpacing: '0px', textAlign: 'center', fontWeight: 'bold' }}>
-                    New Feed
-                </Typography>
-            </div>
-            <div style={{
-                paddingLeft: isDesktop ? '4rem' : '10px',
-                paddingRight: isDesktop ? '4rem' : '10px'
-            }} className='mt-1'>
-                <hr></hr>
-            </div>
+
             {/* <div style={{
                 paddingLeft: isDesktop ? '4rem' : '10px',
                 paddingRight: isDesktop ? '4rem' : '10px'

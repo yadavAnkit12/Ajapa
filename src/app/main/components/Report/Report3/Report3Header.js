@@ -1,3 +1,4 @@
+const key = process.env.REACT_APP_URL;
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import Autocomplete from '@mui/material/Autocomplete';
 import { Input, Paper, Typography, Modal, Box, Button, TextField } from '@mui/material';
@@ -9,6 +10,8 @@ import { showMessage } from 'app/store/fuse/messageSlice';
 import axios from 'axios';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import FuseLoading from '@fuse/core/FuseLoading';
+import { reportAPIConfig } from 'src/app/main/API/apiConfig';
+
 
 
 
@@ -28,7 +31,6 @@ const style = {
   overflow: 'auto'
 };
 function Report3Header(props) {
-  // console.log("d",props.clearUsersList)
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [filterData, setFilterData] = useState({
@@ -38,41 +40,47 @@ function Report3Header(props) {
 
 
 
-//   const handleCreateReport = () => {
-//     const eventId = props.eventList?.find((event) => event.eventName === filterData.eventName)?.eventId
-//     axios.get(`${attendanceAPIConfig.attendanceReport}/${eventId}`, {
-//         headers: {
-//             'Content-type': 'multipart/form-data',
-//             Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-//         },
-//     }).then((response) => {
+  const handleCreateReport = () => {
+    const eventId = props.eventList?.find((event) => event.eventName === filterData.eventName)?.eventId
+       const params = {
+        eventId: eventId,
+        searchText: props?.searchText
+      };
+    axios.get(reportAPIConfig.report3Excel,{ params }, {
+        headers: {
+            'Content-type': 'multipart/form-data',
+            Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+        },
+    }).then((response) => {
         
-//         if (response.status === 200) {
-//             // Extract filename from the URL
-//             const urlParts = response.data.fileName.split('/');
-//             const fileName = urlParts[urlParts.length - 1];
+        if (response.status === 200) {
+            // Extract filename from the URL
+            const urlParts = response.data.fileName.split('/');
+            const fileName = urlParts[urlParts.length - 1];
 
-//             const baseUrl = 'http://18.212.201.202:8080/ajapa_yog-0.0.1-SNAPSHOT/reports/';
-//             const fullUrl = baseUrl + fileName;
-//             const link = document.createElement('a');
-//             link.href = fullUrl;
-//             link.setAttribute('download', fileName);
-//             document.body.appendChild(link);
+            const baseUrl = `${key}/reports/`;
+            const fullUrl = baseUrl + fileName;
+            const link = document.createElement('a');
+            link.href = fullUrl;
+            link.setAttribute('download', fileName);
+            document.body.appendChild(link);
 
-//             // Trigger the download
-//             link.click();
+            // Trigger the download
+            link.click();
 
-//             // Remove the link from the DOM after the download
-//             document.body.removeChild(link);
+            // Remove the link from the DOM after the download
+            document.body.removeChild(link);
 
-//         } else {
-//             // Handling error
-//             dispatch(showMessage({ message: "Failed to fetch Excel. Please try again later.", variant: 'error' }));
-//         }
-//     });
+        } else {
+            // Handling error
+            dispatch(showMessage({ message: "Failed to fetch Excel. Please try again later.", variant: 'error' }));
+        }
+    }).catch((error) => {
+      dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
+  });
 
 
-// }
+}
 
 // const handleCreateReportPDF = () => {
 //   const eventId = props.eventList?.find((event) => event.eventName === filterData.eventName)?.eventId
@@ -193,7 +201,7 @@ function Report3Header(props) {
 
             <Button
               // component={Link}
-            //   onClick={() => handleCreateReport()}
+              onClick={() => handleCreateReport()}
               variant="outlined"
               color="secondary"
               startIcon={<FileDownloadOutlinedIcon />}
