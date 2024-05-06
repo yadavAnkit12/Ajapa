@@ -85,8 +85,6 @@ function Feed() {
             },
         }).then((response) => {
             if (response.status === 200) {
-
-                console.log("response", response.data.data);
                 setFeedData(response.data.data)
             } else {
                 // setLoading(false)
@@ -121,10 +119,10 @@ function Feed() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transition: { delay: 0.1 } }}
-            className="flex flex-1 items-center justify-center h-full"
+            className="flex flex-1 items-center justify-center h-full my-8"
           >
             <Typography color="text.secondary" variant="h5">
-              There is no feed!
+              Nothing new !
             </Typography>
           </motion.div>
         );
