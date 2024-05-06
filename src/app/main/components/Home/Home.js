@@ -189,7 +189,17 @@ function Home() {
           </CardActionArea>
         </Card>
       </div>
-
+      <div className='flex flex-col py-4 items-center justify-center' style={{ marginTop: '4rem' }} >
+                <Typography style={{ fontStyle: 'normal', fontSize: '24px', lineHeight: '28px', letterSpacing: '0px', textAlign: 'center', fontWeight: 'bold' }}>
+                    New Feed
+                </Typography>
+            </div>
+            <div style={{
+                paddingLeft: isDesktop ? '4rem' : '10px',
+                paddingRight: isDesktop ? '4rem' : '10px'
+            }} className='mt-1'>
+                <hr></hr>
+            </div>
 
       <div>
         <Feed />
