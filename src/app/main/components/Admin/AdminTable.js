@@ -11,7 +11,7 @@ import { useEffect, useState, useRef, forwardRef } from 'react';
 import { showMessage } from 'app/store/fuse/messageSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from "react-router-dom";
-import { eventAPIConfig } from '../../API/apiConfig';
+import { adminAPIConfig, eventAPIConfig } from '../../API/apiConfig';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import { tuple } from 'yup';
 import AdminForm from './AdminForm';
@@ -43,27 +43,27 @@ const menuItemArray = [
   //   // visibleIf: ['complete', 'active', 'inactive'],
   //   loadIf: true
   // },
-  {
-    key: 1,
-    label: 'Edit',
-    status: 'edit',
-    // visibleIf: ['complete', 'active', 'inactive'],
-    loadIf: true
-  },
   // {
   //   key: 1,
-  //   label: 'Delete',
-  //   status: 'delete',
+  //   label: 'Edit',
+  //   status: 'edit',
   //   // visibleIf: ['complete', 'active', 'inactive'],
   //   loadIf: true
   // },
+  {
+    key: 1,
+    label: 'Delete',
+    status: 'delete',
+    // visibleIf: ['complete', 'active', 'inactive'],
+    loadIf: true
+  },
 ]
 
 
 function AdminTable(props) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [eventListData, setEventListData] = useState([]);
+  const [adminListData, setAdminListData] = useState([]);
   const searchText = props.searchText;
 
   const [loading, setLoading] = useState(true);
@@ -86,7 +86,7 @@ function AdminTable(props) {
 
   useEffect(() => {
     fetchData();
-  }, [props?.change, rowsPerPage, page, props?.filterValue, searchText]);
+  }, [props?.change, rowsPerPage, page ]);
 
   useEffect(() => {
     if (page !== 0) {
@@ -122,20 +122,16 @@ function AdminTable(props) {
     const params = {
       page: page + 1,
       rowsPerPage: rowsPerPage, // Example data to pass in req.query
-      eventName: searchText,
-      eventStatus: (_.get(props, 'filterValue.eventStatus') === 'On' || _.get(props, 'filterValue') === '' || _.get(props, 'filterValue.eventStatus') === null) ? true : false,
-      bookingStatus: (_.get(props, 'filterValue.bookingStatus') === 'On' || _.get(props, 'filterValue') === '' || _.get(props, 'filterValue.bookingStatus') === null) ? true : false,
     };
-    const flag1 = props.filterValue === '' || props.filterValue.eventStatus === null ? 'On' : props.filterValue.eventStatus
-    const flag2 = props.filterValue === '' || props.filterValue.bookingStatus === null ? 'On' : props.filterValue.bookingStatus
-    axios.get(`${eventAPIConfig.list}/${flag1}/${flag2}`, { params }, {
+    
+    axios.get(`${adminAPIConfig.adminList}`, { params }, {
       headers: {
         'Content-type': 'multipart/form-data',
-        authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
       },
     }).then((response) => {
       if (response.status === 200) {
-        setEventListData(response?.data);
+        setAdminListData(response?.data);
         setLoading(false);
       } else {
         setLoading(false)
@@ -183,51 +179,51 @@ function AdminTable(props) {
   }
 
   //chnaging the booking status
-  const handleChnangeBookingStatus = (id, status) => {
-    setLoading(true)
-    axios.post(`${eventAPIConfig.changeBookingStatus}/${id}/${!status}`, {
-      headers: {
-        'Content-type': 'multipart/form-data',
-        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-      },
-    }).then((response) => {
-      if (response.status === 200) {
-        fetchData()
-        setLoading(false)
-        dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+  // const handleChnangeBookingStatus = (id, status) => {
+  //   setLoading(true)
+  //   axios.post(`${eventAPIConfig.changeBookingStatus}/${id}/${!status}`, {
+  //     headers: {
+  //       'Content-type': 'multipart/form-data',
+  //       Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+  //     },
+  //   }).then((response) => {
+  //     if (response.status === 200) {
+  //       fetchData()
+  //       setLoading(false)
+  //       dispatch(showMessage({ message: response.data.message, variant: 'success' }));
 
-      } else {
-        setLoading(false)
-        dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
-      }
-    }).catch(() => {
-      setLoading(false)
-      dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
-    })
+  //     } else {
+  //       setLoading(false)
+  //       dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
+  //     }
+  //   }).catch(() => {
+  //     setLoading(false)
+  //     dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
+  //   })
 
-  }
+  // }
   //chnaging the event status
-  const handleChangeEventStatus = (id, status) => {
-    axios.post(`${eventAPIConfig.changeEventStatus}/${id}/${!status}`, {
-      headers: {
-        'Content-type': 'multipart/form-data',
-        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-      },
-    }).then((response) => {
-      if (response.status === 200) {
-        fetchData()
-        setLoading(false)
-        dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-      } else {
-        setLoading(false)
-        dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
-      }
-    }).catch(() => {
-      setLoading(false)
-      dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
-    })
+  // const handleChangeEventStatus = (id, status) => {
+  //   axios.post(`${eventAPIConfig.changeEventStatus}/${id}/${!status}`, {
+  //     headers: {
+  //       'Content-type': 'multipart/form-data',
+  //       Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+  //     },
+  //   }).then((response) => {
+  //     if (response.status === 200) {
+  //       fetchData()
+  //       setLoading(false)
+  //       dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+  //     } else {
+  //       setLoading(false)
+  //       dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
+  //     }
+  //   }).catch(() => {
+  //     setLoading(false)
+  //     dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
+  //   })
 
-  }
+  // }
 
   function handleSelectAllClick(event) {
     if (event.target.checked) {
@@ -268,7 +264,7 @@ function AdminTable(props) {
     );
   }
 
-  if (!_.size(_.get(eventListData, 'data'))) {
+  if (!_.size(_.get(adminListData, 'data'))) {
     return (
       <motion.div
         initial={{ opacity: 0 }}
@@ -276,7 +272,7 @@ function AdminTable(props) {
         className="flex flex-1 items-center justify-center h-full"
       >
         <Typography color="text.secondary" variant="h5">
-          There are no Events!
+          There are no Admins!
         </Typography>
       </motion.div>
     );
@@ -290,12 +286,12 @@ function AdminTable(props) {
           order={order}
           onSelectAllClick={handleSelectAllClick}
           onRequestSort={handleRequestSort}
-          rowCount={eventListData?.length}
+          rowCount={adminListData?.length}
           onMenuItemClick={handleDeselect}
         />
         <TableBody>
           {
-            eventListData?.data?.map((n) => {
+            adminListData?.data?.map((n) => {
               const isSelected = selected.indexOf(n.eventId) !== -1;
               return (
                 <TableRow
@@ -309,17 +305,17 @@ function AdminTable(props) {
                   style={{ cursor: 'default' }}
                 >
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.eventName}
+                    {n.email}
                   </TableCell>
 
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.eventType}
+                    {n.mobileNumber}
                   </TableCell>
-
+{/* 
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.eventLocation}
 
-                  </TableCell>
+                  </TableCell> */}
                   {/* <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.eventDate}
                   </TableCell> 
@@ -385,9 +381,9 @@ function AdminTable(props) {
       <TablePagination
         className="shrink-0 border-t-1"
         component="div"
-        count={eventListData.totalElement}
-        rowsPerPage={eventListData.rowPerPage}
-        page={eventListData.pageNumber - 1}
+        count={adminListData.totalElement}
+        rowsPerPage={adminListData.rowPerPage}
+        page={adminListData.pageNumber - 1}
         backIconButtonProps={{
           'aria-label': 'Previous Page',
         }}

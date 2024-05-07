@@ -23,6 +23,7 @@ const style = {
 };
 
 function AdminHeader(props) {
+  
   const routeParams = useParams()
   const [filterData, setFilterData] = useState({
     bookingStatus: 'On',
@@ -169,14 +170,15 @@ function AdminHeader(props) {
       >
         <Box sx={{
           ...style,
-          '@media (max-width: 600px)': { // Apply media query for mobile devices
-            width: '70%', // Set width to 100% for smaller screens
+          '@media (max-width: 600px)': { 
+            width: '70%', 
           },
-          '@media (max-width: 280px)': { // Additional media query for smaller screens
-            width: '93%', // Set width to 82% for screens up to 280px
+          '@media (max-width: 280px)': { 
+            width: '93%', 
           },
         }}>
-          <AdminForm handleModalClose={handleModalClose} />
+          <AdminForm handleModalClose={handleModalClose} open={open} setOpen={setOpen} 
+          setChange={props.setChange} change={props.change}/>
         </Box>
       </Modal>
     </>

@@ -174,7 +174,7 @@ function UserForm() {
               response.data.user.isDisciple === true ? true : false,
             addressLine: response.data.user.addressLine || "",
             bloodGroup: response.data.user.bloodGroup || "",
-            dikshaDate: response.data.user.dikshaDate || "",
+            dikshaDate: response.data.user.dikshaDate !== null || response.data.user.dikshaDate !== "" ? response.data.user.dikshaDate : "",
             occupation: response.data.user.occupation || "",
             pinCode: response.data.user.pinCode || "",
             qualification: response.data.user.qualification || "",

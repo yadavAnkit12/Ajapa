@@ -2,7 +2,6 @@ const key = process.env.REACT_APP_URL;
 const jwtServiceConfig = {
   signIn: key + '/login',
   signUp: key + '/signup',
-  addAdmin: key + '/save/admin',
   country:key + '/countries',
   state:key + '/states',
   city:key + '/cities',

@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import RootLevelPermissionForm from './RootLevelPermissionForm';
 // import AdminForm from './AdminForm';
 
 
@@ -176,7 +177,7 @@ function RootLevelHeader(props) {
             width: '93%', // Set width to 82% for screens up to 280px
           },
         }}>
-          {/* <AdminForm handleModalClose={handleModalClose} /> */}
+          <RootLevelPermissionForm handleModalClose={handleModalClose} open={open} setOpen={setOpen} />
         </Box>
       </Modal>
     </>
