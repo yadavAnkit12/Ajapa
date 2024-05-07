@@ -194,7 +194,10 @@ function UserForm() {
           navigate('/404')
           setLoading(false)
         }
-      });
+      }).catch((error) => {
+        setLoading(false)
+        dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
+    });
   }, [routeParams]);
   //fetching the country list
   useEffect(() => {
@@ -209,7 +212,9 @@ function UserForm() {
           setCountryList(response.data);
           setGetCountryCode(response?.data)
         }
-      });
+      }).catch((error) => {
+        dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
+    });
   }, []);
 
   //fetch the state on the behalf of country
@@ -224,7 +229,9 @@ function UserForm() {
         if (response.status === 200) {
           setStateList(response.data);
         }
-      });
+      }).catch((error) => {
+        dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
+    });
   }, [countryID]);
 
   //fetch the city on the behalf of state
@@ -245,7 +252,9 @@ function UserForm() {
             setCityList(response.data);
           }
         }
-      });
+      }).catch((error) => {
+        dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
+    });
   }, [stateID]);
 
   const handleSubmit = (values) => {

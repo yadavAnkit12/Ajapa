@@ -51,6 +51,8 @@ function UsersHeader(props) {
             if (response.status === 200) {
                 setCountryList(response.data)
             }
+        }).catch((error) => {
+            dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
         })
     }, [])
 
@@ -64,6 +66,8 @@ function UsersHeader(props) {
             if (response.status === 200) {
                 setStateList(response.data)
             }
+        }).catch((error) => {
+            dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
         })
     }, [countryID])
 
@@ -77,6 +81,8 @@ function UsersHeader(props) {
             if (response.status === 200) {
                 setCityList(response.data)
             }
+        }).catch((error) => {
+            dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
         })
     }, [stateID])
 
@@ -136,7 +142,7 @@ function UsersHeader(props) {
                 const urlParts = response.data.fileName.split('/');
                 const fileName = urlParts[urlParts.length - 1];
 
-                const baseUrl = 'http://34.203.29.229:8080/ajapa_yog-0.0.1-SNAPSHOT/reports/';
+                const baseUrl = `${key}/reports/`;
                 const fullUrl = baseUrl + fileName;
                 const link = document.createElement('a');
                 link.href = fullUrl;
@@ -152,6 +158,8 @@ function UsersHeader(props) {
                 // Handling error
                 dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
             }
+        }).catch((error) => {
+            dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
         });
 
 
@@ -177,7 +185,7 @@ function UsersHeader(props) {
                 // Extract filename from the URL
                 const urlParts = response.data.fileName.split('/');
                 const fileName = urlParts[urlParts.length - 1];
-                const baseUrl = 'http://34.203.29.229:8080/ajapa_yog-0.0.1-SNAPSHOT/reports/';
+                const baseUrl = `${key}/reports/`;
                 const fullUrl = baseUrl + fileName;
 
                 // Create a new tab and open the link in it
@@ -186,6 +194,8 @@ function UsersHeader(props) {
             } else {
                 dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
             }
+        }).catch((error) => {
+            dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
         });
     }
 

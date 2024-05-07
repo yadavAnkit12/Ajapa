@@ -215,7 +215,6 @@ function MyRegistrationTable(props) {
         dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
       }
     }).catch((error) =>{
-      setLoading(false)
       dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
     })
   }

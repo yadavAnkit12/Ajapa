@@ -128,7 +128,10 @@ function Report2Table(props) {
           setReportData([]);
           setLoading(false);
         }
-      });
+      }).catch((error) => {
+        setLoading(false)
+        dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
+    });
     }
 
     else if (props.filterValue.selectDate === 'Departure') {
@@ -147,7 +150,10 @@ function Report2Table(props) {
           setReportData([]);
           setLoading(false);
         }
-      });
+      }).catch((error) => {
+        setLoading(false)
+        dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
+    });
     }
   };
 

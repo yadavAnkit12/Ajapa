@@ -133,7 +133,10 @@ function Report1Table(props) {
             setReportData([]);
             setLoading(false);
           }
-        });
+        }).catch((error) => {
+          setLoading(false)
+          dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
+      });
       }
 
       else if(props.filterValue.attendingShivir === 'No' || props.filterValue.attendingShivir === 'Yes')
@@ -154,7 +157,10 @@ function Report1Table(props) {
             setReportData([]);
             setLoading(false);
           }
-        });
+        }).catch((error) => {
+          setLoading(false)
+          dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
+      });
 
       }
   }
@@ -179,7 +185,10 @@ function Report1Table(props) {
             setReportData([]);
             setLoading(false);
           }
-        });
+        }).catch((error) => {
+          setLoading(false)
+          dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
+      });
       }
 
       else if(props.filterValue.attendingShivir === 'No' || props.filterValue.attendingShivir === 'Yes')
@@ -201,7 +210,10 @@ function Report1Table(props) {
             setReportData([]);
             setLoading(false);
           }
-        });
+        }).catch((error) => {
+          setLoading(false)
+          dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
+      });
 
       }
   }

@@ -1,3 +1,4 @@
+const key = process.env.REACT_APP_URL;
 import { Grid, Button, Modal, Typography } from '@mui/material'
 import { Box, Container } from '@mui/system';
 import { motion } from 'framer-motion';
@@ -9,7 +10,8 @@ import CardMedia from '@mui/material/CardMedia';
 import { CardActionArea } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
 import axios from 'axios';
-import { eventAPIConfig } from '../../API/apiConfig';
+import { blogAPIConfig, eventAPIConfig } from '../../API/apiConfig';
+import Feed from './Feed';
 
 const style = {
   position: 'absolute',
@@ -29,22 +31,13 @@ function Home() {
   const navigate = useNavigate()
   const isDesktop = useMediaQuery('(min-width:768px)');
 
-  const [open, setOpen] = useState(false)
-  const [openEvent, setOpenEvents] = useState(false)
-  const [userId, setUserId] = useState('')
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [feedData, setFeedData] = useState([])
 
-  const feedData = [
-    { id: 1, type: 'text', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce placerat justo at diam pretium, nec placerat ipsum volutpat.' },
-    { id: 2, type: 'image', image: 'https://thumbs.dreamstime.com/z/random-click-squirrel-wire-random-picture-cute-squirrel-219506797.jpg', alt: 'Image 1' },
-    { id: 3, type: 'text', content: 'Sed vehicula ipsum sit amet ligula pellentesque lacinia. Integer tincidunt neque eu risus dictum, id hendrerit metus vehicula.' },
-    { id: 4, type: 'image', image: 'https://cdn.pixabay.com/photo/2016/07/07/16/46/dice-1502706_640.jpg', alt: 'Image 2' },
-    { id: 5, type: 'text', content: 'Praesent eget libero quis ex suscipit lacinia sit amet nec mi. Ut in felis a nibh volutpat scelerisque.' },
-    { id: 6, type: 'text', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce placerat justo at diam pretium, nec placerat ipsum volutpat.' },
-    { id: 7, type: 'image', image: 'https://thumbs.dreamstime.com/z/random-click-squirrel-wire-random-picture-cute-squirrel-219506797.jpg', alt: 'Image 1' },
-    { id: 8, type: 'text', content: 'Sed vehicula ipsum sit amet ligula pellentesque lacinia. Integer tincidunt neque eu risus dictum, id hendrerit metus vehicula.' },
-    { id: 9, type: 'image', image: 'https://cdn.pixabay.com/photo/2016/07/07/16/46/dice-1502706_640.jpg', alt: 'Image 2' },
-    { id: 10, type: 'text', content: 'Praesent eget libero quis ex suscipit lacinia sit amet nec mi. Ut in felis a nibh volutpat scelerisque.' },
-  ];
+
+
+
 
 
   const location = useLocation();
@@ -53,82 +46,61 @@ function Home() {
     window.scrollTo(0, 0);
   }, [location]);
 
-  useEffect(() => {
-    const userData = sessionStorage.getItem('user_data');
-    if (userData) {
-      const user = JSON.parse(userData);
-      delete user.password // beacuse we recive passowrd as empty
-      const status = Object.keys(user).some(key => user[key] === '' || user[key] === undefined || user[key] === 'undefined' || user[key] === 'null' || user[key] === null);
-      if (status) {
-        setUserId(user.id)
-        setOpen(true)
-      } else {
-        if (sessionStorage.getItem('userRole') !== 'Super' && sessionStorage.getItem('userRole') !== 'Admin') {
-          checkActiveEvents()
-        }
-      }
-    }
-  }, []);
+  // useEffect(() => {
+  //   const userData = sessionStorage.getItem('user_data');
+  //   if (userData) {
+  //     const user = JSON.parse(userData);
+  //     delete user.password // beacuse we recive passowrd as empty
+  //     const status = Object.keys(user).some(key => user[key] === '' || user[key] === undefined || user[key] === 'undefined' || user[key] === 'null' || user[key] === null);
+  //     if (status) {
+  //       setUserId(user.id)
+  //       setOpen(true)
+  //     } else {
+  //       if (sessionStorage.getItem('userRole') !== 'Super' && sessionStorage.getItem('userRole') !== 'Admin') {
+  //         checkActiveEvents()
+  //       }
+  //     }
+  //   }
+  // }, []);
 
-  const handleClose = () => {
-    setOpen(false)
-    if (sessionStorage.getItem('userRole') !== 'Super' && sessionStorage.getItem('userRole') !== 'Admin') {
-      checkActiveEvents()
-    }
-  }
 
-  const handleCloseEvents = () => {
-    setOpenEvents(false)
-  }
-
-  const handleComplete = () => {
-    navigate(`/app/useredit/${userId}`)
-  }
-
-  const handleGoToEvents = () => {
-    navigate('/app/UserEvents')
-  }
-
-  const checkActiveEvents = () => {
+  const fetchData = () => {
     const params = {
-      page: 1,
-      rowsPerPage: 1000, // Example data to pass in req.query
-      eventName: '',
-      eventStatus: true,
-      bookingStatus: true,
+      page: page + 1,
+      rowsPerPage: rowsPerPage
     };
-    axios.get(`${eventAPIConfig.list}/true/true`, { params }, {
+    axios.get(blogAPIConfig.getAllPosts, { params }, {
       headers: {
         'Content-type': 'multipart/form-data',
         Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
       },
     }).then((response) => {
       if (response.status === 200) {
-        if (response.data.data.length > 0) {
-          axios.get(eventAPIConfig.checkUserRegisterForAllEvents, {
-            headers: {
-              Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-            },
-          }).then((response) => {
-            if (response.status === 200) {
-              console.log(response)
-              if (response.data.result) { // this return true then user not register for all events
-                setOpenEvents(true)
-              } else {
-                setOpenEvents(false)
-              }
-            }
-          }).catch(() => {
-            dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
-          })
-
-        } else {
-          setOpenEvents(false)
-        }
+        setFeedData(response.data.data)
+      } else {
+        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
       }
-    }).catch(() => {
-      dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
+    }).catch((error) => {
+      dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
     })
+  };
+
+  useEffect(() => {
+    fetchData()
+  }, [])
+
+  function formatDateString(dateString) {
+    const date = new Date(dateString);
+    const formattedDate = date.toLocaleString("en-US", {
+      weekday: "short",
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }).replace(',', ''); // Remove comma
+    return formattedDate;
   }
 
 
@@ -154,7 +126,7 @@ function Home() {
                 Ashrams
               </Typography>
               <Typography variant="body2" color="text.secondary">
-              Visit Ashram to dive deep into timeless wisdom, unlock your true potential, and embark on a transformative journey of self-realisation.
+                Visit Ashram to dive deep into timeless wisdom, unlock your true potential, and embark on a transformative journey of self-realisation.
               </Typography>
             </CardContent>
           </CardActionArea>
@@ -173,7 +145,7 @@ function Home() {
                 Gurus
               </Typography>
               <Typography variant="body2" color="text.secondary">
-              Guru is the revered Ajapa master, the self realized spiritual guide, embodying deep wisdom and compassion. The ancient Ajapa meditation technique is imparted by him to aid seekers on their journey of self realisation.
+                Guru is the revered Ajapa master, the self realized spiritual guide, embodying deep wisdom and compassion. The ancient Ajapa meditation technique is imparted by him to aid seekers on their journey of self realisation.
               </Typography>
             </CardContent>
           </CardActionArea>
@@ -211,92 +183,28 @@ function Home() {
                 Contact Us
               </Typography>
               <Typography variant="body2" color="text.secondary"  >
-              Have questions or seeking guidance on your spiritual journey? Reach out to us for personalized support and assistance. Our team at Ajapa Yog Sansthan is here to help you embark on a path of inner growth and self-discovery.
+                Have questions or seeking guidance on your spiritual journey? Reach out to us for personalized support and assistance. Our team at Ajapa Yog Sansthan is here to help you embark on a path of inner growth and self-discovery.
               </Typography>
             </CardContent>
           </CardActionArea>
         </Card>
       </div>
-      {/* 
       <div className='flex flex-col py-4 items-center justify-center' style={{ marginTop: '4rem' }} >
-        <Typography style={{ fontStyle: 'normal', fontSize: '24px', lineHeight: '28px', letterSpacing: '0px', textAlign: 'center', fontWeight: 'bold' }}>
-          New Feed
-        </Typography>
+                <Typography style={{ fontStyle: 'normal', fontSize: '24px', lineHeight: '28px', letterSpacing: '0px', textAlign: 'center', fontWeight: 'bold' }}>
+                    New Feed
+                </Typography>
+            </div>
+            <div style={{
+                paddingLeft: isDesktop ? '4rem' : '10px',
+                paddingRight: isDesktop ? '4rem' : '10px'
+            }} className='mt-1'>
+                <hr></hr>
+            </div>
+
+      <div>
+        <Feed />
       </div>
-      <div style={{
-        paddingLeft: isDesktop ? '4rem' : '10px',
-        paddingRight: isDesktop ? '4rem' : '10px'
-      }} className='mt-1'>
-        <hr></hr>
-      </div>
-      <div className='p-4' >
-        <Grid container spacing={2}>
-          {feedData.map((item) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={item.id}>
-              <Card className="flex flex-col h-full m-4 sm:m-0">
-                {item.type === 'text' && (
-                  <CardContent>
-                    <Typography variant="body1" component="div">
-                      {item.content}
-                    </Typography>
-                  </CardContent>
-                )}
-                {item.type === 'image' && (
-                  <CardMedia
-                    component="img"
-                    height={item.type === 'text' ? "100" : "140"}
-                    image={item.image}
-                    alt={item.alt}
-                  />
-                )}
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      </div> */}
 
-
-
-      <Modal // for incomplete profile
-        open={open}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Typography id="modal-modal-description" style={{
-            // fontFamily: "BentonSans bold",
-            fontStyle: 'normal', fontSize: '20px',
-            lineHeight: '28px', letterSpacing: '0px',
-            textAlign: 'center', fontWeight: 600,
-          }}>
-            Your profile appears to be incomplete.
-          </Typography>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '2rem' }}>
-            <Button variant='contained' color='secondary' sx={{ mr: 1.5 }} onClick={handleClose}>Skip</Button>
-            <Button variant='contained' color='secondary' onClick={handleComplete}>Complete</Button>
-          </div>
-        </Box>
-      </Modal>
-      <Modal // for active events64
-        open={openEvent}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Typography id="modal-modal-description" style={{
-            // fontFamily: "BentonSans bold",
-            fontStyle: 'normal', fontSize: '20px',
-            lineHeight: '28px', letterSpacing: '0px',
-            textAlign: 'center', fontWeight: 600,
-          }}>
-            There are some active events , want to register now.
-          </Typography>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '2rem' }}>
-            <Button variant='contained' color='secondary' sx={{ mr: 1.5 }} onClick={handleCloseEvents}>Skip</Button>
-            <Button variant='contained' color='secondary' onClick={handleGoToEvents}>Go to events</Button>
-          </div>
-        </Box>
-      </Modal>
     </div>
   )
 }

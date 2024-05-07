@@ -57,7 +57,8 @@ export const reportAPIConfig = {
     report1departure: key + '/report1/departure/event/registrations',
     report2arrival: key + '/report2/arrival/event/registrations',
     report2departure: key + '/report2/departure/event/registrations',
-    report3: key + '/report3/event/registrations'
+    report3: key + '/report3/event/registrations',
+    report3Excel: key + '/report3Excel/event/registrations'
 }
 
 
@@ -68,6 +69,13 @@ export const cardAPIConfig = {
 export const adminAPIConfig = {
     addAdmin: key + '/save/admin',
     adminList: key + '/admin/list'
+}
+
+
+export const blogAPIConfig ={
+    savePostWithImage: key + '/savePostWithImage',
+    savePost: key + '/savePost',
+    getAllPosts : key + '/post/list',
 }
 
 
