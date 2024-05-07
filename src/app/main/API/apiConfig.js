@@ -68,7 +68,8 @@ export const cardAPIConfig = {
 
 export const adminAPIConfig = {
     addAdmin: key + '/save/admin',
-    adminList: key + '/admin/list'
+    adminList: key + '/admin/list',
+    deleteAdmin: key + '/admin/delete'
 }
 
 
