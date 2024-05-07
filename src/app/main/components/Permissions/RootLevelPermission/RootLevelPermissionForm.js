@@ -30,11 +30,11 @@ const validationSchema = yup.object().shape({
 
 const initialValues = {
     admin: "",
-    isCreate: false,
+    // isCreate: false,
     isRead: false,
     isUpdate: false,
     isDelete: false,
-    events: "",
+    // events: "",
     isCreateEvent: false,
     isReadEvent: false,
     isUpdateEvent: false,
@@ -169,13 +169,13 @@ const RootLevelPermissionForm = ({ setOpen }) => {
                             Users Permission
                         </FormLabel>
                         <FormGroup row>
-                            <FormControlLabel
+                            {/* <FormControlLabel
                                 control={
                                     <Checkbox checked={formik.values.isCreate}
                                         onChange={(event) => formik.setFieldValue("isCreate", event.target.checked)}
                                         name="isCreate" />}
                                 label="Create"
-                            />
+                            /> */}
                             <FormControlLabel
                                 control={
                                     <Checkbox checked={formik.values.isRead}
@@ -201,7 +201,7 @@ const RootLevelPermissionForm = ({ setOpen }) => {
                     </FormControl>
 
 
-                    <Autocomplete
+                    {/* <Autocomplete
                         options={["Event1", "Event2", "Event3"]}
                         // getOptionLabel={(option) => option}
                         value={formik.values.events}
@@ -222,7 +222,8 @@ const RootLevelPermissionForm = ({ setOpen }) => {
                                 fullWidth
                             />
                         )}
-                    />
+                    /> */}
+                    
                     <FormControl component="fieldset" required>
                         <FormLabel className="text-black">
                             Events Permission
