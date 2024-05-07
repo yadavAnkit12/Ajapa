@@ -108,9 +108,6 @@ function Report2Table(props) {
       return
     }
 
-    console.log("Event Name", props.filterValue.eventName)
-    console.log("Event Name", props.filterValue.selectDate)
-
     const eventId = props.eventList?.find((event) => event.eventName === props.filterValue.eventName)?.eventId || '';
 
     if (props.filterValue.selectDate === 'Arrival') {

@@ -1,3 +1,4 @@
+const key = process.env.REACT_APP_URL;
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import Autocomplete from '@mui/material/Autocomplete';
 import { Input, Paper, Typography, Modal, Box, Button, TextField } from '@mui/material';
@@ -9,6 +10,7 @@ import { showMessage } from 'app/store/fuse/messageSlice';
 import axios from 'axios';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import FuseLoading from '@fuse/core/FuseLoading';
+import { reportAPIConfig } from 'src/app/main/API/apiConfig';
 
 
 
@@ -42,41 +44,170 @@ function Report1Header(props) {
 
 
 
-  //   const handleCreateReport = () => {
-  //     const eventId = props.eventList?.find((event) => event.eventName === filterData.eventName)?.eventId
-  //     axios.get(`${attendanceAPIConfig.attendanceReport}/${eventId}`, {
-  //         headers: {
-  //             'Content-type': 'multipart/form-data',
-  //             Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-  //         },
-  //     }).then((response) => {
+  const handleCreateReport = () => {
+    const eventId = props.eventList?.find((event) => event.eventName === filterData.eventName)?.eventId
+    const selectDate = filterData.selectDate
+    const attendingShivir = filterData.attendingShivir
 
-  //         if (response.status === 200) {
-  //             // Extract filename from the URL
-  //             const urlParts = response.data.fileName.split('/');
-  //             const fileName = urlParts[urlParts.length - 1];
+    if (eventId === undefined || eventId === '') {
+      dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
+      return
+    }
 
-  //             const baseUrl = 'http://18.212.201.202:8080/ajapa_yog-0.0.1-SNAPSHOT/reports/';
-  //             const fullUrl = baseUrl + fileName;
-  //             const link = document.createElement('a');
-  //             link.href = fullUrl;
-  //             link.setAttribute('download', fileName);
-  //             document.body.appendChild(link);
+    if (selectDate === '' || selectDate === null) {
+      dispatch(showMessage({ message: "Please select the Arrival/Departure mode", variant: 'error' }));
+      return
+    }
 
-  //             // Trigger the download
-  //             link.click();
+    if (selectDate !== '' && selectDate === 'Arrival') {
 
-  //             // Remove the link from the DOM after the download
-  //             document.body.removeChild(link);
+      if (attendingShivir === '' || attendingShivir === 'All') {
+           
+        axios.get(`${reportAPIConfig.report1arrivalExcel}/${eventId}` ,{
+          headers: {
+            'Content-type': 'multipart/form-data',
+            Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+          },
+    }).then((response) => {
 
-  //         } else {
-  //             // Handling error
-  //             dispatch(showMessage({ message: "Failed to fetch Excel. Please try again later.", variant: 'error' }));
-  //         }
-  //     });
+        if (response.status === 200) {
+            // Extract filename from the URL
+            const urlParts = response.data.fileName.split('/');
+            const fileName = urlParts[urlParts.length - 1];
+
+            const baseUrl = `${key}/reports/`;
+            const fullUrl = baseUrl + fileName;
+            const link = document.createElement('a');
+            link.href = fullUrl;
+            link.setAttribute('download', fileName);
+            document.body.appendChild(link);
+
+            // Trigger the download
+            link.click();
+
+            // Remove the link from the DOM after the download
+            document.body.removeChild(link);
+
+        } else {
+            // Handling error
+            dispatch(showMessage({ message: "Failed to fetch Excel. Please try again later.", variant: 'error' }));
+        }
+    });
+      }
+
+      else if (attendingShivir === 'Yes' || attendingShivir === 'No') {
+
+        const attendingShivirboolean =  attendingShivir === "Yes" ? true : false; 
+       
+        axios.get(`${reportAPIConfig.report1arrivalExcel}/${eventId}/${attendingShivirboolean}` ,{
+          headers: {
+            'Content-type': 'multipart/form-data',
+            Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+          },
+    }).then((response) => {
+
+        if (response.status === 200) {
+            // Extract filename from the URL
+            const urlParts = response.data.fileName.split('/');
+            const fileName = urlParts[urlParts.length - 1];
+
+            const baseUrl = `${key}/reports/`;
+            const fullUrl = baseUrl + fileName;
+            const link = document.createElement('a');
+            link.href = fullUrl;
+            link.setAttribute('download', fileName);
+            document.body.appendChild(link);
+
+            // Trigger the download
+            link.click();
+
+            // Remove the link from the DOM after the download
+            document.body.removeChild(link);
+
+        } else {
+            // Handling error
+            dispatch(showMessage({ message: "Failed to fetch Excel. Please try again later.", variant: 'error' }));
+        }
+    });
+      }
+    }
 
 
-  // }
+    else if (selectDate !== '' && selectDate === 'Departure') {
+
+      if (attendingShivir === '' || attendingShivir === 'All') {
+           
+        axios.get(`${reportAPIConfig.report1departureExcel}/${eventId}` ,{
+          headers: {
+            'Content-type': 'multipart/form-data',
+            Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+          },
+    }).then((response) => {
+
+        if (response.status === 200) {
+            // Extract filename from the URL
+            const urlParts = response.data.fileName.split('/');
+            const fileName = urlParts[urlParts.length - 1];
+
+            const baseUrl = `${key}/reports/`;
+            const fullUrl = baseUrl + fileName;
+            const link = document.createElement('a');
+            link.href = fullUrl;
+            link.setAttribute('download', fileName);
+            document.body.appendChild(link);
+
+            // Trigger the download
+            link.click();
+
+            // Remove the link from the DOM after the download
+            document.body.removeChild(link);
+
+        } else {
+            // Handling error
+            dispatch(showMessage({ message: "Failed to fetch Excel. Please try again later.", variant: 'error' }));
+        }
+    });
+      }
+
+      else if (attendingShivir === 'Yes' || attendingShivir === 'No') {
+
+        const attendingShivirboolean =  attendingShivir === "Yes" ? true : false; 
+       
+        axios.get(`${reportAPIConfig.report1departureExcel}/${eventId}/${attendingShivirboolean}` ,{
+          headers: {
+            'Content-type': 'multipart/form-data',
+            Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+          },
+    }).then((response) => {
+
+        if (response.status === 200) {
+            // Extract filename from the URL
+            const urlParts = response.data.fileName.split('/');
+            const fileName = urlParts[urlParts.length - 1];
+
+            const baseUrl = `${key}/reports/`;
+            const fullUrl = baseUrl + fileName;
+            const link = document.createElement('a');
+            link.href = fullUrl;
+            link.setAttribute('download', fileName);
+            document.body.appendChild(link);
+
+            // Trigger the download
+            link.click();
+
+            // Remove the link from the DOM after the download
+            document.body.removeChild(link);
+
+        } else {
+            // Handling error
+            dispatch(showMessage({ message: "Failed to fetch Excel. Please try again later.", variant: 'error' }));
+        }
+    });
+      }
+
+    }
+
+  }
 
   // const handleCreateReportPDF = () => {
   //   const eventId = props.eventList?.find((event) => event.eventName === filterData.eventName)?.eventId
@@ -148,7 +279,7 @@ function Report1Header(props) {
 
 
   const handleCheckShivir = (event) => {
-    
+
     setShowShivir(event)
 
 
@@ -190,9 +321,9 @@ function Report1Header(props) {
               onChange={(e, newValue) => {
                 const event = props.eventList?.find((event) => event.eventName === newValue)?.shivirAvailable
                 handleCheckShivir(event)
-                setFilterData({ ...filterData, eventName: newValue, attendingShivir:''})
+                setFilterData({ ...filterData, eventName: newValue, attendingShivir: '' })
 
-              
+
 
               }}
               renderInput={(params) => <TextField {...params} label="Select Event" variant="standard" />}
@@ -217,7 +348,7 @@ function Report1Header(props) {
               disablePortal
               value={filterData.attendingShivir}
               id="attendingShivir"
-              options={[ "All","Yes", "No"]}
+              options={["All", "Yes", "No"]}
               getOptionLabel={(option) => option}
               sx={{ my: 1, minWidth: 200, mx: 1 }}
               onChange={(e, newValue) => setFilterData({ ...filterData, attendingShivir: newValue })}
@@ -229,7 +360,7 @@ function Report1Header(props) {
 
             <Button
               // component={Link}
-              //   onClick={() => handleCreateReport()}
+              onClick={() => handleCreateReport()}
               variant="outlined"
               color="secondary"
               startIcon={<FileDownloadOutlinedIcon />}
