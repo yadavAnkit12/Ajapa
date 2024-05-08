@@ -79,8 +79,8 @@ function AdminTable(props) {
   const [openEdit, setOpenEdit] = useState(false);
   const [editId, setEditId] = useState("");
   const [openView, setOpenView] = useState(false);
-  const [viewid, setViewId] = useState("");
-  const [change, setChange] = useState(false);
+  const [adminid, setAdminId] = useState();
+  // const [change, setChange] = useState(false);
   const [open, setOpen] = useState(false)
   const [deleteId, setDeleteId] = useState('')
 
@@ -130,6 +130,7 @@ function AdminTable(props) {
         Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
       },
     }).then((response) => {
+      console.log('f',response)
       if (response.status === 200) {
         setAdminListData(response?.data);
         setLoading(false);
@@ -163,67 +164,39 @@ function AdminTable(props) {
   }
 
   function getStatus(id, selectedValue) {
-
-    if (selectedValue === 'edit') {
+    if (selectedValue === 'delete') {
       setOpenView(true)
-      setViewId(id)
+      setAdminId(id)
     }
-    // else if (selectedValue === 'edit') {
-    //   navigate(`/app/eventRegisteration/${id}`)
-    // }
+  }
 
+  const handleAdminDelete = () =>{
+    setLoading(true)
+    axios.post(`${adminAPIConfig.deleteAdmin}?id=${adminid}`, {
+      headers: {
+        'Content-type': 'multipart/form-data',
+        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+      },
+    }).then((response) => {
+      if (response.status === 200) {
+        setLoading(false);
+        setOpenView(false)
+        props.setChange(!props.change)
+        dispatch(showMessage({ message: response.data.message, variant: 'success' }));
+      } else {
+        setLoading(false)
+        dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
+      }
+    }).catch(() => {
+      setLoading(false)
+      dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
+    })
   }
 
   const handleClose = () => {
-    setOpen(false)
+    setOpenView(false)
   }
 
-  //chnaging the booking status
-  // const handleChnangeBookingStatus = (id, status) => {
-  //   setLoading(true)
-  //   axios.post(`${eventAPIConfig.changeBookingStatus}/${id}/${!status}`, {
-  //     headers: {
-  //       'Content-type': 'multipart/form-data',
-  //       Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-  //     },
-  //   }).then((response) => {
-  //     if (response.status === 200) {
-  //       fetchData()
-  //       setLoading(false)
-  //       dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-
-  //     } else {
-  //       setLoading(false)
-  //       dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
-  //     }
-  //   }).catch(() => {
-  //     setLoading(false)
-  //     dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
-  //   })
-
-  // }
-  //chnaging the event status
-  // const handleChangeEventStatus = (id, status) => {
-  //   axios.post(`${eventAPIConfig.changeEventStatus}/${id}/${!status}`, {
-  //     headers: {
-  //       'Content-type': 'multipart/form-data',
-  //       Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-  //     },
-  //   }).then((response) => {
-  //     if (response.status === 200) {
-  //       fetchData()
-  //       setLoading(false)
-  //       dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-  //     } else {
-  //       setLoading(false)
-  //       dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
-  //     }
-  //   }).catch(() => {
-  //     setLoading(false)
-  //     dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
-  //   })
-
-  // }
 
   function handleSelectAllClick(event) {
     if (event.target.checked) {
@@ -311,38 +284,7 @@ function AdminTable(props) {
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.mobileNumber}
                   </TableCell>
-{/* 
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.eventLocation}
-
-                  </TableCell> */}
-                  {/* <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.eventDate}
-                  </TableCell> 
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.shivirAvailable ? 'Yes' : 'No'}
-                  </TableCell>
-
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align="center">
-                    <Switch
-                      checked={n.eventStatus}
-                      color="success"
-                      inputProps={{ 'aria-label': 'toggle event status' }}
-                      onChange={() => handleChangeEventStatus(n.eventId, n.eventStatus)}
-                    />
-                    {n.eventStatus ? 'On' : 'Off'}
-                  </TableCell>
-
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align="center">
-                    <Switch
-                      checked={n.bookingStatus}
-                      color="success"
-                      inputProps={{ 'aria-label': 'toggle booking status' }}
-                      onChange={() => handleChnangeBookingStatus(n.eventId, n.bookingStatus)}
-                    />
-                    {n.bookingStatus ? 'On' : 'Off'}
-                  </TableCell> */}
-
+                  
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     <PopupState variant="popover" popupId="demo-popup-menu">
                       {(popupState) => (
@@ -355,7 +297,7 @@ function AdminTable(props) {
                             {menuItemArray.map((value) => (
                               (value.loadIf) && <MenuItem
                                 onClick={() => {
-                                  getStatus(n.eventId, value.status, n.eventStatus);
+                                  getStatus(n.id, value.status);
                                   popupState.close();
                                 }}
                                 key={value.key}
@@ -393,23 +335,23 @@ function AdminTable(props) {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      {/* <Dialog
-        open={open}
+      <Dialog
+        open={openView}
         TransitionComponent={Transition}
         keepMounted
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>{"Do you want to delete this Event?"}</DialogTitle>
+        <DialogTitle>{"Do you want to delete this Admin?"}</DialogTitle>
 
         <DialogActions>
           <Button onClick={handleClose}>No</Button>
-          <Button onClick={deleteEvent} autoFocus>
+          <Button onClick={handleAdminDelete} autoFocus>
             Yes
           </Button>
         </DialogActions>
-      </Dialog> */}
-      <Modal
+      </Dialog>
+      {/* <Modal
         open={openView}
         onClose={handleViewClose}
         aria-labelledby="modal-modal-title"
@@ -426,7 +368,7 @@ function AdminTable(props) {
         }}>
           <AdminForm handleViewClose={handleViewClose} viewid={viewid} />
         </Box>
-      </Modal>
+      </Modal> */}
 
     </div>
   );
