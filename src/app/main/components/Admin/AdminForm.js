@@ -20,6 +20,7 @@ import { adminAPIConfig } from '../../API/apiConfig';
 
 
 const validationSchema = yup.object().shape({
+  name: yup.string().required("Please enter the name"),
   email: yup
     .string()
     .email("Invalid email address")
@@ -41,6 +42,7 @@ const validationSchema = yup.object().shape({
 
 
 const initialValues = {
+  name:"",
   email: "",
   countryCode: '+91',
   mobileNumber: '',
@@ -80,12 +82,11 @@ const AdminForm = ({ setOpen, setChange, change }) => {
       setLoading(true)
 
       const formData = new FormData();
+      formData.append("name", values.name);
       formData.append("email", values.email);
       formData.append("countryCode", values.countryCode.split(" ")[0]);
       formData.append("mobileNumber", values.mobileNumber);
       formData.append("password", values.password);
-      formData.append("dob", '1983-11-16');
-      formData.append("dikshaDate", '1983-11-16');
       formData.append("role", "Admin");
 
       axios.post(`${adminAPIConfig.addAdmin}`, formData, {
@@ -137,6 +138,24 @@ const AdminForm = ({ setOpen, setChange, change }) => {
           onSubmit={formik.handleSubmit}
           style={{ marginTop: '1rem' }}
         >
+             <TextField
+            sx={{ mb: 2 }}
+            className="max-w-md"
+            name="name"
+            label="Name"
+            type="name"
+            value={formik.values.name}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={
+              formik.touched.name && Boolean(formik.errors.name)
+            }
+            helperText={formik.touched.name && formik.errors.name}
+            variant="outlined"
+            required
+            fullWidth
+          />
+
           <TextField
             sx={{ mb: 2 }}
             className="max-w-md"
