@@ -54,9 +54,13 @@ export const foodAPIConfig = {
 
 export const reportAPIConfig = {
     report1arrival: key + '/report1/arrival/event/registrations',
+    report1arrivalExcel: key + '/reportExcel1/arrival/event/registrations',
+    report1departureExcel: key +'/reportExcel1/departure/event/registrations',
     report1departure: key + '/report1/departure/event/registrations',
     report2arrival: key + '/report2/arrival/event/registrations',
     report2departure: key + '/report2/departure/event/registrations',
+    report2arrivalExcel: key + '/reportExcel2/arrival/event/registrations',
+    report2departureExcel : key + '/reportExcel2/departure/event/registrations',
     report3: key + '/report3/event/registrations',
     report3Excel: key + '/report3Excel/event/registrations'
 }
