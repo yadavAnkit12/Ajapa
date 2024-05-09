@@ -105,7 +105,7 @@ function SignUpPage() {
       .string()
       .email("Invalid email address")
       .matches(
-        /^([A-Za-z0-9_\-\.])+\@(?!(?:[A-Za-z0-9_\-\.]+\.)?([A-Za-z]{2,4})\.\2)([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/,
+        /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
         "Invalid email"
       )
       .required("Please enter your email"),

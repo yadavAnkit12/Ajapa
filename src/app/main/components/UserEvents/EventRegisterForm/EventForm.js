@@ -173,7 +173,6 @@ const EventForm = (props) => {
 
 
     const handleSubmit = (values) => {
-        console.log(values)
         if (formik.isValid) {
 
             if (shivirCheckBox && formik.values.attendingShivir === undefined) {
@@ -182,6 +181,10 @@ const EventForm = (props) => {
 
             else if (values.arrivalModeOfTransport === 'Train' && (values.arrivalTrainNumber === '')) {
                 return dispatch(showMessage({ message: 'Train number required when you are travelling from train', variant: 'error' }))
+            }
+
+            else if (values.departureDate < values.arrivalDate){
+                return dispatch(showMessage({ message: 'Please select the validate date', variant: 'error' }));   
             }
 
             props.setLoading(true)
