@@ -277,6 +277,10 @@ function AdminTable(props) {
                   selected={isSelected}
                   style={{ cursor: 'default' }}
                 >
+                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                    {n.name}
+                  </TableCell>
+
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.email}
                   </TableCell>

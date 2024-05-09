@@ -164,6 +164,7 @@ const RootLevelPermissionForm = ({ setOpen }) => {
                             />
                         )}
                     />
+                    <div className='flex flex-col'>
                     <FormControl component="fieldset" required>
                         <FormLabel className="text-black">
                             Users Permission
@@ -259,7 +260,7 @@ const RootLevelPermissionForm = ({ setOpen }) => {
                             />
                         </FormGroup>
                     </FormControl>
-
+                    </div>
 
 
                     <div style={{ display: "flex", justifyContent: "flex-end" }}  >

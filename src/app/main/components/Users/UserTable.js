@@ -359,7 +359,7 @@ function UserTable(props) {
 
   return (
     <div className="w-full flex flex-col min-h-full" style={{ overflow: 'auto' }}>
-      <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle" ref={tableRef}>
+      <Table className="min-w-xl" aria-labelledby="tableTitle" ref={tableRef}>
         <UserTableHead
           selectedProductIds={selected}
           order={order}

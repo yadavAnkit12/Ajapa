@@ -71,7 +71,7 @@ function AddMembersForm() {
   const validationSchema = yup.object().shape({
     name: yup.string().max(100, 'Full name should be less than 100 chars').required('Please enter your full name'),
     email: yup.string().email('Invalid email address')
-      .matches(/^([A-Za-z0-9_\-\.])+\@(?!(?:[A-Za-z0-9_\-\.]+\.)?([A-Za-z]{2,4})\.\2)([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/, 'Invalid email'),
+      .matches(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, 'Invalid email'),
     // .required('Please enter your email'),
     password: yup
       .string()

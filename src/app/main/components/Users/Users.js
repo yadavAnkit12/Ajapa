@@ -16,7 +16,7 @@ function Users() {
     <FusePageCarded 
       header={<UsersHeader setChange={setChange} change={change} setFilterValue={setFilterValue} searchText={searchText} setSearchText={setSearchText}/>}
       content={<UserTable setChange={setChange} change={change} filterValue={filterValue} searchText={searchText}/>}
-      scroll={isMobile ? 'normal' : 'content'}
+      // scroll={isMobile ? 'normal' : 'content'}
     />
   );
 }

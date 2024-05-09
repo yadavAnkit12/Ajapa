@@ -3,7 +3,14 @@ import { lighten } from '@mui/material/styles';
 
 function AdminTableHead(props) {
   const rows = [
-
+    {
+      id: 'name',
+      align: 'center',
+      disablePadding: false,
+      label: 'Name',
+      sort: true,
+      visibleIf: true
+    },
     {
       id: 'email',
       align: 'center',
