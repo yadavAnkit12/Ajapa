@@ -212,7 +212,7 @@ function Feed() {
                                     </div>
                                 )}
                             { item.message &&   <CardContent>
-                                    <Typography variant="body2" color="text.secondary">
+                                    <Typography variant="body2" color="text.secondary" className='text-justify'>
                                         {expandedId === item.id ? item.message : `${item.message.slice(0, 75)}`}
                                     </Typography>
                                 </CardContent>
