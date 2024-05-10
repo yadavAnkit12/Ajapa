@@ -81,6 +81,7 @@ export const blogAPIConfig ={
     savePostWithImage: key + '/savePostWithImage',
     savePost: key + '/savePost',
     getAllPosts : key + '/post/list',
+    deletePost : key + '/post/delete'
 }
 
 

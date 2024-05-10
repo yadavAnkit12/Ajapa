@@ -125,7 +125,7 @@ function Home() {
               <Typography gutterBottom variant="h5" component="div">
                 Ashrams
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="text.secondary" className='text-justify'>
                 Visit Ashram to dive deep into timeless wisdom, unlock your true potential, and embark on a transformative journey of self-realisation.
               </Typography>
             </CardContent>
@@ -144,7 +144,7 @@ function Home() {
               <Typography gutterBottom variant="h5" component="div">
                 Gurus
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="text.secondary" className='text-justify'>
                 Guru is the revered Ajapa master, the self realized spiritual guide, embodying deep wisdom and compassion. The ancient Ajapa meditation technique is imparted by him to aid seekers on their journey of self realisation.
               </Typography>
             </CardContent>
@@ -163,7 +163,7 @@ function Home() {
               <Typography gutterBottom variant="h5" component="div">
                 Utsavs
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="text.secondary" className='text-justify'>
                 Utsav is organised by the foundation for all Ajapa followers to celebrate the existence of Ajapa Yog and honor our Gurus.
               </Typography>
             </CardContent>
@@ -179,27 +179,19 @@ function Home() {
               alt="green iguana"
             />
             <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
+              <Typography gutterBottom variant="h5" component="div" className='text-justify'>
                 Contact Us
               </Typography>
-              <Typography variant="body2" color="text.secondary"  >
+              <Typography variant="body2" color="text.secondary" className='text-justify' >
                 Have questions or seeking guidance on your spiritual journey? Reach out to us for personalized support and assistance. Our team at Ajapa Yog Sansthan is here to help you embark on a path of inner growth and self-discovery.
               </Typography>
             </CardContent>
           </CardActionArea>
         </Card>
       </div>
-      <div className='flex flex-col py-4 items-center justify-center' style={{ marginTop: '4rem' }} >
-                <Typography style={{ fontStyle: 'normal', fontSize: '24px', lineHeight: '28px', letterSpacing: '0px', textAlign: 'center', fontWeight: 'bold' }}>
-                    New Feed
-                </Typography>
-            </div>
-            <div style={{
-                paddingLeft: isDesktop ? '4rem' : '10px',
-                paddingRight: isDesktop ? '4rem' : '10px'
-            }} className='mt-1'>
-                <hr></hr>
-            </div>
+      <div className='flex flex-col items-center justify-center my-8 py-8'>
+            <img src="assets/images/cards/hr-design-1.png" alt="" />
+          </div>
 
       <div>
         <Feed />
