@@ -29,7 +29,7 @@ const twoDigit = (num) => String(num).padStart(2, '0')
 
 
 const validationSchema = yup.object().shape({
-  email: yup.string().email('Invalid email address').matches(/^([A-Za-z0-9_\-\.])+\@(?!(?:[A-Za-z0-9_\-\.]+\.)?([A-Za-z]{2,4})\.\2)([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/, 'Invalid email'),
+  email: yup.string().email('Invalid email address').matches(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,'Invalid email'),
   // countryCode: yup.string(),
   mobileNumber: yup.string().matches(/^\d{10}$/, 'Mobile number must be 10 digits'),
   // password: yup.string()

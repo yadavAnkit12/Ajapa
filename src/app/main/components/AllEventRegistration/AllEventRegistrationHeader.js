@@ -186,7 +186,7 @@ function AllEventRegistrationHeader(props) {
               fontWeight: "bold",
             }}
           >
-            Events
+            Event Registrations
           </Typography>
         </div>
         <div className="flex sm:flex-row flex-wrap flex-col justify-between mx-10  mb-10 shadow-1 rounded-16">

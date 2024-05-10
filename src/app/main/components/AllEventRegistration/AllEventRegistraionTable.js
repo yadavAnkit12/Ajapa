@@ -10,11 +10,12 @@ import { color, motion } from 'framer-motion';
 import { useEffect, useState, useRef, forwardRef } from 'react';
 import { showMessage } from 'app/store/fuse/messageSlice';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { eventAPIConfig } from '../../API/apiConfig';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import AllEventRegistrationTableHead from './AllEventRegistraionTableHead';
 import EventView from '../MyRegistration/EventView';
+import UserViewEventRegistration from './UserViewEventRegistration';
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -63,7 +64,8 @@ function AllEventRegistrationTable(props) {
   const [openView, setOpenView] = useState(false);
   const [viewid, setViewId] = useState("");
   const [change, setChange] = useState(false);
-  const [open, setOpen] = useState(false)
+  const [modalUserId, setModalUserId] = useState(null); 
+  const [open, setOpen] = useState(false) //clickableNames
   const [deleteId, setDeleteId] = useState('')
 
   useEffect(() => {
@@ -131,6 +133,11 @@ function AllEventRegistrationTable(props) {
 
   const handleViewClose = () => {
     setOpenView(false);
+  };
+
+  //clickable Names
+  const handleClose = () => {
+    setOpen(false);
   };
 
   function handleRequestSort(event, property) {
@@ -220,6 +227,24 @@ function AllEventRegistrationTable(props) {
     return formattedDate;
   }
 
+  const handleNameClick = (userId) => {
+    setModalUserId(userId); 
+    setOpen(true); 
+  };
+
+  const ClickableName = (userId, userName) => (
+    <Link
+     
+      onClick={(e) => {
+        e.preventDefault();
+        handleNameClick(userId); 
+      }}
+      style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}
+    >
+      {userName}
+    </Link>
+  );
+
   return (
     <div className="w-full flex flex-col min-h-full" style={{ overflow: 'auto' }}>
       <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle" ref={tableRef}>
@@ -250,7 +275,7 @@ function AllEventRegistrationTable(props) {
                     {n.familyId}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.userName}
+                    {ClickableName(n.userId , n.userName)}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.eventName}
@@ -337,6 +362,25 @@ function AllEventRegistrationTable(props) {
           },
         }}>
           <EventView handleViewClose={handleViewClose} registrationId={viewid} />
+        </Box>
+      </Modal>
+
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={{
+          ...style,
+          '@media (max-width: 600px)': { // Apply media query for mobile devices
+            width: '70%', // Set width to 100% for smaller screens
+          },
+          '@media (max-width: 280px)': { // Additional media query for smaller screens
+            width: '93%', // Set width to 82% for screens up to 280px
+          },
+        }}>
+          <UserViewEventRegistration handleClose={handleClose} modalUserId={modalUserId}/>
         </Box>
       </Modal>
 

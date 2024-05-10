@@ -21,7 +21,7 @@ import JwtService from "src/app/auth/services/jwtService";
 
 
 const validationSchema = Yup.object().shape({
-  email: Yup.string().email("Invalid email address"),
+  email: Yup.string().matches(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,"Invalid email address"),
   // countryCode: Yup.string(),
   mobileNumber: Yup.string().matches(/^[1-9]\d{9}$/, "Invalid mobile number"),
 });

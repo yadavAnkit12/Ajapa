@@ -18,9 +18,10 @@ const Transition = forwardRef(function Transition(props, ref) {
 });
 
 
-export default function UserView(props) {
+export default function UserViewEventRegistration(props) {
+    console.log(props)
     const dispatch = useDispatch()
-    const [userId, setUserId] = React.useState(props.data)
+    const [userId, setUserId] = React.useState(props.modalUserId)
     const [userData, setUserData] = React.useState({})
     const [isLoading, setIsLoading] = React.useState(true);
 
@@ -55,7 +56,7 @@ if (isLoading) {
 
     return (
         <div>
-            <IconButton onClick={props.handleViewClose} sx={{ position: 'absolute', top: '0', right: '0', justifyContent: 'flex-end', margin: '0 10px' }}>
+            <IconButton onClick={props.handleClose} sx={{ position: 'absolute', top: '0', right: '0', justifyContent: 'flex-end', margin: '0 10px' }}>
                 <CloseIcon />
             </IconButton>
             <Card sx={{ maxWidth: 345 }}>
@@ -125,7 +126,7 @@ if (isLoading) {
                           {/* Close button */}
                            <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                                 <button
-                                    onClick={props.handleViewClose}
+                                    onClick={props.handleClose}
                                     type="button"
                                     className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
                                 >
