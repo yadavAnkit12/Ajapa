@@ -187,6 +187,10 @@ const EventForm = (props) => {
                 return dispatch(showMessage({ message: 'Please select the validate date', variant: 'error' }));   
             }
 
+            else if (values.arrivalDate == values.departureDate && values.departureTime <= values.arrivalTime ){
+                return dispatch(showMessage({ message: 'Please select the validate time', variant: 'error' }));   
+            }
+
             props.setLoading(true)
             const formData = new FormData()
             formData.append('eventId', props.eventId)
