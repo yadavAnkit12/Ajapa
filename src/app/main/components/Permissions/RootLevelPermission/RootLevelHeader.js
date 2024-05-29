@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import RootLevelPermissionForm from './RootLevelPermissionForm';
-// import AdminForm from './AdminForm';
 
 
 const style = {
@@ -177,7 +176,7 @@ function RootLevelHeader(props) {
             width: '93%', // Set width to 82% for screens up to 280px
           },
         }}>
-          <RootLevelPermissionForm handleModalClose={handleModalClose} open={open} setOpen={setOpen} />
+          <RootLevelPermissionForm handleModalClose={handleModalClose} change={props.change} setChange={props.setChange}/>
         </Box>
       </Modal>
     </>

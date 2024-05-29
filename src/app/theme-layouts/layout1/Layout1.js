@@ -14,6 +14,8 @@ import RightSideLayout1 from './components/RightSideLayout1';
 import ToolbarLayout1 from './components/ToolbarLayout1';
 import { userAPIConfig } from 'src/app/main/API/apiConfig';
 import axios from 'axios';
+import { getRootLevelPermissions } from 'src/app/auth/services/utils/common';
+
 
 const Root = styled('div')(({ theme, config }) => ({
   ...(config.mode === 'boxed' && {
@@ -40,7 +42,7 @@ function Layout1(props) {
 
 
   useEffect(() => {
-    if (sessionStorage.getItem('userRole') == 'Super' || sessionStorage.getItem('userRole') == 'Admin') {
+    if (sessionStorage.getItem('userRole') == 'Super' || (sessionStorage.getItem('userRole') == 'Admin'&& getRootLevelPermissions().statusUser)) {
       const timer = setInterval(() => {
         fetchData();
       }, 60000);
@@ -50,7 +52,7 @@ function Layout1(props) {
   }, []);
 
   useEffect(() => {
-    if (sessionStorage.getItem('userRole') == 'Super' || sessionStorage.getItem('userRole') == 'Admin') {
+    if (sessionStorage.getItem('userRole') == 'Super' || (sessionStorage.getItem('userRole') == 'Admin'&& getRootLevelPermissions().statusUser)) {
       fetchData()
     }
   }, [change])

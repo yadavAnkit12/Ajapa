@@ -12,7 +12,7 @@ const AttendanceConfig = {
     {
       path: '/attendance',
       element: <Attendance/>,
-      auth: ["Super"]
+      auth: ["Super","Admin"]
     },
 
 

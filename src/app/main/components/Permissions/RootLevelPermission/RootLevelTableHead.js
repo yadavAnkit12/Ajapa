@@ -13,69 +13,60 @@ function RootLevelTableHead(props) {
       visibleIf: true
     },
     {
-      id: 'create',
+      id: 'readUser',
       align: 'center',
       disablePadding: false,
-      label: 'Create',
+      label: 'Read User',
       sort: true,
       visibleIf: true
     },
     {
-      id: 'read',
+      id: 'updateUser',
       align: 'center',
       disablePadding: false,
-      label: 'Read',
+      label: 'Update User',
       sort: true,
       visibleIf: true
     },
     {
-      id: 'update',
+      id: 'actionUser',
       align: 'center',
       disablePadding: false,
-      label: 'Update',
+      label: 'Action User',
       sort: true,
       visibleIf: true
     },
     {
-      id: 'delete',
+      id: 'createEvent',
       align: 'center',
       disablePadding: false,
-      label: 'Delete',
+      label: 'Create Event',
       sort: true,
       visibleIf: true
     },
-    // {
-    //   id: 'shivirAvailable',
-    //   align: 'center',
-    //   disablePadding: false,
-    //   label: 'Shivir Available',
-    //   sort: true,
-    //   visibleIf: true
-    // },
-    // {
-    //   id: 'eventstatus',
-    //   align: 'center',
-    //   disablePadding: false,
-    //   label: 'Event Status',
-    //   sort: true,
-    //   visibleIf: true
-    // },
-    // {
-    //   id: 'registrationstatus',
-    //   align: 'center',
-    //   disablePadding: false,
-    //   label: 'Registration Status',
-    //   sort: true,
-    //   visibleIf: true
-    // },
-
+    {
+      id: 'readEvent',
+      align: 'center',
+      disablePadding: false,
+      label: 'Read Event',
+      sort: true,
+      visibleIf: true
+    },
+    {
+      id: 'updateEvent',
+      align: 'center',
+      disablePadding: false,
+      label: 'Update Event',
+      sort: true,
+      visibleIf: true
+    },
+ 
     {
       id: 'action',
       align: 'center',
       disablePadding: false,
       label: 'Action',
       sort: true,
-      // visibleIf: _.get(props, 'permission.read_data')
       visibleIf:true
     },
  

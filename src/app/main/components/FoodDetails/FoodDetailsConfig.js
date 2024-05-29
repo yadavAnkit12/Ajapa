@@ -13,7 +13,7 @@ const FoodDetailsConfig = {
     {
       path: 'app/foodDetails/',
       element: <FoodDetails/>,
-      auth: ["Super"]
+      auth: ["Super","Admin"]
     },
 
 

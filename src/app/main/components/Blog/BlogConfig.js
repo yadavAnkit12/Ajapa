@@ -11,7 +11,7 @@ const BlogConfig = {
     {
       path: 'app/blog/',
       element: <Blog />,
-      auth: ["Super"]
+      auth: ["Super","Admin"]
     },
     // {
     //   path: 'app/eventRegisteration/:eventId/*',

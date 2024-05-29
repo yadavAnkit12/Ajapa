@@ -50,7 +50,7 @@ function EventTableHead(props) {
       disablePadding: false,
       label: 'Event Status',
       sort: true,
-      visibleIf: true
+      visibleIf: props.Role === 'Admin' ? props.rootPermission.updateEvent : true
     },
     {
       id: 'registrationstatus',
@@ -58,7 +58,7 @@ function EventTableHead(props) {
       disablePadding: false,
       label: 'Registration Status',
       sort: true,
-      visibleIf: true
+      visibleIf: props.Role === 'Admin' ? props.rootPermission.updateEvent : true
     },
 
     {
@@ -67,10 +67,9 @@ function EventTableHead(props) {
       disablePadding: false,
       label: 'Action',
       sort: true,
-      // visibleIf: _.get(props, 'permission.read_data')
-      visibleIf:true
+      visibleIf: props.Role === 'Admin' ? (props.rootPermission.updateEvent || props.rootPermission.readEvent) : true
     },
- 
+
   ];
 
   const createSortHandler = (property) => (event) => {

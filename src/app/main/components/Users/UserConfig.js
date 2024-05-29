@@ -13,20 +13,15 @@ const UserConfig = {
     {
       path: 'app/users/:status/:isHead/:isDisciple/*',
       element: <Users />,
-      auth: ["Super"]
+      auth: ["Super","Admin"]
     },
 
 
     {
       path: 'app/useredit/:id/*',
       element: <UserForm />,
-      auth: ["Super","User","Member"]
+      auth: ["Super","User","Member","Admin"]
     }
-    // {
-    //     path: 'app/vehicleView',
-    //     element: <VehicleView/>,
-    //     auth: ["admin", "employee"]
-    //   }
 
   ],
 };

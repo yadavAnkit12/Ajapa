@@ -22,7 +22,7 @@ const navigationConfig = [
     type: 'item',
     icon: 'heroicons-outline:home',
     url: '/',
-    auth: ["Super", "User", "Member"]
+    auth: ["Super", "User", "Member","Admin"]
   },
   {
     id: 'dashboard-component',
@@ -31,7 +31,7 @@ const navigationConfig = [
     type: 'item',
     icon: 'heroicons-outline:home',
     url: 'app/dashboard/',
-    auth: ["Super"]
+    auth: ["Super","Admin"]
   },
   {
     id: 'Users-component',
@@ -40,7 +40,7 @@ const navigationConfig = [
     type: 'item',
     icon: 'heroicons-outline:users',
     url: 'app/users/Approved/All/All',
-    auth: ["Super"]
+    auth: ["Super","Admin"]
   },
   {
     id: 'app-userevent',
@@ -58,7 +58,7 @@ const navigationConfig = [
     type: 'item',
     icon: 'heroicons-outline:calendar',
     url: 'app/event/On/On',
-    auth: ["Super"]
+    auth: ["Super","Admin"]
   },
   {
     id: 'app-addMember',
@@ -76,7 +76,7 @@ const navigationConfig = [
     type: 'item',
     icon: 'heroicons-outline:calendar',
     url: 'app/allRegistrationDetails',
-    auth: ["Super"]
+    auth: ["Super","Admin"]
   },
   {
     id: 'attendance',
@@ -85,7 +85,7 @@ const navigationConfig = [
     type: 'item',
     icon: 'heroicons-outline:calendar',
     url:'/attendance',
-    auth: ["Super"]
+    auth: ["Super","Admin"]
   },
   {
     id: 'app-manageFamily',
@@ -114,7 +114,7 @@ const navigationConfig = [
     type: 'item',
     icon: 'heroicons-outline:clipboard-check',
     url: 'app/food',
-    auth: ["Super"]
+    auth: ["Super","Admin"]
   },
   {
     id: 'foodDetails-component',
@@ -123,7 +123,7 @@ const navigationConfig = [
     type: 'item',
     icon: 'heroicons-outline:clipboard-check',
     url: 'app/foodDetails',
-    auth: ["Super"]
+    auth: ["Super","Admin"]
   },
   {
     id: 'app-report',
@@ -131,7 +131,7 @@ const navigationConfig = [
     translate: "Report",
     type: 'collapse',
     icon: 'heroicons-outline:clipboard-check',
-    auth: ["Super"],
+    auth: ["Super","Admin"],
     children: [
 
       {
@@ -140,7 +140,7 @@ const navigationConfig = [
         translate: "Report 1",
         type: 'item',
         url: 'app/report1/',
-        auth: ["Super"],
+        auth: ["Super","Admin"],
       },
       {
         id: 'app-report2-component',
@@ -148,7 +148,7 @@ const navigationConfig = [
         translate: "Report 2",
         url: 'app/report2/',
         type: 'item',
-        auth: ["Super"],
+        auth: ["Super","Admin"],
       },
       {
         id: 'app-report3-component',
@@ -156,7 +156,7 @@ const navigationConfig = [
         translate: "Report 3",
         url: 'app/report3/',
         type: 'item',
-        auth: ["Super"],
+        auth: ["Super","Admin"],
       }
 
     ],
@@ -168,7 +168,7 @@ const navigationConfig = [
     type: 'item',
     icon: 'heroicons-outline:clipboard-check',
     url: '/sms',
-    auth: ["Super"]
+    auth: ["Super","Admin"]
   },
   {
     id: 'blog-component',
@@ -177,7 +177,7 @@ const navigationConfig = [
     type: 'item',
     icon: 'heroicons-outline:clipboard-check',
     url: 'app/blog',
-    auth: ["Super"]
+    auth: ["Super","Admin"]
   },
   {
     id: 'admin-component',
@@ -223,7 +223,7 @@ const navigationConfig = [
     type: 'item',
     icon: 'heroicons-outline:user-circle',
     url: `apps/profile/S9fJd8GcN2rP6vW3xZ5mQ1lO7tA4hE0bXuYiK`,
-    auth: ["Super", "User", "Member"]
+    auth: ["Super", "User", "Member","Admin"]
   },
 
   {
@@ -233,7 +233,7 @@ const navigationConfig = [
     type: 'item',
     icon: 'heroicons-outline:logout',
     url: '/sign-out',
-    auth: ["Super", "User", "Member"]
+    auth: ["Super", "User", "Member","Admin"]
   },
 
 ];

@@ -37,30 +37,6 @@ const style = {
   overflow: 'auto',
 };
 
-const menuItemArray = [
-  {
-    key: 1,
-    label: 'View',
-    status: 'view',
-    // visibleIf: ['complete', 'active', 'inactive'],
-    loadIf: true
-  },
-  {
-    key: 1,
-    label: 'Edit',
-    status: 'edit',
-    // visibleIf: ['complete', 'active', 'inactive'],
-    loadIf: true
-  },
-  // {
-  //   key: 1,
-  //   label: 'Delete',
-  //   status: 'delete',
-  //   // visibleIf: ['complete', 'active', 'inactive'],
-  //   loadIf: true
-  // },
-]
-
 
 function DashboardTable(props) {
   // console.log(props)
@@ -86,7 +62,22 @@ function DashboardTable(props) {
   const [change, setChange] = useState(false);
   const [open, setOpen] = useState(false)
   const [deleteId, setDeleteId] = useState('')
-
+  const menuItemArray = [
+    {
+      key: 1,
+      label: 'View',
+      status: 'view',
+      visibleIf: props.Role === 'Admin' ? props.rootPermission.readEvent : true,
+      loadIf: true
+    },
+    {
+      key: 1,
+      label: 'Edit',
+      status: 'edit',
+      visibleIf: props.Role === 'Admin' ? props.rootPermission.updateEvent : true,
+      loadIf: true
+    },
+  ]
   useEffect(() => {
     fetchData();
   }, [props?.change, rowsPerPage, page, props?.filterValue, searchText]);
@@ -129,8 +120,8 @@ function DashboardTable(props) {
       eventStatus: (_.get(props, 'filterValue.eventStatus') === 'On' || _.get(props, 'filterValue') === '' || _.get(props, 'filterValue.eventStatus') === null) ? true : false,
       bookingStatus: (_.get(props, 'filterValue.bookingStatus') === 'On' || _.get(props, 'filterValue') === '' || _.get(props, 'filterValue.bookingStatus') === null) ? true : false,
     };
-    const flag1=props.filterValue==='' || props.filterValue.eventStatus===null ?'On':props.filterValue.eventStatus
-    const flag2=props.filterValue==='' || props.filterValue.bookingStatus===null ?'On':props.filterValue.bookingStatus
+    const flag1 = props.filterValue === '' || props.filterValue.eventStatus === null ? 'On' : props.filterValue.eventStatus
+    const flag2 = props.filterValue === '' || props.filterValue.bookingStatus === null ? 'On' : props.filterValue.bookingStatus
     axios.get(`${eventAPIConfig.list}/${flag1}/${flag2}`, { params }, {
       headers: {
         'Content-type': 'multipart/form-data',
@@ -285,13 +276,26 @@ function DashboardTable(props) {
       </motion.div>
     );
   }
+  if (props.Role === 'Admin' && !props.rootPermission.readEvent) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, transition: { delay: 0.1 } }}
+        className="flex flex-1 items-center justify-center h-full"
+      >
+        <Typography color="text.secondary" variant="h5">
+          Oops ! You don't have a Permission
+        </Typography>
+      </motion.div>
+    );
+  }
 
-    // function to convert date from yyyy-mm-dd format to dd-mm-yyyy
-    function formatDate(inputDate) {
-      const parts = inputDate.split('-');
-      const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
-  
-      return formattedDate;
+  // function to convert date from yyyy-mm-dd format to dd-mm-yyyy
+  function formatDate(inputDate) {
+    const parts = inputDate.split('-');
+    const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+
+    return formattedDate;
   }
 
   return (
@@ -304,6 +308,8 @@ function DashboardTable(props) {
           onRequestSort={handleRequestSort}
           rowCount={eventListData?.length}
           onMenuItemClick={handleDeselect}
+          rootPermission={props.rootPermission}
+          Role={props.Role}
         />
         <TableBody>
           {
@@ -339,7 +345,7 @@ function DashboardTable(props) {
                     {n.shivirAvailable ? 'Yes' : 'No'}
                   </TableCell>
 
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align="center">
+                  {(props.Role === 'Admin' ? props.rootPermission.updateEvent : true) && <TableCell className="p-4 md:p-16" component="th" scope="row" align="center">
                     <Switch
                       checked={n.eventStatus}
                       color="success"
@@ -347,9 +353,9 @@ function DashboardTable(props) {
                       onChange={() => handleChangeEventStatus(n.eventId, n.eventStatus)}
                     />
                     {n.eventStatus ? 'On' : 'Off'}
-                  </TableCell>
+                  </TableCell>}
 
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align="center">
+                  {(props.Role === 'Admin' ? props.rootPermission.updateEvent : true) && <TableCell className="p-4 md:p-16" component="th" scope="row" align="center">
                     <Switch
                       checked={n.bookingStatus}
                       color="success"
@@ -357,7 +363,7 @@ function DashboardTable(props) {
                       onChange={() => handleChnangeBookingStatus(n.eventId, n.bookingStatus)}
                     />
                     {n.bookingStatus ? 'On' : 'Off'}
-                  </TableCell>
+                  </TableCell>}
 
                   <TableCell className="p-4 md:p-16" component="th" scope="row" >
                     <PopupState variant="popover" popupId="demo-popup-menu">
@@ -369,7 +375,7 @@ function DashboardTable(props) {
                           <Menu {...bindMenu(popupState)}>
 
                             {menuItemArray.map((value) => (
-                              (value.loadIf) && <MenuItem
+                              (value.visibleIf) && <MenuItem
                                 onClick={() => {
                                   getStatus(n.eventId, value.status, n.eventStatus);
                                   popupState.close();

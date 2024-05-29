@@ -17,6 +17,7 @@ import axios from "axios";
 import jwtServiceConfig from "src/app/auth/services/jwtService/jwtServiceConfig";
 import FuseLoading from "@fuse/core/FuseLoading";
 import { adminAPIConfig } from '../../API/apiConfig';
+import { id } from 'date-fns/locale';
 
 
 const validationSchema = yup.object().shape({
@@ -42,7 +43,8 @@ const validationSchema = yup.object().shape({
 
 
 const initialValues = {
-  name:"",
+  id: "",
+  name: "",
   email: "",
   countryCode: '+91',
   mobileNumber: '',
@@ -50,11 +52,37 @@ const initialValues = {
 };
 
 
-const AdminForm = ({ setOpen, setChange, change }) => {
+const AdminForm = ({ setOpen, setChange, change, adminId }) => {
   const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [getcountryCode, setGetCountryCode] = useState([])
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (adminId) {
+      axios
+        .get(`${adminAPIConfig.getById}?id=${adminId}`, {
+          headers: {
+            "Content-type": "multipart/form-data",
+            Authorization: `Bearer ${window.localStorage.getItem("jwt_access_token")}`,
+          },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            const data = response.data.user
+            formik.setValues({
+              id: data.id || "",
+              name: data.name || "",
+              email: data.email || "",
+              countryCode: data.countryCode || '+91',
+              mobileNumber: data.mobileNumber || '',
+              password: data.password || "",
+
+            })
+          }
+        });
+    }
+  }, [adminId]);
 
   //fetching the country list
   useEffect(() => {
@@ -87,30 +115,56 @@ const AdminForm = ({ setOpen, setChange, change }) => {
       formData.append("countryCode", values.countryCode.split(" ")[0]);
       formData.append("mobileNumber", values.mobileNumber);
       formData.append("password", values.password);
-      formData.append("role", "Admin");
 
-      axios.post(`${adminAPIConfig.addAdmin}`, formData, {
-        headers: {
-          "Content-type": "multipart/form-data",
-          Authorization: `Bearer ${window.localStorage.getItem("jwt_access_token")}`,
-        },
-      })
-        .then((response) => {
-          if (response.status === 200) {
-            setLoading(false)
-            setChange(!change)
-            handleModalClose()
-            formik.resetForm()
-            dispatch(showMessage({ message: response.data.message, variant: "success", }));
-          }
-          else {
-            setLoading(false)
-            dispatch(showMessage({ message:  response.data.errorMessage, variant: "error", }));
-          }
+      if (adminId) {
+        formData.append("id", values.id);
+
+        axios.post(`${adminAPIConfig.addAdmin}`, formData, {
+          headers: {
+            "Content-type": "multipart/form-data",
+            Authorization: `Bearer ${window.localStorage.getItem("jwt_access_token")}`,
+          },
         })
-        .catch(() => {
-          dispatch(showMessage({ message: "Something went wrong", variant: 'error' }));
+          .then((response) => {
+            if (response.status === 200) {
+              setLoading(false)
+              setChange(!change)
+              handleModalClose()
+              formik.resetForm()
+              dispatch(showMessage({ message: response.data.message, variant: "success", }));
+            }
+            else {
+              setLoading(false)
+              dispatch(showMessage({ message: response.data.errorMessage, variant: "error", }));
+            }
+          })
+          .catch(() => {
+            dispatch(showMessage({ message: "Something went wrong", variant: 'error' }));
+          })
+      } else {
+        axios.post(`${adminAPIConfig.addAdmin}`, formData, {
+          headers: {
+            "Content-type": "multipart/form-data",
+            Authorization: `Bearer ${window.localStorage.getItem("jwt_access_token")}`,
+          },
         })
+          .then((response) => {
+            if (response.status === 200) {
+              setLoading(false)
+              setChange(!change)
+              handleModalClose()
+              formik.resetForm()
+              dispatch(showMessage({ message: response.data.message, variant: "success", }));
+            }
+            else {
+              setLoading(false)
+              dispatch(showMessage({ message: response.data.errorMessage, variant: "error", }));
+            }
+          })
+          .catch(() => {
+            dispatch(showMessage({ message: "Something went wrong", variant: 'error' }));
+          })
+      }
     }
   }
 
@@ -138,7 +192,7 @@ const AdminForm = ({ setOpen, setChange, change }) => {
           onSubmit={formik.handleSubmit}
           style={{ marginTop: '1rem' }}
         >
-             <TextField
+          <TextField
             sx={{ mb: 2 }}
             className="max-w-md"
             name="name"

@@ -12,13 +12,12 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import { useEffect, useState, useRef, forwardRef } from 'react';
 import { showMessage } from 'app/store/fuse/messageSlice';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 import { eventAPIConfig, userAPIConfig } from '../../API/apiConfig';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import UserTableHead from './UserTableHead';
 import UserView from './UserView';
-// import EventView from './EventView';
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -38,70 +37,6 @@ const style = {
   overflow: 'auto',
 };
 
-const menuItemArray = (status) => {
-  if (status === 'Approved') {
-    return [
-      {
-        key: 1,
-        label: 'View',
-        status: 'View',
-      },
-      {
-        key: 2,
-        label: 'Edit',
-        status: 'Edit',
-      },
-      {
-        key: 3,
-        label: 'Reject', // Show "Unblock" when isBlocked is true
-        status: 'Rejected', // You can define the status value here
-      },
-    ];
-  } else if (status === 'Rejected') {
-    return [
-      {
-        key: 4,
-        label: 'View',
-        status: 'View',
-      },
-      {
-        key: 5,
-        label: 'Edit',
-        status: 'Edit',
-      },
-      {
-        key: 6,
-        label: 'Approve',
-        status: 'Approved',
-      }
-    ];
-  }
-  else {
-    return [
-      {
-        key: 7,
-        label: 'View',
-        status: 'View',
-      },
-      {
-        key: 8,
-        label: 'Edit',
-        status: 'Edit',
-      },
-      {
-        key: 9,
-        label: 'Approve',
-        status: 'Approved',
-      },
-      {
-        key: 10,
-        label: 'Reject', // Show "Unblock" when isBlocked is true
-        status: 'Rejected', // You can define the status value here
-      },
-
-    ];
-  }
-};
 
 
 function UserTable(props) {
@@ -119,15 +54,87 @@ function UserTable(props) {
     direction: 'asc',
     id: null,
   });
-
-  const [openEdit, setOpenEdit] = useState(false);
-  const [editId, setEditId] = useState("");
   const [openView, setOpenView] = useState(false);
   const [viewid, setViewId] = useState("");
-  const [change, setChange] = useState(false);
   const [open, setOpen] = useState(false)
-  const [deleteId, setDeleteId] = useState('')
   const [changeStatus, setChangeStatus] = useState('')
+
+  const menuItemArray = (status) => {
+    if (status === 'Approved') {
+      return [
+        {
+          key: 1,
+          label: 'View',
+          status: 'View',
+          visibleIf: props.Role === 'Admin' ? props.rootPermission.readUser : true
+        },
+        {
+          key: 2,
+          label: 'Edit',
+          status: 'Edit',
+          visibleIf: props.Role === 'Admin' ? props.rootPermission.updateUser : true
+        },
+        {
+          key: 3,
+          label: 'Reject',
+          status: 'Rejected',
+          visibleIf: props.Role === 'Admin' ? props.rootPermission.statusUser : true
+        },
+      ];
+    } else if (status === 'Rejected') {
+      return [
+        {
+          key: 4,
+          label: 'View',
+          status: 'View',
+          visibleIf: props.Role === 'Admin' ? props.rootPermission.readUser : true
+        },
+        {
+          key: 5,
+          label: 'Edit',
+          status: 'Edit',
+          visibleIf: props.Role === 'Admin' ? props.rootPermission.updateUser : true
+        },
+        {
+          key: 6,
+          label: 'Approve',
+          status: 'Approved',
+          visibleIf: props.Role === 'Admin' ? props.rootPermission.statusUser : true
+        }
+      ];
+    }
+    else {
+      return [
+        {
+          key: 7,
+          label: 'View',
+          status: 'View',
+          visibleIf: props.Role === 'Admin' ? props.rootPermission.readUser : true
+
+        },
+        {
+          key: 8,
+          label: 'Edit',
+          status: 'Edit',
+          visibleIf: props.Role === 'Admin' ? props.rootPermission.updateUser : true
+        },
+        {
+          key: 9,
+          label: 'Approve',
+          status: 'Approved',
+          visibleIf: props.Role === 'Admin' ? props.rootPermission.statusUser : true
+        },
+        {
+          key: 10,
+          label: 'Reject',
+          status: 'Rejected',
+          visibleIf: props.Role === 'Admin' ? props.rootPermission.statusUser : true
+        },
+
+      ];
+    }
+  };
+
 
   useEffect(() => {
     if (props.filterValue !== '') {
@@ -171,11 +178,11 @@ function UserTable(props) {
       rowsPerPage: rowsPerPage,
       searchText: searchText,
       ...(props.filterValue.status !== 'All' && ({ status: _.get(props, 'filterValue.status') })),
-      ...(props.filterValue.country !== 'All' && props.filterValue.country !== null  && ({ country: _.get(props, 'filterValue.country') })),
-      ...(props.filterValue.state !== 'All'&& props.filterValue.state !== null && ({ state: _.get(props, 'filterValue.state') })),
-      ...(props.filterValue.city !== 'All'&& props.filterValue.city !== null && ({ city: _.get(props, 'filterValue.city') })),
+      ...(props.filterValue.country !== 'All' && props.filterValue.country !== null && ({ country: _.get(props, 'filterValue.country') })),
+      ...(props.filterValue.state !== 'All' && props.filterValue.state !== null && ({ state: _.get(props, 'filterValue.state') })),
+      ...(props.filterValue.city !== 'All' && props.filterValue.city !== null && ({ city: _.get(props, 'filterValue.city') })),
       ...(props.filterValue.isHead !== 'All' && ({ role: 'User' })),
-      ...(props.filterValue.isDisciple !== 'All' && ({ isDisciple: _.get(props, 'filterValue.isDisciple')==='Disciple'?'Yes':'No' })),
+      ...(props.filterValue.isDisciple !== 'All' && ({ isDisciple: _.get(props, 'filterValue.isDisciple') === 'Disciple' ? 'Yes' : 'No' })),
     };
     axios.get(userAPIConfig.list, { params }, {
       headers: {
@@ -282,7 +289,7 @@ function UserTable(props) {
     }).catch((error) => {
       setLoading(false)
       dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
-  })
+    })
   }
 
   function handleSelectAllClick(event) {
@@ -348,13 +355,26 @@ function UserTable(props) {
       </motion.div>
     );
   }
+  if (props.Role === 'Admin' && !props.rootPermission.readUser) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, transition: { delay: 0.1 } }}
+        className="flex flex-1 items-center justify-center h-full"
+      >
+        <Typography color="text.secondary" variant="h5">
+          Oops ! You don't have a Permission
+        </Typography>
+      </motion.div>
+    );
+  }
 
-     // function to convert date from yyyy-mm-dd format to dd-mm-yyyy
-     function formatDate(inputDate) {
-      const parts = inputDate.split('-');
-      const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
-  
-      return formattedDate;
+  // function to convert date from yyyy-mm-dd format to dd-mm-yyyy
+  function formatDate(inputDate) {
+    const parts = inputDate.split('-');
+    const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+
+    return formattedDate;
   }
 
   return (
@@ -367,6 +387,7 @@ function UserTable(props) {
           onRequestSort={handleRequestSort}
           rowCount={userListData?.data?.length}
           onMenuItemClick={handleDeselect}
+          rootPermission={props.rootPermission}
         />
         <TableBody>
           {
@@ -412,15 +433,6 @@ function UserTable(props) {
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {formatDate(n.dob)}
                   </TableCell>
-                  {/* <TableCell
-                    className="p-4 md:p-16"
-                    component="th"
-                    scope="row"
-                    align="center"
-                    style={{ fontWeight: 'bold', color: getStatusColor(n.status) }}
-                  >
-                    {n.status}
-                  </TableCell> */}
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     <PopupState variant="popover" popupId="demo-popup-menu">
                       {(popupState) => (
@@ -431,18 +443,19 @@ function UserTable(props) {
                           <Menu {...bindMenu(popupState)}>
 
                             {menuItemArray(n.status).map((value) => (
-                              <MenuItem
-                                onClick={() => {
-                                  getStatus(n.id, value.status);
+                              value.visibleIf && (
+                                <MenuItem
+                                  onClick={() => {
+                                    getStatus(n.id, value.status);
+                                    popupState.close();
+                                  }}
+                                  key={value.key}
+                                >
+                                  {value.label}
+                                </MenuItem>
+                              )
+                            ))}
 
-                                  popupState.close();
-                                }}
-                                key={value.key}
-                              >
-                                {value.label}
-                              </MenuItem>
-                            )
-                            )}
                           </Menu>
 
                         </>

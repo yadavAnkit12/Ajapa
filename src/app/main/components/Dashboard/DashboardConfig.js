@@ -11,7 +11,7 @@ const DashboardConfig = {
     {
       path: 'app/dashboard/',
       element: <Dashboard />,
-      auth: ["Super"]
+      auth: ["Super","Admin"]
     },
 
 

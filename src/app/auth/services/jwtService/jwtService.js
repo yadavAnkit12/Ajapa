@@ -76,7 +76,7 @@ class JwtService extends FuseUtils.EventEmitter {
             reject(response?.data?.errorMessage)
           }
           else {
-            localStorage.setItem('role',response.data.user.role)
+            localStorage.setItem('role', response.data.user.role)
             const userData = {
               user: {
                 uuid: response.data.user.id,
@@ -95,9 +95,15 @@ class JwtService extends FuseUtils.EventEmitter {
               sessionStorage.setItem('id', _.get(response, 'data.user.id'));
               sessionStorage.setItem('familyId', _.get(response, 'data.user.familyId'));
               sessionStorage.setItem('user_data', JSON.stringify(response.data.user));
+              if (response.data.user.role === 'Admin') {
+                const permissionData = {
+                  root_permission: response.data?.adminRootPermission || '',
+                  event_level_permission: response.data?.adminEventLevelPermission || ''
+                };
+                sessionStorage.setItem('permission', JSON.stringify(permissionData));
+              }
 
               this.setSession(userData.access_token);
-              // this.getPermissions(_.get(response, 'data.user.roleID'));
               resolve(response.data.user);
               this.emit('onLogin', userData.user);
             } else {
@@ -126,7 +132,7 @@ class JwtService extends FuseUtils.EventEmitter {
             reject(response?.data?.errorMessage)
           }
           else {
-            localStorage.setItem('role',response.data.user.role)
+            localStorage.setItem('role', response.data.user.role)
             const userData = {
               user: {
                 uuid: response.data.user.id,
@@ -169,7 +175,7 @@ class JwtService extends FuseUtils.EventEmitter {
           }
         })
         .then((response) => {
-          localStorage.setItem('role',response.data.user.role)
+          localStorage.setItem('role', response.data.user.role)
           const userData = {
             user: {
               uuid: response.data.user.id,
@@ -189,7 +195,6 @@ class JwtService extends FuseUtils.EventEmitter {
             sessionStorage.setItem('user_data', JSON.stringify(response.data.user));
 
             this.setSession(userData.access_token);
-            // this.getPermissions(_.get(response, 'data.data.userDetails.roleID'));
             resolve(userData.user);
           } else {
             this.logout();
@@ -241,6 +246,7 @@ class JwtService extends FuseUtils.EventEmitter {
     sessionStorage.removeItem('userRole');
     sessionStorage.removeItem('id');
     sessionStorage.removeItem('familyId');
+    sessionStorage.removeItem('permission');
     this.setSession(null);
     this.emit('onLogout', 'Logged out');
   };

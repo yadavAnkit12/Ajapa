@@ -67,21 +67,13 @@ function UserTableHead(props) {
           sort: true,
           visibleIf: true
         },
-        // {
-        //   id: 'status',
-        //   align: 'center',
-        //   disablePadding: false,
-        //   label: 'Status',
-        //   sort: true,
-        //   visibleIf: true
-        // },
         {
           id: 'action',
           align: 'center',
           disablePadding: false,
           label: 'Action',
           sort: true,
-          visibleIf: true
+          visibleIf: props.Role === 'Admin' ? (props.rootPermission.updateUser || props.rootPermission.readUser || props.rootPermission.statusUser) : true
         },
       ];
       
