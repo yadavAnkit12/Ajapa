@@ -118,6 +118,7 @@ function Feed() {
             },
         }).then((response) => {
             if (response.status === 200) {
+                console.log("Feed Data", response.data.data)
                 setFeedData(response.data.data)
             } else {
                 // setLoading(false)
@@ -186,7 +187,7 @@ function Feed() {
                         <Grid item xs={12} sm={6} md={4} lg={3} key={item.id}>
                             
 
-                            <Card sx={{ maxWidth: 345, minHeight: 445 }} key={item.id}>
+                            <Card sx={{ maxWidth: 345, minHeight: 475 }} key={item.id}>
                                 <CardHeader
                                     action={
                                         <IconButton aria-label="settings">

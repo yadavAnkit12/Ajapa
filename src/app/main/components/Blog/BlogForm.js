@@ -55,7 +55,6 @@ const BlogForm = () => {
           const blob = new Blob([response.data], { type: 'image/jpeg' });
           const file = new File([blob], 'default.jpg', { type: 'image/jpeg' });
           setDefaultImage(file)
-          console.log('File', file)
           formData.append("file", file);
         }).catch((error) => {
           console.error('Error fetching default image:', error);
