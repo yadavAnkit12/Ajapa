@@ -10,7 +10,7 @@ const FoodConfig = {
     {
       path: 'app/food/',
       element: <Food/>,
-      auth: ["Super"]
+      auth: ["Super","Admin"]
     },
     // {
     //   path: 'app/eventRegisteration/:eventId/*',

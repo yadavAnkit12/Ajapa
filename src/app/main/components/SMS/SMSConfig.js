@@ -11,7 +11,7 @@ const SMSConfig = {
         {
             path: '/sms/',
             element: <SMS />,
-            auth: ["Super"]
+            auth: ["Super","Admin"]
         }
     ],
 };

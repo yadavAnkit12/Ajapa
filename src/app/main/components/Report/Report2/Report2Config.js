@@ -11,7 +11,7 @@ const Report2Config = {
     {
       path: 'app/report2/',
       element: <Report2/>,
-      auth: ["Super"]
+      auth: ["Super","Admin"]
     },
   ],
 };

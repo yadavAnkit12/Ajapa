@@ -12,14 +12,14 @@ const EventConfig = {
     {
       path: 'app/event/:eventStatus/:bookingStatus/*',
       element: <Event />,
-      auth: ["Super"]
+      auth: ["Super","Admin"]
     },
 
 
     {
       path: 'app/eventRegisteration/:eventId/*',
       element: <EventForm />,
-      auth: ["Super", "User"]
+      auth: ["Super", "User","Admin"]
     }
     // {
     //     path: 'app/vehicleView',

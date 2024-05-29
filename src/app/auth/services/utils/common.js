@@ -14,3 +14,10 @@ export const getLoggedInPartnerId = () => {
 export const getUserRoles = () => {
     return sessionStorage.getItem('userRole');
 }
+
+export const getRootLevelPermissions = () => {
+    return JSON.parse(sessionStorage.getItem('permission'))?.root_permission;
+}
+export const getEventLevelPermissions = () => {
+    return JSON.parse(sessionStorage.getItem('permission'))?.event_level_permission;
+}

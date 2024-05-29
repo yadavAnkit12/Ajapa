@@ -1,20 +1,19 @@
 import withRouter from '@fuse/core/withRouter';
 import FuseLoading from '@fuse/core/FuseLoading';
 import _ from '@lodash';
-import EditIcon from '@mui/icons-material/Edit';
-import PersonIcon from '@mui/icons-material/Person';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import { Modal, Table, TableBody, TableCell, TablePagination, TableRow, Typography, IconButton, Box, Button, MenuItem, Menu, Dialog, DialogTitle, DialogActions, Slide, Switch } from '@mui/material';
 import axios from 'axios';
-import { color, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useEffect, useState, useRef, forwardRef } from 'react';
 import { showMessage } from 'app/store/fuse/messageSlice';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
-import { tuple } from 'yup';
+import DoneIcon from '@mui/icons-material/Done';
+import CloseIcon from '@mui/icons-material/Close';
 import RootLevelTableHead from './RootLevelTableHead';
-import { eventAPIConfig } from 'src/app/main/API/apiConfig';
+import { adminAPIConfig } from 'src/app/main/API/apiConfig';
+import RootLevelPermissionForm from './RootLevelPermissionForm';
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -76,12 +75,8 @@ function RootLevelTable(props) {
   });
 
   const [openEdit, setOpenEdit] = useState(false);
-  const [editId, setEditId] = useState("");
-  const [openView, setOpenView] = useState(false);
-  const [viewid, setViewId] = useState("");
-  const [change, setChange] = useState(false);
-  const [open, setOpen] = useState(false)
   const [deleteId, setDeleteId] = useState('')
+  const [permissionId,setPermissionId]=useState('')
 
   useEffect(() => {
     fetchData();
@@ -118,22 +113,14 @@ function RootLevelTable(props) {
 
   const fetchData = () => {
     setLoading(true)
-    const params = {
-      page: page + 1,
-      rowsPerPage: rowsPerPage, // Example data to pass in req.query
-      eventName: searchText,
-      eventStatus: (_.get(props, 'filterValue.eventStatus') === 'On' || _.get(props, 'filterValue') === '' || _.get(props, 'filterValue.eventStatus') === null) ? true : false,
-      bookingStatus: (_.get(props, 'filterValue.bookingStatus') === 'On' || _.get(props, 'filterValue') === '' || _.get(props, 'filterValue.bookingStatus') === null) ? true : false,
-    };
-    const flag1 = props.filterValue === '' || props.filterValue.eventStatus === null ? 'On' : props.filterValue.eventStatus
-    const flag2 = props.filterValue === '' || props.filterValue.bookingStatus === null ? 'On' : props.filterValue.bookingStatus
-    axios.get(`${eventAPIConfig.list}/${flag1}/${flag2}`, { params }, {
+    axios.get(adminAPIConfig.rootLevelPermissionList, {
       headers: {
         'Content-type': 'multipart/form-data',
         authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
       },
     }).then((response) => {
       if (response.status === 200) {
+        console.log(response)
         setEventListData(response?.data);
         setLoading(false);
       } else {
@@ -147,8 +134,8 @@ function RootLevelTable(props) {
   };
 
 
-  const handleViewClose = () => {
-    setOpenView(false);
+  const handleEditClose = () => {
+    setOpenEdit(false);
   };
 
   function handleRequestSort(event, property) {
@@ -165,11 +152,11 @@ function RootLevelTable(props) {
     });
   }
 
-  function getStatus(id, selectedValue) {
+  function getStatus(id, selectedValue,email) {
 
     if (selectedValue === 'edit') {
-      setOpenView(true)
-      setViewId(id)
+      setOpenEdit(true)
+      setPermissionId({id,email})
     }
     // else if (selectedValue === 'edit') {
     //   navigate(`/app/eventRegisteration/${id}`)
@@ -180,53 +167,6 @@ function RootLevelTable(props) {
   const handleClose = () => {
     setOpen(false)
   }
-
-  //chnaging the booking status
-//   const handleChnangeBookingStatus = (id, status) => {
-//     setLoading(true)
-//     axios.post(`${eventAPIConfig.changeBookingStatus}/${id}/${!status}`, {
-//       headers: {
-//         'Content-type': 'multipart/form-data',
-//         Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-//       },
-//     }).then((response) => {
-//       if (response.status === 200) {
-//         fetchData()
-//         setLoading(false)
-//         dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-
-//       } else {
-//         setLoading(false)
-//         dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
-//       }
-//     }).catch(() => {
-//       setLoading(false)
-//       dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
-//     })
-
-//   }
-  //chnaging the event status
-//   const handleChangeEventStatus = (id, status) => {
-//     axios.post(`${eventAPIConfig.changeEventStatus}/${id}/${!status}`, {
-//       headers: {
-//         'Content-type': 'multipart/form-data',
-//         Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-//       },
-//     }).then((response) => {
-//       if (response.status === 200) {
-//         fetchData()
-//         setLoading(false)
-//         dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-//       } else {
-//         setLoading(false)
-//         dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
-//       }
-//     }).catch(() => {
-//       setLoading(false)
-//       dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
-//     })
-
-//   }
 
   function handleSelectAllClick(event) {
     if (event.target.checked) {
@@ -308,44 +248,29 @@ function RootLevelTable(props) {
                   style={{ cursor: 'default' }}
                 >
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.eventName}
+                    {n.email || ''}
                   </TableCell>
 
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.eventType}
+                    {n.readUser ? <DoneIcon color='success'/> : <CloseIcon color='error'/> || ''}
                   </TableCell>
 
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.eventLocation}
+                    {n.updateUser ? <DoneIcon color='success'/> : <CloseIcon color='error'/> || ''}
 
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.eventDate}
-                  </TableCell> 
+                    {n.statusUser ? <DoneIcon color='success'/> : <CloseIcon color='error'/>}
+                  </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.shivirAvailable ? 'Yes' : 'No'}
+                    {n.createEvent ? <DoneIcon color='success'/> : <CloseIcon color='error'/> || ''}
                   </TableCell>
-
-                 {/*  <TableCell className="p-4 md:p-16" component="th" scope="row" align="center">
-                    <Switch
-                      checked={n.eventStatus}
-                      color="success"
-                      inputProps={{ 'aria-label': 'toggle event status' }}
-                      onChange={() => handleChangeEventStatus(n.eventId, n.eventStatus)}
-                    />
-                    {n.eventStatus ? 'On' : 'Off'}
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                    {n.readEvent ? <DoneIcon color='success'/> : <CloseIcon color='error'/> || ''}
                   </TableCell>
-
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align="center">
-                    <Switch
-                      checked={n.bookingStatus}
-                      color="success"
-                      inputProps={{ 'aria-label': 'toggle booking status' }}
-                      onChange={() => handleChnangeBookingStatus(n.eventId, n.bookingStatus)}
-                    />
-                    {n.bookingStatus ? 'On' : 'Off'}
-                  </TableCell> */}
-
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                    {n.updateEvent ? <DoneIcon color='success'/> : <CloseIcon color='error'/> || ''}
+                  </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     <PopupState variant="popover" popupId="demo-popup-menu">
                       {(popupState) => (
@@ -358,7 +283,7 @@ function RootLevelTable(props) {
                             {menuItemArray.map((value) => (
                               (value.loadIf) && <MenuItem
                                 onClick={() => {
-                                  getStatus(n.eventId, value.status, n.eventStatus);
+                                  getStatus(n.id, value.status, n.email);
                                   popupState.close();
                                 }}
                                 key={value.key}
@@ -381,7 +306,7 @@ function RootLevelTable(props) {
 
       </Table>
 
-      <TablePagination
+      {/* <TablePagination
         className="shrink-0 border-t-1"
         component="div"
         count={eventListData.totalElement}
@@ -395,7 +320,7 @@ function RootLevelTable(props) {
         }}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+      /> */}
       {/* <Dialog
         open={open}
         TransitionComponent={Transition}
@@ -413,8 +338,8 @@ function RootLevelTable(props) {
         </DialogActions>
       </Dialog> */}
       <Modal
-        open={openView}
-        onClose={handleViewClose}
+        open={openEdit}
+        onClose={handleEditClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -427,7 +352,7 @@ function RootLevelTable(props) {
             width: '93%', // Set width to 82% for screens up to 280px
           },
         }}>
-          {/* <AdminForm handleViewClose={handleViewClose} viewid={viewid} /> */}
+          <RootLevelPermissionForm handleModalClose={handleEditClose}  permissionId={permissionId} change={props.change} setChange={props.setChange}/>
         </Box>
       </Modal>
 

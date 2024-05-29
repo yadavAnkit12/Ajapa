@@ -55,12 +55,12 @@ export const foodAPIConfig = {
 export const reportAPIConfig = {
     report1arrival: key + '/report1/arrival/event/registrations',
     report1arrivalExcel: key + '/reportExcel1/arrival/event/registrations',
-    report1departureExcel: key +'/reportExcel1/departure/event/registrations',
+    report1departureExcel: key + '/reportExcel1/departure/event/registrations',
     report1departure: key + '/report1/departure/event/registrations',
     report2arrival: key + '/report2/arrival/event/registrations',
     report2departure: key + '/report2/departure/event/registrations',
     report2arrivalExcel: key + '/reportExcel2/arrival/event/registrations',
-    report2departureExcel : key + '/reportExcel2/departure/event/registrations',
+    report2departureExcel: key + '/reportExcel2/departure/event/registrations',
     report3: key + '/report3/event/registrations',
     report3Excel: key + '/report3Excel/event/registrations'
 }
@@ -71,17 +71,22 @@ export const cardAPIConfig = {
 }
 
 export const adminAPIConfig = {
-    addAdmin: key + '/save/admin',
-    adminList: key + '/admin/list',
-    deleteAdmin: key + '/admin/delete'
+    list: key + '/admin/list/all',
+    addAdmin: key + '/admin/save',
+    getById: key + '/admin/get',
+    deleteAdmin: key + '/admin/delete',
+    rootLevelPermission: key + '/admin/root/permission/save',
+    rootLevelPermissionList: key + '/admin/root/permission/all',
+    getRootLevelPermissionByEmail: key + '/admin/root/permission/getUsingEmail',
+    changePassowrdForAdmin:key+ '/admin/changePassword'
 }
 
 
-export const blogAPIConfig ={
+export const blogAPIConfig = {
     savePostWithImage: key + '/savePostWithImage',
     savePost: key + '/savePost',
-    getAllPosts : key + '/post/list',
-    deletePost : key + '/post/delete'
+    getAllPosts: key + '/post/list',
+    deletePost: key + '/post/delete'
 }
 
 

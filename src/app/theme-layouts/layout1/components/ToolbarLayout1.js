@@ -18,13 +18,12 @@ import UserMenu from '../../shared-components/UserMenu';
 import QuickPanelToggleButton from '../../shared-components/quickPanel/QuickPanelToggleButton';
 import ChatPanelToggleButton from '../../shared-components/chatPanel/ChatPanelToggleButton';
 import { getUserRoles } from 'src/app/auth/services/utils/common';
+import { getRootLevelPermissions } from 'src/app/auth/services/utils/common';
 
 function ToolbarLayout1(props) {
   const config = useSelector(selectFuseCurrentLayoutConfig);
   const navbar = useSelector(selectFuseNavbar);
   const toolbarTheme = useSelector(selectToolbarTheme);
-
-
 
 
   return (
@@ -63,7 +62,7 @@ function ToolbarLayout1(props) {
           </div>
 
           <div className="flex items-center px-8 h-full overflow-x-auto">
-            {getUserRoles()==='Super' && <NotificationPanelToggleButton notificationList={props.notificationList}/>}
+            {(getUserRoles()==='Super'||(getUserRoles()==='Admin' && getRootLevelPermissions().statusUser) ) && <NotificationPanelToggleButton notificationList={props.notificationList}/>}
 
             <UserMenu />
           </div>

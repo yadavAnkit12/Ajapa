@@ -327,7 +327,7 @@ function UsersHeader(props) {
                             onChange={(e, newValue) => setFilterData({ ...filterData, isDisciple: newValue || 'All' })}
                             renderInput={(params) => <TextField {...params} label="Is disciple" variant="standard" />}
                         />
-                        <Button
+                        {(props.Role === 'Admin' ? props.rootPermission.readUser : true) && <Button
                             onClick={() => handleCheckExcelPDF()}
                             variant="outlined"
                             color="secondary"
@@ -335,7 +335,7 @@ function UsersHeader(props) {
                             sx={{ my: 2, mx: 1 }}
                         >
                             Export
-                        </Button>
+                        </Button>}
                         {/* <Button
                             // component={Link}
                             onClick={() => handleCreateReportPDF()}

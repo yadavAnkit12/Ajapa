@@ -11,21 +11,8 @@ const AllEventRegistrationConfig = {
     {
       path: 'app/allRegistrationDetails/',
       element: <AllEventRegistration/>,
-      auth: ["Super"]
+      auth: ["Super","Admin"]
     },
-
-
-    // {
-    //   path: 'app/patient/profile/:patientId/*',
-    //   element: <PatientProfile />,
-    //   auth: ["admin", "employee","clinic","doctor"]
-    // }
-    // {
-    //     path: 'app/vehicleView',
-    //     element: <VehicleView/>,
-    //     auth: ["admin", "employee"]
-    //   }
-
   ],
 };
 

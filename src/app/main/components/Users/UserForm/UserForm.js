@@ -258,7 +258,11 @@ function UserForm() {
   }, [stateID]);
 
   const handleSubmit = (values) => {
-
+    if (Object.keys(formik.errors).length > 0) {
+      const firstErrorKey = Object.keys(formik.errors)[0];
+      const firstErrorMessage = formik.errors[firstErrorKey];
+      return dispatch(showMessage({ message: firstErrorMessage, variant: "error" }));
+    }
     if (showCredentials && !isChild) {
       if (
         !values.email ||

@@ -98,7 +98,6 @@ function AddMembersForm() {
     state: yup.string().required("Please enter your state"),
     city: yup.string().required("Please enter your city"),
     isDisciple: yup.string(),
-    pinCode: yup.string().matches(/^\d{6}$/, "Must be a 6-digit PIN code"),
     whatsAppNumber: yup
       .string()
       .matches(/^[1-9]\d{9}$/, "Invalid mobile number"),

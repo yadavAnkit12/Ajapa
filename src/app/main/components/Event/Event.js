@@ -1,8 +1,8 @@
 import useThemeMediaQuery from '@fuse/hooks/useThemeMediaQuery';
 const FusePageCarded = lazy(() => import('@fuse/core/FusePageCarded'));
 import { lazy, useState } from 'react';
-
-import { getPermissions } from '../../../auth/services/utils/common';
+import { getRootLevelPermissions } from 'src/app/auth/services/utils/common';
+import { getUserRoles } from 'src/app/auth/services/utils/common';
 import EventHeader from './EventHeader';
 import EventTable from './EventTable';
 
@@ -13,8 +13,8 @@ function Event() {
   const [searchText,setSearchText]=useState('')
   return (
     <FusePageCarded
-      header={<EventHeader setChange={setChange} change={change} setFilterValue={setFilterValue} searchText={searchText} setSearchText={setSearchText}/>}
-      content={<EventTable setChange={setChange} change={change} filterValue={filterValue} searchText={searchText}/>}
+      header={<EventHeader setChange={setChange} change={change} setFilterValue={setFilterValue} searchText={searchText} setSearchText={setSearchText} Role={getUserRoles()} rootPermission={getRootLevelPermissions()}/>}
+      content={<EventTable setChange={setChange} change={change} filterValue={filterValue} searchText={searchText} Role={getUserRoles()} rootPermission={getRootLevelPermissions()}/>}
       scroll={isMobile ? 'normal' : 'content'}
     />
   );

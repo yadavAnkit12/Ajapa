@@ -38,20 +38,13 @@ const style = {
 const menuItemArray = [
   // {
   //   key: 1,
-  //   label: 'View',
-  //   status: 'view',
-  //   // visibleIf: ['complete', 'active', 'inactive'],
-  //   loadIf: true
-  // },
-  // {
-  //   key: 1,
   //   label: 'Edit',
   //   status: 'edit',
   //   // visibleIf: ['complete', 'active', 'inactive'],
   //   loadIf: true
   // },
   {
-    key: 1,
+    key: 2,
     label: 'Delete',
     status: 'delete',
     // visibleIf: ['complete', 'active', 'inactive'],
@@ -70,23 +63,18 @@ function AdminTable(props) {
   const [selected, setSelected] = useState([]);
   const tableRef = useRef(null)
   const [page, setPage] = useState(0);
+  const [openDelete, setOpenDelete] = useState(false)
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [order, setOrder] = useState({
     direction: 'asc',
     id: null,
   });
-
-  const [openEdit, setOpenEdit] = useState(false);
-  const [editId, setEditId] = useState("");
-  const [openView, setOpenView] = useState(false);
-  const [adminid, setAdminId] = useState();
-  // const [change, setChange] = useState(false);
-  const [open, setOpen] = useState(false)
-  const [deleteId, setDeleteId] = useState('')
+  const [open, setOpen] = useState(false);
+  const [adminId, setAdminId] = useState();
 
   useEffect(() => {
     fetchData();
-  }, [props?.change, rowsPerPage, page ]);
+  }, [props?.change, rowsPerPage, page]);
 
   useEffect(() => {
     if (page !== 0) {
@@ -123,14 +111,13 @@ function AdminTable(props) {
       page: page + 1,
       rowsPerPage: rowsPerPage, // Example data to pass in req.query
     };
-    
-    axios.get(`${adminAPIConfig.adminList}`, { params }, {
+
+    axios.get(`${adminAPIConfig.list}`, { params }, {
       headers: {
         'Content-type': 'multipart/form-data',
         Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
       },
     }).then((response) => {
-      console.log('f',response)
       if (response.status === 200) {
         setAdminListData(response?.data);
         setLoading(false);
@@ -145,8 +132,8 @@ function AdminTable(props) {
   };
 
 
-  const handleViewClose = () => {
-    setOpenView(false);
+  const handleEditClose = () => {
+    setOpen(false);
   };
 
   function handleRequestSort(event, property) {
@@ -165,14 +152,18 @@ function AdminTable(props) {
 
   function getStatus(id, selectedValue) {
     if (selectedValue === 'delete') {
-      setOpenView(true)
+      setOpenDelete(true)
       setAdminId(id)
+    }
+    else if (selectedValue === 'edit') {
+      setAdminId(id)
+      setOpen(true)
     }
   }
 
-  const handleAdminDelete = () =>{
+  const handleAdminDelete = () => {
     setLoading(true)
-    axios.post(`${adminAPIConfig.deleteAdmin}?id=${adminid}`, {
+    axios.get(`${adminAPIConfig.deleteAdmin}?id=${adminId}`, {
       headers: {
         'Content-type': 'multipart/form-data',
         Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
@@ -180,7 +171,6 @@ function AdminTable(props) {
     }).then((response) => {
       if (response.status === 200) {
         setLoading(false);
-        setOpenView(false)
         props.setChange(!props.change)
         dispatch(showMessage({ message: response.data.message, variant: 'success' }));
       } else {
@@ -191,10 +181,6 @@ function AdminTable(props) {
       setLoading(false)
       dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
     })
-  }
-
-  const handleClose = () => {
-    setOpenView(false)
   }
 
 
@@ -213,7 +199,9 @@ function AdminTable(props) {
     setSelected([]);
   }
 
-
+  const handleClose = () => {
+    setOpenDelete(false)
+  }
   function handleChangePage(event, value) {
     event.preventDefault();
     setPage(value);
@@ -277,7 +265,7 @@ function AdminTable(props) {
                   selected={isSelected}
                   style={{ cursor: 'default' }}
                 >
-                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.name}
                   </TableCell>
 
@@ -288,7 +276,7 @@ function AdminTable(props) {
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.mobileNumber}
                   </TableCell>
-                  
+
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     <PopupState variant="popover" popupId="demo-popup-menu">
                       {(popupState) => (
@@ -324,7 +312,7 @@ function AdminTable(props) {
 
       </Table>
 
-      <TablePagination
+      {/* <TablePagination
         className="shrink-0 border-t-1"
         component="div"
         count={adminListData.totalElement}
@@ -338,9 +326,9 @@ function AdminTable(props) {
         }}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+      /> */}
       <Dialog
-        open={openView}
+        open={openDelete}
         TransitionComponent={Transition}
         keepMounted
         onClose={handleClose}
@@ -355,9 +343,9 @@ function AdminTable(props) {
           </Button>
         </DialogActions>
       </Dialog>
-      {/* <Modal
-        open={openView}
-        onClose={handleViewClose}
+      <Modal
+        open={open}
+        onClose={handleEditClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -370,9 +358,9 @@ function AdminTable(props) {
             width: '93%', // Set width to 82% for screens up to 280px
           },
         }}>
-          <AdminForm handleViewClose={handleViewClose} viewid={viewid} />
+          <AdminForm setOpen={setOpen} adminId={adminId} change={props.change} setChange={props.setChange} />
         </Box>
-      </Modal> */}
+      </Modal>
 
     </div>
   );

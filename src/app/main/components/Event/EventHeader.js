@@ -68,22 +68,24 @@ function EventHeader(props) {
               />
             </Paper>
 
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0, transition: { delay: 0.2 } }}
-              className="ml-lg-5 mr-lg-5 ml-sm-2 mr-sm-2"
-            >
-              <Button
-                className=""
-                component={Link}
-                to="/app/eventRegisteration/new"
-                variant="contained"
-                color="secondary"
-                startIcon={<FuseSvgIcon>heroicons-outline:plus</FuseSvgIcon>}
+            {(props.Role === 'Admin' ? props.rootPermission.createEvent : true) && (
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0, transition: { delay: 0.2 } }}
+                className="ml-lg-5 mr-lg-5 ml-sm-2 mr-sm-2"
               >
-                Add
-              </Button>
-            </motion.div>
+                <Button
+                  className=""
+                  component={Link}
+                  to="/app/eventRegisteration/new"
+                  variant="contained"
+                  color="secondary"
+                  startIcon={<FuseSvgIcon>heroicons-outline:plus</FuseSvgIcon>}
+                >
+                  Add
+                </Button>
+              </motion.div>
+            )}
           </div>
         </div>
         <div className='flex sm:flex-row flex-wrap flex-col justify-between mx-10  mb-10 shadow-1 rounded-16'>
