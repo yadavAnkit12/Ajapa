@@ -1,4 +1,4 @@
-import { Container, Button, TextField, IconButton, InputAdornment,Typography } from "@mui/material"
+import { Container, Button, TextField, IconButton, InputAdornment, Typography } from "@mui/material"
 import { useFormik } from "formik";
 import axios from 'axios';
 import * as Yup from 'yup';
@@ -35,10 +35,11 @@ const AdminChangePasswordForm = (props) => {
             },
         }).then((response) => {
             if (response.status === 200) {
-
+                dispatch(showMessage({ message: 'Password changed successfully', variant: 'success' }))
+                props.handleClose
             }
             else {
-                dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }))
+                dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
 
             }
         }).catch(() => dispatch(showMessage({ message: 'Something went wrong', variant: 'error' })))
