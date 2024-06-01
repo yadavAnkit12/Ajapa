@@ -98,7 +98,7 @@ class JwtService extends FuseUtils.EventEmitter {
               if (response.data.user.role === 'Admin') {
                 const permissionData = {
                   root_permission: response.data?.adminRootPermission || '',
-                  event_level_permission: response.data?.adminEventLevelPermission || ''
+                  event_level_permission: response.data?.eventLevelPermissions || ''
                 };
                 sessionStorage.setItem('permission', JSON.stringify(permissionData));
               }
@@ -196,7 +196,7 @@ class JwtService extends FuseUtils.EventEmitter {
             if (response.data.user.role === 'Admin') {
               const permissionData = {
                 root_permission: response.data?.adminRootPermission || '',
-                event_level_permission: response.data?.adminEventLevelPermission || ''
+                event_level_permission: response.data?.eventLevelPermissions || ''
               };
               sessionStorage.setItem('permission', JSON.stringify(permissionData));
             }

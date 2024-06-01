@@ -18,17 +18,16 @@ const validationSchema = yup.object().shape({
 
 const initialValues = {
     id: "",
-    email: "",
-    eventId: '',
+    event: '',
     admin: '',
-    canreadEventRegistration:false,
-    canreadAttendance:false,
-    canupdateAttendance:false,
-    cancreateFood:false,
-    canupdateFood:false,
-    canreadFood:false,
-    canreadReport:false,
-    cansendSMS:false
+    canreadEventRegistration: false,
+    canreadAttendance: false,
+    canupdateAttendance: false,
+    cancreateFood: false,
+    canupdateFood: false,
+    canreadFood: false,
+    canreadReport: false,
+    cansendSMS: false
 };
 
 const EventLevelPermissionForm = (props) => {
@@ -37,39 +36,43 @@ const EventLevelPermissionForm = (props) => {
     const [eventList, setEventList] = useState([])
     const [adminList, setAdminList] = useState([])
 
-    useEffect(()=>{
-       if(props.permissionId && eventList.length>0){
-        axios.get(`${adminAPIConfig.getRootLevelPermissionByEmail}?email=${props.permissionId.email}`, {
-            headers: {
-                "Content-type": "multipart/form-data",
-                Authorization: `Bearer ${window.localStorage.getItem("jwt_access_token")}`,
-            },
-        })
-            .then((response) => {
-                if (response.status === 200) {
-                   const data=response.data.data
-                   formik.setValues({
-                    id: data.id || "",
-                    email: data.email || "",
-                    event: `${eventList.find((event)=>event.id===data.email).name}(${data.email})` || '',
-                    readUser: data.readUser || false,
-                    updateUser:data.updateUser ||  false,
-                    statusUser:data.statusUser ||  false,
-                    createEvent: data.createEvent || false,
-                    readEvent: data.readEvent || false,
-                    updateEvent: data.updateEvent || false,
-                   })
-                }
-                else {
-                    setLoading(false)
-                    dispatch(showMessage({ message: response.data.errorMessage, variant: "error", }));
-                }
+    useEffect(() => {
+        if (props.permissionId && eventList.length > 0 && adminList.length > 0) {
+            axios.get(`${adminAPIConfig.getEventLevelPermissionByEmail}?email=${props.permissionId.email}&eventId=${props.permissionId.eventId}`, {
+                headers: {
+                    "Content-type": "multipart/form-data",
+                    Authorization: `Bearer ${window.localStorage.getItem("jwt_access_token")}`,
+                },
             })
-            .catch(() => {
-                dispatch(showMessage({ message: "Something went wrong", variant: 'error' }));
-            })
-       }
-    },[props,eventList])
+                .then((response) => {
+                    if (response.status === 200) {
+                        console.log(response)
+                        const data = response.data.data
+                        formik.setValues({
+                            id: data.id || "",
+                            admin:`${adminList.find((admin)=>admin.email===data.email).name}(${data.email})` || '',
+                            event: eventList.find((event) => event.eventId === data.eventId).eventName || '',
+                            canreadEventRegistration: data.canreadEventRegistration || false,
+                            canreadAttendance: data.canreadAttendance || false,
+                            canupdateAttendance: data.canupdateAttendance || false,
+                            cancreateFood: data.cancreateFood || false,
+                            canupdateFood: data.canupdateFood || false,
+                            canreadFood: data.canreadFood || false,
+                            canreadReport: data.canreadReport || false,
+                            cansendSMS: data.cansendSMS || false
+                        })
+                    }
+                    else {
+                        setLoading(false)
+                        dispatch(showMessage({ message: response.data.errorMessage, variant: "error", }));
+                    }
+                })
+                .catch((error) => {
+                    console.log(error)
+                    dispatch(showMessage({ message: "Something went wrong", variant: 'error' }));
+                })
+        }
+    }, [props, eventList])
 
     useEffect(() => {
         axios.get(eventAPIConfig.allEventList, {
@@ -96,7 +99,7 @@ const EventLevelPermissionForm = (props) => {
         })
             .then((response) => {
                 if (response.status === 200) {
-                    
+
                     setAdminList(response.data.data)
                 }
                 else {
@@ -117,7 +120,6 @@ const EventLevelPermissionForm = (props) => {
             const selectedAdmin = adminList.find((admin) => admin.name === values.admin.split('(')[0]);
             const eventId = eventList?.find((event) => event.eventName === values.event)?.eventId || '';
             const formData = new FormData();
-            // formData.append("id", selectedAdmin?.id);
             formData.append("email", selectedAdmin?.email);
             formData.append("eventId", eventId);
             formData.append("canreadEventRegistration", values.canreadEventRegistration);
@@ -129,8 +131,8 @@ const EventLevelPermissionForm = (props) => {
             formData.append("canreadReport", values.canreadReport);
             formData.append("cansendSMS", values.cansendSMS);
 
-            if(props.permissionId){
-                formData.append("id",values.id)
+            if (props.permissionId) {
+                formData.append("id", values.id)
             }
 
             axios.post(`${adminAPIConfig.eventLevelPermission}`, formData, {
@@ -180,7 +182,7 @@ const EventLevelPermissionForm = (props) => {
                     onSubmit={formik.handleSubmit}
                     style={{ marginTop: '1rem' }}
                 >
-                      <Autocomplete
+                    <Autocomplete
                         options={adminList.length > 0 ? adminList.map((admin) => `${admin.name}(${admin.email})`) : []}
                         value={formik.values.admin}
                         onChange={(event, value) =>
@@ -198,6 +200,7 @@ const EventLevelPermissionForm = (props) => {
                                 helperText={formik.touched.admin && formik.errors.admin}
                                 variant="outlined"
                                 fullWidth
+                                required
                             />
                         )}
                     />
@@ -213,12 +216,13 @@ const EventLevelPermissionForm = (props) => {
                                 label="Select Event"
                                 sx={{ mb: 2 }}
                                 className="max-w-md"
-                                name="admin"
+                                name="event"
                                 onBlur={formik.handleBlur}
-                                error={formik.touched.admin && Boolean(formik.errors.admin)}
-                                helperText={formik.touched.admin && formik.errors.admin}
+                                error={formik.touched.event && Boolean(formik.errors.event)}
+                                helperText={formik.touched.event && formik.errors.event}
                                 variant="outlined"
                                 fullWidth
+                                required
                             />
                         )}
                     />
@@ -230,7 +234,7 @@ const EventLevelPermissionForm = (props) => {
                             <FormGroup row>
                                 <FormControlLabel
                                     control={
-                                        <Checkbox checked={formik.values.readUser}
+                                        <Checkbox checked={formik.values.canreadEventRegistration}
                                             onChange={(event) => formik.setFieldValue("canreadEventRegistration", event.target.checked)}
                                             name="readEventRegistration" />}
                                     label="Read Event Regitrations"
@@ -246,14 +250,14 @@ const EventLevelPermissionForm = (props) => {
                             <FormGroup row>
                                 <FormControlLabel
                                     control={
-                                        <Checkbox checked={formik.values.createEvent}
+                                        <Checkbox checked={formik.values.canreadAttendance}
                                             onChange={(event) => formik.setFieldValue("canreadAttendance", event.target.checked)}
                                             name="readAttendance" />}
                                     label="Read Attendance"
                                 />
                                 <FormControlLabel
                                     control={
-                                        <Checkbox checked={formik.values.readEvent}
+                                        <Checkbox checked={formik.values.canupdateAttendance}
                                             onChange={(event) => formik.setFieldValue("canupdateAttendance", event.target.checked)}
                                             name="updateAttendance" />}
                                     label="Update Attendance"
@@ -263,26 +267,26 @@ const EventLevelPermissionForm = (props) => {
 
                         <FormControl component="fieldset" required>
                             <FormLabel className="text-black">
-                              Food
+                                Food
                             </FormLabel>
                             <FormGroup row>
                                 <FormControlLabel
                                     control={
-                                        <Checkbox checked={formik.values.createEvent}
+                                        <Checkbox checked={formik.values.canreadFood}
                                             onChange={(event) => formik.setFieldValue("canreadFood", event.target.checked)}
                                             name="readFood" />}
                                     label="Read Food"
                                 />
                                 <FormControlLabel
                                     control={
-                                        <Checkbox checked={formik.values.readEvent}
+                                        <Checkbox checked={formik.values.cancreateFood}
                                             onChange={(event) => formik.setFieldValue("cancreateFood", event.target.checked)}
                                             name="createFood" />}
                                     label="Create Food"
                                 />
-                               <FormControlLabel
+                                <FormControlLabel
                                     control={
-                                        <Checkbox checked={formik.values.readEvent}
+                                        <Checkbox checked={formik.values.canupdateFood}
                                             onChange={(event) => formik.setFieldValue("canupdateFood", event.target.checked)}
                                             name="updateFood" />}
                                     label="Update Food"
@@ -292,27 +296,27 @@ const EventLevelPermissionForm = (props) => {
 
                         <FormControl component="fieldset" required>
                             <FormLabel className="text-black">
-                              Report
+                                Report
                             </FormLabel>
                             <FormGroup row>
                                 <FormControlLabel
                                     control={
-                                        <Checkbox checked={formik.values.createEvent}
+                                        <Checkbox checked={formik.values.canreadReport}
                                             onChange={(event) => formik.setFieldValue("canreadReport", event.target.checked)}
                                             name="readReport" />}
                                     label="Read Report"
                                 />
                             </FormGroup>
                         </FormControl>
-                        
+
                         <FormControl component="fieldset" required>
                             <FormLabel className="text-black">
-                              SMS
+                                SMS
                             </FormLabel>
                             <FormGroup row>
                                 <FormControlLabel
                                     control={
-                                        <Checkbox checked={formik.values.createEvent}
+                                        <Checkbox checked={formik.values.cansendSMS}
                                             onChange={(event) => formik.setFieldValue("cansendSMS", event.target.checked)}
                                             name="sendSMS" />}
                                     label="Send SMS"
@@ -320,7 +324,7 @@ const EventLevelPermissionForm = (props) => {
 
                             </FormGroup>
                         </FormControl>
-                        
+
                     </div>
 
                     <div style={{ display: "flex", justifyContent: "flex-end" }}  >
