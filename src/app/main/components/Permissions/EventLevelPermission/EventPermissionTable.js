@@ -11,9 +11,8 @@ import { useEffect, useState, useRef, forwardRef } from 'react';
 import { showMessage } from 'app/store/fuse/messageSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from "react-router-dom";
-import { eventAPIConfig } from 'src/app/main/API/apiConfig';
+import { adminAPIConfig, eventAPIConfig } from 'src/app/main/API/apiConfig';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
-// import AdminForm from './AdminForm';
 import EventPermissionTableHead from './EventPermissionTableHead';
 import EventLevelPermissionForm from './EventLevelPermissionForm';
 
@@ -77,13 +76,8 @@ function EventPermissionTable(props) {
   });
 
   const [openEdit, setOpenEdit] = useState(false);
-  const [editId, setEditId] = useState("");
   const [openView, setOpenView] = useState(false);
-  const [viewid, setViewId] = useState("");
-  const [change, setChange] = useState(false);
-  const [open, setOpen] = useState(false)
-  const [deleteId, setDeleteId] = useState('')
-  const [permissionId,setPermissionId]=useState('')
+  const [permissionId, setPermissionId] = useState('')
 
   useEffect(() => {
     fetchData();
@@ -120,16 +114,7 @@ function EventPermissionTable(props) {
 
   const fetchData = () => {
     setLoading(true)
-    const params = {
-      page: page + 1,
-      rowsPerPage: rowsPerPage, // Example data to pass in req.query
-      eventName: searchText,
-      eventStatus: (_.get(props, 'filterValue.eventStatus') === 'On' || _.get(props, 'filterValue') === '' || _.get(props, 'filterValue.eventStatus') === null) ? true : false,
-      bookingStatus: (_.get(props, 'filterValue.bookingStatus') === 'On' || _.get(props, 'filterValue') === '' || _.get(props, 'filterValue.bookingStatus') === null) ? true : false,
-    };
-    const flag1 = props.filterValue === '' || props.filterValue.eventStatus === null ? 'On' : props.filterValue.eventStatus
-    const flag2 = props.filterValue === '' || props.filterValue.bookingStatus === null ? 'On' : props.filterValue.bookingStatus
-    axios.get(`${eventAPIConfig.list}/${flag1}/${flag2}`, { params }, {
+    axios.get(adminAPIConfig.EventLevelPermissionList, {
       headers: {
         'Content-type': 'multipart/form-data',
         authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
@@ -153,10 +138,6 @@ function EventPermissionTable(props) {
     setOpenEdit(false);
   };
 
-  const handleViewClose = () => {
-    setOpenView(false);
-  };
-
   function handleRequestSort(event, property) {
     const id = property;
     let direction = 'desc';
@@ -171,68 +152,14 @@ function EventPermissionTable(props) {
     });
   }
 
-  function getStatus(id, selectedValue) {
+  function getStatus(id, selectedValue, email, eventId) {
 
     if (selectedValue === 'edit') {
-      setOpenView(true)
-      setViewId(id)
+      setOpenEdit(true)
+      setPermissionId({ id, email, eventId })
     }
-    // else if (selectedValue === 'edit') {
-    //   navigate(`/app/eventRegisteration/${id}`)
-    // }
-
   }
 
-  const handleClose = () => {
-    setOpen(false)
-  }
-
-  //chnaging the booking status
-  const handleChnangeBookingStatus = (id, status) => {
-    setLoading(true)
-    axios.post(`${eventAPIConfig.changeBookingStatus}/${id}/${!status}`, {
-      headers: {
-        'Content-type': 'multipart/form-data',
-        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-      },
-    }).then((response) => {
-      if (response.status === 200) {
-        fetchData()
-        setLoading(false)
-        dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-
-      } else {
-        setLoading(false)
-        dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
-      }
-    }).catch(() => {
-      setLoading(false)
-      dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
-    })
-
-  }
-  //chnaging the event status
-  const handleChangeEventStatus = (id, status) => {
-    axios.post(`${eventAPIConfig.changeEventStatus}/${id}/${!status}`, {
-      headers: {
-        'Content-type': 'multipart/form-data',
-        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-      },
-    }).then((response) => {
-      if (response.status === 200) {
-        fetchData()
-        setLoading(false)
-        dispatch(showMessage({ message: response.data.message, variant: 'success' }));
-      } else {
-        setLoading(false)
-        dispatch(showMessage({ message: response.data.error_message, variant: 'error' }));
-      }
-    }).catch(() => {
-      setLoading(false)
-      dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
-    })
-
-  }
 
   function handleSelectAllClick(event) {
     if (event.target.checked) {
@@ -314,7 +241,7 @@ function EventPermissionTable(props) {
                   style={{ cursor: 'default' }}
                 >
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.eventName}
+                    {n.email || ''}
                   </TableCell>
 
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
@@ -364,7 +291,7 @@ function EventPermissionTable(props) {
                             {menuItemArray.map((value) => (
                               (value.loadIf) && <MenuItem
                                 onClick={() => {
-                                  getStatus(n.eventId, value.status, n.eventStatus);
+                                  getStatus(n.id, value.status, n.email, n.eventId);
                                   popupState.close();
                                 }}
                                 key={value.key}
@@ -419,8 +346,8 @@ function EventPermissionTable(props) {
         </DialogActions>
       </Dialog> */}
       <Modal
-        open={openView}
-        onClose={handleViewClose}
+        open={openEdit}
+        onClose={handleEditClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -433,7 +360,7 @@ function EventPermissionTable(props) {
             width: '93%', // Set width to 82% for screens up to 280px
           },
         }}>
-          <EventLevelPermissionForm handleModalClose={handleEditClose}  permissionId={permissionId} change={props.change} setChange={props.setChange}/>
+          <EventLevelPermissionForm handleModalClose={handleEditClose} change={props.change} setChange={props.setChange} permissionId={permissionId} />
         </Box>
       </Modal>
 
