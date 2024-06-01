@@ -78,7 +78,8 @@ export const adminAPIConfig = {
     rootLevelPermission: key + '/admin/root/permission/save',
     rootLevelPermissionList: key + '/admin/root/permission/all',
     getRootLevelPermissionByEmail: key + '/admin/root/permission/getUsingEmail',
-    changePassowrdForAdmin:key+ '/admin/changePassword'
+    changePassowrdForAdmin:key+ '/admin/changePassword',
+    eventLevelPermission: key +'/admin/event/permission/save'
 }
 
 
