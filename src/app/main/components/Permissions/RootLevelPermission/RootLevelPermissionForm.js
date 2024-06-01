@@ -97,7 +97,7 @@ const RootLevelPermissionForm = (props) => {
             const selectedAdmin = adminList.find((admin) => admin.name === values.admin.split('(')[0]);
 
             const formData = new FormData();
-            formData.append("id", selectedAdmin?.id);
+            // formData.append("id", selectedAdmin?.id);
             formData.append("email", selectedAdmin?.email);
             formData.append("readUser", values.readUser);
             formData.append("updateUser", values.updateUser);
