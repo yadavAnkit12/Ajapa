@@ -5,6 +5,8 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import RootLevelPermissionForm from '../RootLevelPermission/RootLevelPermissionForm';
+import EventLevelPermissionForm from './EventLevelPermissionForm';
 // import AdminForm from './AdminForm';
 
 
@@ -176,7 +178,7 @@ function EventPermissionHeader(props) {
             width: '93%', // Set width to 82% for screens up to 280px
           },
         }}>
-          {/* <AdminForm handleModalClose={handleModalClose} /> */}
+          <EventLevelPermissionForm handleModalClose={handleModalClose} change={props.change} setChange={props.setChange}/>
         </Box>
       </Modal>
     </>

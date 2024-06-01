@@ -15,6 +15,7 @@ import { eventAPIConfig } from 'src/app/main/API/apiConfig';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 // import AdminForm from './AdminForm';
 import EventPermissionTableHead from './EventPermissionTableHead';
+import EventLevelPermissionForm from './EventLevelPermissionForm';
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -82,6 +83,7 @@ function EventPermissionTable(props) {
   const [change, setChange] = useState(false);
   const [open, setOpen] = useState(false)
   const [deleteId, setDeleteId] = useState('')
+  const [permissionId,setPermissionId]=useState('')
 
   useEffect(() => {
     fetchData();
@@ -146,6 +148,10 @@ function EventPermissionTable(props) {
     })
   };
 
+
+  const handleEditClose = () => {
+    setOpenEdit(false);
+  };
 
   const handleViewClose = () => {
     setOpenView(false);
@@ -427,7 +433,7 @@ function EventPermissionTable(props) {
             width: '93%', // Set width to 82% for screens up to 280px
           },
         }}>
-          {/* <AdminForm handleViewClose={handleViewClose} viewid={viewid} /> */}
+          <EventLevelPermissionForm handleModalClose={handleEditClose}  permissionId={permissionId} change={props.change} setChange={props.setChange}/>
         </Box>
       </Modal>
 
