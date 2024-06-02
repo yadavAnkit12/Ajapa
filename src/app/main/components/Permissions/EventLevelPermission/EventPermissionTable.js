@@ -15,6 +15,8 @@ import { adminAPIConfig, eventAPIConfig } from 'src/app/main/API/apiConfig';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import EventPermissionTableHead from './EventPermissionTableHead';
 import EventLevelPermissionForm from './EventLevelPermissionForm';
+import DoneIcon from '@mui/icons-material/Done';
+import CloseIcon from '@mui/icons-material/Close';
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -79,6 +81,9 @@ function EventPermissionTable(props) {
   const [openView, setOpenView] = useState(false);
   const [permissionId, setPermissionId] = useState('')
 
+  //for showing event Name in table
+  const [eventNamefromId, setEventNameFromId] = useState([])
+
   useEffect(() => {
     fetchData();
   }, [props?.change, rowsPerPage, page, props?.filterValue, searchText]);
@@ -132,6 +137,25 @@ function EventPermissionTable(props) {
       dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }));
     })
   };
+
+  //for Getting event Name
+  useEffect(()=>{
+    axios.get(eventAPIConfig.allEventList, {
+        headers: {
+          'Content-type': 'multipart/form-data',
+          Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+        },
+      }).then((response) => {
+        if (response.status === 200) {
+          setEventNameFromId(response.data.data)
+        
+        } else {
+          dispatch(showMessage({ message: response.data.errorMessage, variant: 'error' }));
+        }
+      }).catch((error) => {
+        dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
+    });
+},[])
 
 
   const handleEditClose = () => {
@@ -214,6 +238,13 @@ function EventPermissionTable(props) {
     );
   }
 
+
+  const nameofevent = (eventId) => {
+    const event = eventNamefromId.find((name) => name.eventId === eventId);
+    return event ? event.eventName : '';
+  };
+
+
   return (
     <div className="w-full flex flex-col min-h-full" style={{ overflow: 'auto' }}>
       <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle" ref={tableRef}>
@@ -229,6 +260,8 @@ function EventPermissionTable(props) {
           {
             eventListData?.data?.map((n) => {
               const isSelected = selected.indexOf(n.eventId) !== -1;
+              const event_name = nameofevent(n.eventId);
+              
               return (
                 <TableRow
                   className="h-72 cursor-pointer"
@@ -241,44 +274,43 @@ function EventPermissionTable(props) {
                   style={{ cursor: 'default' }}
                 >
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.email || ''}
+                  {n.email || ''}
                   </TableCell>
 
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.eventType}
+                  {event_name || ''}
                   </TableCell>
 
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.eventLocation}
-
+                  {n.cancreateFood ? <DoneIcon color='success'/> : <CloseIcon color='error'/> || ''}
                   </TableCell>
-                  {/* <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.eventDate}
-                  </TableCell> 
+
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {n.shivirAvailable ? 'Yes' : 'No'}
+                  {n.canreadAttendance ? <DoneIcon color='success'/> : <CloseIcon color='error'/> || ''}
                   </TableCell>
 
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align="center">
-                    <Switch
-                      checked={n.eventStatus}
-                      color="success"
-                      inputProps={{ 'aria-label': 'toggle event status' }}
-                      onChange={() => handleChangeEventStatus(n.eventId, n.eventStatus)}
-                    />
-                    {n.eventStatus ? 'On' : 'Off'}
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                  {n.canreadEventRegistration ? <DoneIcon color='success'/> : <CloseIcon color='error'/> || ''}
                   </TableCell>
 
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align="center">
-                    <Switch
-                      checked={n.bookingStatus}
-                      color="success"
-                      inputProps={{ 'aria-label': 'toggle booking status' }}
-                      onChange={() => handleChnangeBookingStatus(n.eventId, n.bookingStatus)}
-                    />
-                    {n.bookingStatus ? 'On' : 'Off'}
-                  </TableCell> */}
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                  {n.canreadFood ? <DoneIcon color='success'/> : <CloseIcon color='error'/> || ''}
+                  </TableCell>
 
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                  {n.canreadReport ? <DoneIcon color='success'/> : <CloseIcon color='error'/> || ''}
+                  </TableCell>
+
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                  {n.cansendSMS ? <DoneIcon color='success'/> : <CloseIcon color='error'/> || ''}
+                  </TableCell>
+
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                  {n.canupdateAttendance ? <DoneIcon color='success'/> : <CloseIcon color='error'/> || ''}
+                  </TableCell>
+
+        
+                  
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     <PopupState variant="popover" popupId="demo-popup-menu">
                       {(popupState) => (
@@ -314,7 +346,7 @@ function EventPermissionTable(props) {
 
       </Table>
 
-      <TablePagination
+      {/* <TablePagination
         className="shrink-0 border-t-1"
         component="div"
         count={eventListData.totalElement}
@@ -328,7 +360,7 @@ function EventPermissionTable(props) {
         }}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+      /> */}
       {/* <Dialog
         open={open}
         TransitionComponent={Transition}
