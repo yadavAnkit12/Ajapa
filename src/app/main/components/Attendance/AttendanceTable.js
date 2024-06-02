@@ -18,6 +18,7 @@ import EventView from '../MyRegistration/EventView';
 import AttendanceTableHead from './AttendanceTableHead';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { values } from 'lodash';
+import { getUserRoles } from 'src/app/auth/services/utils/common';
 
 
 const Transition = forwardRef(function Transition(props, ref) {
@@ -124,7 +125,7 @@ function AttendanceTable(props) {
         setLoading(false)
         dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
       }
-    }).catch(()=>{
+    }).catch(() => {
       setLoading(false)
       dispatch(showMessage({ message: "something went wrong", variant: 'error' }));
 
@@ -200,6 +201,21 @@ function AttendanceTable(props) {
     );
   }
 
+  if (props.Role === 'Admin' && !props.eventPermission.canreadAttendance) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, transition: { delay: 0.1 } }}
+        className="flex flex-1 items-center justify-center h-full"
+      >
+        <Typography color="text.secondary" variant="h5">
+          Oops ! You don't have a Permission
+        </Typography>
+      </motion.div>
+    );
+  }
+
+
 
   //CheckBox click
   const handleToggle = (userId, attendance) => {
@@ -256,7 +272,7 @@ function AttendanceTable(props) {
 
   //Click on bell icon !!
   const handleAttendance = (userid, hallNo, present) => {
-   
+
     const user = usersList.find(item => item.user.id === userid);
 
     if (user) {
@@ -289,12 +305,12 @@ function AttendanceTable(props) {
     }
   };
 
-     // function to convert date from yyyy-mm-dd format to dd-mm-yyyy
-     function formatDate(inputDate) {
-      const parts = inputDate.split('-');
-      const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
-  
-      return formattedDate;
+  // function to convert date from yyyy-mm-dd format to dd-mm-yyyy
+  function formatDate(inputDate) {
+    const parts = inputDate.split('-');
+    const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+
+    return formattedDate;
   }
 
   return (
@@ -306,7 +322,8 @@ function AttendanceTable(props) {
           onSelectAllClick={handleSelectAllClick}
           onRequestSort={handleRequestSort}
           rowCount={props.usersList?.length}
-        // onMenuItemClick={handleDeselect}
+          eventPermission={props.eventPermission}
+          Role={props.Role}
         />
         <TableBody>
           {
@@ -357,10 +374,10 @@ function AttendanceTable(props) {
                       </span>
                     </Tooltip>
                   </TableCell>
-                  <TableCell className="p-4 md:p-16" align="center">
+                  {(getUserRoles()==='Admin'? props.eventPermission.canupdateAttendance:true) && <TableCell className="p-4 md:p-16" align="center">
                     <Checkbox checked={user.present} onChange={() => handleToggle(user?.user?.id, user.present)} />
-                  </TableCell>
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                  </TableCell>}
+                  {(getUserRoles()==='Admin'? props.eventPermission.canupdateAttendance:true) && <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
 
                     <TextField
                       defaultValue={user.hallNo}
@@ -368,11 +385,11 @@ function AttendanceTable(props) {
                       fullWidth
                       onChange={(event) => handleHallNoChange(event, user?.user?.id)}
                     />
-                  </TableCell>
-                  <TableCell className="p-4 md:p-16" style={{ cursor: 'pointer' }}
+                  </TableCell>}
+                  {(getUserRoles()==='Admin'? props.eventPermission.canupdateAttendance:true) &&  <TableCell className="p-4 md:p-16" style={{ cursor: 'pointer' }}
                     component="th" scope="row" align='center' onClick={() => handleAttendance(user.user.id, user.hallNo, user.present)}>
                     <NotificationsIcon />
-                  </TableCell>
+                  </TableCell>}
 
                 </TableRow>
               );

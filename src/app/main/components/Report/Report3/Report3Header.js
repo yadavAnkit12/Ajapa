@@ -36,95 +36,95 @@ function Report3Header(props) {
   const [filterData, setFilterData] = useState({
     eventName: ''
   });
-  
+
 
 
 
   const handleCreateReport = () => {
     const eventId = props.eventList?.find((event) => event.eventName === filterData.eventName)?.eventId
-       const params = {
-        eventId: eventId,
-        searchText: props?.searchText
-      };
-    axios.get(reportAPIConfig.report3Excel,{ params }, {
-        headers: {
-            'Content-type': 'multipart/form-data',
-            Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-        },
+    const params = {
+      eventId: eventId,
+      searchText: props?.searchText
+    };
+    axios.get(reportAPIConfig.report3Excel, { params }, {
+      headers: {
+        'Content-type': 'multipart/form-data',
+        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+      },
     }).then((response) => {
-        
-        if (response.status === 200) {
-            // Extract filename from the URL
-            const urlParts = response.data.fileName.split('/');
-            const fileName = urlParts[urlParts.length - 1];
 
-            const baseUrl = `${key}/reports/`;
-            const fullUrl = baseUrl + fileName;
-            const link = document.createElement('a');
-            link.href = fullUrl;
-            link.setAttribute('download', fileName);
-            document.body.appendChild(link);
+      if (response.status === 200) {
+        // Extract filename from the URL
+        const urlParts = response.data.fileName.split('/');
+        const fileName = urlParts[urlParts.length - 1];
 
-            // Trigger the download
-            link.click();
+        const baseUrl = `${key}/reports/`;
+        const fullUrl = baseUrl + fileName;
+        const link = document.createElement('a');
+        link.href = fullUrl;
+        link.setAttribute('download', fileName);
+        document.body.appendChild(link);
 
-            // Remove the link from the DOM after the download
-            document.body.removeChild(link);
+        // Trigger the download
+        link.click();
 
-        } else {
-            // Handling error
-            dispatch(showMessage({ message: "Failed to fetch Excel. Please try again later.", variant: 'error' }));
-        }
+        // Remove the link from the DOM after the download
+        document.body.removeChild(link);
+
+      } else {
+        // Handling error
+        dispatch(showMessage({ message: "Failed to fetch Excel. Please try again later.", variant: 'error' }));
+      }
     }).catch((error) => {
       dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
-  });
+    });
 
 
-}
+  }
 
-// const handleCreateReportPDF = () => {
-//   const eventId = props.eventList?.find((event) => event.eventName === filterData.eventName)?.eventId
-//   axios.get(`${attendanceAPIConfig.attendancePdf}/${eventId}`,
-//       {
-//         headers: {
-//           "Content-type": "multipart/form-data",
-//           Authorization: `Bearer ${window.localStorage.getItem(
-//             "jwt_access_token"
-//           )}`,
-//         },
-//       }
-//     )
-//     .then((response) => {
-      
-//       if (response.status === 200) {
-//         // Extract filename from the URL
-//         const urlParts = response.data.fileName.split("/");
-//         const fileName = urlParts[urlParts.length - 1];
-//         const baseUrl =
-//           "http://18.212.201.202:8080/ajapa_yog-0.0.1-SNAPSHOT/reports/";
-//         const fullUrl = baseUrl + fileName;
+  // const handleCreateReportPDF = () => {
+  //   const eventId = props.eventList?.find((event) => event.eventName === filterData.eventName)?.eventId
+  //   axios.get(`${attendanceAPIConfig.attendancePdf}/${eventId}`,
+  //       {
+  //         headers: {
+  //           "Content-type": "multipart/form-data",
+  //           Authorization: `Bearer ${window.localStorage.getItem(
+  //             "jwt_access_token"
+  //           )}`,
+  //         },
+  //       }
+  //     )
+  //     .then((response) => {
 
-//         // Create a new tab and open the link in it
-//         const newTab = window.open(fullUrl, "_blank");
-//         if (!newTab) {
-//           // If pop-up blocker prevents opening the new tab
-//           dispatch(
-//             showMessage({
-//               message: "Please allow pop-ups to download the PDF.",
-//               variant: "error",
-//             })
-//           );
-//         }
-//       } else {
-//         dispatch(
-//           showMessage({
-//             message: "Failed to fetch PDF. Please try again later.",
-//             variant: "error",
-//           })
-//         );
-//       }
-//     })
-// };
+  //       if (response.status === 200) {
+  //         // Extract filename from the URL
+  //         const urlParts = response.data.fileName.split("/");
+  //         const fileName = urlParts[urlParts.length - 1];
+  //         const baseUrl =
+  //           "http://18.212.201.202:8080/ajapa_yog-0.0.1-SNAPSHOT/reports/";
+  //         const fullUrl = baseUrl + fileName;
+
+  //         // Create a new tab and open the link in it
+  //         const newTab = window.open(fullUrl, "_blank");
+  //         if (!newTab) {
+  //           // If pop-up blocker prevents opening the new tab
+  //           dispatch(
+  //             showMessage({
+  //               message: "Please allow pop-ups to download the PDF.",
+  //               variant: "error",
+  //             })
+  //           );
+  //         }
+  //       } else {
+  //         dispatch(
+  //           showMessage({
+  //             message: "Failed to fetch PDF. Please try again later.",
+  //             variant: "error",
+  //           })
+  //         );
+  //       }
+  //     })
+  // };
 
   const id = 'new';
 
@@ -150,7 +150,7 @@ function Report3Header(props) {
 
   return (
     <>
-     
+
       <div className="w-full flex flex-col min-h-full">
         <div className="flex flex-col sm:flex-row space-y-16 sm:space-y-0 flex-1 w-full items-center justify-between py-32 px-10">
           <Typography
@@ -163,30 +163,30 @@ function Report3Header(props) {
             Report 3
           </Typography>
           <div className="flex flex-col w-full sm:w-auto sm:flex-row space-y-16 sm:space-y-0 flex-1 items-center justify-end space-x-8">
-          <Paper
-                            component={motion.div}
-                            initial={{ y: -20, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1, transition: { delay: 0.2 } }}
-                            className="flex items-center w-full my-4 sm:max-w-256 space-x-8 px-16 ml-5 mr-5 rounded-full border-1 shadow-0"
-                        >
-                            <FuseSvgIcon color="disabled">heroicons-solid:search</FuseSvgIcon>
-                            <Input
-                                placeholder="Search Text"
-                                className="flex flex-1"
-                                disableUnderline
-                                fullWidth
-                                value={props?.searchText}
-                                inputProps={{
-                                    'aria-label': 'Search',
-                                }}
-                                onChange={(ev) => props?.setSearchText(ev.target.value)}
-                            />
-                        </Paper>
-                    </div>
+            <Paper
+              component={motion.div}
+              initial={{ y: -20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1, transition: { delay: 0.2 } }}
+              className="flex items-center w-full my-4 sm:max-w-256 space-x-8 px-16 ml-5 mr-5 rounded-full border-1 shadow-0"
+            >
+              <FuseSvgIcon color="disabled">heroicons-solid:search</FuseSvgIcon>
+              <Input
+                placeholder="Search Text"
+                className="flex flex-1"
+                disableUnderline
+                fullWidth
+                value={props?.searchText}
+                inputProps={{
+                  'aria-label': 'Search',
+                }}
+                onChange={(ev) => props?.setSearchText(ev.target.value)}
+              />
+            </Paper>
+          </div>
         </div>
         <div className='flex sm:flex-row flex-wrap flex-col justify-between mx-10  mb-10 shadow-1 rounded-16'>
           <div className="flex sm:flex-row flex-wrap flex-col justify-start">
-           
+
 
             <Autocomplete
               disablePortal
@@ -199,7 +199,7 @@ function Report3Header(props) {
             />
 
 
-            <Button
+            {(props.Role === 'Admin' ? props.eventPermission.canreadReport : true) && <Button
               // component={Link}
               onClick={() => handleCreateReport()}
               variant="outlined"
@@ -208,7 +208,7 @@ function Report3Header(props) {
               sx={{ my: 2, mx: 1 }}
             >
               Export Excel
-            </Button>
+            </Button>}
             {/* <Button
               // component={Link}
             //   onClick={() => handleCreateReportPDF()}
@@ -221,7 +221,7 @@ function Report3Header(props) {
             </Button> */}
 
           </div>
-          
+
           <div className="flex flex-row justify-end">
             <Button
               component={Link}

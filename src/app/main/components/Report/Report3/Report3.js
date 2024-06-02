@@ -7,6 +7,7 @@ import Report3Header from './Report3Header';
 import Report3Table from './Report3Table';
 import { eventAPIConfig } from 'src/app/main/API/apiConfig';
 import axios from 'axios';
+import { getEventLevelPermissions, getUserRoles } from 'src/app/auth/services/utils/common';
 import { showMessage } from 'app/store/fuse/messageSlice';
 import { useDispatch } from 'react-redux';
 
@@ -18,6 +19,7 @@ function Report3() {
   const [filterValue, setFilterValue] = useState('');
   const [eventList,setEventList]=useState([])
   const [searchText, setSearchText] = useState('')
+  const [permissions,setPermissions]=useState('')
 
   
   useEffect(()=>{
@@ -38,10 +40,18 @@ function Report3() {
       });
   },[])
 
+  useEffect(() => {
+    if (filterValue.eventName && getUserRoles() === 'Admin') {
+      const permissionList = getEventLevelPermissions()
+      const validateAdmin= permissionList.find((permission) => permission.eventId === eventList.find((event) => event.eventName === filterValue.eventName).eventId)
+      setPermissions(validateAdmin)
+    }
+  }, [filterValue])
+
   return (
     <FusePageCarded
-      header={<Report3Header setFilterValue={setFilterValue} eventList={eventList} searchText={searchText} setSearchText={setSearchText}/>}
-      content={<Report3Table filterValue={filterValue} eventList={eventList} searchText={searchText}/>}
+      header={<Report3Header setFilterValue={setFilterValue} eventList={eventList} searchText={searchText} setSearchText={setSearchText} Role={getUserRoles()} eventPermission={permissions}/>}
+      content={<Report3Table filterValue={filterValue} eventList={eventList} searchText={searchText} Role={getUserRoles()} eventPermission={permissions}/>}
       scroll={isMobile ? 'normal' : 'content'}
     />
   );

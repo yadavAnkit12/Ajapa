@@ -62,15 +62,15 @@ function Report1Header(props) {
     if (selectDate !== '' && selectDate === 'Arrival') {
 
       if (attendingShivir === '' || attendingShivir === 'All') {
-           
-        axios.get(`${reportAPIConfig.report1arrivalExcel}/${eventId}` ,{
+
+        axios.get(`${reportAPIConfig.report1arrivalExcel}/${eventId}`, {
           headers: {
             'Content-type': 'multipart/form-data',
             Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
           },
-    }).then((response) => {
+        }).then((response) => {
 
-        if (response.status === 200) {
+          if (response.status === 200) {
             // Extract filename from the URL
             const urlParts = response.data.fileName.split('/');
             const fileName = urlParts[urlParts.length - 1];
@@ -88,25 +88,25 @@ function Report1Header(props) {
             // Remove the link from the DOM after the download
             document.body.removeChild(link);
 
-        } else {
+          } else {
             // Handling error
             dispatch(showMessage({ message: "Failed to fetch Excel. Please try again later.", variant: 'error' }));
-        }
-    });
+          }
+        });
       }
 
       else if (attendingShivir === 'Yes' || attendingShivir === 'No') {
 
-        const attendingShivirboolean =  attendingShivir === "Yes" ? true : false; 
-       
-        axios.get(`${reportAPIConfig.report1arrivalExcel}/${eventId}/${attendingShivirboolean}` ,{
+        const attendingShivirboolean = attendingShivir === "Yes" ? true : false;
+
+        axios.get(`${reportAPIConfig.report1arrivalExcel}/${eventId}/${attendingShivirboolean}`, {
           headers: {
             'Content-type': 'multipart/form-data',
             Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
           },
-    }).then((response) => {
+        }).then((response) => {
 
-        if (response.status === 200) {
+          if (response.status === 200) {
             // Extract filename from the URL
             const urlParts = response.data.fileName.split('/');
             const fileName = urlParts[urlParts.length - 1];
@@ -124,11 +124,11 @@ function Report1Header(props) {
             // Remove the link from the DOM after the download
             document.body.removeChild(link);
 
-        } else {
+          } else {
             // Handling error
             dispatch(showMessage({ message: "Failed to fetch Excel. Please try again later.", variant: 'error' }));
-        }
-    });
+          }
+        });
       }
     }
 
@@ -136,15 +136,15 @@ function Report1Header(props) {
     else if (selectDate !== '' && selectDate === 'Departure') {
 
       if (attendingShivir === '' || attendingShivir === 'All') {
-           
-        axios.get(`${reportAPIConfig.report1departureExcel}/${eventId}` ,{
+
+        axios.get(`${reportAPIConfig.report1departureExcel}/${eventId}`, {
           headers: {
             'Content-type': 'multipart/form-data',
             Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
           },
-    }).then((response) => {
+        }).then((response) => {
 
-        if (response.status === 200) {
+          if (response.status === 200) {
             // Extract filename from the URL
             const urlParts = response.data.fileName.split('/');
             const fileName = urlParts[urlParts.length - 1];
@@ -162,25 +162,25 @@ function Report1Header(props) {
             // Remove the link from the DOM after the download
             document.body.removeChild(link);
 
-        } else {
+          } else {
             // Handling error
             dispatch(showMessage({ message: "Failed to fetch Excel. Please try again later.", variant: 'error' }));
-        }
-    });
+          }
+        });
       }
 
       else if (attendingShivir === 'Yes' || attendingShivir === 'No') {
 
-        const attendingShivirboolean =  attendingShivir === "Yes" ? true : false; 
-       
-        axios.get(`${reportAPIConfig.report1departureExcel}/${eventId}/${attendingShivirboolean}` ,{
+        const attendingShivirboolean = attendingShivir === "Yes" ? true : false;
+
+        axios.get(`${reportAPIConfig.report1departureExcel}/${eventId}/${attendingShivirboolean}`, {
           headers: {
             'Content-type': 'multipart/form-data',
             Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
           },
-    }).then((response) => {
+        }).then((response) => {
 
-        if (response.status === 200) {
+          if (response.status === 200) {
             // Extract filename from the URL
             const urlParts = response.data.fileName.split('/');
             const fileName = urlParts[urlParts.length - 1];
@@ -198,11 +198,11 @@ function Report1Header(props) {
             // Remove the link from the DOM after the download
             document.body.removeChild(link);
 
-        } else {
+          } else {
             // Handling error
             dispatch(showMessage({ message: "Failed to fetch Excel. Please try again later.", variant: 'error' }));
-        }
-    });
+          }
+        });
       }
 
     }
@@ -358,7 +358,7 @@ function Report1Header(props) {
 
 
 
-            <Button
+            {(props.Role === 'Admin' ? props.eventPermission.canreadReport : true) && <Button
               // component={Link}
               onClick={() => handleCreateReport()}
               variant="outlined"
@@ -367,7 +367,7 @@ function Report1Header(props) {
               sx={{ my: 2, mx: 1 }}
             >
               Export Excel
-            </Button>
+            </Button>}
             {/* <Button
               // component={Link}
             //   onClick={() => handleCreateReportPDF()}
