@@ -314,7 +314,19 @@ function Report1Table(props) {
       </motion.div>
     );
   }
-
+  if (props.Role === 'Admin' && !props.eventPermission.canreadReport) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, transition: { delay: 0.1 } }}
+        className="flex flex-1 items-center justify-center h-full"
+      >
+        <Typography color="text.secondary" variant="h5">
+          Oops ! You don't have a Permission
+        </Typography>
+      </motion.div>
+    );
+  }
      // function to convert date from yyyy-mm-dd format to dd-mm-yyyy
      function formatDate(inputDate) {
       const parts = inputDate.split('-');

@@ -36,7 +36,7 @@ function Report2Header(props) {
     eventName: '',
     selectDate: ''
   });
-  
+
 
 
 
@@ -54,120 +54,118 @@ function Report2Header(props) {
       return
     }
 
-    if( selectDate === 'Arrival')
-      {
-        axios.get(`${reportAPIConfig.report2arrivalExcel}/${eventId}`, {
-          headers: {
-            'Content-type': 'multipart/form-data',
-            Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-          },
-    }).then((response) => {
+    if (selectDate === 'Arrival') {
+      axios.get(`${reportAPIConfig.report2arrivalExcel}/${eventId}`, {
+        headers: {
+          'Content-type': 'multipart/form-data',
+          Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+        },
+      }).then((response) => {
 
         if (response.status === 200) {
-            // Extract filename from the URL
-            const urlParts = response.data.fileName.split('/');
-            const fileName = urlParts[urlParts.length - 1];
+          // Extract filename from the URL
+          const urlParts = response.data.fileName.split('/');
+          const fileName = urlParts[urlParts.length - 1];
 
-            const baseUrl = `${key}/reports/`;
-            const fullUrl = baseUrl + fileName;
-            const link = document.createElement('a');
-            link.href = fullUrl;
-            link.setAttribute('download', fileName);
-            document.body.appendChild(link);
+          const baseUrl = `${key}/reports/`;
+          const fullUrl = baseUrl + fileName;
+          const link = document.createElement('a');
+          link.href = fullUrl;
+          link.setAttribute('download', fileName);
+          document.body.appendChild(link);
 
-            // Trigger the download
-            link.click();
+          // Trigger the download
+          link.click();
 
-            // Remove the link from the DOM after the download
-            document.body.removeChild(link);
+          // Remove the link from the DOM after the download
+          document.body.removeChild(link);
 
         } else {
-            // Handling error
-            dispatch(showMessage({ message: "Failed to fetch Excel. Please try again later.", variant: 'error' }));
+          // Handling error
+          dispatch(showMessage({ message: "Failed to fetch Excel. Please try again later.", variant: 'error' }));
         }
-    });
-   
-      }
-
-      else if(selectDate == 'Departure')
-        {
-          axios.get(`${reportAPIConfig.report2departureExcel}/${eventId}`, {
-            headers: {
-              'Content-type': 'multipart/form-data',
-              Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-            },
-      }).then((response) => {
-  
-          if (response.status === 200) {
-              // Extract filename from the URL
-              const urlParts = response.data.fileName.split('/');
-              const fileName = urlParts[urlParts.length - 1];
-  
-              const baseUrl = `${key}/reports/`;
-              const fullUrl = baseUrl + fileName;
-              const link = document.createElement('a');
-              link.href = fullUrl;
-              link.setAttribute('download', fileName);
-              document.body.appendChild(link);
-  
-              // Trigger the download
-              link.click();
-  
-              // Remove the link from the DOM after the download
-              document.body.removeChild(link);
-  
-          } else {
-              // Handling error
-              dispatch(showMessage({ message: "Failed to fetch Excel. Please try again later.", variant: 'error' }));
-          }
       });
-     
+
+    }
+
+    else if (selectDate == 'Departure') {
+      axios.get(`${reportAPIConfig.report2departureExcel}/${eventId}`, {
+        headers: {
+          'Content-type': 'multipart/form-data',
+          Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+        },
+      }).then((response) => {
+
+        if (response.status === 200) {
+          // Extract filename from the URL
+          const urlParts = response.data.fileName.split('/');
+          const fileName = urlParts[urlParts.length - 1];
+
+          const baseUrl = `${key}/reports/`;
+          const fullUrl = baseUrl + fileName;
+          const link = document.createElement('a');
+          link.href = fullUrl;
+          link.setAttribute('download', fileName);
+          document.body.appendChild(link);
+
+          // Trigger the download
+          link.click();
+
+          // Remove the link from the DOM after the download
+          document.body.removeChild(link);
+
+        } else {
+          // Handling error
+          dispatch(showMessage({ message: "Failed to fetch Excel. Please try again later.", variant: 'error' }));
         }
-}
+      });
 
-// const handleCreateReportPDF = () => {
-//   const eventId = props.eventList?.find((event) => event.eventName === filterData.eventName)?.eventId
-//   axios.get(`${attendanceAPIConfig.attendancePdf}/${eventId}`,
-//       {
-//         headers: {
-//           "Content-type": "multipart/form-data",
-//           Authorization: `Bearer ${window.localStorage.getItem(
-//             "jwt_access_token"
-//           )}`,
-//         },
-//       }
-//     )
-//     .then((response) => {
-      
-//       if (response.status === 200) {
-//         // Extract filename from the URL
-//         const urlParts = response.data.fileName.split("/");
-//         const fileName = urlParts[urlParts.length - 1];
-//         const baseUrl =
-//           "http://18.212.201.202:8080/ajapa_yog-0.0.1-SNAPSHOT/reports/";
-//         const fullUrl = baseUrl + fileName;
+    }
+  }
 
-//         // Create a new tab and open the link in it
-//         const newTab = window.open(fullUrl, "_blank");
-//         if (!newTab) {
-//           // If pop-up blocker prevents opening the new tab
-//           dispatch(
-//             showMessage({
-//               message: "Please allow pop-ups to download the PDF.",
-//               variant: "error",
-//             })
-//           );
-//         }
-//       } else {
-//         dispatch(
-//           showMessage({
-//             message: "Failed to fetch PDF. Please try again later.",
-//             variant: "error",
-//           })
-//         );
-//       }
-//     })
-// };
+  // const handleCreateReportPDF = () => {
+  //   const eventId = props.eventList?.find((event) => event.eventName === filterData.eventName)?.eventId
+  //   axios.get(`${attendanceAPIConfig.attendancePdf}/${eventId}`,
+  //       {
+  //         headers: {
+  //           "Content-type": "multipart/form-data",
+  //           Authorization: `Bearer ${window.localStorage.getItem(
+  //             "jwt_access_token"
+  //           )}`,
+  //         },
+  //       }
+  //     )
+  //     .then((response) => {
+
+  //       if (response.status === 200) {
+  //         // Extract filename from the URL
+  //         const urlParts = response.data.fileName.split("/");
+  //         const fileName = urlParts[urlParts.length - 1];
+  //         const baseUrl =
+  //           "http://18.212.201.202:8080/ajapa_yog-0.0.1-SNAPSHOT/reports/";
+  //         const fullUrl = baseUrl + fileName;
+
+  //         // Create a new tab and open the link in it
+  //         const newTab = window.open(fullUrl, "_blank");
+  //         if (!newTab) {
+  //           // If pop-up blocker prevents opening the new tab
+  //           dispatch(
+  //             showMessage({
+  //               message: "Please allow pop-ups to download the PDF.",
+  //               variant: "error",
+  //             })
+  //           );
+  //         }
+  //       } else {
+  //         dispatch(
+  //           showMessage({
+  //             message: "Failed to fetch PDF. Please try again later.",
+  //             variant: "error",
+  //           })
+  //         );
+  //       }
+  //     })
+  // };
 
   const id = 'new';
 
@@ -193,7 +191,7 @@ function Report2Header(props) {
 
   return (
     <>
-     
+
       <div className="w-full flex flex-col min-h-full">
         <div className="flex flex-col sm:flex-row space-y-16 sm:space-y-0 flex-1 w-full items-center justify-between py-32 px-10">
           <Typography
@@ -210,14 +208,14 @@ function Report2Header(props) {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0, transition: { delay: 0.2 } }}
               className="ml-lg-5 mr-lg-5 ml-sm-2 mr-sm-2"
-            > 
-          
+            >
+
             </motion.div>
           </div>
         </div>
         <div className='flex sm:flex-row flex-wrap flex-col justify-between mx-10  mb-10 shadow-1 rounded-16'>
           <div className="flex sm:flex-row flex-wrap flex-col justify-start">
-           
+
 
             <Autocomplete
               disablePortal
@@ -230,7 +228,7 @@ function Report2Header(props) {
             />
 
 
-<Autocomplete
+            <Autocomplete
               disablePortal
               value={filterData.selectDate}
               id="selectDate"
@@ -241,7 +239,7 @@ function Report2Header(props) {
               renderInput={(params) => <TextField {...params} label="Arrival/Departure" variant="standard" />}
             />
 
-            <Button
+            {(props.Role === 'Admin' ? props.eventPermission.canreadReport : true) && <Button
               // component={Link}
               onClick={() => handleCreateReport()}
               variant="outlined"
@@ -250,7 +248,7 @@ function Report2Header(props) {
               sx={{ my: 2, mx: 1 }}
             >
               Export Excel
-            </Button>
+            </Button>}
             {/* <Button
               // component={Link}
             //   onClick={() => handleCreateReportPDF()}
@@ -263,7 +261,7 @@ function Report2Header(props) {
             </Button> */}
 
           </div>
-          
+
           <div className="flex flex-row justify-end">
             <Button
               component={Link}

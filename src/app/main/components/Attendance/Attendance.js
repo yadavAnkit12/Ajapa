@@ -1,9 +1,7 @@
 import useThemeMediaQuery from '@fuse/hooks/useThemeMediaQuery';
 const FusePageCarded = lazy(() => import('@fuse/core/FusePageCarded'));
 import { lazy, useEffect, useState } from 'react';
-
-import { getPermissions } from '../../../auth/services/utils/common';
-
+import { getEventLevelPermissions, getUserRoles } from 'src/app/auth/services/utils/common';
 import { eventAPIConfig } from '../../API/apiConfig';
 import axios from 'axios';
 import AttendanceHeader from './AttendanceHeader';
@@ -15,8 +13,8 @@ function Attendance() {
   const [filterValue, setFilterValue] = useState('');
   const [searchText,setSearchText]=useState('')
   const [eventList,setEventList]=useState([])
-  //register users for particular event
-  const [usersList, setUsers] = useState([]);
+  const [permissions, setPermissions] = useState('')
+    const [usersList, setUsers] = useState([]);
   const [eventid, setEventid] = useState('')
 
 useEffect(()=>{
@@ -40,15 +38,21 @@ const handleUpdateUsersList = (updatedUsersList) => {
   setUsers(updatedUsersList);
 };
 
-
+useEffect(() => {
+  if (filterValue.eventName && getUserRoles() === 'Admin') {
+    const permissionList = getEventLevelPermissions()
+    const validateAdmin= permissionList.find((permission) => permission.eventId === eventList.find((event) => event.eventName === filterValue.eventName).eventId)
+    setPermissions(validateAdmin)
+  }
+}, [filterValue])
 
   return (
     <FusePageCarded
       header={<AttendanceHeader eventList={eventList} setChange={setChange} change={change} eventId={eventid} setEventId={setEventid}
-      setUsers={handleUpdateUsersList} usersList={usersList} setFilterValue={setFilterValue} searchText={searchText} setSearchText={setSearchText}/>}
+      setUsers={handleUpdateUsersList} usersList={usersList} setFilterValue={setFilterValue} searchText={searchText} setSearchText={setSearchText} Role={getUserRoles()} eventPermission={permissions}/>}
       
       content={<AttendanceTable eventList={eventList} setChange={setChange} change={change} eventId={eventid} setEventId={setEventid}
-      usersList={usersList} setUsers={handleUpdateUsersList} filterValue={filterValue} searchText={searchText}/>}
+      usersList={usersList} setUsers={handleUpdateUsersList} filterValue={filterValue} searchText={searchText} Role={getUserRoles()} eventPermission={permissions}/>}
       scroll={isMobile ? 'normal' : 'content'}
     />
   );

@@ -5,10 +5,10 @@ import Button from "@mui/material/Button";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import axios from "axios";
+import { getEventLevelPermissions, getUserRoles } from 'src/app/auth/services/utils/common';
 import { eventAPIConfig, userAPIConfig } from "../../API/apiConfig";
 import { useDispatch } from "react-redux";
 import { showMessage } from "app/store/fuse/messageSlice";
-import { Message } from "@mui/icons-material";
 import { Box } from "@mui/system";
 import FuseLoading from "@fuse/core/FuseLoading";
 
@@ -18,7 +18,8 @@ function SMS() {
   const [selectedEventId, setSelectedEventId] = useState("");
   const [value, setValue] = useState("");
   const [smsTemplate, setSMSTemplate] = useState([])
-  const [loading,setLoading]=useState(false)
+  const [loading, setLoading] = useState(false)
+  const [isPermission, setIsPermission] = useState(true)
 
   const [sendMessageTo, setSendMessageTo] = useState([
     {
@@ -72,7 +73,7 @@ function SMS() {
       }).catch((error) => {
         setLoading(false)
         dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
-    });
+      });
   }, []);
 
 
@@ -93,7 +94,7 @@ function SMS() {
       }).catch((error) => {
         setLoading(false)
         dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
-    });
+      });
   }, []);
 
   const initialValues = {
@@ -113,6 +114,10 @@ function SMS() {
   });
 
   const handleSubmit = (values) => {
+    if (!isPermission) {
+      return dispatch(showMessage({ message: `You don't have permission`, variant: "error" }))
+
+    }
     if ((value !== 6 && value !== 7) && selectedEventId === "") {
       return dispatch(showMessage({ message: 'Please select an event', variant: "error" }))
     }
@@ -137,7 +142,7 @@ function SMS() {
           setLoading(false)
           dispatch(showMessage({ message: response.data.errorMessage, variant: "error" }));
         }
-      }).catch(()=>{
+      }).catch(() => {
         setLoading(false)
         dispatch(showMessage({ message: 'Something went wrong', variant: "error" }));
 
@@ -149,9 +154,21 @@ function SMS() {
     validationSchema: validationSchema,
     onSubmit: handleSubmit,
   });
+  useEffect(() => {
+    if (formik.values.event && getUserRoles() === 'Admin') {
+      const permissionList = getEventLevelPermissions()
+      const validateAdmin = permissionList.find((permission) => permission.eventId === events.find((event) => event.eventName === formik.values.event).eventId)
+      if (validateAdmin && validateAdmin.cansendSMS) {
+        setIsPermission(true)
+      } else {
+        dispatch(showMessage({ message: `You don't have permission`, variant: "error" }))
+        setIsPermission(false)
+      }
+    }
+  }, [formik.values.event])
 
-  if(loading){
-    return <FuseLoading/>
+  if (loading) {
+    return <FuseLoading />
   }
 
   return (

@@ -10,11 +10,6 @@ import { showMessage } from 'app/store/fuse/messageSlice';
 import { attendanceAPIConfig, eventAPIConfig } from '../../API/apiConfig';
 import axios from 'axios';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
-import FuseLoading from '@fuse/core/FuseLoading';
-
-
-
-// import VehicleRegisterForm from './VehicleRegisterForm';
 
 const style = {
   position: 'absolute',
@@ -30,57 +25,54 @@ const style = {
   overflow: 'auto'
 };
 function AttendanceHeader(props) {
-  // console.log("d",props.clearUsersList)
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [filterData, setFilterData] = useState({
     eventName: ''
   });
-  
-
 
 
   const handleCreateReport = () => {
     const eventId = props.eventList?.find((event) => event.eventName === filterData.eventName)?.eventId
     axios.get(`${attendanceAPIConfig.attendanceReport}/${eventId}`, {
-        headers: {
-            'Content-type': 'multipart/form-data',
-            Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
-        },
+      headers: {
+        'Content-type': 'multipart/form-data',
+        Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
+      },
     }).then((response) => {
-        
-        if (response.status === 200) {
-            // Extract filename from the URL
-            const urlParts = response.data.fileName.split('/');
-            const fileName = urlParts[urlParts.length - 1];
 
-            const baseUrl = `${key}/reports/`;
-            const fullUrl = baseUrl + fileName;
-            const link = document.createElement('a');
-            link.href = fullUrl;
-            link.setAttribute('download', fileName);
-            document.body.appendChild(link);
+      if (response.status === 200) {
+        // Extract filename from the URL
+        const urlParts = response.data.fileName.split('/');
+        const fileName = urlParts[urlParts.length - 1];
 
-            // Trigger the download
-            link.click();
+        const baseUrl = `${key}/reports/`;
+        const fullUrl = baseUrl + fileName;
+        const link = document.createElement('a');
+        link.href = fullUrl;
+        link.setAttribute('download', fileName);
+        document.body.appendChild(link);
 
-            // Remove the link from the DOM after the download
-            document.body.removeChild(link);
+        // Trigger the download
+        link.click();
 
-        } else {
-            // Handling error
-            dispatch(showMessage({ message: "Failed to fetch Excel. Please try again later.", variant: 'error' }));
-        }
+        // Remove the link from the DOM after the download
+        document.body.removeChild(link);
+
+      } else {
+        // Handling error
+        dispatch(showMessage({ message: "Failed to fetch Excel. Please try again later.", variant: 'error' }));
+      }
     }).catch((error) => {
       dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
-  });
+    });
 
 
-}
+  }
 
-const handleCreateReportPDF = () => {
-  const eventId = props.eventList?.find((event) => event.eventName === filterData.eventName)?.eventId
-  axios.get(`${attendanceAPIConfig.attendancePdf}/${eventId}`,
+  const handleCreateReportPDF = () => {
+    const eventId = props.eventList?.find((event) => event.eventName === filterData.eventName)?.eventId
+    axios.get(`${attendanceAPIConfig.attendancePdf}/${eventId}`,
       {
         headers: {
           "Content-type": "multipart/form-data",
@@ -90,39 +82,39 @@ const handleCreateReportPDF = () => {
         },
       }
     )
-    .then((response) => {
-      
-      if (response.status === 200) {
-        // Extract filename from the URL
-        const urlParts = response.data.fileName.split("/");
-        const fileName = urlParts[urlParts.length - 1];
-        const baseUrl =
-          `${key}/reports/`;
-        const fullUrl = baseUrl + fileName;
+      .then((response) => {
 
-        // Create a new tab and open the link in it
-        const newTab = window.open(fullUrl, "_blank");
-        if (!newTab) {
-          // If pop-up blocker prevents opening the new tab
+        if (response.status === 200) {
+          // Extract filename from the URL
+          const urlParts = response.data.fileName.split("/");
+          const fileName = urlParts[urlParts.length - 1];
+          const baseUrl =
+            `${key}/reports/`;
+          const fullUrl = baseUrl + fileName;
+
+          // Create a new tab and open the link in it
+          const newTab = window.open(fullUrl, "_blank");
+          if (!newTab) {
+            // If pop-up blocker prevents opening the new tab
+            dispatch(
+              showMessage({
+                message: "Please allow pop-ups to download the PDF.",
+                variant: "error",
+              })
+            );
+          }
+        } else {
           dispatch(
             showMessage({
-              message: "Please allow pop-ups to download the PDF.",
+              message: "Failed to fetch PDF. Please try again later.",
               variant: "error",
             })
           );
         }
-      } else {
-        dispatch(
-          showMessage({
-            message: "Failed to fetch PDF. Please try again later.",
-            variant: "error",
-          })
-        );
-      }
-    }).catch((error) => {
-      dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
-  })
-};
+      }).catch((error) => {
+        dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
+      })
+  };
 
   const id = 'new';
 
@@ -148,7 +140,7 @@ const handleCreateReportPDF = () => {
 
   return (
     <>
-     
+
       <div className="w-full flex flex-col min-h-full">
         <div className="flex flex-col sm:flex-row space-y-16 sm:space-y-0 flex-1 w-full items-center justify-between py-32 px-10">
           <Typography
@@ -193,7 +185,7 @@ const handleCreateReportPDF = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0, transition: { delay: 0.2 } }}
               className="ml-lg-5 mr-lg-5 ml-sm-2 mr-sm-2"
-            > 
+            >
               {/* <Button
                 className=""
                 // component={Link}
@@ -243,7 +235,7 @@ const handleCreateReportPDF = () => {
               onChange={(e, newValue) => setFilterData({ ...filterData, eventName: newValue })}
               renderInput={(params) => <TextField {...params} label="Select Event" variant="standard" />}
             />
-            <Button
+            {(props.Role === 'Admin' ? props.eventPermission.canreadEventRegistration : true) && <Button
               // component={Link}
               onClick={() => handleCreateReport()}
               variant="outlined"
@@ -252,8 +244,8 @@ const handleCreateReportPDF = () => {
               sx={{ my: 2, mx: 1 }}
             >
               Export Excel
-            </Button>
-            <Button
+            </Button>}
+            {(props.Role === 'Admin' ? props.eventPermission.canreadEventRegistration : true) && <Button
               // component={Link}
               onClick={() => handleCreateReportPDF()}
               variant="outlined"
@@ -262,10 +254,10 @@ const handleCreateReportPDF = () => {
               sx={{ my: 2, mx: 1 }}
             >
               Export PDF
-            </Button>
+            </Button>}
 
           </div>
-          
+
           <div className="flex flex-row justify-end">
             <Button
               component={Link}

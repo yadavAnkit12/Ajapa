@@ -1,10 +1,7 @@
 import useThemeMediaQuery from '@fuse/hooks/useThemeMediaQuery';
 const FusePageCarded = lazy(() => import('@fuse/core/FusePageCarded'));
 import { lazy, useEffect, useState } from 'react';
-
-import { getPermissions } from '../../../auth/services/utils/common';
-// import AllEventRegistrationHeader from './AllEventRegistrationHeader';
-// import AllEventRegistraionTable from './AllEventRegistraionTable';
+import { getEventLevelPermissions, getUserRoles } from 'src/app/auth/services/utils/common';
 import { eventAPIConfig } from '../../API/apiConfig';
 import axios from 'axios';
 import FoodDetailsHeader from './FoodDetailsHeader';
@@ -16,6 +13,7 @@ function AllEventRegistration() {
   const [filterValue, setFilterValue] = useState('');
   const [searchText,setSearchText]=useState('')
   const [eventList,setEventList]=useState([])
+  const [permissions,setPermissions]=useState('')
   
 
   
@@ -37,10 +35,18 @@ useEffect(()=>{
     });
 },[])
 
+useEffect(() => {
+  if (filterValue.eventName && getUserRoles() === 'Admin') {
+    const permissionList = getEventLevelPermissions()
+    const validateAdmin= permissionList.find((permission) => permission.eventId === eventList.find((event) => event.eventName === filterValue.eventName).eventId)
+    setPermissions(validateAdmin)
+  }
+}, [filterValue])
+
   return (
     <FusePageCarded
       header={<FoodDetailsHeader eventList={eventList}  setChange={setChange} change={change} setFilterValue={setFilterValue} searchText={searchText} setSearchText={setSearchText}/>}
-      content={<FoodDetailsTable eventList={eventList} setChange={setChange} change={change} filterValue={filterValue} searchText={searchText}/>}
+      content={<FoodDetailsTable eventList={eventList} setChange={setChange} change={change} filterValue={filterValue} searchText={searchText} Role={getUserRoles()} eventPermission={permissions}/>}
       scroll={isMobile ? 'normal' : 'content'}
     />
   );
