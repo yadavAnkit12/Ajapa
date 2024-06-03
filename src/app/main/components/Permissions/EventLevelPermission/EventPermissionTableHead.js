@@ -13,61 +13,76 @@ function EventPermissionTableHead(props) {
       visibleIf: true
     },
     {
-      id: 'mobileNumber',
+      id: 'eventName',
       align: 'center',
       disablePadding: false,
-      label: 'Mobile Number',
+      label: 'Event Name',
       sort: true,
       visibleIf: true
     },
     {
-      id: 'role',
+      id: 'cancreateFood',
       align: 'center',
       disablePadding: false,
-      label: 'Role',
+      label: 'Create Food',
       sort: true,
       visibleIf: true
     },
-    // {
-    //   id: 'eventDate',
-    //   align: 'center',
-    //   disablePadding: false,
-    //   label: 'Event Date',
-    //   sort: true,
-    //   visibleIf: true
-    // },
-    // {
-    //   id: 'shivirAvailable',
-    //   align: 'center',
-    //   disablePadding: false,
-    //   label: 'Shivir Available',
-    //   sort: true,
-    //   visibleIf: true
-    // },
-    // {
-    //   id: 'eventstatus',
-    //   align: 'center',
-    //   disablePadding: false,
-    //   label: 'Event Status',
-    //   sort: true,
-    //   visibleIf: true
-    // },
-    // {
-    //   id: 'registrationstatus',
-    //   align: 'center',
-    //   disablePadding: false,
-    //   label: 'Registration Status',
-    //   sort: true,
-    //   visibleIf: true
-    // },
-
+    {
+      id: 'canreadAttendance',
+      align: 'center',
+      disablePadding: false,
+      label: 'Read Attendance',
+      sort: true,
+      visibleIf: true
+    },
+    {
+      id: 'canreadEventRegistration',
+      align: 'center',
+      disablePadding: false,
+      label: 'Read Event Registration',
+      sort: true,
+      visibleIf: true
+    },
+    {
+      id: 'canreadFood',
+      align: 'center',
+      disablePadding: false,
+      label: 'Read Food',
+      sort: true,
+      visibleIf: true
+    },
+    {
+      id: 'canreadReport',
+      align: 'center',
+      disablePadding: false,
+      label: 'Read Report',
+      sort: true,
+      visibleIf: true
+    },
+    {
+      id: 'cansendSMS',
+      align: 'center',
+      disablePadding: false,
+      label: 'Send SMS',
+      sort: true,
+      visibleIf: true
+    },
+    {
+      id: 'canupdateAttendance',
+      align: 'center',
+      disablePadding: false,
+      label: 'Update Attendance',
+      sort: true,
+      visibleIf: true
+    },
+ 
     {
       id: 'action',
       align: 'center',
       disablePadding: false,
       label: 'Action',
       sort: true,
-      // visibleIf: _.get(props, 'permission.read_data')
       visibleIf:true
     },
  
