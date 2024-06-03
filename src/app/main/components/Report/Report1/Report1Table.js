@@ -322,7 +322,7 @@ function Report1Table(props) {
         className="flex flex-1 items-center justify-center h-full"
       >
         <Typography color="text.secondary" variant="h5">
-          Oops ! You don't have a Permission
+        No data to show 
         </Typography>
       </motion.div>
     );
