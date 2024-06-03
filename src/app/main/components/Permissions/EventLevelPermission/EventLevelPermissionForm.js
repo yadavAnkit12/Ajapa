@@ -38,6 +38,7 @@ const EventLevelPermissionForm = (props) => {
 
     useEffect(() => {
         if (props.permissionId && eventList.length > 0 && adminList.length > 0) {
+            setLoading(true)
             axios.get(`${adminAPIConfig.getEventLevelPermissionByEmail}?email=${props.permissionId.email}&eventId=${props.permissionId.eventId}`, {
                 headers: {
                     "Content-type": "multipart/form-data",
@@ -46,7 +47,7 @@ const EventLevelPermissionForm = (props) => {
             })
                 .then((response) => {
                     if (response.status === 200) {
-                        console.log(response)
+                    
                         const data = response.data.data
                         formik.setValues({
                             id: data.id || "",
@@ -61,6 +62,7 @@ const EventLevelPermissionForm = (props) => {
                             canreadReport: data.canreadReport || false,
                             cansendSMS: data.cansendSMS || false
                         })
+                        setLoading(false)
                     }
                     else {
                         setLoading(false)
@@ -68,11 +70,11 @@ const EventLevelPermissionForm = (props) => {
                     }
                 })
                 .catch((error) => {
-                    console.log(error)
+                    setLoading(false)
                     dispatch(showMessage({ message: "Something went wrong", variant: 'error' }));
                 })
         }
-    }, [props, eventList])
+    }, [props, eventList,adminList])
 
     useEffect(() => {
         axios.get(eventAPIConfig.allEventList, {
@@ -284,13 +286,13 @@ const EventLevelPermissionForm = (props) => {
                                             name="createFood" />}
                                     label="Create Food"
                                 />
-                                <FormControlLabel
+                                {/* <FormControlLabel
                                     control={
                                         <Checkbox checked={formik.values.canupdateFood}
                                             onChange={(event) => formik.setFieldValue("canupdateFood", event.target.checked)}
                                             name="updateFood" />}
                                     label="Update Food"
-                                />
+                                /> */}
                             </FormGroup>
                         </FormControl>
 

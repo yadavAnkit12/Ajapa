@@ -112,7 +112,7 @@ function AllEventRegistrationHeader(props) {
         }
       }).catch((error) => {
         dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
-    });
+      });
   };
 
   const handleCreateReportPDF = () => {
@@ -165,7 +165,7 @@ function AllEventRegistrationHeader(props) {
         }
       }).catch((error) => {
         dispatch(showMessage({ message: 'Something went wrong', variant: 'error' }))
-    })
+      })
   };
 
   return (
@@ -212,7 +212,7 @@ function AllEventRegistrationHeader(props) {
                 />
               )}
             />
-            <Button
+            {(props.Role === 'Admin' ? props.eventPermission.canreadEventRegistration : true) && <Button
               // component={Link}
               onClick={() => handleCreateReport()}
               variant="outlined"
@@ -221,8 +221,8 @@ function AllEventRegistrationHeader(props) {
               sx={{ my: 2, mx: 1 }}
             >
               Export Excel
-            </Button>
-            <Button
+            </Button>}
+            {(props.Role === 'Admin' ? props.eventPermission.canreadEventRegistration : true) && <Button
               // component={Link}
               onClick={() => handleCreateReportPDF()}
               variant="outlined"
@@ -231,7 +231,7 @@ function AllEventRegistrationHeader(props) {
               sx={{ my: 2, mx: 1 }}
             >
               Export PDF
-            </Button>
+            </Button>}
           </div>
           <div className="flex flex-row justify-end">
             <Button

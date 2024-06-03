@@ -5,6 +5,7 @@ const FusePageCarded = lazy(() => import('@fuse/core/FusePageCarded'));
 import { lazy, useEffect, useState } from 'react';
 import Report1Header from './Report1Header';
 import Report1Table from './Report1Table';
+import { getEventLevelPermissions, getUserRoles } from 'src/app/auth/services/utils/common';
 import { eventAPIConfig } from 'src/app/main/API/apiConfig';
 import axios from 'axios';
 import { showMessage } from 'app/store/fuse/messageSlice';
@@ -17,6 +18,7 @@ function Report1() {
   const [change, setChange] = useState(false);
   const [filterValue, setFilterValue] = useState('');
   const [eventList,setEventList]=useState([])
+  const [permissions,setPermissions]=useState('')
 
 
   
@@ -37,11 +39,18 @@ function Report1() {
           dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
       });
   },[])
+  useEffect(() => {
+    if (filterValue.eventName && getUserRoles() === 'Admin') {
+      const permissionList = getEventLevelPermissions()
+      const validateAdmin= permissionList.find((permission) => permission.eventId === eventList.find((event) => event.eventName === filterValue.eventName).eventId)
+      setPermissions(validateAdmin)
+    }
+  }, [filterValue])
 
   return (
     <FusePageCarded
-      header={<Report1Header setFilterValue={setFilterValue} eventList={eventList}/>}
-      content={<Report1Table filterValue={filterValue} eventList={eventList}/>}
+      header={<Report1Header setFilterValue={setFilterValue} eventList={eventList} Role={getUserRoles()} eventPermission={permissions}/>}
+      content={<Report1Table filterValue={filterValue} eventList={eventList} Role={getUserRoles()} eventPermission={permissions}/>}
       scroll={isMobile ? 'normal' : 'content'}
     />
   );

@@ -6,6 +6,7 @@ import * as Yup from 'yup';
 import { showMessage } from "app/store/fuse/messageSlice";
 import { useDispatch } from "react-redux";
 import { foodAPIConfig } from "../../API/apiConfig";
+import { getEventLevelPermissions, getUserRoles } from "src/app/auth/services/utils/common";
 
 const validationSchema = Yup.object().shape({
     eventId: Yup.string().required('Event is required'),
@@ -22,10 +23,14 @@ const FoodForm = (props) => {
     const [loading, setLoading] = useState(false)
     const [lowerLimit, setLowerLimit] = useState('')
     const [upperLimit, setUpperLimit] = useState('')
+    const [isPermission, setIsPermission] = useState('')
 
 
 
     const handleSubmit = (values) => {
+        if (!isPermission) {
+            return dispatch(showMessage({ message: `You don't have permission`, variant: "error" }))
+        }
 
         if (formik.isValid) {
             setLoading(true)
@@ -73,6 +78,18 @@ const FoodForm = (props) => {
         onSubmit: handleSubmit
 
     })
+    useEffect(() => {
+        if (formik.values.eventId && getUserRoles() === 'Admin') {
+            const permissionList = getEventLevelPermissions()
+            const validateAdmin = permissionList.find((permission) => permission.eventId === props.eventList.find((event) => event.eventName === formik.values.eventId).eventId)
+            if (validateAdmin && validateAdmin.cancreateFood) {
+                setIsPermission(true)
+            } else {
+                dispatch(showMessage({ message: `You don't have permission`, variant: "error" }))
+                setIsPermission(false)
+            }
+        }
+    }, [formik.values.eventId])
 
     const handleSetDate = (value) => {
         const event = props.eventList.find((event) => event.eventName === value)

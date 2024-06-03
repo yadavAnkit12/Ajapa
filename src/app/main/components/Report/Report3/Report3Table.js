@@ -239,7 +239,19 @@ function Report3Table(props) {
       </motion.div>
     );
   }
-
+  if (props.Role === 'Admin' && !props.eventPermission.canreadReport) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, transition: { delay: 0.1 } }}
+        className="flex flex-1 items-center justify-center h-full"
+      >
+        <Typography color="text.secondary" variant="h5">
+          Oops ! You don't have a Permission
+        </Typography>
+      </motion.div>
+    );
+  }
  // Function to format the date part of a datetime string from yyyy-mm-dd to dd-mm-yyyy
 function formatDate(inputDateTime) {
   // Split the datetime string into date and time parts

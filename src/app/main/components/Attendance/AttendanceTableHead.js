@@ -2,9 +2,9 @@ import { TableCell, TableRow, TableSortLabel, Tooltip, TableHead } from '@mui/ma
 import { lighten } from '@mui/material/styles';
 
 function AttendanceTableHead(props) {
-  
+
   const rows = [
-    
+
     {
       id: 'familyId',
       align: 'center',
@@ -67,7 +67,7 @@ function AttendanceTableHead(props) {
       disablePadding: false,
       label: 'Attendance',
       sort: true,
-      visibleIf: true
+      visibleIf: props.Role === 'Admin' ? props.eventPermission.canupdateAttendance : true
     },
     {
       id: 'accomodation',
@@ -75,7 +75,7 @@ function AttendanceTableHead(props) {
       disablePadding: false,
       label: 'Accomodation',
       sort: true,
-      visibleIf: true
+      visibleIf:  props.Role === 'Admin' ? props.eventPermission.canupdateAttendance : true
     },
     {
       id: 'bellNotify',
@@ -83,10 +83,10 @@ function AttendanceTableHead(props) {
       disablePadding: false,
       label: 'Send',
       sort: true,
-      visibleIf: true
+      visibleIf: props.Role === 'Admin' ? props.eventPermission.canupdateAttendance : true
     },
   ];
-  
+
 
   const createSortHandler = (property) => (event) => {
     props.onRequestSort(event, property);
