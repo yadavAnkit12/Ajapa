@@ -171,6 +171,7 @@ function AdminTable(props) {
     }).then((response) => {
       if (response.status === 200) {
         setLoading(false);
+        setOpenDelete(false)
         props.setChange(!props.change)
         dispatch(showMessage({ message: response.data.message, variant: 'success' }));
       } else {
