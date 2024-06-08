@@ -231,7 +231,7 @@ const EventLevelPermissionForm = (props) => {
                     <div className='flex flex-col'>
                         <FormControl component="fieldset" required>
                             <FormLabel className="text-black">
-                                Event Registartions
+                                Event Registrations
                             </FormLabel>
                             <FormGroup row>
                                 <FormControlLabel
@@ -239,7 +239,7 @@ const EventLevelPermissionForm = (props) => {
                                         <Checkbox checked={formik.values.canreadEventRegistration}
                                             onChange={(event) => formik.setFieldValue("canreadEventRegistration", event.target.checked)}
                                             name="readEventRegistration" />}
-                                    label="Read Event Regitrations"
+                                    label="Read Event Registration"
                                 />
 
                             </FormGroup>

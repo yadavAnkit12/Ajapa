@@ -20,22 +20,22 @@ function AllEventRegistrationTableHead(props) {
       sort: true,
       visibleIf: true
     },
-    {
-      id: 'eventName',
-      align: 'center',
-      disablePadding: false,
-      label: 'Event Name',
-      sort: true,
-      visibleIf: true
-    },
-    {
-      id: 'eventDate',
-      align: 'center',
-      disablePadding: false,
-      label: 'Event Date',
-      sort: true,
-      visibleIf: true
-    },
+    // {
+    //   id: 'eventName',
+    //   align: 'center',
+    //   disablePadding: false,
+    //   label: 'Event Name',
+    //   sort: true,
+    //   visibleIf: true
+    // },
+    // {
+    //   id: 'eventDate',
+    //   align: 'center',
+    //   disablePadding: false,
+    //   label: 'Event Date',
+    //   sort: true,
+    //   visibleIf: true
+    // },
     {
       id: 'fromCountry',
       align: 'center',
