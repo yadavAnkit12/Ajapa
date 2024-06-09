@@ -98,28 +98,24 @@ function Report1Table(props) {
 
 
   const fetchData = () => {
-    
-    
-    if(props.filterValue.eventName ==='' ||props.filterValue.eventName === null || props.filterValue==='')
-    {
+
+
+    if (props.filterValue.eventName === '' || props.filterValue.eventName === null || props.filterValue === '') {
       dispatch(showMessage({ message: "Please select an event", variant: 'error' }));
       return
     }
 
-    if(props.filterValue.selectDate === '' || props.filterValue.selectDate === null)
-    {
+    if (props.filterValue.selectDate === '' || props.filterValue.selectDate === null) {
       dispatch(showMessage({ message: "Please select the Arrival/Departure mode", variant: 'error' }));
       return
-    }  
+    }
 
     const eventId = props.eventList?.find((event) => event.eventName === props.filterValue.eventName)?.eventId || '';
 
-    if(props.filterValue.selectDate !=='' && props.filterValue.selectDate === 'Arrival' )
-    {
-      if( props.filterValue.attendingShivir === '' || props.filterValue.attendingShivir === 'All')
-      {
+    if (props.filterValue.selectDate !== '' && props.filterValue.selectDate === 'Arrival') {
+      if (props.filterValue.attendingShivir === '' || props.filterValue.attendingShivir === 'All') {
 
-        axios.get(`${reportAPIConfig.report1arrival}/${eventId}` ,{
+        axios.get(`${reportAPIConfig.report1arrival}/${eventId}`, {
           headers: {
             'Content-type': 'multipart/form-data',
             Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
@@ -136,13 +132,12 @@ function Report1Table(props) {
         }).catch((error) => {
           setLoading(false)
           dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
-      });
+        });
       }
 
-      else if(props.filterValue.attendingShivir === 'No' || props.filterValue.attendingShivir === 'Yes')
-      {
-        const attendingShivir =  props.filterValue.attendingShivir === "Yes" ? true : false; 
-        axios.get(`${reportAPIConfig.report1arrival}/${eventId}/${attendingShivir}` ,{
+      else if (props.filterValue.attendingShivir === 'No' || props.filterValue.attendingShivir === 'Yes') {
+        const attendingShivir = props.filterValue.attendingShivir === "Yes" ? true : false;
+        axios.get(`${reportAPIConfig.report1arrival}/${eventId}/${attendingShivir}`, {
           headers: {
             'Content-type': 'multipart/form-data',
             Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
@@ -160,17 +155,15 @@ function Report1Table(props) {
         }).catch((error) => {
           setLoading(false)
           dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
-      });
+        });
 
       }
-  }
+    }
 
- else if(props.filterValue.selectDate !=='' && props.filterValue.selectDate === 'Departure' )
-    {
-      if( props.filterValue.attendingShivir === '' || props.filterValue.attendingShivir === 'All')
-      {
+    else if (props.filterValue.selectDate !== '' && props.filterValue.selectDate === 'Departure') {
+      if (props.filterValue.attendingShivir === '' || props.filterValue.attendingShivir === 'All') {
         console.log("case 1")
-        axios.get(`${reportAPIConfig.report1departure}/${eventId}` ,{
+        axios.get(`${reportAPIConfig.report1departure}/${eventId}`, {
           headers: {
             'Content-type': 'multipart/form-data',
             Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
@@ -188,14 +181,13 @@ function Report1Table(props) {
         }).catch((error) => {
           setLoading(false)
           dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
-      });
+        });
       }
 
-      else if(props.filterValue.attendingShivir === 'No' || props.filterValue.attendingShivir === 'Yes')
-      {
+      else if (props.filterValue.attendingShivir === 'No' || props.filterValue.attendingShivir === 'Yes') {
         console.log("case 2")
-        const attendingShivir =  props.filterValue.attendingShivir === "Yes" ? true : false; 
-        axios.get(`${reportAPIConfig.report1departure}/${eventId}/${attendingShivir}` ,{
+        const attendingShivir = props.filterValue.attendingShivir === "Yes" ? true : false;
+        axios.get(`${reportAPIConfig.report1departure}/${eventId}/${attendingShivir}`, {
           headers: {
             'Content-type': 'multipart/form-data',
             Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
@@ -213,10 +205,10 @@ function Report1Table(props) {
         }).catch((error) => {
           setLoading(false)
           dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
-      });
+        });
 
       }
-  }
+    }
 
   };
 
@@ -322,22 +314,22 @@ function Report1Table(props) {
         className="flex flex-1 items-center justify-center h-full"
       >
         <Typography color="text.secondary" variant="h5">
-        No data to show 
+          No data to show
         </Typography>
       </motion.div>
     );
   }
-     // function to convert date from yyyy-mm-dd format to dd-mm-yyyy
-     function formatDate(inputDate) {
-      const parts = inputDate.split('-');
-      const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
-  
-      return formattedDate;
+  // function to convert date from yyyy-mm-dd format to dd-mm-yyyy
+  function formatDate(inputDate) {
+    const parts = inputDate.split('-');
+    const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+
+    return formattedDate;
   }
 
   return (
     <div className="w-full flex flex-col min-h-full" style={{ overflow: 'auto' }}>
-      <Table stickyHeader className="min-w-xl"  aria-labelledby="tableTitle" ref={tableRef}>
+      <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle" ref={tableRef}>
         <Report1TableHead
           selectedProductIds={selected}
           order={order}
@@ -379,10 +371,13 @@ function Report1Table(props) {
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.seniorCount}
                   </TableCell>
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                    {n.maleCount + n.femaleCount}
+                  </TableCell>
                   {/* <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.shivirAvailable ? 'Yes' : 'No'}
                   </TableCell> */}
-              
+
                 </TableRow>
               );
 

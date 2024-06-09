@@ -53,6 +53,14 @@ function Report1TableHead(props) {
       sort: true,
       visibleIf: true
     },
+    {
+      id: 'Total Users',
+      align: 'center',
+      disablePadding: false,
+      label: 'Total Users',
+      sort: true,
+      visibleIf: true
+    },
   ];
   
 

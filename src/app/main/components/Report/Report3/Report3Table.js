@@ -306,6 +306,9 @@ function formatDate(inputDateTime) {
                     {n.mobileNumber === '' ? 'N/A' : n.mobileNumber}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                    {n.comingFrom === '' ? 'N/A' : n.comingFrom}
+                  </TableCell>
+                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {formatDate(n.arrivalDateTime)}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>

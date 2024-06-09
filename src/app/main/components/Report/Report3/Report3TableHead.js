@@ -28,14 +28,14 @@ function Report3TableHead(props) {
       sort: true,
       visibleIf: true
     },
-    // {
-    //   id: 'comingFrom',
-    //   align: 'center',
-    //   disablePadding: false,
-    //   label: 'Coming From',
-    //   sort: true,
-    //   visibleIf: true
-    // },
+    {
+      id: 'comingFrom',
+      align: 'center',
+      disablePadding: false,
+      label: 'Coming From',
+      sort: true,
+      visibleIf: true
+    },
     {
       id: 'arrivalDateTime',
       align: 'center',

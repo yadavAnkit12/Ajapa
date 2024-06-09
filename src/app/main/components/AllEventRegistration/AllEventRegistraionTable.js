@@ -291,12 +291,12 @@ function AllEventRegistrationTable(props) {
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {ClickableName(n.userId , n.userName)}
                   </TableCell>
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                  {/* <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.eventName}
-                  </TableCell>
-                  <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
+                  </TableCell> */}
+                  {/* <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {formatDate(n.eventDate)}
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.fromCountry.split(':')[1]}
                   </TableCell>
