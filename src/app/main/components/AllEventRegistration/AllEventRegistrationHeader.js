@@ -18,56 +18,112 @@ import { showMessage } from "app/store/fuse/messageSlice";
 import { eventAPIConfig } from "../../API/apiConfig";
 import axios from "axios";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
+import jwtServiceConfig from "src/app/auth/services/jwtService/jwtServiceConfig";
 
-// import VehicleRegisterForm from './VehicleRegisterForm';
-
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  bgcolor: "background.paper",
-  boxShadow: 24,
-  p: 4,
-  borderRadius: "20px",
-  maxWidth: "1200px",
-  maxHeight: "650px",
-  overflow: "auto",
-};
 function AllEventRegistrationHeader(props) {
 
   const dispatch = useDispatch();
-  const [open, setOpen] = useState(false);
+
   const [filterData, setFilterData] = useState({
     eventName: "",
+    userName: "",
+    isAttendingShivir: 'All',
+    arrivalDate: '',
+    departureDate: '',
+    fromCountry: 'All',
+    fromState: 'All',
+    fromCity: 'All'
   });
+  const [countryList, setCountryList] = useState([])
+  const [countryID, setCountryID] = useState('')
+  const [stateList, setStateList] = useState([])
+  const [stateID, setStateID] = useState('')
+  const [cityList, setCityList] = useState([])
+  const [cityID, setCityID] = useState('')
 
-  const id = "new";
+  //fetching the country list
+  useEffect(() => {
+    axios.get(jwtServiceConfig.country, {
+      headers: {
+        'Content-type': 'multipart/form-data',
+      },
+    }).then((response) => {
+      if (response.status === 200) {
+        setCountryList(response.data)
+      }
+    }).catch((error) => {
+      dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
+    })
+  }, [])
+
+  //fetch the state on the behalf of country
+  useEffect(() => {
+    axios.get(`${jwtServiceConfig.state}/${countryID}`, {
+      headers: {
+        'Content-type': 'multipart/form-data',
+      },
+    }).then((response) => {
+      if (response.status === 200) {
+        setStateList(response.data)
+      }
+    }).catch((error) => {
+      dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
+    })
+  }, [countryID])
+
+  //fetch the city on the behalf of state
+  useEffect(() => {
+    axios.get(`${jwtServiceConfig.city}/${stateID}`, {
+      headers: {
+        'Content-type': 'multipart/form-data',
+      },
+    }).then((response) => {
+      if (response.status === 200) {
+        setCityList(response.data)
+      }
+    }).catch((error) => {
+      dispatch(showMessage({ message: 'something went wrong', variant: 'error' }));
+    })
+  }, [stateID])
 
   const filterPartnerData = () => {
-    props.setFilterValue(filterData);
+    props.setFilterValue({
+      eventName: filterData.eventName,
+      isAttendingShivir: filterData.isAttendingShivir,
+      arrivalDate: filterData.arrivalDate,
+      departureDate: filterData.departureDate,
+      country: (countryID !== '' && countryID !== undefined) ? `${countryID}:${filterData.fromCountry}` : 'All',
+      state: (stateID !== '' && stateID !== undefined) ? `${stateID}:${filterData.fromState}` : 'All',
+      city: (cityID !== '' && cityID !== undefined) ? `${cityID}:${filterData.fromCity}` : 'All',
+    });
   };
 
   const clearFilters = () => {
     setFilterData({
       eventName: "",
+      userName: "",
+      isAttendingShivir: 'All',
+      arrivalDate: '',
+      departureDate: '',
+      fromCountry: 'All',
+      fromState: 'All',
+      fromCity: 'All'
     });
     props.setFilterValue('');
   };
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   const handleCreateReport = () => {
     const params = {
-      eventId: props.eventList?.find(
-        (event) => event.eventName === filterData.eventName
-      )?.eventId,
+      eventId: props.eventList?.find((event) => event.eventName === filterData.eventName)?.eventId,
+      userName: props.searchText,
+      ...(filterData.isAttendingShivir !== 'All' && ({ isAttendingShivir: filterData.isAttendingShivir })),
+      ...(filterData.arrivalDate !== '' && ({ arrivalDate: filterValue.arrivalDate })),
+      ...(filterData.departureDate !== '' && ({ departureDate: filterValue.departureDate })),
+      ...((countryID !== '' && countryID !== undefined && filterData.fromCountry !== 'All') && ({ fromCountry: `${countryID}:${filterData.fromCountry}` })),
+      ...((stateID !== '' && stateID !== undefined && filterData.fromState !== 'All') && ({ fromState: `${stateID}:${filterData.fromState}` })),
+      ...((cityID !== '' && cityID !== undefined && filterData.fromCity !== 'All') && ({ fromCity: `${cityID}:${filterData.fromCity}` })),
+
     };
 
     axios
@@ -117,9 +173,14 @@ function AllEventRegistrationHeader(props) {
 
   const handleCreateReportPDF = () => {
     const params = {
-      eventId: props.eventList?.find(
-        (event) => event.eventName === filterData.eventName
-      )?.eventId,
+      eventId: props.eventList?.find((event) => event.eventName === filterData.eventName)?.eventId,
+      userName: props.searchText,
+      ...(filterData.isAttendingShivir !== 'All' && ({ isAttendingShivir: filterData.isAttendingShivir })),
+      ...(filterData.arrivalDate !== '' && ({ arrivalDate: filterValue.arrivalDate })),
+      ...(filterData.departureDate !== '' && ({ departureDate: filterValue.departureDate })),
+      ...((countryID !== '' && countryID !== undefined && filterData.fromCountry !== 'All') && ({ fromCountry: `${countryID}:${filterData.fromCountry}` })),
+      ...((stateID !== '' && stateID !== undefined && filterData.fromState !== 'All') && ({ fromState: `${stateID}:${filterData.fromState}` })),
+      ...((cityID !== '' && cityID !== undefined && filterData.fromCity !== 'All') && ({ fromCity: `${cityID}:${filterData.fromCity}` })),
     };
 
     axios
@@ -188,6 +249,35 @@ function AllEventRegistrationHeader(props) {
           >
             Event Registrations
           </Typography>
+          <Paper
+            component={motion.div}
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1, transition: { delay: 0.2 } }}
+            className="flex items-center w-full sm:max-w-256 space-x-8 px-16 rounded-full border-1 shadow-0"
+          >
+            <FuseSvgIcon color="disabled">heroicons-solid:search</FuseSvgIcon>
+
+            <Input
+              placeholder="Search Doctors"
+              className="flex flex-1"
+              disableUnderline
+              fullWidth
+              value={props.searchText}
+              inputProps={{
+                'aria-label': 'Search',
+              }}
+              onChange={(ev) => props.setSearchText(ev.target.value)}
+            />
+            {props.searchText && <FuseSvgIcon
+              color="disabled"
+              size={16}
+              style={{ cursor: "pointer" }}
+              onClick={() => props.setSearchText('')
+              }>
+              heroicons-solid:x
+            </FuseSvgIcon>
+            }
+          </Paper>
         </div>
         <div className="flex sm:flex-row flex-wrap flex-col justify-between mx-10  mb-10 shadow-1 rounded-16">
           <div className="flex sm:flex-row flex-wrap flex-col justify-start">
@@ -212,8 +302,105 @@ function AllEventRegistrationHeader(props) {
                 />
               )}
             />
+            <Autocomplete
+              disablePortal
+              value={filterData.isAttendingShivir}
+              id="isAttendingShivir"
+              options={['Yes', 'No', 'All']}
+              sx={{ my: 1, minWidth: 200, mx: 1 }}
+              onChange={(e, newValue) =>
+                setFilterData({ ...filterData, isAttendingShivir: newValue })
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Attendanding Shivir"
+                  variant="standard"
+                />
+              )}
+            />
+            <TextField
+              id="arrivalDate"
+              label="Arrival Date"
+              variant="standard"
+              type='date'
+              value={filterData.arrivalDate}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              sx={{ my: 1, minWidth: 140, mx: 1 }}
+              onChange={e => setFilterData({ ...filterData, arrivalDate: e.target.value })}
+            />
+            <TextField
+              id="departureDate"
+              label="Departure Date"
+              variant="standard"
+              type='date'
+              value={filterData.departureDate}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              sx={{ my: 1, minWidth: 140, mx: 1 }}
+              onChange={e => setFilterData({ ...filterData, departureDate: e.target.value })}
+            />
+            <Autocomplete
+              disablePortal
+              value={filterData.fromCountry}
+              id="fromCountry"
+              options={countryList.length > 0 ? countryList.map((country) => country.name) : []}
+              sx={{ my: 1, minWidth: 200, mx: 1 }}
+              onChange={(e, newValue) => {
+                setFilterData({ ...filterData, fromCountry: newValue })
+                const selectedCountry = countryList.find(country => country.name === newValue)?.id;
+                setCountryID(selectedCountry)
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Country"
+                  variant="standard"
+                />
+              )}
+            />
+            <Autocomplete
+              disablePortal
+              value={filterData.fromState}
+              id="fromState"
+              options={stateList.length > 0 ? stateList.map((state) => state.name) : []}
+              sx={{ my: 1, minWidth: 200, mx: 1 }}
+              onChange={(e, newValue) => {
+                setFilterData({ ...filterData, fromState: newValue })
+                const selectedSate = stateList.find(state => state.name === newValue)?.id;
+                setStateID(selectedSate)
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="State"
+                  variant="standard"
+                />
+              )}
+            />
+            <Autocomplete
+              disablePortal
+              value={filterData.fromCity}
+              id="fromCity"
+              options={cityList.length > 0 ? cityList.map((city) => city.name) : []}
+              sx={{ my: 1, minWidth: 200, mx: 1 }}
+              onChange={(e, newValue) => {
+                setFilterData({ ...filterData, fromCity: newValue })
+                const selectedCity = cityList.find(city => city.name === newValue)?.id;
+                setCityID(selectedCity)
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="City"
+                  variant="standard"
+                />
+              )}
+            />
             {(props.Role === 'Admin' ? props.eventPermission.canreadEventRegistration : true) && <Button
-              // component={Link}
               onClick={() => handleCreateReport()}
               variant="outlined"
               color="secondary"
@@ -223,7 +410,6 @@ function AllEventRegistrationHeader(props) {
               Export Excel
             </Button>}
             {(props.Role === 'Admin' ? props.eventPermission.canreadEventRegistration : true) && <Button
-              // component={Link}
               onClick={() => handleCreateReportPDF()}
               variant="outlined"
               color="secondary"
@@ -259,17 +445,6 @@ function AllEventRegistrationHeader(props) {
           </div>
         </div>
       </div>
-
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          {/* <VehicleRegisterForm setChange={props.setChange} change={props.change} setOpen={setOpen} /> */}
-        </Box>
-      </Modal>
     </>
   );
 }

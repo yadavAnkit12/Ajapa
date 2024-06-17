@@ -27,7 +27,7 @@ export const eventAPIConfig = {
     changeBookingStatus: key + '/event/booking',
     changeEventStatus: key + '/event/status',
     userEventRegistration: key + '/event/registration/save',
-    allEventRegistrationList: key + '/event/registration/list',
+    allEventRegistrationList: key + '/event/registrationwithfilter/list',
     allEventList: key + '/event/all/list',
     checkEventRegistration: key + '/event/registration/family/event/list',
     myRegistration: key + '/event/registration',
@@ -35,8 +35,8 @@ export const eventAPIConfig = {
     fetchRegisterUserByEvent: key + '/event/registrations',
     sendRoomBookingStatus: key + '/bookingStatus/send',
     saveOneAttendance: key + '/attendance/save/one',
-    eventReport: key + "/reportExcel/event/registration/list",
-    eventReportPdf: key + "/reportPDF/event/registration/list",
+    eventReport: key + "/reportExcel/event/registrationwithfilter/list",
+    eventReportPdf: key + "/reportPDF/event/registrationwithfilter/list",
     cancelAllRegistration: key + '/eventRegistrations/delete',
     checkUserRegisterForAllEvents: key + '/event/registration/user/check'
 }
