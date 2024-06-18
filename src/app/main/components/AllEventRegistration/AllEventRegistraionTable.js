@@ -64,7 +64,7 @@ function AllEventRegistrationTable(props) {
   const [openView, setOpenView] = useState(false);
   const [viewid, setViewId] = useState("");
   const [change, setChange] = useState(false);
-  const [modalUserId, setModalUserId] = useState(null); 
+  const [modalUserId, setModalUserId] = useState(null);
   const [open, setOpen] = useState(false) //clickableNames
   const [deleteId, setDeleteId] = useState('')
 
@@ -107,6 +107,15 @@ function AllEventRegistrationTable(props) {
       page: page + 1,
       rowsPerPage: rowsPerPage,
       eventId: props.eventList?.find((event) => event.eventName === props.filterValue.eventName)?.eventId || '',
+      userName: props.searchText,
+      ...(props.filterValue.isAttendingShivir !== 'All' && ({ isAttendingShivir: _.get(props, 'filterValue.isAttendingShivir') })),
+      ...(props.filterValue.arrivalDate !== '' && ({ arrivalDate: _.get(props, 'filterValue.arrivalDate') })),
+      ...(props.filterValue.departureDate !== '' && ({ departureDate: _.get(props, 'filterValue.departureDate') })),
+      ...(props.filterValue.country !== 'All' && ({ fromCountry: _.get(props, 'filterValue.country') })),
+      ...(props.filterValue.state !== 'All' && ({ fromState: _.get(props, 'filterValue.state') })),
+      ...(props.filterValue.city !== 'All' && ({ fromCity: _.get(props, 'filterValue.city') })),
+
+
     };
     axios.get(eventAPIConfig.allEventRegistrationList, { params }, {
       headers: {
@@ -115,7 +124,6 @@ function AllEventRegistrationTable(props) {
       },
     }).then((response) => {
       if (response.status === 200) {
-        // console.log("aj", response?.data)
         setEventListData(response?.data);
         setLoading(false);
       } else {
@@ -242,16 +250,16 @@ function AllEventRegistrationTable(props) {
   }
 
   const handleNameClick = (userId) => {
-    setModalUserId(userId); 
-    setOpen(true); 
+    setModalUserId(userId);
+    setOpen(true);
   };
 
   const ClickableName = (userId, userName) => (
     <Link
-     
+
       onClick={(e) => {
         e.preventDefault();
-        handleNameClick(userId); 
+        handleNameClick(userId);
       }}
       style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}
     >
@@ -289,7 +297,7 @@ function AllEventRegistrationTable(props) {
                     {n.familyId}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {ClickableName(n.userId , n.userName)}
+                    {ClickableName(n.userId, n.userName)}
                   </TableCell>
                   {/* <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
                     {n.eventName}
@@ -394,7 +402,7 @@ function AllEventRegistrationTable(props) {
             width: '93%', // Set width to 82% for screens up to 280px
           },
         }}>
-          <UserViewEventRegistration handleClose={handleClose} modalUserId={modalUserId}/>
+          <UserViewEventRegistration handleClose={handleClose} modalUserId={modalUserId} />
         </Box>
       </Modal>
 
