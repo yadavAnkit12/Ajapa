@@ -153,7 +153,8 @@ function AttendanceHeader(props) {
             Attendance
           </Typography>
           <div className="flex flex-col w-full sm:w-auto sm:flex-row space-y-16 sm:space-y-0 flex-1 items-center justify-end space-x-8">
-            {/* <Paper
+            
+            <Paper
               component={motion.div}
               initial={{ y: -20, opacity: 0 }}
               animate={{ y: 0, opacity: 1, transition: { delay: 0.2 } }}
@@ -161,7 +162,7 @@ function AttendanceHeader(props) {
             >
               <FuseSvgIcon color="disabled">heroicons-solid:search</FuseSvgIcon>
               <Input
-                placeholder="Search Event"
+                placeholder="Search User"
                 className="flex flex-1"
                 disableUnderline
                 fullWidth
@@ -179,7 +180,7 @@ function AttendanceHeader(props) {
                 heroicons-solid:x
               </FuseSvgIcon>
               }
-            </Paper>*/}
+            </Paper>
 
             <motion.div
               initial={{ opacity: 0, x: 20 }}

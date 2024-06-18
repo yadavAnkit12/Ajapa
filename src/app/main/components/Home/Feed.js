@@ -6,7 +6,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import { motion } from 'framer-motion';
-import { useMediaQuery, Dialog, DialogActions, DialogTitle, Slide } from '@mui/material';
+import { useMediaQuery,Dialog, DialogActions, DialogTitle, Slide } from '@mui/material';
 import axios from 'axios';
 import { blogAPIConfig } from '../../API/apiConfig';
 import { styled } from '@mui/material/styles';
@@ -70,18 +70,18 @@ function Feed() {
 
 
     const location = useLocation();
-    const role = sessionStorage.getItem('userRole')
+    const role = localStorage.getItem('role')
 
     useEffect(() => {
         window.scrollTo(0, 0);
     }, [location]);
 
 
-    const handleDeletePost = () => {
+    const handleDeletePost = ()=>{
         setLoading(true)
         const formData = new FormData();
         formData.append("id", deleteId);
-        axios.post(blogAPIConfig.deletePost, formData, {
+        axios.post(blogAPIConfig.deletePost, formData , {
             headers: {
                 'Content-type': 'multipart/form-data',
                 Authorization: `Bearer ${window.localStorage.getItem('jwt_access_token')}`,
@@ -157,7 +157,7 @@ function Feed() {
         return (
             <FuseLoading />
         );
-    }
+      }
 
     if (feedData.length == 0) {
         return (
@@ -177,21 +177,21 @@ function Feed() {
     return (
 
         <div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1, transition: { delay: 0.1 } }}
-            className="flex flex-col  justify-center " style={{ margin: '0 0 0 2rem' }}>
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, transition: { delay: 0.1 } }}
+        className="flex flex-col  justify-center " style={{margin:'0 0 0 2rem'}}>
 
             <div className='p-4' >
                 <Grid container spacing={2}>
                     {feedData.map((item, idx) => (
                         <Grid item xs={12} sm={6} md={4} lg={3} key={item.id}>
-
+                            
 
                             <Card sx={{ maxWidth: 345, minHeight: 475 }} key={item.id}>
                                 <CardHeader
                                     action={
                                         <IconButton aria-label="settings">
-                                            {(role == 'Super' || role == 'Admin') ? <DeleteIcon onClick={() => ConfirmationForDelete(item.id)} /> : ''}
+                                           {role !== 'User' ? <DeleteIcon onClick={()=>ConfirmationForDelete(item.id)} />  : ''} 
                                         </IconButton>
                                     }
                                     sx={{ color: 'rgba(0, 0, 0, 0.87)' }}
@@ -212,12 +212,12 @@ function Feed() {
                                         />
                                     </div>
                                 )}
-                                {item.message && <CardContent>
+                            { item.message &&   <CardContent>
                                     <Typography variant="body2" color="text.primary" className='text-justify'>
                                         {expandedId === item.id ? item.message : `${item.message.slice(0, 75)}`}
                                     </Typography>
                                 </CardContent>
-                                }
+                            }
                                 <CardActions disableSpacing>
                                     {item.message && item.message.length > 76 &&
                                         <ExpandMore
@@ -237,24 +237,24 @@ function Feed() {
                     ))}
                 </Grid>
             </div>
-            <Dialog
-                open={open}
-                TransitionComponent={Transition}
-                keepMounted
-                onClose={handleClose}
-                aria-describedby="alert-dialog-slide-description"
-            >
-                <DialogTitle>{`Do you want to delete this Post?`}</DialogTitle>
+                                    <Dialog
+                            open={open}
+                            TransitionComponent={Transition}
+                            keepMounted
+                            onClose={handleClose}
+                            aria-describedby="alert-dialog-slide-description"
+                        >
+                            <DialogTitle>{`Do you want to delete this Post?`}</DialogTitle>
 
-                <DialogActions>
-                    <Button onClick={handleClose}>No</Button>
-                    <Button onClick={handleDeletePost} autoFocus>
-                        Yes
-                    </Button>
-                </DialogActions>
-            </Dialog>
+                            <DialogActions>
+                                <Button onClick={handleClose}>No</Button>
+                                <Button onClick={handleDeletePost} autoFocus>
+                                    Yes
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
         </div>
-
+        
     )
 }
 
