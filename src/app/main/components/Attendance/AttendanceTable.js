@@ -11,7 +11,7 @@ import { color, motion } from 'framer-motion';
 import { useEffect, useState, useRef, forwardRef } from 'react';
 import { showMessage } from 'app/store/fuse/messageSlice';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { eventAPIConfig } from '../../API/apiConfig';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import EventView from '../MyRegistration/EventView';
@@ -19,6 +19,7 @@ import AttendanceTableHead from './AttendanceTableHead';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { values } from 'lodash';
 import { getUserRoles } from 'src/app/auth/services/utils/common';
+import UserViewAttendance from './UserViewAttendance';
 
 
 const Transition = forwardRef(function Transition(props, ref) {
@@ -65,6 +66,8 @@ function AttendanceTable(props) {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(true)
   const [pageData, setPageData] = useState('')
+  const [modalUserId, setModalUserId] = useState(null); 
+  const [openUserModal, setOpenUserModal] = useState(false) //clickableNames
   //userList based on registrations
   const [usersList, setUsers] = useState([])
   const eventId = props.eventList?.find((event) => event.eventName === props.filterValue.eventName)?.eventId
@@ -108,6 +111,7 @@ function AttendanceTable(props) {
       page: page + 1,
       rowsPerPage: rowsPerPage, // Example data to pass in req.query
       eventId: props.eventList?.find((event) => event.eventName === props.filterValue.eventName)?.eventId || '',
+      name: searchText    
     };
     axios.get(`${eventAPIConfig.fetchRegisterUserByEvent}/${eventId}`, { params }, {
       headers: {
@@ -136,6 +140,16 @@ function AttendanceTable(props) {
   const handleViewClose = () => {
     setOpenView(false);
   };
+
+    //clickable Names
+    const handleClose = () => {
+      setOpenUserModal(false);
+    };
+
+    const handleNameClick = (userId) => {
+      setModalUserId(userId); 
+      setOpenUserModal(true); 
+    };
 
   function handleRequestSort(event, property) {
     const id = property;
@@ -313,6 +327,19 @@ function AttendanceTable(props) {
     return formattedDate;
   }
 
+  const ClickableName = (userId, userName) => (
+    <Link
+     
+      onClick={(e) => {
+        e.preventDefault();
+        handleNameClick(userId); 
+      }}
+      style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}
+    >
+      {userName}
+    </Link>
+  );
+
   return (
     <div className="w-full flex flex-col min-h-full" style={{ overflow: 'auto' }}>
       <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle" ref={tableRef}>
@@ -350,7 +377,7 @@ function AttendanceTable(props) {
                     {user?.user?.familyId}
                   </TableCell>
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
-                    {user?.user?.name}
+                    {ClickableName(user?.user?.id , user?.user?.name)}
                   </TableCell>
 
                   <TableCell className="p-4 md:p-16" component="th" scope="row" align='center'>
@@ -431,6 +458,25 @@ function AttendanceTable(props) {
           },
         }}>
           <EventView handleViewClose={handleViewClose} registrationId={viewid} />
+        </Box>
+      </Modal>
+
+      <Modal
+        open={openUserModal}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={{
+          ...style,
+          '@media (max-width: 600px)': { // Apply media query for mobile devices
+            width: '70%', // Set width to 100% for smaller screens
+          },
+          '@media (max-width: 280px)': { // Additional media query for smaller screens
+            width: '93%', // Set width to 82% for screens up to 280px
+          },
+        }}>
+          <UserViewAttendance handleClose={handleClose} modalUserId={modalUserId}/>
         </Box>
       </Modal>
 

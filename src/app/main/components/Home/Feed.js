@@ -36,6 +36,14 @@ const style = {
     overflow: 'auto',
 };
 
+// CSS for scrollable content
+const styles = {
+    '.scrollable-content': {
+        overflowY: 'auto',
+        maxHeight: '200px', // You can adjust this value
+    }
+};
+
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
     return <IconButton {...other} />;
@@ -62,7 +70,6 @@ function Feed() {
     const [deleteId, setDeleteId] = useState('')
     const [loading, setLoading] = useState(false)
     const dispatch = useDispatch();
-    const [expandedIds, setExpandedIds] = useState({});
 
     const handleExpandClick = (id) => {
         setExpandedId(id === expandedId ? null : id);
@@ -212,7 +219,14 @@ function Feed() {
                                         />
                                     </div>
                                 )}
-                            { item.message &&   <CardContent>
+                            { item.message &&      <CardContent
+                    sx={{
+                        maxHeight: expandedId === item.id ? 'none' : 75,
+                        overflow: 'hidden',
+                        transition: 'max-height 0.3s ease'
+                    }}
+                    className={expandedId === item.id ? 'scrollable-content' : ''}
+                >
                                     <Typography variant="body2" color="text.primary" className='text-justify'>
                                         {expandedId === item.id ? item.message : `${item.message.slice(0, 75)}`}
                                     </Typography>
