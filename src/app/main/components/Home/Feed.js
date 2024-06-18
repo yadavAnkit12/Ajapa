@@ -60,7 +60,7 @@ const cardContentStyles = {
 };
 
 const cardContentExpandedStyles = {
-    maxHeight: 150, // Set the height as needed
+    maxHeight: 104, // Set the height as needed
     overflowY: 'auto',
 };
 
