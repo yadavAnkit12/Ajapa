@@ -258,7 +258,7 @@ function AllEventRegistrationHeader(props) {
             <FuseSvgIcon color="disabled">heroicons-solid:search</FuseSvgIcon>
 
             <Input
-              placeholder="Search Doctors"
+              placeholder="Search"
               className="flex flex-1"
               disableUnderline
               fullWidth
