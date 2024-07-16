@@ -136,7 +136,7 @@ function SMS() {
         if (response.status === 200) {
           formik.resetForm()
           setLoading(false)
-          dispatch(showMessage({ message: response.data.message, variant: "success" }));
+          dispatch(showMessage({ message: "Delivered messages successfully", variant: "success" }));
           formik.resetForm()
         } else {
           setLoading(false)
